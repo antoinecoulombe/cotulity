@@ -1,18 +1,79 @@
-.NavigationBar {
-    background-color: #000000;
-    width: 100%;
-    height: 100px;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    padding-bottom: 5px;
-    h2 {
-        color: #FFFFFF;
-        font-family: 'Courier New', Courier, monospace;
-    }
-}
+/*********** VARIABLES *********/
+/*BODY*/
+@colorBackground-white: #ffffff;
+@colorBackground-dark: #000000;
+/*LOGO*/
+@fontColor-white: #657786;
+@fontColor-dark: #000;
+@fontSize: 14px;
+/*LOGIN_BUTTON*/
+@offset_i: 4px;
 
-body {
-    background-color: #0A0A0A;
+.input_format{
+    width: 100%;
+    padding: 0px;
     margin: 0px;
+    color: @fontColor-white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: lighter;
+    font-size: @fontSize;
+}
+html,body{min-height: 500px;}
+body {
+    padding: 0;
+    margin:0;
+    background-color: @colorBackground-white;
+    height: 100%;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    >.main_page { 
+        width: 500px;
+        height: 300px;
+        >.login{
+            width: 100%;
+            >.login_info{
+                margin-top: 10px;
+                >form{
+                    >.textbox_info{
+                        text-indent: 17px; 
+                        border-radius: 3px;
+                        border: solid 1px #e6ecf0;
+                        height: 46px;
+                        width: 210px;
+                        padding: 0;
+                        &::placeholder{
+                            width: 100%;
+                            padding: 0px;
+                            margin: 0px;
+                            color: @fontColor-white;
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            font-style: normal;
+                            font-variant: normal;
+                            font-weight: normal;
+                            font-size: @fontSize;
+                        }
+                        &:last-of-type{
+                            margin-left: 10px;
+                        }
+                    }
+                    >.login_button{
+                        cursor: pointer;
+                        margin-left: 13px;
+                        font-size: 37px;
+                        position: relative; 
+                        top: 4px + @offset_i;
+                        left: -4px;
+                        color: #1aa3ff;
+                        &:hover{
+                            color: #1792E5;
+                        }
+                    }
+                }
+            }
+        }
+   }
 }
