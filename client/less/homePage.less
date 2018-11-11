@@ -1,15 +1,73 @@
 /*********** VARIABLES *********/
+
 /*BODY*/
+
 @colorBackground-white: #ffffff;
 @colorBackground-dark: #000000;
 /*LOGO*/
+
 @fontColor-white: #657786;
 @fontColor-dark: #000;
 @fontSize: 14px;
 /*LOGIN_BUTTON*/
-@offset_i: 4px;
 
-.input_format{
+@offset_i: 4px;
+@keyframes lds-rolling {
+    0% {
+        -webkit-transform: translate(-50%, -50%) rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        -webkit-transform: translate(-50%, -50%) rotate(360deg);
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@-webkit-keyframes lds-rolling {
+    0% {
+        -webkit-transform: translate(-50%, -50%) rotate(0deg);
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        -webkit-transform: translate(-50%, -50%) rotate(360deg);
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.lds-rolling {
+    position: relative;
+}
+
+.lds-rolling div,
+.lds-rolling div:after {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 9px solid #1792e5;
+    border-top-color: transparent;
+    border-radius: 50%;
+}
+
+.lds-rolling div {
+    -webkit-animation: lds-rolling 1s linear infinite;
+    animation: lds-rolling 1s linear infinite;
+    top: 18px;
+    left: 18px;
+}
+
+.lds-rolling div:after {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.lds-rolling {
+    width: 36px !important;
+    height: 36px !important;
+    -webkit-transform: translate(-100px, -100px) scale(1) translate(100px, 100px);
+    transform: translate(-100px, -100px) scale(1) translate(100px, 100px);
+}
+
+.input_format {
     width: 100%;
     padding: 0px;
     margin: 0px;
@@ -20,32 +78,42 @@
     font-weight: lighter;
     font-size: @fontSize;
 }
-html,body{min-height: 500px;}
+
+html,
+body {
+    min-height: 500px;
+}
+
 body {
     padding: 0;
-    margin:0;
+    margin: 0;
     background-color: @colorBackground-white;
     height: 100%;
-    display:flex;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    >.main_page { 
+    >.main_page {
         width: 500px;
         height: 300px;
-        >.login{
+        >.login {
+            height: 100%;
             width: 100%;
-            >.login_info{
+            >.login_info {
+                width: 100%;
+                height: 50px!important;
                 margin-top: 10px;
-                >form{
-                    >.textbox_info{
-                        text-indent: 17px; 
+                >form {
+                    width: 100%;
+                    height: 100%;
+                    >.textbox_info {
+                        text-indent: 17px;
                         border-radius: 3px;
                         border: solid 1px #e6ecf0;
                         height: 46px;
                         width: 210px;
                         padding: 0;
-                        &::placeholder{
+                        &::placeholder {
                             width: 100%;
                             padding: 0px;
                             margin: 0px;
@@ -56,24 +124,33 @@ body {
                             font-weight: normal;
                             font-size: @fontSize;
                         }
-                        &:last-of-type{
+                        &:last-of-type {
                             margin-left: 10px;
                         }
                     }
-                    >.login_button{
-                        cursor: pointer;
-                        margin-left: 13px;
-                        font-size: 37px;
-                        position: relative; 
-                        top: 4px + @offset_i;
-                        left: -4px;
-                        color: #1aa3ff;
-                        &:hover{
-                            color: #1792E5;
+                    >.login_button_animation {
+                        display: inline-block;
+                        width: 37px;
+                        
+                        top: 8px;
+                        height: 37px;
+                        left: 9px;
+                        >.login_button {
+                            cursor: pointer;
+                            font-size: 37px;
+                            color: #1aa3ff;
+                            &:hover {
+                                color: #1792E5;
+                            }
+                        }
+                        #login_load {
+                            display: none;
+                            //position: relative;
+                            //top: 4px;
                         }
                     }
                 }
             }
         }
-   }
+    }
 }
