@@ -6,7 +6,11 @@ let app = express();
 app.use(express.static(path.join(__dirname, '../..', '/client')));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.resolve('server/html/homePage.html'));
+    res.sendFile(path.resolve('server/html/index.html'));
+});
+
+app.post('/', (req, res) => {
+    res.sendFile(path.resolve('server/html/apps.html'), options);
 });
 
 app.post('/', (req, res) => {
