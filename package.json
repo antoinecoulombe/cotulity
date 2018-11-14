@@ -18,10 +18,11 @@
     "jshint": "^2.9.5",
     "less": "^3.0.4",
     "less-middleware": "^3.0.1",
-    "sass": "^1.9.0",
-    "typescript": "^2.9.2"
-  },
-  "devDependencies": {
-    "node-sass": "^4.9.2"
+    "mysql2": "^1.6.4",
+    "passport": "^0.4.0",
+    "sequelize": "^4.41.2",
+    "sequelize-noupdate-attributes": "^1.0.0",
+    "typescript": "^2.9.2",
+    "validator-js": "^0.2.1"
   }
 }

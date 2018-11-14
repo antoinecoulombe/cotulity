@@ -2,8 +2,8 @@
 
 <head>
     <link rel="stylesheet/less" type="text/css" href="/less/homePage.less" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" 
-    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+        crossorigin="anonymous">
     <script type="text/javascript" src="/js/less.js"></script>
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <script type="text/javascript" src="/js/action.js"></script>
@@ -16,16 +16,23 @@
             <h1>Cotulity</h1>
         </div>
         <form id="login" action="/" method="post">
+            <input type="text" name="isLogin" value="1" hidden>
             <input type="submit" hidden>
-            <input type="text" name="username" class="" placeholder="Email">
-            <input type="password" name="password" class="" placeholder="Password">
 
-            <i class="fas fa-arrow-alt-circle-right" id="submit-go"></i>
-            <i class="fas fa-circle-notch fa-spin-fast" id="submit-load"></i>
+            <input type="email" name="email" placeholder="Email">
+            <input type="password" name="password" placeholder="Password">
+            
+            <i class="fas fa-arrow-alt-circle-right submit-go"></i>
+            <i class="fas fa-circle-notch fa-spin-fast submit-load" style="display:none;"></i>
+
+            <input class="signup-input" type="phone" name="phone" placeholder="Phone">
+            <input class="signup-input" type="password" placeholder="Confirm Password">
+            <input class="signup-input" type="text" name="firstname" placeholder="Firstname">
+            <input class="signup-input" type="text" name="lastname" placeholder="Lastname">
+
+            <p class="login-p"><i>Don't have an account?</i> <i>Sign up</i></p>
+            <p class="signup-p"><i>Already a member?</i> <i>Log in</i></p>
         </form>
-        <!-- <form id="signin" action="/signin" method="post">
-
-        </form> -->
     </div>
 </body>
 
