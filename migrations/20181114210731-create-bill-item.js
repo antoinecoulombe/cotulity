@@ -8,6 +8,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      billId: { // fk
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
+      amount: {
+        allowNull: false,
+        type: Sequelize.DECIMAL(19, 4)
+      },
+      name: {
+        type: Sequelize.STRING
+      },
+      description: {
+        type: Sequelize.TEXT
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

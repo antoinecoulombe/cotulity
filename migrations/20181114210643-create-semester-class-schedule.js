@@ -25,7 +25,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 1
       },
-      intervalDays: {
+      intervalWeeks: {
         allowNull: false,
         type: Sequelize.INTEGER,
         defaultValue: 0

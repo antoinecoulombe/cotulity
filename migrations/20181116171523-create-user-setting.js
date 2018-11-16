@@ -1,46 +1,36 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('bill_borrowers', {
+    return queryInterface.createTable('UserSettings', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      billId: { // fk
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
       userId: { // fk
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      toPay: {
-        type: Sequelize.DECIMAL(19, 4)
-      },
-      paidAmount: {
+      settingId: { // fk
         allowNull: false,
-        type: Sequelize.DECIMAL(19, 4),
-        defaultValue: 0
+        type: Sequelize.INTEGER
+      },
+      value: {
+        allowNull: false,
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
-        defaultValue: null
+        type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('bill_borrowers');
+    return queryInterface.dropTable('UserSettings');
   }
 };

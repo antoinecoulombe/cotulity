@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('apps', {
+    return queryInterface.createTable('settings', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,31 +12,26 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      description: {
-        type: Sequelize.TEXT
+      values: {
+        allowNull: false,
+        type: Sequelize.STRING
       },
-      image: {
+      type: { // array/boolean
         allowNull: false,
         type: Sequelize.STRING,
-        defaultValue: 'DEFAULT_IMAGE_ABSOLUTE_URL'
+        defaultValue: 'array'
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
-        defaultValue: null
+        type: Sequelize.DATE
       }
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('apps');
+    return queryInterface.dropTable('settings');
   }
 };
