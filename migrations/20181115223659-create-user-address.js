@@ -9,13 +9,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: { // fk
+      userId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          table: 'users',
+          field: 'id'
+        }
       },
-      addressId: { // fk
+      addressId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          table: 'addresses',
+          field: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

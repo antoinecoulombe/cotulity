@@ -8,9 +8,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      semesterClassId: { // fk
+      semesterClassId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          table: 'semester_classes',
+          field: 'id'
+        }
       },
       startTime: {
         allowNull: false,

@@ -19,9 +19,13 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      facultyId: { // fk
+      facultyId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          table: 'faculties',
+          field: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

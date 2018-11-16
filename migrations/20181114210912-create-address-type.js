@@ -1,34 +1,22 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('bills', {
+    return queryInterface.createTable('address_types', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      paidByUserId: {
+      name: {
         allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          table: 'users',
-          field: 'id'
-        }
+        type: Sequelize.STRING,
+        unique: true
       },
-      date: {
-        type: Sequelize.DATE
-      },
-      description: {
-        type: Sequelize.TEXT
-      },
-      totalAmount: {
-        	type: Sequelize.DECIMAL(19, 4)
-      },
-      taxesIncluded: {
+      image: {
         allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+        type: Sequelize.STRING,
+        defaultValue: 'DEFAULT_IMAGE_ABSOLUTE_URL'
       },
       createdAt: {
         allowNull: false,
@@ -47,6 +35,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('bills');
+    return queryInterface.dropTable('address_types');
   }
 };

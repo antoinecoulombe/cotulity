@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      addressTypeId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          table: 'address_types',
+          field: 'id'
+        }
+      },
       number: {
         type: Sequelize.INTEGER
       },

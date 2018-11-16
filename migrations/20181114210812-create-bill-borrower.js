@@ -8,13 +8,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      billId: { // fk
+      billId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          table: 'bills',
+          field: 'id'
+        }
       },
-      userId: { // fk
+      userId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          table: 'users',
+          field: 'id'
+        }
       },
       toPay: {
         type: Sequelize.DECIMAL(19, 4)
