@@ -1,25 +1,19 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('classes', {
-      id: {
+    return queryInterface.createTable('user_addresses', {
+      id: { // to replace with joined fk primary key
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
-      },
-      code: {
+      userId: { // fk
         allowNull: false,
-        type: Sequelize.STRING,
-        unique: true
+        type: Sequelize.INTEGER
       },
-      description: {
-        type: Sequelize.TEXT
-      },
-      facultyId: { // fk
+      addressId: { // fk
         allowNull: false,
         type: Sequelize.INTEGER
       },
@@ -40,6 +34,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('classes');
+    return queryInterface.dropTable('user_addresses');
   }
 };

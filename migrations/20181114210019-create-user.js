@@ -25,6 +25,9 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: null
       },
+      birthdate: {
+        type: Sequelize.DATE
+      },
       admin: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

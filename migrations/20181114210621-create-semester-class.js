@@ -8,6 +8,23 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      semesterId: { // fk
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      classId: { // fk
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      location: {
+        type: Sequelize.STRING
+      },
+      startDate: {
+        type: Sequelize.DATE
+      },
+      endDate: {
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
