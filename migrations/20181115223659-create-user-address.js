@@ -3,12 +3,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('user_addresses', {
-      id: { // to replace with joined fk primary key
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
       userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
@@ -39,7 +33,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    });
+    }).then(() => queryInterface.addConstraint('fk_user_address', ['userId', 'address_id'], {
+      type: 'primary key',
+      name: 'userAddress_pk'
+    }));
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('user_addresses');

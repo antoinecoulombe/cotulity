@@ -12,9 +12,17 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      values: {
+      settingMethod: { // method called in node.js to apply setting.
         allowNull: false,
         type: Sequelize.STRING
+      },
+      description: {
+        type: Sequelize.TEXT
+      },
+      values: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: '[true,false]'
       },
       type: { // array/boolean
         allowNull: false,
