@@ -16,23 +16,13 @@ module.exports = {
           field: 'id'
         }
       },
-      startTime: {
+      startDate: {
         allowNull: false,
         type: Sequelize.TIME
       },
-      endTime: {
+      endDate: {
         allowNull: false,
         type: Sequelize.TIME
-      },
-      weekDay: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue: 1
-      },
-      intervalWeeks: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue: 0
       },
       location: {
         type: Sequelize.STRING
@@ -41,6 +31,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
         defaultValue: 'Class'
+      },
+      notes: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
