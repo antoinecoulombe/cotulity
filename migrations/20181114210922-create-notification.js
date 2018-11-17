@@ -1,30 +1,39 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('classes', {
+    return queryInterface.createTable('notifications', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING,
-        unique: true
-      },
-      code: {
+      userId: {
         allowNull: false,
-        type: Sequelize.STRING,
-        unique: true
+        type: Sequelize.INTEGER
       },
-      description: {
+      tableName: {
+        type: Sequelize.STRING
+      },
+      tableRowId: {
+        type: Sequelize.INTEGER
+      },
+      token: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      image: {
+        type: Sequelize.STRING
+      },
+      message: {
+        allowNull: false,
         type: Sequelize.TEXT
       },
-      facultyId: {
+      typeId: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
-          table: 'faculties',
+          table: 'notification_types',
           field: 'id'
         }
       },
@@ -45,6 +54,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('classes');
+    return queryInterface.dropTable('notifications');
   }
 };

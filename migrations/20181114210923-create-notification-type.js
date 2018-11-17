@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('classes', {
+    return queryInterface.createTable('notification_types', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,24 +9,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING,
-        unique: true
-      },
-      code: {
         allowNull: false,
         type: Sequelize.STRING,
         unique: true
       },
-      description: {
+      html: {
+        allowNull: false,
         type: Sequelize.TEXT
-      },
-      facultyId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          table: 'faculties',
-          field: 'id'
-        }
       },
       createdAt: {
         allowNull: false,
@@ -45,6 +34,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('classes');
+    return queryInterface.dropTable('notification_types');
   }
 };
