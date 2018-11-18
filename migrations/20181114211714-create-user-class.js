@@ -7,16 +7,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'users',
-          field: 'id'
+          model: 'users',
+          key: 'id'
         }
       },
       semesterClassId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'semester_classes',
-          field: 'id'
+          model: 'semester_classes',
+          key: 'id'
         }
       },
       createdAt: {
@@ -33,9 +33,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('fk_user_semesterclass', ['userId', 'semesterClassId'], {
+    }).then(() => queryInterface.addConstraint('user_classes', ['userId', 'semesterClassId'], {
       type: 'primary key',
-      name: 'userSemesterClass_pk'
+      name: 'user_semesterclass_pk'
     }));
   },
   down: (queryInterface, Sequelize) => {

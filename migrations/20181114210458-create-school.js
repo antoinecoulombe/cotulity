@@ -17,17 +17,23 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'addresses',
-          field: 'id'
+          model: 'addresses',
+          key: 'id'
         }
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
+      },
+      deletedAt: {
+        type: Sequelize.DATE,
+        defaultValue: null
       }
     });
   },

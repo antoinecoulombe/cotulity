@@ -22,8 +22,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'faculties',
-          field: 'id'
+          model: 'faculties',
+          key: 'id'
         }
       },
       createdAt: {

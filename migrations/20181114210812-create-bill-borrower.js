@@ -12,16 +12,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'bills',
-          field: 'id'
+          model: 'bills',
+          key: 'id'
         }
       },
       userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'users',
-          field: 'id'
+          model: 'users',
+          key: 'id'
         }
       },
       toPay: {

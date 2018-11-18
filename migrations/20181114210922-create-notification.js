@@ -31,10 +31,10 @@ module.exports = {
       },
       typeId: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         references: {
-          table: 'notification_types',
-          field: 'id'
+          model: 'notification_types',
+          key: 'id'
         }
       },
       createdAt: {

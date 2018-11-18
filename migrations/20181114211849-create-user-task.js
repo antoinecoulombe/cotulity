@@ -7,16 +7,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'users',
-          field: 'id'
+          model: 'users',
+          key: 'id'
         }
       },
       taskId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'tasks',
-          field: 'id'
+          model: 'tasks',
+          key: 'id'
         }
       },
       position: {
@@ -43,9 +43,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('fk_user_task', ['userId', 'taskId'], {
+    }).then(() => queryInterface.addConstraint('user_tasks', ['userId', 'taskId'], {
       type: 'primary key',
-      name: 'userTask_pk'
+      name: 'user_task_pk'
     }));
   },
   down: (queryInterface, Sequelize) => {

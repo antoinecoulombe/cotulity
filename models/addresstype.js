@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     id: DataTypes.INTEGER
   }, {});
   AddressType.associate = function(models) {
-    // associations can be defined here
+    AddressType.hasMany(models.Address, {foreignKey: 'addressTypeId', sourceKey: 'id'});
   };
   return AddressType;
 };

@@ -12,16 +12,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'semesters',
-          field: 'id'
+          model: 'semesters',
+          key: 'id'
         }
       },
       classId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'classes',
-          field: 'id'
+          model: 'classes',
+          key: 'id'
         }
       },
       location: {

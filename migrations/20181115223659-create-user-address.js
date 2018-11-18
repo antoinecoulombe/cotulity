@@ -7,17 +7,22 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'users',
-          field: 'id'
+          model: 'users',
+          key: 'id'
         }
       },
       addressId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'addresses',
-          field: 'id'
+          model: 'addresses',
+          key: 'id'
         }
+      },
+      creator: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,
@@ -33,9 +38,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('fk_user_address', ['userId', 'address_id'], {
+    }).then(() => queryInterface.addConstraint('user_addresses', ['userId', 'addressId'], {
       type: 'primary key',
-      name: 'userAddress_pk'
+      name: 'user_address_pk'
     }));
   },
   down: (queryInterface, Sequelize) => {

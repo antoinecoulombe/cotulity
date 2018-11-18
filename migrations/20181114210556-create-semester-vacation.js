@@ -12,8 +12,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'semesters',
-          field: 'id'
+          model: 'semesters',
+          key: 'id'
         }
       },
       name: {

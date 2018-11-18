@@ -6,16 +6,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'users',
-          field: 'id'
+          model: 'users',
+          key: 'id'
         }
       },
       settingId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          table: 'settings',
-          field: 'id'
+          model: 'settings',
+          key: 'id'
         }
       },
       value: {
@@ -36,9 +36,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('fk_user_setting', ['userId', 'settingId'], {
+    }).then(() => queryInterface.addConstraint('user_settings', ['userId', 'settingId'], {
       type: 'primary key',
-      name: 'userSetting_pk'
+      name: 'user_setting_pk'
     }));
   },
   down: (queryInterface, Sequelize) => {
