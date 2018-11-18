@@ -8,15 +8,29 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      typeId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'notification_types',
+          key: 'id'
+        }
+      },
+      userId: { // User which receives the notification
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      tableName: {
+      tableName: { // Affected table's name
         type: Sequelize.STRING
       },
-      tableRowId: {
+      tableRowId: { // Affected table's row id
         type: Sequelize.INTEGER
+      },
+      tableColumn: { // Affected table's column to modify
+        type: Sequelize.STRING
+      },
+      tableColumnValue: { // Value to affect to the specified column
+        type: Sequelize.STRING
       },
       token: {
         allowNull: false,
@@ -28,14 +42,6 @@ module.exports = {
       message: {
         allowNull: false,
         type: Sequelize.TEXT
-      },
-      typeId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'notification_types',
-          key: 'id'
-        }
       },
       createdAt: {
         allowNull: false,
