@@ -1,3 +1,7 @@
+let queryExists = `select * from users where email = ? and password = ?`;
+let queryCreate = `insert into users (firstname, lastname, email, phone, password) values (?,?,?,?,?)`;
+let queryDelete = `update users set deleted_at = CURRENT_TIMESTAMP where email = ? and password = ? and deleted_at = NULL`;
+let queryReactivate = `update users set deleted_at = NULL where email = ? and password = ?`;
 class Users {
     constructor(db) {
         if (db)
@@ -6,56 +10,51 @@ class Users {
     }
 
     exists(params, withTrash, callback) {
-        let query;
         if (withTrash)
-            query = `select * from users where email = '${params.email}' and password = '${params.password}'`;
-        else
-            query = `select * from users where email = '${params.email}' and password = '${params.password}' and delete_at = NULL`;
-        this.db.execQuery(query, (err, result) => {
+            queryExists += ' and deleted_at = NULL';
+        this.db.execQuery(queryExists, [params.email, params.password], (err, result) => {
             if (err)
                 callback(err);
-            callback(err, result.length != 0);
+            else
+                callback(err, result.length != 0);
         });
     }
 
     getUser(params, withTrash, callback) {
-        let query;
         if (withTrash)
-            query = `select * from user where email ='${params.mail} and password = '${params.password}'`;
-        else
-            query = `select * from user where email ='${params.email} and password = '${params.password}' and delete_at = NULL`;
-        this.db.execQuery(query, (err, result) => {
+            queryExists += ' and deleted_at = NULL';
+        this.db.execQuery(queryExists, [params.email, params.password], (err, result) => {
             if (err)
                 callback(err);
-            callback(err, result[0]);
+            else
+                callback(err, result[0]);
         });
     }
 
     delete(params, callback) {
-        let query = `update users set delete_at = CURRENT_TIMESTAMP where email = '${params.email} and password = '${params.password}' and delete_At = NULL`;
-        this.db.execQuery(query, (err, result) => {
+        this.db.execQuery(queryDelete, [params.email, prams.password], (err, result) => {
             if (err)
                 callback(err);
-            callback(err, result[0]);
-        })
+            else
+                callback(err, result[0]);
+        });
     }
 
     create(params, callback) {
-        let query = `insert into user('firstname', 'lastname', 'email', 'phone', 'password', 'create_at') 
-        values(${params.firstname}, ${params.lastname}, ${params.email}, ${params.phone}, ${params.password}, CURRENT_TIMESTAMP)`;
-        this.db.execQuery(query, (err, result) => {
+        this.db.execQuery(queryCreate, [params.firstname, params.lastname, params.email, params.phone, params.password], (err, result) => {
             if (err)
                 callback(err);
-            callback(err, result[0]);
+            else
+                callback(err, result.affectedRows == 1);
         });
     }
 
     reactivate(params, callback) {
-        let query = `update users set delete_at = NULL where email = '${params.email}' and password = '${params.password}'`;
-        this.db.execQuery(query, (err, result) => {
+        this.db.execQuery(queryReactivate, [params.email, params.password], (err, result) => {
             if (err)
                 callback(err);
-            callback(err, result[0]);
+            else
+                callback(err, result[0]);
         });
     }
 }

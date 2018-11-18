@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 let con = mysql.createPool({
     connectionLimit: 10,
     host: "localhost",
@@ -7,8 +7,8 @@ let con = mysql.createPool({
     database: "cotulity"
 });
 class DB {
-    static execQuery(query, callback) {
-        con.query(query, callback);
+    static execQuery(query, params, callback) {
+        con.execute(query, params, callback);
     }
 }
 module.exports = DB;

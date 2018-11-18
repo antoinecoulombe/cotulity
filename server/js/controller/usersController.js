@@ -1,5 +1,5 @@
 const Users = require('../users');
-const User = require('../models/user');
+const async = require('async');
 let users;
 class UsersController {
     constructor(db) {
@@ -13,13 +13,10 @@ class UsersController {
             cb => {
                 users.exists({
                     email,
-                    password,
-                    firstname,
-                    lastname,
-                    phone
+                    password
                 }, false, cb);
-            }, (result, cb) => {
-                if (!result)
+            }, (exist, cb) => {
+                if (!exist)
                     cb("This user doesn't exists!");
                 users.getUser({
                     email,
@@ -29,8 +26,8 @@ class UsersController {
         ], (err, result) => {
             if (err)
                 callback(err);
-            let user = result[0];
-            callback(err, new Users(user.id, user.firstname, user.lastname, user.email, user.phone, user.admin, user.emailVerified, user.createAt, user.updatedAt, user.deleteAt));
+            else
+                callback(err, result[0]);
         });
     }
 
@@ -68,8 +65,8 @@ class UsersController {
         ], (err, result) => {
             if (err)
                 callback(err);
-            let user = result[0];
-            callback(err, new Users(user.id, user.firstname, user.lastname, user.email, user.phone, user.admin, user.emailVerified, user.createAt, user.updatedAt, user.deleteAt));
+            else
+                callback(err, result[0]);
         });
     }
 }
