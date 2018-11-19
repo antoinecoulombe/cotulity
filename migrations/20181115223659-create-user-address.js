@@ -19,6 +19,9 @@ module.exports = {
           key: 'id'
         }
       },
+      acceptedAt: {
+        type: Sequelize.DATE
+      },
       creator: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
