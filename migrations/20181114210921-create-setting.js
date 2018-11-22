@@ -8,11 +8,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      code: {
         allowNull: false,
         type: Sequelize.STRING
       },
+      sectionId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'setting_sections',
+          key: 'id'
+        }
+      },
       settingMethod: { // method called in node.js to apply setting.
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      // Sentence to be shown in the settings page. (Explicative sentence 
+      // that the user can understand without looking at the description)
+      name: { 
         allowNull: false,
         type: Sequelize.STRING
       },
@@ -24,7 +38,7 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: '[true,false]'
       },
-      type: { // array/boolean
+      type: { // array/boolean/checkbox
         allowNull: false,
         type: Sequelize.STRING,
         defaultValue: 'array'
