@@ -47,7 +47,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    });
+    }).then(() => queryInterface.addConstraint('task_dates', ['userId', 'taskId'], {
+      type: 'primary key',
+      name: 'user_task_pk'
+    }));
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('task_dates');
