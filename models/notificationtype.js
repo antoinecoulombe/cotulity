@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'notification_types'
   });
   NotificationType.associate = function(models) {
-    // associations can be defined here
+    NotificationType.hasMany(models.Notification, {foreignKey: 'typeId', sourceKey: 'id'});
   };
   return NotificationType;
 };

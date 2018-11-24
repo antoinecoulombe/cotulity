@@ -29,7 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'semesters'
   });
   Semester.associate = function(models) {
-    // associations can be defined here
+    Semester.belongsTo(models.User, {foreignKey: 'userId', sourceKey: 'id'});
+    Semester.hasMany(models.SemesterClass, {foreignKey: 'semesterId', sourceKey: 'id'});
+    Semester.hasMany(models.SemesterVacation, {foreignKey: 'semesterId', sourceKey: 'id'});
   };
   return Semester;
 };

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'bill_items'
   });
   BillItem.associate = function(models) {
-    // associations can be defined here
+    BillItem.belongsTo(models.PaidBill, {foreignKey: 'paidBillId', sourceKey: 'id'});
   };
   return BillItem;
 };

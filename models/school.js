@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'schools'
   });
   School.associate = function(models) {
-    // associations can be defined here
+    School.hasMany(models.Faculty, {foreignKey: 'schoolId', sourceKey: 'id'});
+    School.belongsTo(models.Address, {foreignKey: 'addressId', sourceKey: 'id'});
   };
   return School;
 };

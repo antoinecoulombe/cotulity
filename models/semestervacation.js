@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'semester_vacations'
   });
   SemesterVacation.associate = function(models) {
-    // associations can be defined here
+    SemesterVacation.belongsTo(models.Semester, {foreignKey: 'semesterId', sourceKey: 'id'});
   };
   return SemesterVacation;
 };

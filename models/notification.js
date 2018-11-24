@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'notifications'
   });
   Notification.associate = function(models) {
-    // associations can be defined here
+    Notification.belongsTo(models.NotificationType, {foreignKey: 'typeId', sourceKey: 'id'});
+    Notification.belongsTo(models.User, {foreignKey: 'userId', sourceKey: 'id'});
   };
   return Notification;
 };

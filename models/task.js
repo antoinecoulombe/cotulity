@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'tasks'
   });
   Task.associate = function(models) {
-    // associations can be defined here
+    Task.belongsToMany(models.User, {as: 'Users', through: models.TaskDates, foreignKey: 'taskId', otherKey: 'userId'});
   };
   return Task;
 };

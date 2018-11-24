@@ -34,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   Address.associate = function(models) {
     Address.belongsTo(models.AddressType, {foreignKey: 'addressTypeId', sourceKey: 'id'});
+    Address.hasMany(models.School, {foreignKey: 'addressId', sourceKey: 'id'});
+    Address.belongsToMany(models.User, {as: 'Users', through: models.UserAddresses, foreignKey: 'addressId', otherKey: 'userId'});
   };
   return Address;
 };
