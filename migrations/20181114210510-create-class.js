@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      facultyId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'faculties',
+          key: 'id'
+        }
+      },
       name: {
         type: Sequelize.STRING
       },
@@ -17,14 +25,6 @@ module.exports = {
       },
       description: {
         type: Sequelize.TEXT
-      },
-      facultyId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'faculties',
-          key: 'id'
-        }
       },
       createdAt: {
         allowNull: false,

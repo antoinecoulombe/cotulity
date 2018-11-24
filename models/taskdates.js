@@ -1,11 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Task = sequelize.define('Task', {
-    name: {
-      type: DataTypes.STRING,
-      validate: {} 
-    },
-    description: {
+  const TaskSchedule = sequelize.define('TaskDates', {
+    notes: {
       type: DataTypes.TEXT,
       validate: {} 
     },
@@ -17,19 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       validate: {} 
     },
-    tableName: {
-      type: DataTypes.STRING,
-      validate: {} 
-    }
+    acceptedAt: {
+      type: DataTypes.DATE,
+    },
   }, {
     timestamps: true,
     paranoid: true,
     underscored: false,
     freezeTableName: false,
-    tableName: 'tasks'
+    tableName: 'task_dates'
   });
-  Task.associate = function(models) {
+  TaskSchedule.associate = function(models) {
     // associations can be defined here
   };
-  return Task;
+  return TaskSchedule;
 };

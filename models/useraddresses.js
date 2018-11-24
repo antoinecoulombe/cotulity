@@ -1,12 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const NotificationType = sequelize.define('NotificationType', {
-    name: {
-      type: DataTypes.STRING,
+  const UserAddresses = sequelize.define('UserAddresses', {
+    acceptedAt: {
+      type: DataTypes.DATE,
       validate: {} 
     },
-    html: {
-      type: DataTypes.TEXT,
+    creator: {
+      type: DataTypes.BOOLEAN,
       validate: {} 
     }
   }, {
@@ -14,10 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true,
     underscored: false,
     freezeTableName: false,
-    tableName: 'notification_types'
+    tableName: 'user_addresses'
   });
-  NotificationType.associate = function(models) {
+  UserAddresses.associate = function(models) {
     // associations can be defined here
   };
-  return NotificationType;
+  return UserAddresses;
 };

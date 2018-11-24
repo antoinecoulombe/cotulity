@@ -12,21 +12,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      notes: {
+      description: {
         type: Sequelize.TEXT
       },
-      startDay: {
+      startDate: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        type: Sequelize.DATE
       },
       endDate: {
         type: Sequelize.DATE
-      },
-      intervalDays: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

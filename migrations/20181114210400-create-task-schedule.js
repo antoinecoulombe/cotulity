@@ -2,15 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_tasks', {
-      userId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
-      },
+    return queryInterface.createTable('task_dates', {
       taskId: {
         allowNull: false,
         type: Sequelize.INTEGER,
@@ -19,10 +11,24 @@ module.exports = {
           key: 'id'
         }
       },
-      position: {
+      userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        defaultValue: 1
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      },
+      notes: {
+        type: Sequelize.TEXT
+      },
+      startDate: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      endDate: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
       acceptedAt: {
         type: Sequelize.DATE,
@@ -41,12 +47,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('user_tasks', ['userId', 'taskId'], {
-      type: 'primary key',
-      name: 'user_task_pk'
-    }));
+    });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('user_tasks');
+    return queryInterface.dropTable('task_dates');
   }
 };

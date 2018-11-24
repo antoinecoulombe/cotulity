@@ -16,14 +16,6 @@ module.exports = {
           key: 'id'
         }
       },
-      startDate: {
-        allowNull: false,
-        type: Sequelize.TIME
-      },
-      endDate: {
-        allowNull: false,
-        type: Sequelize.TIME
-      },
       location: {
         type: Sequelize.STRING
       },
@@ -34,6 +26,14 @@ module.exports = {
       },
       notes: {
         type: Sequelize.TEXT
+      },
+      startDate: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      endDate: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
