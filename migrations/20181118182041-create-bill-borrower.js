@@ -2,17 +2,11 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('bill_borrowers', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      billId: {
+      paidBillId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'bills',
+          model: 'paid_bills',
           key: 'id'
         }
       },
@@ -46,7 +40,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    });
+    }).then(() => queryInterface.addConstraint('bill_borrowers', ['userId', 'paidBillId'], {
+      type: 'primary key',
+      name: 'user_bill_pk'
+    }));
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('bill_borrowers');

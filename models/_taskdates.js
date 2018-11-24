@@ -1,11 +1,9 @@
+// This is a 'belongsToMany' link model, it should therefore most likely not have assocations.
+
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const SemesterVacation = sequelize.define('SemesterVacation', {
-    name: {
-      type: DataTypes.STRING,
-      validate: {} 
-    },
-    description: {
+  const TaskDate = sequelize.define('TaskDates', {
+    notes: {
       type: DataTypes.TEXT,
       validate: {} 
     },
@@ -17,15 +15,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       validate: {} 
     },
+    acceptedAt: {
+      type: DataTypes.DATE,
+    },
   }, {
     timestamps: true,
     paranoid: true,
     underscored: false,
     freezeTableName: false,
-    tableName: 'semester_vacations'
+    tableName: 'task_dates'
   });
-  SemesterVacation.associate = function(models) {
-    SemesterVacation.belongsTo(models.Semester, {foreignKey: 'semesterId', sourceKey: 'id'});
+  TaskDate.associate = function(models) {
+    // associations can be defined here
   };
-  return SemesterVacation;
+  return TaskDate;
 };
