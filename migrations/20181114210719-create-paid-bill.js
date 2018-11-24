@@ -1,9 +1,14 @@
 'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_tasks', {
-      userId: {
+    return queryInterface.createTable('paid_bills', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      paidByUserId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -11,21 +16,19 @@ module.exports = {
           key: 'id'
         }
       },
-      taskId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'tasks',
-          key: 'id'
-        }
+      date: {
+        type: Sequelize.DATE
       },
-      position: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue: 1
+      description: {
+        type: Sequelize.TEXT
       },
-      acceptedAt: {
-        type: Sequelize.DATE,
+      totalAmount: {
+        	type: Sequelize.DECIMAL(19, 4)
+      },
+      taxesIncluded: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,
@@ -41,12 +44,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('user_tasks', ['userId', 'taskId'], {
-      type: 'primary key',
-      name: 'user_task_pk'
-    }));
+    });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('user_tasks');
+    return queryInterface.dropTable('paid_bills');
   }
 };

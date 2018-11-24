@@ -1,19 +1,11 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Bill = sequelize.define('Bill', {
-    date: {
+  const UserAddresses = sequelize.define('UserAddresses', {
+    acceptedAt: {
       type: DataTypes.DATE,
       validate: {} 
     },
-    description: {
-      type: DataTypes.TEXT,
-      validate: {} 
-    },
-    totalAmount: {
-      type: DataTypes.DECIMAL(19, 4),
-      validate: {} 
-    },
-    taxesIncluded: {
+    creator: {
       type: DataTypes.BOOLEAN,
       validate: {} 
     }
@@ -22,10 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true,
     underscored: false,
     freezeTableName: false,
-    tableName: 'bills'
+    tableName: 'user_addresses'
   });
-  Bill.associate = function(models) {
+  UserAddresses.associate = function(models) {
     // associations can be defined here
   };
-  return Bill;
+  return UserAddresses;
 };

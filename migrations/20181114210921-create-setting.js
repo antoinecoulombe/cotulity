@@ -38,6 +38,10 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: '[true,false]'
       },
+      defaultValue: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       type: { // array/boolean/checkbox
         allowNull: false,
         type: Sequelize.STRING,

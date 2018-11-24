@@ -2,18 +2,20 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('task_schedules', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
+    return queryInterface.createTable('task_dates', {
       taskId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'tasks',
+          key: 'id'
+        }
+      },
+      userId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
           key: 'id'
         }
       },
@@ -27,6 +29,9 @@ module.exports = {
       endDate: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      acceptedAt: {
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
@@ -45,6 +50,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('task_schedules');
+    return queryInterface.dropTable('task_dates');
   }
 };

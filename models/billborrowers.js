@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const BillBorrower = sequelize.define('BillBorrower', {
+  const BillBorrower = sequelize.define('BillBorrowers', {
     toPay: {
       type: DataTypes.DECIMAL(19, 4),
       validate: {} 
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'bill_borrowers'
   });
   BillBorrower.associate = function(models) {
-    // associations can be defined here
+    
   };
   return BillBorrower;
 };
