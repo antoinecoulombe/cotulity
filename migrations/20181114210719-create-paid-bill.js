@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       totalAmount: {
-        	type: Sequelize.DECIMAL(19, 4)
+        type: Sequelize.DECIMAL(19, 4)
       },
       taxesIncluded: {
         allowNull: false,

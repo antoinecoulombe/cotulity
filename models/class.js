@@ -2,16 +2,17 @@
 module.exports = (sequelize, DataTypes) => {
   const Class = sequelize.define('Class', {
     name: {
-      type: DataTypes.STRING,
-      validate: {}
+      type: DataTypes.STRING
     },
     code: {
       type: DataTypes.STRING,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true
+      }
     },
     description: {
-      type: DataTypes.TEXT,
-      validate: {} 
+      type: DataTypes.TEXT
     }
   }, {
     timestamps: true,
@@ -20,9 +21,15 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'classes'
   });
-  Class.associate = function(models) {
-    Class.belongsTo(models.Faculty, {foreignKey: 'facultyId', sourceKey: 'id'});
-    Class.hasMany(models.SemesterClass, {foreignKey: 'classId', sourceKey: 'id'});
+  Class.associate = function (models) {
+    Class.belongsTo(models.Faculty, {
+      foreignKey: 'facultyId',
+      sourceKey: 'id'
+    });
+    Class.hasMany(models.SemesterClass, {
+      foreignKey: 'classId',
+      sourceKey: 'id'
+    });
   };
   return Class;
 };

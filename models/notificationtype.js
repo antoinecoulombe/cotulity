@@ -3,11 +3,17 @@ module.exports = (sequelize, DataTypes) => {
   const NotificationType = sequelize.define('NotificationType', {
     name: {
       type: DataTypes.STRING,
-      validate: {} 
+      validate: {
+        notNull: true,
+        notEmpty: true
+      }
     },
     html: {
       type: DataTypes.TEXT,
-      validate: {} 
+      validate: {
+        notNull: true,
+        notEmpty: true
+      }
     }
   }, {
     timestamps: true,
@@ -16,8 +22,11 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'notification_types'
   });
-  NotificationType.associate = function(models) {
-    NotificationType.hasMany(models.Notification, {foreignKey: 'typeId', sourceKey: 'id'});
+  NotificationType.associate = function (models) {
+    NotificationType.hasMany(models.Notification, {
+      foreignKey: 'typeId',
+      sourceKey: 'id'
+    });
   };
   return NotificationType;
 };

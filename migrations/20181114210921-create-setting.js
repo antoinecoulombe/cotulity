@@ -26,7 +26,7 @@ module.exports = {
       },
       // Sentence to be shown in the settings page. (Explicative sentence 
       // that the user can understand without looking at the description)
-      name: { 
+      name: {
         allowNull: false,
         type: Sequelize.STRING
       },
