@@ -1,12 +1,10 @@
+// This is a 'belongsToMany' link model, it should therefore most likely not have assocations.
+
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const UserAddresses = sequelize.define('UserAddresses', {
+  const UserFriends = sequelize.define('UserFriends', {
     acceptedAt: {
       type: DataTypes.DATE,
-      validate: {} 
-    },
-    creator: {
-      type: DataTypes.BOOLEAN,
       validate: {} 
     }
   }, {
@@ -14,10 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true,
     underscored: false,
     freezeTableName: false,
-    tableName: 'user_addresses'
+    tableName: 'user_friends'
   });
-  UserAddresses.associate = function(models) {
+  UserFriends.associate = function(models) {
     // associations can be defined here
   };
-  return UserAddresses;
+  return UserFriends;
 };
