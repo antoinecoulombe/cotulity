@@ -3,15 +3,18 @@ module.exports = (sequelize, DataTypes) => {
   const BillItem = sequelize.define('BillItem', {
     amount: {
       type: DataTypes.DECIMAL(19, 4),
-      validate: {} 
+      validate: {
+        isDecimal: true,
+        isNumeric: true,
+        notNull: true,
+        notEmpty: true
+      }
     },
     name: {
-      type: DataTypes.STRING,
-      validate: {} 
+      type: DataTypes.STRING
     },
     description: {
-      type: DataTypes.TEXT,
-      validate: {} 
+      type: DataTypes.TEXT
     }
   }, {
     timestamps: true,
@@ -20,8 +23,11 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'bill_items'
   });
-  BillItem.associate = function(models) {
-    BillItem.belongsTo(models.PaidBill, {foreignKey: 'paidBillId', sourceKey: 'id'});
+  BillItem.associate = function (models) {
+    BillItem.belongsTo(models.PaidBill, {
+      foreignKey: 'paidBillId',
+      sourceKey: 'id'
+    });
   };
   return BillItem;
 };

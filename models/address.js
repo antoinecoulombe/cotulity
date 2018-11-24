@@ -6,58 +6,60 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       validate: {
         isNumeric: true,
-        isNotNull: false,
+        notNull: false,
         len: [10, 15]
       },
       get() {
         return this.getDataValue('number');
       },
       set(val) {
-        let regionnalCode = val.lenght() - 10;
+        let phone = phoneFormatter.normalize(val);
+        let regionnalCode = phone.lenght() - 10;
         let n = "+";
         for (let i = 0; i < regionnalCode; ++i)
           n += "N";
         n += "(NNN) NNN-NNNN";
-        this.setDataValue('number', phoneFormatter.format(val, n));
-      },
+        this.setDataValue('number', phoneFormatter.format(phone, n));
+      }
     },
     street: {
       type: DataTypes.STRING,
       validate: {
-        isNotNull: false
+        notNull: false
       }
     },
     city: {
       type: DataTypes.STRING,
       validate: {
-        isNotNull: true,
+        notNull: true,
         notEmpty: true
       }
     },
     zipcode: {
       type: DataTypes.STRING(30),
       validate: {
-        isNotNull: false
+        notNull: false
       },
       get() {
         return this.getDataValue('zipcode');
 
       },
       set(val) {
-        this.setDataValue('zipcode', val.toUpperCase());
+        let zipcode = val.toUpperCase();
+        this.setDataValue('zipcode', zipcode.replace(/\s/g, ''));
       }
     },
     state: {
       type: DataTypes.STRING,
       validate: {
-        isNotNull: true,
+        notNull: true,
         notEmpty: true
       }
     },
     country: {
       type: DataTypes.STRING,
       validate: {
-        isNotNull: true,
+        notNull: true,
         notEmpty: true
       }
     }
@@ -68,10 +70,21 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'addresses'
   });
-  Address.associate = function(models) {
-    Address.belongsTo(models.AddressType, {foreignKey: 'addressTypeId', sourceKey: 'id'});
-    Address.hasMany(models.School, {foreignKey: 'addressId', sourceKey: 'id'});
-    Address.belongsToMany(models.User, {as: 'Users', through: models.UserAddresses, foreignKey: 'addressId', otherKey: 'userId'});
+  Address.associate = function (models) {
+    Address.belongsTo(models.AddressType, {
+      foreignKey: 'addressTypeId',
+      sourceKey: 'id'
+    });
+    Address.hasMany(models.School, {
+      foreignKey: 'addressId',
+      sourceKey: 'id'
+    });
+    Address.belongsToMany(models.User, {
+      as: 'Users',
+      through: models.UserAddresses,
+      foreignKey: 'addressId',
+      otherKey: 'userId'
+    });
   };
   return Address;
 };
