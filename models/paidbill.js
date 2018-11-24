@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   Bill.associate = function(models) {
     Bill.belongsTo(models.User, {foreignKey: 'paidByUserId', sourceKey: 'id'});
+    Bill.hasMany(models.BillItem, {foreignKey: 'paidBillId', sourceKey: 'id'});
     Bill.belongsToMany(models.User, {as: 'Borrowers', through: models.BillBorrowers, foreignKey: 'paidBillId', otherKey: 'userId'});
   };
   return Bill;

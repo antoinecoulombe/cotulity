@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Class = sequelize.define('Class', {
     name: {
       type: DataTypes.STRING,
-      validate: {} 
+      validate: {}
     },
     code: {
       type: DataTypes.STRING,
@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'classes'
   });
   Class.associate = function(models) {
-    // associations can be defined here
+    Class.belongsTo(models.Faculty, {foreignKey: 'facultyId', sourceKey: 'id'});
+    Class.hasMany(models.SemesterClass, {foreignKey: 'classId', sourceKey: 'id'});
   };
   return Class;
 };

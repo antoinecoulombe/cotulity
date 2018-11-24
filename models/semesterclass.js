@@ -21,7 +21,9 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'semester_classes'
   });
   SemesterClass.associate = function(models) {
-    // associations can be defined here
+    SemesterClass.belongsTo(models.Semester, {foreignKey: 'semesterId', sourceKey: 'id'});
+    SemesterClass.belongsTo(models.Class, {foreignKey: 'classId', sourceKey: 'id'});
+    SemesterClass.hasMany(models.SemesterClassSchedule, {foreignKey: 'semesterClassId', sourceKey: 'id'});
   };
   return SemesterClass;
 };

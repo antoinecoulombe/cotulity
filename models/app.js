@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'apps'
   });
   App.associate = function(models) {
-    // associations can be defined here
+    App.belongsToMany(models.User, {as: 'Users', through: models.UserApps, foreignKey: 'appId', otherKey: 'userId'});
   };
   return App;
 };

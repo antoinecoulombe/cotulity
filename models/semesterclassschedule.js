@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'semester_class_schedules'
   });
   SemesterClassSchedule.associate = function(models) {
-    // associations can be defined here
+    SemesterClassSchedule.belongsTo(models.SemesterClass, {foreignKey: 'semesterClassId', sourceKey: 'id'});
   };
   return SemesterClassSchedule;
 };

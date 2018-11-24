@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'setting_sections'
   });
   SettingSection.associate = function(models) {
-    // associations can be defined here
+    SettingSection.hasMany(models.Setting, {foreignKey: 'sectionId', sourceKey: 'id'});
   };
   return SettingSection;
 };
