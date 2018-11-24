@@ -9,7 +9,9 @@ module.exports = {
         sectionId: 1,
         settingMethod: 'setDarkMode',
         description: 'Converts all light colors, website wide, to dark colors.',
-        type: 'boolean'
+        type: 'boolean',
+        createdAt: Sequelize.literal('NOW()'),
+        updatedAt: Sequelize.literal('NOW()')
       },
       {
         name: 'Show this tab by default',
@@ -18,7 +20,9 @@ module.exports = {
         settingMethod: 'setCalendarPreferredDisplay',
         description: 'Sets the default people to be shown when viewing the calendar page.',
         values: '["Roommates", "Friends"]',
-        type: 'checkbox'
+        type: 'checkbox',
+        createdAt: Sequelize.literal('NOW()'),
+        updatedAt: Sequelize.literal('NOW()')
       }
     ], {});
   },

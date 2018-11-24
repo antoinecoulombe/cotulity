@@ -20,7 +20,10 @@ After the project is correctly installed, you must run the migrations and seeds 
 1. `sequelize db:seed:all`
 
 If the migration script fails to execute completely, the database linked to the project might not be empty. This problem can be solved by running the following command:
-`sequelize db:migrate:undo:all` and then re-execute the previous two commands.
+`sequelize db:migrate:undo:all` and then re-executing the previous two commands.
+
+If the seed script fails to execute completely, there might be a problem with the auto-incrementing primary keys. This problem can be solved by undoing the migration (dropping the tables)
+and running the migration and seed scripts again.
 
 ## You're good to go!
 After finishing the Installation and Database Setup, you should be good to go. Start a project and try it out.
