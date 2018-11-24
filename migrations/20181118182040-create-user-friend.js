@@ -36,7 +36,7 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('user_friend', ['userId', 'friendId'], {
+    }).then(() => queryInterface.addConstraint('user_friends', ['userId', 'friendId'], {
       type: 'primary key',
       name: 'user_friend_pk'
     }));

@@ -40,7 +40,7 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null
       }
-    }).then(() => queryInterface.addConstraint('user_bill', ['userId', 'paidBillId'], {
+    }).then(() => queryInterface.addConstraint('bill_borrowers', ['userId', 'paidBillId'], {
       type: 'primary key',
       name: 'user_bill_pk'
     }));
