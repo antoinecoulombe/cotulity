@@ -1,47 +1,32 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('settings', {
+    return queryInterface.createTable('task_schedules', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      sectionId: {
+      taskId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'setting_sections',
+          model: 'tasks',
           key: 'id'
         }
       },
-      code: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      settingMethod: { // method called in node.js to apply setting.
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      // Sentence to be shown in the settings page. (Explicative sentence 
-      // that the user can understand without looking at the description)
-      name: { 
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      description: {
+      notes: {
         type: Sequelize.TEXT
       },
-      values: {
+      startDate: {
         allowNull: false,
-        type: Sequelize.STRING,
-        defaultValue: '[true,false]'
+        type: Sequelize.DATE
       },
-      type: { // array/boolean/checkbox
+      endDate: {
         allowNull: false,
-        type: Sequelize.STRING,
-        defaultValue: 'array'
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -60,6 +45,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('settings');
+    return queryInterface.dropTable('task_schedules');
   }
 };

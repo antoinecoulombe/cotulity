@@ -18,7 +18,11 @@ module.exports = {
       },
       userId: { // User which receives the notification
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
       },
       tableName: { // Affected table's name
         type: Sequelize.STRING

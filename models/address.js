@@ -1,13 +1,37 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Address = sequelize.define('Address', {
-    number: DataTypes.INTEGER,
-    street: DataTypes.STRING,
-    city: DataTypes.STRING,
-    zipcode: DataTypes.STRING(30),
-    state: DataTypes.STRING,
-    country: DataTypes.STRING
-  }, {});
+    number: {
+      type: DataTypes.INTEGER,
+      validate: {}
+    },
+    street: {
+      type: DataTypes.STRING,
+      validate: {}
+    },
+    city: {
+      type: DataTypes.STRING,
+      validate: {} 
+    },
+    zipcode: {
+      type: DataTypes.STRING(30),
+      validate: {} 
+    },
+    state: {
+      type: DataTypes.STRING,
+      validate: {} 
+    },
+    country: {
+      type: DataTypes.STRING,
+      validate: {} 
+    }
+  }, {
+    timestamps: true,
+    paranoid: true,
+    underscored: false,
+    freezeTableName: false,
+    tableName: 'addresses'
+  });
   Address.associate = function(models) {
     Address.belongsTo(models.AddressType, {foreignKey: 'addressTypeId', sourceKey: 'id'});
   };

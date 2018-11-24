@@ -16,7 +16,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      MinutesBeforeExpiration: {
+      minutesBeforeExpiration: {
         allowNull: false,
         type: Sequelize.INTEGER,
         defaultValue: 15
