@@ -40,50 +40,6 @@ body {
     height: 100%;
 }
 
-.placeholders {
-    .style {
-        .default-font();
-
-        position: relative;
-        top: 0;
-        left: 0;
-        color: #657786;
-        transition: 0.2s;
-    }
-
-    .focus {
-        color: #a3adb6;
-        font-size: 10px;
-        top: -17px;
-    }
-
-    &::-webkit-input-placeholder { 
-        .style();
-    }
-    &::-moz-placeholder { 
-        .style();
-    }
-    &:-ms-input-placeholder { 
-        .style();
-    }
-    &:-moz-placeholder { 
-        .style();
-    }
-
-    &:focus::-webkit-input-placeholder { 
-        .focus();
-    }
-    &:focus::-moz-placeholder { 
-        .focus();
-    }
-    &:focus:-ms-input-placeholder { 
-        .focus();
-    }
-    &:focus:-moz-placeholder { 
-        .focus();
-    }
-}
-
 .noselect {
     user-select: none;
     -moz-user-select: none;
@@ -126,10 +82,6 @@ form {
 
 #login {
     height: 46px;
-}
-
-#signup {
-    display: none;
 }
 
 .form-input {
