@@ -1,60 +1,12 @@
-/* #region general */
-
-@gradient-from: #0041ad;
-@gradient-to: #008aff;
-@gradient-to-light: #00aeff;
-
-@fonts-ss: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-@fonts-s: 'Times new roman', serif;
-
-@input-clr: #283036;
-
-@font-face {
-    font-family: "Good Morning";
-    src: url("../fonts/GoodMorningAfternoon.ttf");
-    // src: 
-    // url("css/fonts/GoodMorningAfternoon.woff") format("woff"),
-    // url("css/fonts/GoodMorningAfternoon.otf") format("opentype"),
-    // url("css/fonts/GoodMorningAfternoon.svg") format("svg");
-}
-
-.default-font {
-    font-family: @fonts-ss;
-    font-size: 14px;
-    font-weight: 400;
-    font-style: normal;
-}
-
-html, body { 
-    min-height: 400px;
-    margin: 0;
-    padding: 0; 
-}
-
-body {
-    background-image: linear-gradient(to bottom right, @gradient-from, @gradient-to-light);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
-.noselect {
-    user-select: none;
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
-}
-
-/* #endregion */
+@import "global.less";
 
 #container {
     width: 355px; //487px;
 }
 
 #logo {
+    @family: #fonts.family();
+
     position: relative;
     opacity: 0;
     
@@ -64,110 +16,21 @@ body {
         transition: 0.5s;
     }
     > h1 {
-        font-family: "Good Morning", @fonts-ss;
+        font-family: "Good Morning", @family[ss];
         font-size: 78px;
     }
     > h2 {
-        font-family: @fonts-ss;
+        font-family: @family[ss];
         font-weight: 300;
         font-size: 24px;
     }
 }
 
-form {
+#login {
     opacity: 0;
     margin: 0;
     padding: 0;
-}
-
-#login {
     height: 46px;
-}
-
-.form-input {
-    @height: 50px;
-
-    display: inline-block;
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 210px;
-    height: @height;
-
-    .font {
-        .default-font();
-
-        font-size: 14px;
-        font-weight: 500;
-        text-indent: 14px;
-    }
-
-    .filled {
-        color: #a3adb6;
-        font-size: 12px;
-        top: -17px;
-    }
-
-    &:nth-of-type(2n + 2) { margin-left: 8px; }
-    &:nth-of-type(n + 3) { margin-top: 8px; }
-    &.signup { display: none; opacity: 0; }
-
-    > label {
-        .font();
-        .noselect();
-    
-        position: absolute;
-        top: 0;
-        left: 0;
-        color:#657786;
-        line-height: @height;
-        pointer-events: none;
-        z-index: 9;
-        transition: 0.2s;
-        font-weight: 400;
-        cursor: text;
-    }
-
-    > input {
-        .font();
-
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: white;
-        border-radius: 3px;
-        padding: 0;
-        border: 1px solid #e6ecf0;
-        outline: none;
-        color: @input-clr;
-    
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-    
-        &:focus ~label {
-            .filled();
-        }
-    }
-}
-
-.fa-spin-fast {
-    -webkit-animation: fa-spin 1.1s infinite linear;
-    animation: fa-spin 1.1s infinite linear;
-}
-.fa-spin-faster {
-    -webkit-animation: fa-spin 0.75s infinite linear;
-    animation: fa-spin 0.75s infinite linear;
-}
-.fa-spin-fastest {
-    -webkit-animation: fa-spin 0.5s infinite linear;
-    animation: fa-spin 0.5s infinite linear;
-}
-.fa-spin-slow {
-    -webkit-animation: fa-spin 4s infinite linear;
-    animation: fa-spin 4s infinite linear;
 }
 
 .submit-go, .submit-load {
@@ -194,7 +57,7 @@ form {
 }
 
 .login-p, .signup-p {
-    .default-font();
+    .font-default();
     font-size: 12px;
     color: white;
     text-align: right;
@@ -220,7 +83,7 @@ form {
     }
 }
 
-.signup-input, .signup-p {
-    display: none;
-    opacity: 0;
+.form-input.signup, .signup-p { 
+    display: none; 
+    opacity: 0; 
 }

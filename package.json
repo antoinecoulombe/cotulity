@@ -4,8 +4,7 @@
   "description": "",
   "main": "./src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "sass:compile": "node-sass --include-path sass INPUT_FILE.scss OUTPUT_FILE.css"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -17,8 +16,7 @@
     "jquery": "^3.3.1",
     "jsdom": "^13.0.0",
     "jshint": "^2.9.5",
-    "less": "^3.0.4",
-    "less-middleware": "^3.0.1",
+    "less": "^3.8.1",
     "mysql2": "^1.6.4",
     "passport": "^0.4.0",
     "phone-formatter": "0.0.2",
@@ -26,5 +24,6 @@
     "sequelize-noupdate-attributes": "^1.0.0",
     "typescript": "^2.9.2",
     "validator-js": "^0.2.1"
-  }
+  },
+  "devDependencies": {}
 }
