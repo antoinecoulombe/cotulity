@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     code: {
       type: DataTypes.STRING,
       validate: {
-        isNotNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     description: {

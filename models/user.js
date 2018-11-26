@@ -5,30 +5,30 @@ module.exports = (sequelize, DataTypes) => {
     firstname: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     lastname: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     email: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
         notEmpty: true,
+        notNull: true,
         isEmail: true
       }
     },
     phone: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
         notEmpty: true,
+        notNull: true
       },
       get() {
         return this.getDataValue('number');
@@ -49,15 +49,15 @@ module.exports = (sequelize, DataTypes) => {
     admin: {
       type: DataTypes.BOOLEAN,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     password: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     emailVerifiedAt: {

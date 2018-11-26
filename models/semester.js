@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     code: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     notes: {
@@ -17,17 +17,17 @@ module.exports = (sequelize, DataTypes) => {
     startDate: {
       type: DataTypes.DATE,
       validate: {
-        isDate: true,
+        notEmpty: true,
         notNull: true,
-        notEmpty: true
+        isDate: true
       }
     },
     endDate: {
       type: DataTypes.DATE,
       validate: {
-        isDate: true,
-        notNull: true,
         notEmpty: true,
+        notNull: true,
+        isDate: true,
         isAfter: this.getDataValue('startDate')
       }
     }

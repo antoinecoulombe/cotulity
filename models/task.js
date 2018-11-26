@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     description: {
@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     startDate: {
       type: DataTypes.DATE,
       validate: {
-        notNull: true,
         notEmpty: true,
+        notNull: true,
         isDate: true
       }
     },

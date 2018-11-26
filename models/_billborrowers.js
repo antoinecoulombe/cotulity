@@ -6,17 +6,17 @@ module.exports = (sequelize, DataTypes) => {
     toPay: {
       type: DataTypes.DECIMAL(19, 4),
       validate: {
-        isDecimal: true,
-        isNumeric: true
+        notEmpty: true,
+        notNull: true,
+        isDecimal: true
       }
     },
     paidAmount: {
       type: DataTypes.DECIMAL(19, 4),
       validate: {
-        notNull: true,
         notEmpty: true,
-        isDecimal: true,
-        isNumeric: true
+        notNull: true,
+        isDecimal: true
       }
     }
   }, {

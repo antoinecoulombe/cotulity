@@ -17,11 +17,13 @@ module.exports = (sequelize, DataTypes) => {
         isNumeric: true
       }
     },
-    taxesIncluded: {
-      type: DataTypes.BOOLEAN,
+    taxPercent: {
+      type: DataTypes.DECIMAL(5, 3),
       validate: {
+        notEmpty: true,
         notNull: true,
-        notEmpty: true
+        min: 0,
+        max: 40
       }
     }
   }, {

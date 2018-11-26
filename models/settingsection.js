@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     description: {

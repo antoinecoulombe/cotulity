@@ -4,22 +4,22 @@ module.exports = (sequelize, DataTypes) => {
     code: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     settingMethod: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     name: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     description: {
@@ -28,22 +28,22 @@ module.exports = (sequelize, DataTypes) => {
     values: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     defaultValue: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     type: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     }
   }, {

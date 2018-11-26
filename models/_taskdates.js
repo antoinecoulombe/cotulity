@@ -9,16 +9,16 @@ module.exports = (sequelize, DataTypes) => {
     startDate: {
       type: DataTypes.DATE,
       validate: {
-        notNull: true,
         notEmpty: true,
+        notNull: true,
         isDate: true
       }
     },
     endDate: {
       type: DataTypes.DATE,
       validate: {
-        notNull: true,
         notEmpty: true,
+        notNull: true,
         isDate: true,
         isAfter: this.getDateValue('startDate')
       }

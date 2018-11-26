@@ -4,24 +4,23 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
         notEmpty: true,
+        notNull: true,
         isEmail: true
       }
     },
     token: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     minutesBeforeExpiration: {
       type: DataTypes.INTEGER,
       validate: {
-        notNull: true,
         notEmpty: true,
-        isDecimal: true,
+        notNull: true,
         isNumeric: true
       }
     }

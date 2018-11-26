@@ -16,18 +16,21 @@ module.exports = (sequelize, DataTypes) => {
     token: {
       type: DataTypes.STRING,
       validate: {
-        notNull: true,
-        notEmpty: true
+        notEmpty: true,
+        notNull: true
       }
     },
     image: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: true
+      }
     },
     message: {
       type: DataTypes.TEXT,
       validate: {
-        notNul: true,
-        notEmpty: true
+        notEmpty: true,
+        notNul: true
       }
     }
   }, {
