@@ -3,19 +3,28 @@ module.exports = (sequelize, DataTypes) => {
   const Bill = sequelize.define('PaidBill', {
     date: {
       type: DataTypes.DATE,
-      validate: {} 
+      validate: {
+        isDate: true
+      }
     },
     description: {
-      type: DataTypes.TEXT,
-      validate: {} 
+      type: DataTypes.TEXT
     },
     totalAmount: {
       type: DataTypes.DECIMAL(19, 4),
-      validate: {} 
+      validate: {
+        isDecimal: true,
+        isNumeric: true
+      }
     },
-    taxesIncluded: {
-      type: DataTypes.BOOLEAN,
-      validate: {} 
+    taxPercent: {
+      type: DataTypes.DECIMAL(5, 3),
+      validate: {
+        notEmpty: true,
+        notNull: true,
+        min: 0,
+        max: 40
+      }
     }
   }, {
     timestamps: true,
@@ -24,10 +33,21 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'paid_bills'
   });
-  Bill.associate = function(models) {
-    Bill.belongsTo(models.User, {foreignKey: 'paidByUserId', sourceKey: 'id'});
-    Bill.hasMany(models.BillItem, {foreignKey: 'paidBillId', sourceKey: 'id'});
-    Bill.belongsToMany(models.User, {as: 'Borrowers', through: models.BillBorrowers, foreignKey: 'paidBillId', otherKey: 'userId'});
+  Bill.associate = function (models) {
+    Bill.belongsTo(models.User, {
+      foreignKey: 'paidByUserId',
+      sourceKey: 'id'
+    });
+    Bill.hasMany(models.BillItem, {
+      foreignKey: 'paidBillId',
+      sourceKey: 'id'
+    });
+    Bill.belongsToMany(models.User, {
+      as: 'Borrowers',
+      through: models.BillBorrowers,
+      foreignKey: 'paidBillId',
+      otherKey: 'userId'
+    });
   };
   return Bill;
 };

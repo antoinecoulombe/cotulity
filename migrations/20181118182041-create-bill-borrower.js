@@ -19,6 +19,7 @@ module.exports = {
         }
       },
       toPay: {
+        allowNull: false,
         type: Sequelize.DECIMAL(19, 4)
       },
       paidAmount: {

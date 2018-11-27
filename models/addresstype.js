@@ -3,11 +3,18 @@ module.exports = (sequelize, DataTypes) => {
   const AddressType = sequelize.define('AddressType', {
     name: {
       type: DataTypes.STRING,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true
+      }
     },
     image: {
       type: DataTypes.STRING,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true,
+        isUrl: true
+      }
     }
   }, {
     timestamps: true,
@@ -16,8 +23,11 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'address_types'
   });
-  AddressType.associate = function(models) {
-    AddressType.hasMany(models.Address, {foreignKey: 'addressTypeId', sourceKey: 'id'});
+  AddressType.associate = function (models) {
+    AddressType.hasMany(models.Address, {
+      foreignKey: 'addressTypeId',
+      sourceKey: 'id'
+    });
   };
   return AddressType;
 };

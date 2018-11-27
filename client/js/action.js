@@ -5,8 +5,16 @@ $(function() {
     $('.login-p > i:last-of-type').click((e) => LoginToSignUp());
     $('.signup-p > i:last-of-type').click((e) => SignUpToLogin());
 
-    $('#login > input').keypress(function (e) {
+    $('#login > input').keypress((e) => {
         if(e.which == 13) $('.submit-go').click();
+    });
+
+    $(".form-input > input").blur((e) => {
+        let i = $(e.target);
+        if ($(e.target).val().length == 0)
+            $(e.target).next().removeClass("filled");
+        else 
+            $(e.target).next().addClass("filled");
     });
 });
 
@@ -63,12 +71,11 @@ function LoginToSignUp() {
 
     $('.signup-p').show();
     $('.signup-p').css({ opacity: 0 });
-    $('.signup-input').animate({ opacity: 1}, 500, () => $(".signup-p").animate({ opacity: 1 }, 500));
+    $('.form-input.signup').animate({ opacity: 1}, 500, () => $(".signup-p").animate({ opacity: 1 }, 500));
     
-    $('.signup-input').css("display", "inline-block");
-    
+    $('.form-input.signup').css("display", "inline-block");
 
-    setTimeout(() => $('.submit-go, .submit-load').animate({ top: 117 }, 275), 150);
+    setTimeout(() => $('.submit-go, .submit-load').animate({ top: 125 }, 275), 150);
 }
 
 function SignUpToLogin() {
@@ -76,8 +83,8 @@ function SignUpToLogin() {
 
     $('.signup-p').hide();
 
-    $(".signup-input").animate({ opacity: 0 }, 500, () => { 
-        $('.signup-input').hide();
+    $(".form-input.signup").animate({ opacity: 0 }, 500, () => { 
+        $('.form-input.signup').hide();
 
         $('.login-p').show();
         $('.login-p').css({ opacity: 0 });

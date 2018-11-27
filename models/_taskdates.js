@@ -4,19 +4,30 @@
 module.exports = (sequelize, DataTypes) => {
   const TaskDate = sequelize.define('TaskDates', {
     notes: {
-      type: DataTypes.TEXT,
-      validate: {} 
+      type: DataTypes.TEXT
     },
     startDate: {
       type: DataTypes.DATE,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true,
+        isDate: true
+      }
     },
     endDate: {
       type: DataTypes.DATE,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true,
+        isDate: true,
+        isAfter: this.getDateValue('startDate')
+      }
     },
     acceptedAt: {
       type: DataTypes.DATE,
+      validate: {
+        isDate: true
+      }
     },
   }, {
     timestamps: true,
@@ -25,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'task_dates'
   });
-  TaskDate.associate = function(models) {
+  TaskDate.associate = function (models) {
     // associations can be defined here
   };
   return TaskDate;

@@ -2,32 +2,36 @@
 module.exports = (sequelize, DataTypes) => {
   const Notification = sequelize.define('Notification', {
     tableName: {
-      type: DataTypes.STRING,
-      validate: {} 
+      type: DataTypes.STRING
     },
     tableRowId: {
-      type: DataTypes.INTEGER,
-      validate: {} 
+      type: DataTypes.INTEGER
     },
     tableColumn: {
-      type: DataTypes.STRING,
-      validate: {} 
+      type: DataTypes.STRING
     },
     tableColumnValue: {
-      type: DataTypes.STRING,
-      validate: {} 
+      type: DataTypes.STRING
     },
     token: {
       type: DataTypes.STRING,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true
+      }
     },
     image: {
       type: DataTypes.STRING,
-      validate: {} 
+      validate: {
+        isUrl: true
+      }
     },
     message: {
       type: DataTypes.TEXT,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNul: true
+      }
     }
   }, {
     timestamps: true,
@@ -36,9 +40,15 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'notifications'
   });
-  Notification.associate = function(models) {
-    Notification.belongsTo(models.NotificationType, {foreignKey: 'typeId', sourceKey: 'id'});
-    Notification.belongsTo(models.User, {foreignKey: 'userId', sourceKey: 'id'});
+  Notification.associate = function (models) {
+    Notification.belongsTo(models.NotificationType, {
+      foreignKey: 'typeId',
+      sourceKey: 'id'
+    });
+    Notification.belongsTo(models.User, {
+      foreignKey: 'userId',
+      sourceKey: 'id'
+    });
   };
   return Notification;
 };

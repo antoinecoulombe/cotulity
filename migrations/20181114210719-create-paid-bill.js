@@ -23,12 +23,12 @@ module.exports = {
         type: Sequelize.TEXT
       },
       totalAmount: {
-        	type: Sequelize.DECIMAL(19, 4)
+        type: Sequelize.DECIMAL(19, 4)
       },
-      taxesIncluded: {
+      taxPercent: {
         allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+        type: Sequelize.DECIMAL(5, 3),
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

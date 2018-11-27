@@ -5,11 +5,19 @@ module.exports = (sequelize, DataTypes) => {
   const BillBorrower = sequelize.define('BillBorrowers', {
     toPay: {
       type: DataTypes.DECIMAL(19, 4),
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true,
+        isDecimal: true
+      }
     },
     paidAmount: {
       type: DataTypes.DECIMAL(19, 4),
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true,
+        isDecimal: true
+      }
     }
   }, {
     timestamps: true,
@@ -18,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'bill_borrowers'
   });
-  BillBorrower.associate = function(models) {
+  BillBorrower.associate = function (models) {
     // associations can be defined here
   };
   return BillBorrower;

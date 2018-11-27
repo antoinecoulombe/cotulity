@@ -5,11 +5,17 @@ module.exports = (sequelize, DataTypes) => {
   const UserAddresses = sequelize.define('UserAddresses', {
     acceptedAt: {
       type: DataTypes.DATE,
-      validate: {} 
+      validate: {
+        isDate: true
+      }
     },
     creator: {
       type: DataTypes.BOOLEAN,
-      validate: {} 
+      validate: {
+        notEmpty: true,
+        notNull: true,
+        isIn: [['true', 'false', '0', '1']]
+      }
     }
   }, {
     timestamps: true,
@@ -18,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'user_addresses'
   });
-  UserAddresses.associate = function(models) {
+  UserAddresses.associate = function (models) {
     // associations can be defined here
   };
   return UserAddresses;
