@@ -48,9 +48,9 @@ If you are using Visual Studio Code, here are the instructions on how to compile
     "compress": true 
 }
 ```
-1. Save and you're all set! When you save a `.less` file, a `.css` file will be created in the `client/css` folder.
+6. Save and you're all set! When you save a `.less` file, a `.css` file will be created in the `client/css` folder.
 
-\* Please note that files starting with `_` are consider partial files and will not be compiled in `.css` when saving.
+\* Please note that files starting with `_` are considered partial files and will not be compiled in `.css` when saving.
 
 ## You're good to go!
 After finishing the Installation and Database Setup, you should be good to go. Start a project and try it out.
