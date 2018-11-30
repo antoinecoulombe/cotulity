@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
         notNull: true,
         isDate: true,
-        isAfter: this.getDateValue('startDate')
+        // isAfter: this.getDateValue('startDate')
       }
     },
     acceptedAt: {

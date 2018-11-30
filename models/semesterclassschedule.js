@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
         notNull: true,
         isDate: true,
-        isAfter: this.getDataValue('startDate')
+        // isAfter: this.getDataValue('startDate')
       }
     },
     location: {
