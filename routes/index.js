@@ -1,3 +1,6 @@
 exports.index = function(req, res) {
-    res.render("login.ejs");
+    if (req.isAuthenticated())
+        res.render("apps.ejs");
+    else
+        res.render("login.ejs");
 }

@@ -1,5 +1,8 @@
-const phoneFormatter = require('phone-formatter');
 'use strict';
+
+var phoneFormatter = require('phone-formatter'),
+  bcrypt = require('bcrypt-nodejs');
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     firstname: {
@@ -16,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         notNull: true
       }
     },
-    email: {
+    username: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
@@ -71,7 +74,15 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true,
     underscored: false,
     freezeTableName: false,
-    tableName: 'users'
+    tableName: 'users',
+    classMethods: {
+      validPassword: function(password, passwd, done, user) {
+        bcrypt.compare(password, passwd, function(err, isMatch) {
+          if (err) console.log(err);
+          return done(null, isMatch ? user : false);
+        });
+      }
+    }
   });
   User.associate = function (models) {
     User.hasMany(models.PaidBill, {
@@ -123,5 +134,17 @@ module.exports = (sequelize, DataTypes) => {
       otherKey: 'settingId'
     });
   };
+
+  User.addHook('beforeCreate', function(user, fn) {
+    var salt = bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+      return salt;
+    });
+    bcrypt.hash(user.password, salt, null, function(err, hash) {
+      if (err) return next(err);
+      user.password = hash;
+      return fn(null, user);
+    });
+  });
+
   return User;
 };
