@@ -86,15 +86,15 @@ body {
         font-weight: 500;
         text-indent: 14px;
     }
-
-    .filled {
-        color: #a3adb6;
-        font-size: 12px;
-        top: -17px;
-    }
-
+    
     &:nth-of-type(2n + 2) { margin-left: 8px; }
     &:nth-of-type(n + 3) { margin-top: 8px; }
+
+    .label-filled {
+        color: #a3adb6;
+        font-size: 12px;
+        line-height: 26px;
+    }
 
     > label {
         .font();
@@ -110,11 +110,16 @@ body {
         transition: 0.2s;
         font-weight: 400;
         cursor: text;
+
+        &.filled {
+            .label-filled();
+        }
     }
 
     > input {
         .font();
 
+        float: left;
         position: relative;
         top: 0;
         left: 0;
@@ -131,8 +136,12 @@ body {
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
     
-        &:focus ~label {
-            .filled();
+        &:focus, &.filled {
+            padding-top: 8%;
+        }
+
+        &:focus ~ label {
+            .label-filled();
         }
     }
 }
