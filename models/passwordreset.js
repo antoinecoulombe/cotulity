@@ -3,24 +3,24 @@ module.exports = (sequelize, DataTypes) => {
   const PasswordReset = sequelize.define('PasswordReset', {
     email: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         isEmail: true
       }
     },
     token: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        allowNull: false
+        notEmpty: true
       }
     },
     minutesBeforeExpiration: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         isNumeric: true
       }
     }

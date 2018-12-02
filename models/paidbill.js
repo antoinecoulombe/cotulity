@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     taxPercent: {
       type: DataTypes.DECIMAL(5, 3),
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         min: 0,
         max: 40
       }

@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     code: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        allowNull: false
+        notEmpty: true
       }
     },
     description: {

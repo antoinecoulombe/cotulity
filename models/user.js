@@ -1,7 +1,6 @@
 'use strict';
 
-var phoneFormatter = require('phone-formatter'),
-  bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcrypt-nodejs');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -30,19 +29,24 @@ module.exports = (sequelize, DataTypes) => {
     phone: {
       type: DataTypes.STRING,
       validate: {
-        notEmpty: true
+        notEmpty: true,
+        isValid(phone) {
+          if (phone.length < 10)
+            throw new Error("Invalid phone number.");
+        }
       },
-      get() {
-        return this.getDataValue('number');
-      },
-      set(val) {
-        let phone = phoneFormatter.normalize(val);
-        let regionnalCode = phone.length - 10;
-        let n = "+";
-        for (let i = 0; i < regionnalCode; ++i)
-          n += "N";
-        n += "(NNN) NNN-NNNN";
-        this.setDataValue('number', phoneFormatter.format(phone, n));
+      set(value) {
+        function format(phone) {
+          var cleaned = ('' + phone).replace(/\D/g, '');
+          var match = cleaned.match(/^(\d{1,5}|)?(\d{3})(\d{3})(\d{4})$/);
+          if (match) {
+            let regionalCode = match[1] ? ('+' + match[1] + ' ') : '';
+            return [regionalCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+          }
+          return phone;
+        }
+
+        this.setDataValue('phone', format(value));
       }
     },
     birthdate: {

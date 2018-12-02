@@ -3,16 +3,16 @@ module.exports = (sequelize, DataTypes) => {
   const AddressType = sequelize.define('AddressType', {
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        allowNull: false
+        notEmpty: true
       }
     },
     image: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         isUrl: true
       }
     }

@@ -3,9 +3,9 @@ module.exports = (sequelize, DataTypes) => {
   const School = sequelize.define('School', {
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        allowNull: false
+        notEmpty: true
       }
     }
   }, {

@@ -3,9 +3,9 @@ module.exports = (sequelize, DataTypes) => {
   const SemesterVacation = sequelize.define('SemesterVacation', {
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        allowNull: false
+        notEmpty: true
       }
     },
     description: {
@@ -13,17 +13,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     startDate: {
       type: DataTypes.DATE,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         isDate: true
       }
     },
     endDate: {
       type: DataTypes.DATE,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         isDate: true,
         // isAfter: this.getValueDate('startDate')
       }

@@ -3,9 +3,9 @@ module.exports = (sequelize, DataTypes) => {
   const BillItem = sequelize.define('BillItem', {
     amount: {
       type: DataTypes.DECIMAL(19, 4),
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         isDecimal: true
       }
     },

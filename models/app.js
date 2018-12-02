@@ -3,9 +3,9 @@ module.exports = (sequelize, DataTypes) => {
   const App = sequelize.define('App', {
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        allowNull: false
+        notEmpty: true
       }
     },
     description: {
@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     image: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        allowNull: false,
         isUrl: true
       }
     }
