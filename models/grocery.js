@@ -25,8 +25,9 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'groceries'
   });
   Grocery.associate = function(models) {
-    Grocery.belongsTo(models.PaidBill, {
-      foreignKey: 'paidBillId',
+    Grocery.belongsTo(models.User, {
+      as: 'CreatedBy',
+      foreignKey: 'createdByUserId',
       sourceKey: 'id'
     });
   };

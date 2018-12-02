@@ -16,6 +16,9 @@ module.exports = {
           key: 'id'
         }
       },
+      name: {
+        type: Sequelize.STRING
+      },
       date: {
         type: Sequelize.DATE
       },

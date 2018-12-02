@@ -1,6 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Bill = sequelize.define('PaidBill', {
+    name: {
+      type: DataTypes.STRING
+    },
     date: {
       type: DataTypes.DATE,
       validate: {

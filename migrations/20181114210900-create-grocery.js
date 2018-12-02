@@ -1,6 +1,10 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
+
+    // Multiple groceries can be selected together to create a bill which will have a 
+    // bill-item for each grocery selected
+
     return queryInterface.createTable('groceries', {
       id: {
         allowNull: false,
@@ -8,12 +12,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      paidBillId: { // Multiple groceries can be selected together to create a bill which will have a bill-item for each grocery selected
+      createdByUserId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        defaultValue: null,
         references: {
-          model: 'paid_bills',
+          model: 'users',
           key: 'id'
         }
       },
