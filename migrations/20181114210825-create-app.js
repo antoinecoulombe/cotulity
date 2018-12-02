@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      categoryId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'app_categories',
+          key: 'id'
+        }
+      },
       name: {
         allowNull: false,
         type: Sequelize.STRING,
@@ -16,10 +24,15 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
+      visible: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       image: {
         allowNull: false,
         type: Sequelize.STRING,
-        defaultValue: 'DEFAULT_IMAGE_ABSOLUTE_URL'
+        defaultValue: 'fa-question-circle'
       },
       createdAt: {
         allowNull: false,

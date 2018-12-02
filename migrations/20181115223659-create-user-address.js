@@ -22,7 +22,7 @@ module.exports = {
       acceptedAt: {
         type: Sequelize.DATE
       },
-      creator: {
+      isCreator: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
         defaultValue: false

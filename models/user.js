@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: true,
         isValid(phone) {
-          if (phone.length < 10)
+          if (phone.startsWith('INVALID-'))
             throw new Error("Invalid phone number.");
         }
       },
@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
             let regionalCode = match[1] ? ('+' + match[1] + ' ') : '';
             return [regionalCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
           }
-          return phone;
+          return "INVALID-" + phone;
         }
 
         this.setDataValue('phone', format(value));

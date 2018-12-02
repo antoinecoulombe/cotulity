@@ -6,12 +6,12 @@ module.exports = (sequelize, DataTypes) => {
     acceptedAt: {
       type: DataTypes.DATE,
       validate: {
+        notEmpty: true,
         isDate: true
       }
     },
-    creator: {
+    isCreator: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
       validate: {
         notEmpty: true,
         isIn: [['true', 'false', '0', '1']]
