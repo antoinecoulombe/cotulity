@@ -19,7 +19,23 @@ $(function() {
             $(e.target).next().addClass("filled");
         }
     });
+
+    $(".submit-go").click((e) => {
+        if ($("#login > input[name=isLogin]").val() != 1)
+            register();
+
+        $(".submit-go").hide();
+        $(".submit-load").show();
+
+        setTimeout(() => {
+            $("#login").submit();
+        }, 2000);
+    });
 });
+
+function register() {
+    $('#login').attr('action', '/register');
+}
 
 function showLoginForm() {
     $("#logo").animate({ opacity: 1 }, 750);

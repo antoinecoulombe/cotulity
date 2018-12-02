@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(19, 4),
       validate: {
         notEmpty: true,
-        notNull: true,
+        allowNull: false,
         isDecimal: true
       }
     },

@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        notNull: true,
+        allowNull: false,
         isEmail: true
       }
     },
@@ -13,14 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        notNull: true
+        allowNull: false
       }
     },
     minutesBeforeExpiration: {
       type: DataTypes.INTEGER,
       validate: {
         notEmpty: true,
-        notNull: true,
+        allowNull: false,
         isNumeric: true
       }
     }

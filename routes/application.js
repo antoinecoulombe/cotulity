@@ -1,4 +1,4 @@
-exports.isAuthenticated = function(req, res, next) {
+exports.isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated())
         next();
     else 
@@ -6,7 +6,7 @@ exports.isAuthenticated = function(req, res, next) {
         // next(new Error(401));
 }
 
-exports.destroySession = function(req, res, next) {
+exports.destroySession = (req, res, next) => {
     req.logOut();
     req.session.destroy();
     res.redirect("/");

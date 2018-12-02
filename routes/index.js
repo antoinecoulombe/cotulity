@@ -1,4 +1,4 @@
-exports.index = function(req, res) {
+exports.index = (req, res) => {
     if (req.isAuthenticated())
         res.render("apps.ejs");
     else

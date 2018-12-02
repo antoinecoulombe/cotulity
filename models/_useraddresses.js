@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       validate: {
         notEmpty: true,
-        notNull: true,
+        allowNull: false,
         isIn: [['true', 'false', '0', '1']]
       }
     }

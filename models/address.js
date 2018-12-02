@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        notNull: true
+        allowNull: false
       }
     },
     zipcode: {
@@ -33,14 +33,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        notNull: true
+        allowNull: false
       }
     },
     country: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        notNull: true
+        allowNull: false
       }
     }
   }, {

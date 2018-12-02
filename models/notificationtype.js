@@ -5,14 +5,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        notNull: true
+        allowNull: false
       }
     },
     html: {
       type: DataTypes.TEXT,
       validate: {
         notEmpty: true,
-        notNull: true
+        allowNull: false
       }
     }
   }, {

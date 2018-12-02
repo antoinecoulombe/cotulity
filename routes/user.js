@@ -1,14 +1,15 @@
-var db = require('../models');
+var db = require('../models'),
+    passport = require('passport');
 
-exports.login = function(req, res) {
+exports.login = (req, res) => {
     if (req.isAuthenticated())
         res.redirect('/');
     else
         res.render('login.ejs')
 }
 
-exports.register = function(req, res) {
-    db.User.find({where: {username: req.username}}).success(function(user) {
+exports.register = (req, res) => {
+    db.User.findOne({where: {username: req.username}}).then(user => {
         if (!user) {
             db.User.create({
                 username: req.body.username,
@@ -16,7 +17,9 @@ exports.register = function(req, res) {
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
                 phone: req.body.phone
-            }).error(function(err) {
+            }).then(() => {
+                passport.authenticate('local')(req, res, () => { res.redirect('/'); });
+            }).catch(err => {
                 console.log(err);
             });
         } else {

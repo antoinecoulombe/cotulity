@@ -9,9 +9,7 @@ var express = require('express'),
     passportConfig = require('./config/passport'),
     path = require('path'),
     bodyParser = require('body-parser'),
-    session = require('express-session'),
-    
-    SALT_WORK_FACTOR = 12;
+    session = require('express-session');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -30,13 +28,9 @@ app.use(passport.session());
 
 app.get('/', routes.index);
 app.get('/login', user.login);
-app.post('/authenticate', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/'
-}));
 app.get('/logout', application.destroySession);
-app.get('/register', user.register);
+
+app.post('/authenticate', passport.authenticate('local'), (req, res) => { res.redirect('/'); });
+app.post('/register', user.register);
 
 app.listen(app.get('port'));
-
-// console.log('Starting server on port 3000');

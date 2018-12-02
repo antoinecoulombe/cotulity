@@ -7,38 +7,37 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     firstname: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     lastname: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     username: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        notNull: true,
         isEmail: true
       }
     },
     phone: {
       type: DataTypes.STRING,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       },
       get() {
         return this.getDataValue('number');
       },
       set(val) {
         let phone = phoneFormatter.normalize(val);
-        let regionnalCode = phone.lenght() - 10;
+        let regionnalCode = phone.length - 10;
         let n = "+";
         for (let i = 0; i < regionnalCode; ++i)
           n += "N";
@@ -52,15 +51,14 @@ module.exports = (sequelize, DataTypes) => {
     admin: {
       type: DataTypes.BOOLEAN,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     emailVerifiedAt: {
@@ -70,21 +68,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   }, {
-    timestamps: true,
-    paranoid: true,
-    underscored: false,
-    freezeTableName: false,
-    tableName: 'users',
-    classMethods: {
-      validPassword: function(password, passwd, done, user) {
-        bcrypt.compare(password, passwd, function(err, isMatch) {
-          if (err) console.log(err);
-          return done(null, isMatch ? user : false);
-        });
-      }
-    }
-  });
-  User.associate = function (models) {
+      timestamps: true,
+      paranoid: true,
+      underscored: false,
+      freezeTableName: false,
+      tableName: 'users'
+    });
+  User.associate = (models) => {
     User.hasMany(models.PaidBill, {
       foreignKey: 'paidByUserId',
       sourceKey: 'id'
@@ -135,14 +125,27 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  User.addHook('beforeCreate', function(user, fn) {
-    var salt = bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-      return salt;
+  User.validPassword = (password, passwd, done, user) => {
+    bcrypt.compare(password, passwd, (err, isMatch) => {
+      if (err) console.log(err);
+      return done(null, isMatch ? user : false);
     });
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
-      if (err) return next(err);
-      user.password = hash;
-      return fn(null, user);
+  }
+
+  User.beforeCreate((user, options) => {
+    return new Promise((resolve, reject) => {
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) return reject(err);
+
+        bcrypt.hash(user.password, salt, null, (err, hash) => {
+          if (err) return reject(err);
+          return resolve(hash);
+        });
+      });
+    }).then(password => {
+      user.password = password;
+    }).catch(err => {
+      console.log(err);
     });
   });
 
