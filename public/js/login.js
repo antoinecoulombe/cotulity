@@ -1,7 +1,6 @@
 $(function() {
     showLoginForm();
 
-    $('.submit-go').click((e) => connect(e));
     $('.login-p > i:last-of-type').click((e) => LoginToSignUp());
     $('.signup-p > i:last-of-type').click((e) => SignUpToLogin());
 
@@ -11,54 +10,41 @@ $(function() {
 
     $(".form-input > input").blur((e) => {
         let i = $(e.target);
-        if ($(e.target).val().length == 0)
+        if ($(e.target).val().length == 0) {
+            $(e.target).removeClass("filled");
             $(e.target).next().removeClass("filled");
-        else 
+        }
+        else {
+            $(e.target).addClass("filled");
             $(e.target).next().addClass("filled");
+        }
+    });
+
+    $(".submit-go").click((e) => {
+        if ($("#login > input[name=isLogin]").val() != 1)
+            register();
+
+        $(".submit-go").hide();
+        $(".submit-load").show();
+
+        setTimeout(() => {
+            $("#login").submit();
+        }, 2000);
     });
 });
 
-function hasErrors() {
-
-}
-
-function showError(message) {
-    console.log(message); // TO DO
-}
-
-function getUser() {
-
-}
-
-function tryConnect(e) {
-    if (hasErrors)
-        return;
-        
-    if (getUser().data.length == 0) {
-        showError("You have entered an invalid username or password.");
-        return;
-    }
-
-    $('.submit-go').fadeOut(200, () => {
-        $('.submit-go').hide();
-        $('.submit-load').css("display", "inline-block");
-    });
-
-    setTimeout(() => connect(), 750);
-}
-
-function connect() {
-
+function register() {
+    $('#login').attr('action', '/register');
 }
 
 function showLoginForm() {
     $("#logo").animate({ opacity: 1 }, 750);
 
     setTimeout(() => {
-        $("#logo").animate({ marginBottom: 35 }, 400);
         $("#container").animate({ width: 482 }, 400);
 
         setTimeout(() => {
+            $("#logo > h1").animate({ marginBottom: 35 }, 100);
             $("#login").animate({ opacity: 1 }, 300);
         }, 500);
     }, 1250);
@@ -91,5 +77,6 @@ function SignUpToLogin() {
         $('.login-p').animate({ opacity: 1}, 500);
     });
 
-    $('.submit-go, .submit-load').animate({ top: 9 }, 275);
+    $('.submit-go, .submit-load').animate({ top: 0 }, 275);
 }
+

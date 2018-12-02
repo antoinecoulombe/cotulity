@@ -5,9 +5,9 @@ module.exports = (sequelize, DataTypes) => {
   const UserSettings = sequelize.define('UserSettings', {
     value: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     }
   }, {

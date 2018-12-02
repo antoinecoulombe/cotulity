@@ -3,19 +3,19 @@ module.exports = (sequelize, DataTypes) => {
   const SemesterClassSchedule = sequelize.define('SemesterClassSchedule', {
     startDate: {
       type: DataTypes.DATE,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        notNull: true,
         isDate: true
       }
     },
     endDate: {
       type: DataTypes.DATE,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        notNull: true,
         isDate: true,
-        isAfter: this.getDataValue('startDate')
+        // isAfter: this.getDataValue('startDate')
       }
     },
     location: {

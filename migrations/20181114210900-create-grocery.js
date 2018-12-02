@@ -1,45 +1,37 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('users', {
+
+    // Multiple groceries can be selected together to create a bill which will have a 
+    // bill-item for each grocery selected
+
+    return queryInterface.createTable('groceries', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstname: {
+      createdByUserId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id'
+        }
+      },
+      name: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      lastname: {
-        allowNull: false,
+      notes: {
+        type: Sequelize.TEXT
+      },
+      soldAt: {
         type: Sequelize.STRING
       },
-      username: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        unique: true
-      },
-      phone: {
-        type: Sequelize.STRING,
-        defaultValue: null
-      },
-      birthdate: {
-        type: Sequelize.DATE
-      },
-      admin: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      password: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      emailVerifiedAt: {
-        type: Sequelize.DATE,
-        defaultValue: null
+      approximativeCost: {
+        type: Sequelize.DECIMAL(19, 4)
       },
       createdAt: {
         allowNull: false,
@@ -58,6 +50,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('groceries');
   }
 };

@@ -15,9 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     token: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     image: {

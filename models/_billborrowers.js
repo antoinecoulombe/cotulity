@@ -5,17 +5,17 @@ module.exports = (sequelize, DataTypes) => {
   const BillBorrower = sequelize.define('BillBorrowers', {
     toPay: {
       type: DataTypes.DECIMAL(19, 4),
+      allowNull: false,
       validate: {
         notEmpty: true,
-        notNull: true,
         isDecimal: true
       }
     },
     paidAmount: {
       type: DataTypes.DECIMAL(19, 4),
+      allowNull: false,
       validate: {
         notEmpty: true,
-        notNull: true,
         isDecimal: true
       }
     }

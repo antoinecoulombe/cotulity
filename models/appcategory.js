@@ -1,29 +1,28 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const School = sequelize.define('School', {
+  const AppCategory = sequelize.define('AppCategory', {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true
       }
+    },
+    description: {
+      type: DataTypes.TEXT
     }
   }, {
     timestamps: true,
     paranoid: true,
     underscored: false,
     freezeTableName: false,
-    tableName: 'schools'
+    tableName: 'app_categories'
   });
-  School.associate = function (models) {
-    School.hasMany(models.Faculty, {
-      foreignKey: 'schoolId',
-      sourceKey: 'id'
-    });
-    School.belongsTo(models.Address, {
-      foreignKey: 'addressId',
+  AppCategory.associate = function(models) {
+    AppCategory.hasMany(models.App, {
+      foreignKey: 'categoryId',
       sourceKey: 'id'
     });
   };
-  return School;
+  return AppCategory;
 };

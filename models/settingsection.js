@@ -3,9 +3,9 @@ module.exports = (sequelize, DataTypes) => {
   const SettingSection = sequelize.define('SettingSection', {
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     description: {

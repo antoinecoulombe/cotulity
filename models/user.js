@@ -1,26 +1,28 @@
-const phoneFormatter = require('phone-formatter');
 'use strict';
+
+var bcrypt = require('bcrypt-nodejs');
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     firstname: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     lastname: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
-    email: {
+    username: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
-        notNull: true,
         isEmail: true
       }
     },
@@ -28,19 +30,23 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
-        notNull: true
+        isValid(phone) {
+          if (phone.startsWith('INVALID-'))
+            throw new Error("Invalid phone number.");
+        }
       },
-      get() {
-        return this.getDataValue('number');
-      },
-      set(val) {
-        let phone = phoneFormatter.normalize(val);
-        let regionnalCode = phone.lenght() - 10;
-        let n = "+";
-        for (let i = 0; i < regionnalCode; ++i)
-          n += "N";
-        n += "(NNN) NNN-NNNN";
-        this.setDataValue('number', phoneFormatter.format(phone, n));
+      set(value) {
+        function format(phone) {
+          var cleaned = ('' + phone).replace(/\D/g, '');
+          var match = cleaned.match(/^(\d{1,5}|)?(\d{3})(\d{3})(\d{4})$/);
+          if (match) {
+            let regionalCode = match[1] ? ('+' + match[1] + ' ') : '';
+            return [regionalCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+          }
+          return "INVALID-" + phone;
+        }
+
+        this.setDataValue('phone', format(value));
       }
     },
     birthdate: {
@@ -49,15 +55,14 @@ module.exports = (sequelize, DataTypes) => {
     admin: {
       type: DataTypes.BOOLEAN,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        notEmpty: true,
-        notNull: true
+        notEmpty: true
       }
     },
     emailVerifiedAt: {
@@ -67,13 +72,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   }, {
-    timestamps: true,
-    paranoid: true,
-    underscored: false,
-    freezeTableName: false,
-    tableName: 'users'
-  });
-  User.associate = function (models) {
+      timestamps: true,
+      paranoid: true,
+      underscored: false,
+      freezeTableName: false,
+      tableName: 'users'
+    });
+  User.associate = (models) => {
     User.hasMany(models.PaidBill, {
       foreignKey: 'paidByUserId',
       sourceKey: 'id'
@@ -84,6 +89,11 @@ module.exports = (sequelize, DataTypes) => {
     });
     User.hasMany(models.Semester, {
       foreignKey: 'userId',
+      sourceKey: 'id'
+    });
+    User.hasMany(models.Grocery, {
+      as: 'CreatedGroceries',
+      foreignKey: 'createdByUserId',
       sourceKey: 'id'
     });
     User.belongsToMany(models.PaidBill, {
@@ -123,5 +133,30 @@ module.exports = (sequelize, DataTypes) => {
       otherKey: 'settingId'
     });
   };
+
+  User.validPassword = (password, passwd, done, user) => {
+    bcrypt.compare(password, passwd, (err, isMatch) => {
+      if (err) console.log(err);
+      return done(null, isMatch ? user : false);
+    });
+  }
+
+  User.beforeCreate((user, options) => {
+    return new Promise((resolve, reject) => {
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) return reject(err);
+
+        bcrypt.hash(user.password, salt, null, (err, hash) => {
+          if (err) return reject(err);
+          return resolve(hash);
+        });
+      });
+    }).then(password => {
+      user.password = password;
+    }).catch(err => {
+      console.log(err);
+    });
+  });
+
   return User;
 };
