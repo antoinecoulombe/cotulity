@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'paid_bills'
   });
-  Bill.associate = function (models) {
+  Bill.associate = (models) => {
     Bill.belongsTo(models.User, {
       foreignKey: 'paidByUserId',
       sourceKey: 'id'

@@ -3,10 +3,8 @@ var express = require('express'),
     user = require('./routes/user'),
     application = require('./routes/application'),
     app = express(),
-    db = require('./models'),
     http = require('http'),
     passport = require('passport'),
-    passportConfig = require('./config/passport'),
     path = require('path'),
     bodyParser = require('body-parser'),
     session = require('express-session');
@@ -26,11 +24,21 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+
+// #region Routes
+
+
 app.get('/', routes.index);
 app.get('/login', user.login);
 app.get('/logout', application.destroySession);
 
 app.post('/authenticate', passport.authenticate('local'), (req, res) => { res.redirect('/'); });
 app.post('/register', user.register);
+
+
+// #endregion
+
+
 
 app.listen(app.get('port'));

@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'semester_vacations'
   });
-  SemesterVacation.associate = function (models) {
+  SemesterVacation.associate = (models) => {
     SemesterVacation.belongsTo(models.Semester, {
       foreignKey: 'semesterId',
       sourceKey: 'id'

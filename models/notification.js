@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'notifications'
   });
-  Notification.associate = function (models) {
+  Notification.associate = (models) => {
     Notification.belongsTo(models.NotificationType, {
       foreignKey: 'typeId',
       sourceKey: 'id'

@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'notification_types'
   });
-  NotificationType.associate = function (models) {
+  NotificationType.associate = (models) => {
     NotificationType.hasMany(models.Notification, {
       foreignKey: 'typeId',
       sourceKey: 'id'

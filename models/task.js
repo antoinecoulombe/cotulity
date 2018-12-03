@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'tasks'
   });
-  Task.associate = function (models) {
+  Task.associate = (models) => {
     Task.belongsToMany(models.User, {
       as: 'Users',
       through: models.TaskDates,

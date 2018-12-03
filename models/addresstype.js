@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'address_types'
   });
-  AddressType.associate = function (models) {
+  AddressType.associate = (models) => {
     AddressType.hasMany(models.Address, {
       foreignKey: 'addressTypeId',
       sourceKey: 'id'

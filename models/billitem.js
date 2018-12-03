@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'bill_items'
   });
-  BillItem.associate = function (models) {
+  BillItem.associate = (models) => {
     BillItem.belongsTo(models.PaidBill, {
       foreignKey: 'paidBillId',
       sourceKey: 'id'
