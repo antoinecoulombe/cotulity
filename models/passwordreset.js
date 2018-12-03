@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'password_resets'
   });
-  PasswordReset.associate = function (models) {
+  PasswordReset.associate = (models) => {
     // associations can be defined here
   };
   return PasswordReset;

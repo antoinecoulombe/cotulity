@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'semester_class_schedules'
   });
-  SemesterClassSchedule.associate = function (models) {
+  SemesterClassSchedule.associate = (models) => {
     SemesterClassSchedule.belongsTo(models.SemesterClass, {
       foreignKey: 'semesterClassId',
       sourceKey: 'id'

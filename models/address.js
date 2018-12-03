@@ -1,5 +1,5 @@
-const phoneFormatter = require('phone-formatter');
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const Address = sequelize.define('Address', {
     number: {
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'addresses'
   });
-  Address.associate = function (models) {
+  Address.associate = (models) => {
     Address.belongsTo(models.AddressType, {
       foreignKey: 'addressTypeId',
       sourceKey: 'id'

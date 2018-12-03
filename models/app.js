@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'apps'
   });
-  App.associate = function (models) {
+  App.associate = (models) => {
     App.belongsToMany(models.User, {
       as: 'Users',
       through: models.UserApps,

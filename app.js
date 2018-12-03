@@ -26,11 +26,21 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+
+// #region Routes
+
+
 app.get('/', routes.index);
 app.get('/login', user.login);
 app.get('/logout', application.destroySession);
 
 app.post('/authenticate', passport.authenticate('local'), (req, res) => { res.redirect('/'); });
 app.post('/register', user.register);
+
+
+// #endregion
+
+
 
 app.listen(app.get('port'));

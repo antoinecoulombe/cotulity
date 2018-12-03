@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'settings'
   });
-  Setting.associate = function (models) {
+  Setting.associate = (models) => {
     Setting.belongsTo(models.SettingSection, {
       foreignKey: 'sectionId',
       sourceKey: 'id'

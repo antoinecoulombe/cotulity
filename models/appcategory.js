@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'app_categories'
   });
-  AppCategory.associate = function(models) {
+  AppCategory.associate = (models) => {
     AppCategory.hasMany(models.App, {
       foreignKey: 'categoryId',
       sourceKey: 'id'

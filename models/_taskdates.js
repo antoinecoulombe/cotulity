@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: false,
     tableName: 'task_dates'
   });
-  TaskDate.associate = function (models) {
+  TaskDate.associate = (models) => {
     // associations can be defined here
   };
   return TaskDate;
