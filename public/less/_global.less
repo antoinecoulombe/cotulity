@@ -35,7 +35,7 @@
 // #endregion
 
 
-// #region global classes/tags
+// #region global classes/ids/tags
 
 html, body {
     min-height: 400px;
@@ -150,6 +150,29 @@ input:-webkit-autofill {
         }
     }
 }
+
+.logo {
+    @family: #fonts.family();
+    
+    > h1, h2 {
+        color: white;
+        margin: 0;
+        transition: 0.5s;
+        float: left;
+    }
+    > h1 {
+        font-family: "Good Morning", @family[ss];
+        color: white;
+        margin: 0;
+        transition: 0.5s;
+        float: left;
+    }
+    > h2 {
+        font-family: @family[ss];
+        font-weight: 300;
+    }
+}
+
 
 // #endregion
 

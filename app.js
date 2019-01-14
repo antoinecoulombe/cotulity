@@ -5,6 +5,7 @@ var express = require('express'),
     app = express(),
     http = require('http'),
     passport = require('passport'),
+    passportConfig = require('./config/passport'), // mucho important
     path = require('path'),
     bodyParser = require('body-parser'),
     session = require('express-session');
