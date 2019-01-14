@@ -13,17 +13,34 @@
 }
 
 #apps {
-    @app-size: 50px;
+    @app-size: 176px;
+    
+    // (x * 0.48) / 193 = floor(y) = z boxes
+    // x = 2560, y = 6.36, z = 6
+    // x = 1920, y = 4.78, z = 4
+    // x = 1280, y = 3.18, z = 3
+    // x = 1024, y = 2.55, z = 2
+    max-width: 48%; // 48% of total screen size
 
     > .app {
         position: relative;
+        top: 17px;
+        left: 17px;
         float: left;
         width: @app-size;
         height: @app-size;
         background-color: white;
+        margin-right: 17px;
+        margin-bottom: 17px;
 
         > i {
-            
+            // @bg: #global.bg();
+            // color: @bg[gradient];
+            font-size: 70px;
+            line-height: @app-size;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
         }
     }
 }

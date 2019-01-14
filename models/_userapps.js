@@ -3,7 +3,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const UserApps = sequelize.define('UserApps', {
-    
+    position: {
+      type: DataTypes.INTEGER,
+      validate: {
+        isInt: true
+      }
+    },
   }, {
     timestamps: true,
     paranoid: true,
