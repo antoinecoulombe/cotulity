@@ -13,6 +13,8 @@
 }
 
 #apps {
+    top: 17px;
+    left: 17px;
     @app-size: 176px;
     
     // (x * 0.48) / 193 = floor(y) = z boxes
@@ -24,18 +26,22 @@
 
     > .app {
         position: relative;
-        top: 17px;
-        left: 17px;
         float: left;
         width: @app-size;
         height: @app-size;
         background-color: white;
         margin-right: 17px;
         margin-bottom: 17px;
+        cursor: pointer;
+        border-radius: 10px;
 
         > i {
-            // @bg: #global.bg();
-            // color: @bg[gradient];
+            @bg: #global.bg();
+            
+            background: @bg[gradient-dark];
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
             font-size: 70px;
             line-height: @app-size;
             display: inline-block;
