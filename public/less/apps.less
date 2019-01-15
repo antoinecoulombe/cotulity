@@ -7,22 +7,23 @@
     bottom: 0;
     right: 0;
 
-    margin: 0 30px 30px 0;
+    margin: 30px;
     
     > h1 { font-size: 46px; }
 }
 
 #apps {
-    top: 17px;
-    left: 17px;
+    position: relative;
+    top: 8px;
+    left: 8px;
     @app-size: 176px;
-    
+    @margin-size: 17px;
+
     // (x * 0.48) / 193 = floor(y) = z boxes
     // x = 2560, y = 6.36, z = 6
     // x = 1920, y = 4.78, z = 4
     // x = 1280, y = 3.18, z = 3
     // x = 1024, y = 2.55, z = 2
-    max-width: 48%; // 48% of total screen size
 
     > .app {
         position: relative;
@@ -30,8 +31,8 @@
         width: @app-size;
         height: @app-size;
         background-color: white;
-        margin-right: 17px;
-        margin-bottom: 17px;
+        margin-right: @margin-size;
+        margin-bottom: @margin-size;
         cursor: pointer;
         border-radius: 10px;
 
@@ -47,6 +48,13 @@
             display: inline-block;
             width: 100%;
             text-align: center;
+        }
+
+        &:hover {
+            position: relative;
+            top: -2px;
+            left: -2px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, .2);
         }
     }
 }
