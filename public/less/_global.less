@@ -143,11 +143,15 @@ input:-webkit-autofill {
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
     
-        &:focus, &.filled {
+        &:focus, &.filled, &:-webkit-autofill {
             padding-top: 8%;
         }
 
         &:focus ~ label {
+            .label-filled();
+        }
+        
+        &:-webkit-autofill + label {
             .label-filled();
         }
     }

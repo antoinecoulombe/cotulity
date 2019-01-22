@@ -23,18 +23,25 @@ function setAppContainer(appCount) {
         boxPerRow = Math.floor(windowWidth * 0.48 / $('.app').outerWidth(true)),
         containerWidth = (boxPerRow < 2 ? 2 : boxPerRow) * $('.app').outerWidth(true),
         containerHeight = Math.ceil(appCount/boxPerRow) * $('.app').outerHeight(true),
-        overflow = 'visible',
-        maxContainerHeight = $(window).height() - $('#logo').outerHeight(true) * 2;
+        maxContainerHeight = $(window).height() - $('#logo').outerHeight(true) * 2,
+        posLeft = 8, padding = 0, overflow = 'visible';
 
     if (containerHeight > maxContainerHeight) {
         containerHeight = Math.floor(maxContainerHeight / $('.app').outerHeight(true));
         containerHeight = (containerHeight < 2 ? 2 : containerHeight) * $('.app').outerHeight(true);
-        overflow = 'overlay';
+        containerWidth += 17;
+        posLeft = 16;
+        padding = 17;
+        overflow = 'auto';
     }
 
-    $('#apps').css({
+    $('#apps-container').css({
         width: containerWidth,
         height: containerHeight,
-        overflowY: overflow
+        left: posLeft
+    });
+    $("#apps").css({
+        paddingRight: padding,
+        overflow: overflow
     });
 }

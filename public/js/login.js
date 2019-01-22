@@ -1,8 +1,8 @@
 $(function() {
     showLoginForm();
 
-    $('.login-p > i:last-of-type').click((e) => LoginToSignUp());
-    $('.signup-p > i:last-of-type').click((e) => SignUpToLogin());
+    $('.login-p > i:last-of-type').click((e) => loginToSignUp());
+    $('.signup-p > i:last-of-type').click((e) => signUpToLogin());
 
     $('#login > input').keypress((e) => {
         if(e.which == 13) $('.submit-go').click();
@@ -50,7 +50,7 @@ function showLoginForm() {
     }, 1250);
 }
 
-function LoginToSignUp() {
+function loginToSignUp() {
     $('#login > input[name=isLogin]').val(0);
 
     $('.login-p').hide();
@@ -64,7 +64,7 @@ function LoginToSignUp() {
     setTimeout(() => $('.submit-go, .submit-load').animate({ top: 125 }, 275), 150);
 }
 
-function SignUpToLogin() {
+function signUpToLogin() {
     $('#login > input[name=isLogin]').val("1");
 
     $('.signup-p').hide();
