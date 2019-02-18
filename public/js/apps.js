@@ -6,11 +6,11 @@ $(() => {
     setAppContainer($('.app').length);
 
     $(window).resize(() => {
-        if (hasChanged(previousWidth, $(window).width()) || hasChanged(previousHeight, $(window).height()))
-            setAppContainer($('.app').length);
+        //if (hasChanged(previousWidth, $(window).width()) || hasChanged(previousHeight, $(window).height()))
+        setAppContainer($('.app').length);
 
-        previousWidth = $(window).width();
-        previousHeight = $(window).height();
+        //previousWidth = $(window).width();
+        //previousHeight = $(window).height();
     });
 });
 
