@@ -14,10 +14,12 @@
     .bg() {
         @c-from: #0041ad;
         @c-to: #00aeff;
+        @c-to-dark: #008aff;
 
         from: @c-from;
         to: @c-to;
         gradient: linear-gradient(to bottom right, @c-from, @c-to);
+        gradient-dark: linear-gradient(to bottom right, @c-from, @c-to-dark);
     }
 
     .inputs() {
@@ -35,7 +37,7 @@
 // #endregion
 
 
-// #region global classes/tags
+// #region global classes/ids/tags
 
 html, body {
     min-height: 400px;
@@ -141,15 +143,42 @@ input:-webkit-autofill {
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
     
-        &:focus, &.filled {
+        &:focus, &.filled, &:-webkit-autofill {
             padding-top: 8%;
         }
 
         &:focus ~ label {
             .label-filled();
         }
+        
+        &:-webkit-autofill + label {
+            .label-filled();
+        }
     }
 }
+
+.logo {
+    @family: #fonts.family();
+    
+    > h1, h2 {
+        color: white;
+        margin: 0;
+        transition: 0.5s;
+        float: left;
+    }
+    > h1 {
+        font-family: "Good Morning", @family[ss];
+        color: white;
+        margin: 0;
+        transition: 0.5s;
+        float: left;
+    }
+    > h2 {
+        font-family: @family[ss];
+        font-weight: 300;
+    }
+}
+
 
 // #endregion
 
