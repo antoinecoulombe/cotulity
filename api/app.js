@@ -41,5 +41,4 @@ app.post('/register', user.register);
 // #endregion
 
 
-
 app.listen(app.get('port'));

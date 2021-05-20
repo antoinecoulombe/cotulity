@@ -4,9 +4,9 @@
   "description": "",
   "main": "./src/app.js",
   "scripts": {
-    "start": "node app.js",
-    "migrate": "sequelize db:migrate",
-    "seed": "sequelize db:seed:all"
+    "start": "node api/app.js",
+    "migrate": "sequelize db:migrate --config=./api/config/config.json",
+    "seed": "sequelize db:seed:all --config=./api/config/config.json"
   },
   "keywords": [],
   "author": "",
