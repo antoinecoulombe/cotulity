@@ -1,23 +1,23 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
+    "username": "cotulity_user",
+    "password": "cotulity_password",
     "database": "cotulity",
-    "host": "127.0.0.1",
+    "host": "mysql",
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
+    "username": "cotulity_user",
+    "password": "cotulity_password",
+    "database": "cotulity",
+    "host": "mysql",
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "username": "cotulity_user",
+    "password": "cotulity_password",
+    "database": "cotulity",
+    "host": "mysql",
     "dialect": "mysql"
   }
 }

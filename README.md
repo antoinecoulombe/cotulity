@@ -12,15 +12,26 @@ Before starting with the project, make sure to follow these steps to have the la
 ```npm install -g sequelize-cli```
 1. Install all dependencies for the project, including Sequelize and MySql2, locally: 
 ```npm install```
-1. Install Xampp (will be replaced by Docker in the near future)
 
-## Database Setup
-After the project is correctly installed, you must create the database and run the migrations and seeds to have a working project. To create the database:
-1. Start Xampp and both ```Appache``` and ```MySql``` services
-1. Open a web browser and go to ```localhost/phpmyadmin```
-1. Click on ```New``` on the left toolbar, above all databases created automatically
-1. Enter the database name found in config.json (default: ```cotulity```) and the collation to ```utf8_unicode_ci```.
-1. Click ```Create```
+## Run with Docker
+
+To start the service using docker, run the following command:
+```bash
+$ docker-compose up --build
+...
+```
+
+To migrate the database, run the following command in a new terminal window:
+```bash
+$ docker-compose exec api npm run migrate
+...
+```
+
+To seed the database, run the following command in a new terminal window:
+```bash
+$ docker-compose exec api npm run seed
+...
+```
 
 Migrations and seeds can be run with the following commands:
 1. `sequelize db:migrate`

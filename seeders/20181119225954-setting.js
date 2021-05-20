@@ -4,23 +4,26 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('settings', [
       {
-        name: 'Activate dark mode',
+        name: 'Dark mode',
         code: 'DARK_MODE',
         sectionId: 1,
         settingMethod: 'setDarkMode',
         description: 'Converts all light colors, website wide, to dark colors.',
-        type: 'boolean',
+        values: '[true,false]',
+        type: 'switch',
+        defaultValue: 'false',
         createdAt: Sequelize.literal('NOW()'),
         updatedAt: Sequelize.literal('NOW()')
       },
       {
-        name: 'Show this tab by default',
+        name: 'Calendar tabs',
         code: 'CALENDAR_PREFERRED_DISPLAY',
         sectionId: 2,
         settingMethod: 'setCalendarPreferredDisplay',
         description: 'Sets the default people to be shown when viewing the calendar page.',
         values: '["Roommates", "Friends"]',
         type: 'checkbox',
+        defaultValue: '["Roommates","Friends"]',
         createdAt: Sequelize.literal('NOW()'),
         updatedAt: Sequelize.literal('NOW()')
       }

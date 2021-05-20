@@ -14,7 +14,7 @@ module.exports = {
       },
       {
         name: 'Tasks',
-        description: 'List of tasks you and your flatmates have to do.',
+        description: 'Keep track of the tasks you and your flatmates have to do.',
         categoryId: 1,
         visible: true,
         image: 'fa-tasks',
@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         name: 'Groceries',
-        description: 'Missing groceries in your cohabitation.',
+        description: 'List groceries missing in your cohabitation.',
         categoryId: 1,
         visible: true,
         image: 'fa-utensils',
@@ -32,7 +32,7 @@ module.exports = {
       },
       {
         name: 'Finances',
-        description: 'Lists the your expenses and the ones of your flatmates and shows money owed or due between you.',
+        description: 'List your expenses and the ones of your roommates.',
         categoryId: 1,
         visible: true,
         image: 'fa-file-invoice-dollar',
@@ -41,7 +41,7 @@ module.exports = {
       },
       {
         name: 'Stocks',
-        description: 'Tracks your investments and shows your earnings and losses statistics.',
+        description: 'Track your investments and shows your earnings and losses statistics.',
         categoryId: 2,
         visible: false,
         image: 'fa-chart-line',
@@ -50,7 +50,7 @@ module.exports = {
       },
       {
         name: 'Profile',
-        description: 'Modify your personal and public information.',
+        description: 'Modify your profile and your privacy settings.',
         categoryId: 3,
         visible: true,
         image: 'fa-user-circle',

@@ -42,10 +42,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      type: { // array/boolean/checkbox
+      type: { // radio/switch/checkbox/dropdown
         allowNull: false,
         type: Sequelize.STRING,
-        defaultValue: 'array'
+        defaultValue: 'switch'
+      },
+      visible: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,
