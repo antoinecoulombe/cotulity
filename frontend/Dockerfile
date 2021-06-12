@@ -1,5 +1,7 @@
 FROM node:slim
 
+LABEL maintainer="Antoine Coulombe"
+
 WORKDIR /app
 
 COPY package*.json ./
