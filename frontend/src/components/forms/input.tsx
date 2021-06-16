@@ -1,6 +1,8 @@
 import React from 'react';
 import $ from 'jquery';
 
+// TODO: Add validation error label + error styling (red border + shadow?)
+
 interface InputProps {
     name: string,
     type: "text" | "password" | "phone" | "email" | "password",

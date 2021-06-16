@@ -6,6 +6,9 @@ import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons'
 import Input from '../forms/input';
 import FormToggle from './formToggle';
 
+// TODO: Request login/subscribe to Rest API on ['submit click', 'enter keypress']
+// TODO: Add validation
+
 interface LoginFormProps {
 
 }
