@@ -1,9 +1,11 @@
 import React from 'react';
+import $ from 'jquery';
 
 // TODO: FIND HOW TO STOP _*.less FROM COMPILING
 
 interface FormToggleProps {
-  onClick: () => void;
+  login: boolean,
+  onClick: () => void
 }
 
 interface FormToggleState {
@@ -13,48 +15,71 @@ interface FormToggleState {
 }
 
 class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
-  subText = "Don't have an account?";
-  subClickableText = "Sign up";
-  subClass = "login-p";
-
-  LogInText = "Already a member?";
-  LogInClickableText = "Log in";
-  LogInClass = "signup-p";
+  p = {
+    signup: {
+      text: "Don't have an account?",
+      link: "Sign up",
+      class: "login-p"
+    }, 
+    login: {
+      text: "Already a member?",
+      link: "Log in",
+      class: "signup-p"
+  }};
 
   constructor(props : any) {
     super(props);
     this.state = {
-      text: this.subText, 
-      clickableText: this.subClickableText, 
-      class: this.subClass
+      text: this.p.signup.text, 
+      clickableText: this.p.signup.link, 
+      class: this.p.signup.class
     };
   }
 
-  handleClick() {
-    if (this.state.text === this.subText)
-      this.setState({
-        text: this.LogInText, 
-        clickableText: this.LogInClickableText,
-        class: this.LogInClass
-      });
-    else 
-      this.setState({
-        text: this.subText, 
-        clickableText: this.subClickableText,
-        class: this.subClass
-      });
+  toggleState(prop : {text : string, link : string, class : string}) {
+    this.setState({
+      text: prop.text,
+      clickableText: prop.link,
+      class: prop.class
+    });
+  }
 
+  toggleForm(signup : boolean) {
+    $('.toggle').css('opacity', 0);
+    $('.toggle').hide();
+
+    $(".form-input.signup").animate({ opacity: (signup ? 1 : 0) }, 500, () => { 
+      if (!signup)
+        $('.form-input.signup').hide();
+
+      $('.toggle').css('padding-right', signup ? 56 : 50);
+      $('.toggle').show();
+      $('.toggle').animate({ opacity: 1}, 500);
+    });
+
+    if (signup) {
+      $('.form-input.signup').css("display", "inline-block");
+      setTimeout(() => $('.submit').animate({ top: 119 }, 275), 150);
+    }
+    else {
+      $('.submit').animate({ top: -4 }, 275);
+    }
+  }
+
+  handleClick() {
+    this.toggleState(this.props.login ? this.p.login : this.p.signup);
+    this.toggleForm(this.props.login);
     this.props.onClick();
   }
 
   render() {
     return (
-        <p className={this.state.class}>
-            <i>{this.state.text + " "}</i>
-            <i onClick={this.handleClick.bind(this)}>
-                {this.state.clickableText}
-            </i>
-        </p>
+      <p className="toggle">
+          <i>{this.state.text + " "}</i>
+          <i onClick={this.handleClick.bind(this)}>
+              {this.state.clickableText}
+          </i>
+      </p>
     );
   }
 }
