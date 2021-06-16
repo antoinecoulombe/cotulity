@@ -1,4 +1,5 @@
 
+
 var previousWidth = $(window).width(),
     previousHeight = $(window).height();
 

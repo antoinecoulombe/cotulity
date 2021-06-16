@@ -1,0 +1,206 @@
+// #region fonts
+
+@font-face {
+    font-family: "Good Morning";
+    src: url("../fonts/GoodMorningAfternoon.ttf");
+}
+
+// #endregion
+
+
+// #region variables/maps
+
+#global() {
+    .bg() {
+        @c-from: #0041ad;
+        @c-to: #00aeff;
+        @c-to-dark: #008aff;
+
+        from: @c-from;
+        to: @c-to;
+        gradient: linear-gradient(to bottom right, @c-from, @c-to);
+        gradient-dark: linear-gradient(to bottom right, @c-from, @c-to-dark);
+    }
+
+    .inputs() {
+        color: #283036;
+    }
+}
+
+#fonts() {
+    .family() {
+        ss: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+        s: 'Times new roman', serif;
+    }
+}
+
+// #endregion
+
+
+// #region global classes/ids/tags
+
+html, body {
+    min-height: 400px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    @bg: #global.bg();
+    background-image: @bg[gradient];
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+input:-webkit-autofill {
+    box-shadow: 0 0 0 100px white inset;
+    -webkit-box-shadow: 0 0 0 100px white inset;
+    background-color: white !important;
+}
+
+.noselect {
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+.font-default {
+    @family: #fonts.family();
+    font-family: @family[ss];
+    font-size: 14px;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.form-input {
+    @height: 50px;
+
+    display: inline-block;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 210px;
+    height: @height;
+
+    .font {
+        .font-default();
+
+        font-size: 14px;
+        font-weight: 500;
+        text-indent: 14px;
+    }
+    
+    &:nth-of-type(2n + 2) { margin-left: 8px; }
+    &:nth-of-type(n + 3) { margin-top: 8px; }
+
+    .label-filled {
+        color: #a3adb6;
+        font-size: 12px;
+        line-height: 26px;
+    }
+
+    > label {
+        .font();
+        .noselect();
+    
+        position: absolute;
+        top: 0;
+        left: 0;
+        color:#657786;
+        line-height: @height;
+        pointer-events: none;
+        z-index: 9;
+        transition: 0.2s;
+        font-weight: 400;
+        cursor: text;
+
+        &.filled {
+            .label-filled();
+        }
+    }
+
+    > input {
+        .font();
+
+        float: left;
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border-radius: 3px;
+        padding: 0;
+        border: 1px solid #e6ecf0;
+        outline: none;
+        color: #283036;
+    
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+    
+        &:focus, &.filled, &:-webkit-autofill {
+            padding-top: 8%;
+        }
+
+        &:focus ~ label {
+            .label-filled();
+        }
+        
+        &:-webkit-autofill + label {
+            .label-filled();
+        }
+    }
+}
+
+.logo {
+    @family: #fonts.family();
+    
+    > h1, h2 {
+        color: white;
+        margin: 0;
+        transition: 0.5s;
+        float: left;
+    }
+    > h1 {
+        font-family: "Good Morning", @family[ss];
+        color: white;
+        margin: 0;
+        transition: 0.5s;
+        float: left;
+    }
+    > h2 {
+        font-family: @family[ss];
+        font-weight: 300;
+    }
+}
+
+
+// #endregion
+
+
+// #region font-awesome
+
+.fa-spin-fast {
+    -webkit-animation: fa-spin 1.1s infinite linear;
+    animation: fa-spin 1.1s infinite linear;
+}
+.fa-spin-faster {
+    -webkit-animation: fa-spin 0.75s infinite linear;
+    animation: fa-spin 0.75s infinite linear;
+}
+.fa-spin-fastest {
+    -webkit-animation: fa-spin 0.5s infinite linear;
+    animation: fa-spin 0.5s infinite linear;
+}
+.fa-spin-slow {
+    -webkit-animation: fa-spin 4s infinite linear;
+    animation: fa-spin 4s infinite linear;
+}
+
+// #endregion

@@ -1,0 +1,91 @@
+@import "_global.less";
+
+#container {
+    width: 355px; //487px;
+}
+
+#logo {
+    @family: #fonts.family();
+
+    position: relative;
+    opacity: 0;
+    
+    > h1, h2 {
+        color: white;
+        margin: 0;
+        transition: 0.5s;
+        float: left;
+    }
+    > h1 {
+        font-family: "Good Morning", @family[ss];
+        font-size: 78px;
+    }
+    > h2 {
+        font-family: @family[ss];
+        font-weight: 300;
+        font-size: 24px;
+    }
+}
+
+#login {
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    height: 46px;
+    float: left;
+}
+
+.submit-go, .submit-load {
+    .noselect();
+
+    float: right;
+    position: relative;
+    color: #05355e;
+    opacity: 0.6;
+    font-size: 37px;
+    line-height: 50px !important;
+    margin-left: 9px;
+    cursor: pointer;
+
+    &:hover { opacity: 0.8; }
+    &:active { opacity: 1; }
+}
+
+.submit-load {
+    opacity: 1;
+    cursor: default;
+
+    &:hover { opacity: 1; }
+}
+
+.login-p, .signup-p {
+    .font-default();
+    font-size: 12px;
+    color: white;
+    text-align: right;
+    padding-right: 50px;
+    margin: 6px 0 0 0;
+
+    > i {
+        font-style: normal;
+    }
+
+    > i:first-of-type {
+        opacity: 0.5;
+    }
+
+    > i:last-of-type {
+        opacity: 0.8;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+    }
+}
+
+.form-input.signup, .signup-p { 
+    display: none; 
+    opacity: 0; 
+}
