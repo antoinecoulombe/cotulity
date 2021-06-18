@@ -1,14 +1,27 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}//app.js"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "backend",
+      "preLaunchTask": "tsc: build - /atsconfig.json",
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "program": "${workspaceFolder}/app.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "pwa-node",
+      "args": ["tsc"]
+    }
+    // {
+    //   "type": "node",
+    //   "request": "launch",
+    //   "name": "backend",
+    //   "runtimeExecutable": "npm",
+    //   "runtimeArgs": ["tsc", "node", "app.js"],
+    //   "port": 3000,
+    //   "skipFiles": ["<node_internals>/**"]
+    // }
+  ]
 }

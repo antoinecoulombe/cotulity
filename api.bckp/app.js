@@ -1,41 +1,41 @@
-var express = require('express'),
-    routes = require('./routes'),
-    user = require('./routes/user'),
-    application = require('./routes/application'),
-    app = express(),
-    http = require('http'),
-    passport = require('passport'),
-    passportConfig = require('./config/passport'), // mucho important
-    path = require('path'),
-    bodyParser = require('body-parser'),
-    session = require('express-session');
+import express, { static } from 'express';
+import { index } from './routes';
+import { login, register } from './routes/user';
+import { destroySession } from './routes/application';
+var app = express();
+import http from 'http';
+import { initialize, session as _session, authenticate } from 'passport';
+import passportConfig from './config/passport';
+import { join } from 'path';
+import { urlencoded, json } from 'body-parser';
+import session from 'express-session';
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(static(join(__dirname, '/public')));
 
 app.set('views', __dirname + '/views');
 app.set('port', process.env.PORT || 3000);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(urlencoded({ extended: true }));
+app.use(json());
 app.use(session({ 
     secret: 'TO_CHANGE',
     resave: false,
     saveUninitialized: true
 }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(initialize());
+app.use(_session());
 
 
 
 // #region Routes
 
 
-app.get('/', routes.index);
-app.get('/login', user.login);
-app.get('/logout', application.destroySession);
+app.get('/', index);
+app.get('/login', login);
+app.get('/logout', destroySession);
 
-app.post('/authenticate', passport.authenticate('local'), (req, res) => { res.redirect('/'); });
-app.post('/register', user.register);
+app.post('/authenticate', authenticate('local'), (req, res) => { res.redirect('/'); });
+app.post('/register', register);
 
 
 // #endregion
