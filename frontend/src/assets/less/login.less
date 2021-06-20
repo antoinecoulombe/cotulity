@@ -1,72 +1,80 @@
-@import "_global.less";
+@import '_global.less';
 
 #container {
-    width: 355px; //487px;
+  width: 355px; //487px;
 }
 
 #logo {
-    .logo();
-    
-    position: relative;
-    opacity: 0;
-    
-    > h1 { font-size: 78px; }
-    > h2 { font-size: 24px; }
+  .logo();
+
+  position: relative;
+  opacity: 0;
+
+  > h1 {
+    font-size: 78px;
+  }
+  > h2 {
+    font-size: 24px;
+  }
 }
 
 form {
-    opacity: 0;
-    margin: 0;
-    padding: 0;
-    height: 46px; // needed for animation
-    float: left;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  height: 46px; // needed for animation
+  float: left;
 
-    > .submit {
-        .noselect();
-    
-        position: relative;
-        top: -4px;
-        color: #05355e;
-        opacity: 0.6;
-        font-size: 37px;
-        line-height: 50px;
-        height: 50px;
-        margin-left: 9px;
-        cursor: pointer;
-    
-        &:hover { opacity: 0.8; }
-        &:active { opacity: 1; }
+  > .submit {
+    .noselect();
+
+    position: relative;
+    top: -4px;
+    color: #05355e;
+    opacity: 0.6;
+    font-size: 37px;
+    line-height: 50px;
+    height: 50px;
+    margin-left: 9px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
     }
+    &:active {
+      opacity: 1;
+    }
+  }
 }
 
 .toggle {
-    .font-default();
-    font-size: 12px;
-    color: white;
-    text-align: right;
-    padding-right: 50px;
-    margin: 6px 0 0 0;
+  .font-default();
+  font-size: 12px;
+  color: white;
+  text-align: right;
+  padding-right: 50px;
+  margin: 6px 0 0 0;
 
-    > i {
-        font-style: normal;
+  > i {
+    font-style: normal;
+  }
+
+  > i:first-of-type {
+    opacity: 0.5;
+  }
+
+  > i:last-of-type {
+    opacity: 0.8;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+      text-decoration: underline;
     }
-
-    > i:first-of-type {
-        opacity: 0.5;
-    }
-
-    > i:last-of-type {
-        opacity: 0.8;
-        cursor: pointer;
-
-        &:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-    }
+  }
 }
 
-.form-input.signup { 
-    display: none;
-    opacity: 0; 
+.form-input.signup {
+  display: none;
+  opacity: 0;
 }

@@ -1,27 +1,31 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const AppCategory = sequelize.define('AppCategory', {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
+  const AppCategory = sequelize.define(
+    "AppCategory",
+    {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      description: {
+        type: DataTypes.TEXT,
+      },
     },
-    description: {
-      type: DataTypes.TEXT
+    {
+      timestamps: true,
+      paranoid: true,
+      underscored: false,
+      freezeTableName: false,
+      tableName: "app_categories",
     }
-  }, {
-    timestamps: true,
-    paranoid: true,
-    underscored: false,
-    freezeTableName: false,
-    tableName: 'app_categories'
-  });
+  );
   AppCategory.associate = (models) => {
     AppCategory.hasMany(models.App, {
-      foreignKey: 'categoryId',
-      sourceKey: 'id'
+      foreignKey: "categoryId",
+      sourceKey: "id",
     });
   };
   return AppCategory;

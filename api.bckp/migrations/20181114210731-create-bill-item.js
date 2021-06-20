@@ -1,48 +1,48 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('bill_items', {
+    return queryInterface.createTable("bill_items", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       paidBillId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'paid_bills',
-          key: 'id'
-        }
+          model: "paid_bills",
+          key: "id",
+        },
       },
       amount: {
         allowNull: false,
-        type: Sequelize.DECIMAL(19, 4)
+        type: Sequelize.DECIMAL(19, 4),
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       description: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       deletedAt: {
         type: Sequelize.DATE,
-        defaultValue: null
-      }
+        defaultValue: null,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('bill_items');
-  }
+    return queryInterface.dropTable("bill_items");
+  },
 };

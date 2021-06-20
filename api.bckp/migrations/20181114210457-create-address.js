@@ -1,59 +1,59 @@
-'use strict';
+"use strict";
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('addresses', {
+    return queryInterface.createTable("addresses", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       addressTypeId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'address_types',
-          key: 'id'
-        }
+          model: "address_types",
+          key: "id",
+        },
       },
       number: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       street: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       city: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       zipcode: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
       },
       state: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       country: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       deletedAt: {
         type: Sequelize.DATE,
-        defaultValue: null
-      }
+        defaultValue: null,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('addresses');
-  }
+    return queryInterface.dropTable("addresses");
+  },
 };

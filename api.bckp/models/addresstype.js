@@ -1,32 +1,36 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const AddressType = sequelize.define('AddressType', {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
+  const AddressType = sequelize.define(
+    "AddressType",
+    {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      image: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          isUrl: true,
+        },
+      },
     },
-    image: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-        isUrl: true
-      }
+    {
+      timestamps: true,
+      paranoid: true,
+      underscored: false,
+      freezeTableName: false,
+      tableName: "address_types",
     }
-  }, {
-    timestamps: true,
-    paranoid: true,
-    underscored: false,
-    freezeTableName: false,
-    tableName: 'address_types'
-  });
+  );
   AddressType.associate = (models) => {
     AddressType.hasMany(models.Address, {
-      foreignKey: 'addressTypeId',
-      sourceKey: 'id'
+      foreignKey: "addressTypeId",
+      sourceKey: "id",
     });
   };
   return AddressType;

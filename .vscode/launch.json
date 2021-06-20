@@ -5,23 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "backend",
-      "preLaunchTask": "tsc: build - /atsconfig.json",
-      "outFiles": ["${workspaceFolder}/out/**/*.js"],
-      "program": "${workspaceFolder}/app.js",
-      "request": "launch",
-      "skipFiles": ["<node_internals>/**"],
       "type": "pwa-node",
-      "args": ["tsc"]
+      "request": "launch",
+      "name": "Launch Program",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/api/app.js",
+      "outFiles": ["${workspaceFolder}/**/*.js"]
     }
-    // {
-    //   "type": "node",
-    //   "request": "launch",
-    //   "name": "backend",
-    //   "runtimeExecutable": "npm",
-    //   "runtimeArgs": ["tsc", "node", "app.js"],
-    //   "port": 3000,
-    //   "skipFiles": ["<node_internals>/**"]
-    // }
   ]
 }

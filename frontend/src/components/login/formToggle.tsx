@@ -1,17 +1,17 @@
-import React from 'react';
-import $ from 'jquery';
+import React from "react";
+import $ from "jquery";
 
 // TODO: FIND HOW TO STOP _*.less FROM COMPILING
 
 interface FormToggleProps {
-  login: boolean,
-  onClick: () => void
+  login: boolean;
+  onClick: () => void;
 }
 
 interface FormToggleState {
-  text: string,
-  clickableText: string,
-  class: string
+  text: string;
+  clickableText: string;
+  class: string;
 }
 
 class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
@@ -19,50 +19,49 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
     signup: {
       text: "Don't have an account?",
       link: "Sign up",
-      class: "login-p"
-    }, 
+      class: "login-p",
+    },
     login: {
       text: "Already a member?",
       link: "Log in",
-      class: "signup-p"
-  }};
+      class: "signup-p",
+    },
+  };
 
-  constructor(props : any) {
+  constructor(props: any) {
     super(props);
     this.state = {
-      text: this.p.signup.text, 
-      clickableText: this.p.signup.link, 
-      class: this.p.signup.class
+      text: this.p.signup.text,
+      clickableText: this.p.signup.link,
+      class: this.p.signup.class,
     };
   }
 
-  toggleState(prop : {text : string, link : string, class : string}) {
+  toggleState(prop: { text: string; link: string; class: string }) {
     this.setState({
       text: prop.text,
       clickableText: prop.link,
-      class: prop.class
+      class: prop.class,
     });
   }
 
-  toggleForm(signup : boolean) {
-    $('.toggle').css('opacity', 0);
-    $('.toggle').hide();
+  toggleForm(signup: boolean) {
+    $(".toggle").css("opacity", 0);
+    $(".toggle").hide();
 
-    $(".form-input.signup").animate({ opacity: (signup ? 1 : 0) }, 500, () => { 
-      if (!signup)
-        $('.form-input.signup').hide();
+    $(".form-input.signup").animate({ opacity: signup ? 1 : 0 }, 500, () => {
+      if (!signup) $(".form-input.signup").hide();
 
-      $('.toggle').css('padding-right', signup ? 56 : 50);
-      $('.toggle').show();
-      $('.toggle').animate({ opacity: 1}, 500);
+      $(".toggle").css("padding-right", signup ? 56 : 50);
+      $(".toggle").show();
+      $(".toggle").animate({ opacity: 1 }, 500);
     });
 
     if (signup) {
-      $('.form-input.signup').css("display", "inline-block");
-      setTimeout(() => $('.submit').animate({ top: 119 }, 275), 150);
-    }
-    else {
-      $('.submit').animate({ top: -4 }, 275);
+      $(".form-input.signup").css("display", "inline-block");
+      setTimeout(() => $(".submit").animate({ top: 119 }, 275), 150);
+    } else {
+      $(".submit").animate({ top: -4 }, 275);
     }
   }
 
@@ -75,10 +74,8 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
   render() {
     return (
       <p className="toggle">
-          <i>{this.state.text + " "}</i>
-          <i onClick={this.handleClick.bind(this)}>
-              {this.state.clickableText}
-          </i>
+        <i>{this.state.text + " "}</i>
+        <i onClick={this.handleClick.bind(this)}>{this.state.clickableText}</i>
       </p>
     );
   }

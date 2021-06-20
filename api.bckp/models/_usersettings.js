@@ -1,22 +1,26 @@
 // This is a 'belongsToMany' link model, it should therefore most likely not have assocations.
 
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const UserSettings = sequelize.define('UserSettings', {
-    value: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
+  const UserSettings = sequelize.define(
+    "UserSettings",
+    {
+      value: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+    },
+    {
+      timestamps: true,
+      paranoid: true,
+      underscored: false,
+      freezeTableName: false,
+      tableName: "user_settings",
     }
-  }, {
-    timestamps: true,
-    paranoid: true,
-    underscored: false,
-    freezeTableName: false,
-    tableName: 'user_settings'
-  });
+  );
   UserSettings.associate = (models) => {
     // associations can be defined here
   };

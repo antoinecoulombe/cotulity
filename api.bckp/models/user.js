@@ -1,138 +1,150 @@
-'use strict';
+"use strict";
 
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require("bcrypt-nodejs");
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    firstname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
-    lastname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-        isEmail: true
-      }
-    },
-    phone: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: true,
-        isValid(phone) {
-          if (phone.startsWith('INVALID-'))
-            throw new Error("Invalid phone number.");
-        }
+  const User = sequelize.define(
+    "User",
+    {
+      firstname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
       },
-      set(value) {
-        function format(phone) {
-          var cleaned = ('' + phone).replace(/\D/g, '');
-          var match = cleaned.match(/^(\d{1,5}|)?(\d{3})(\d{3})(\d{4})$/);
-          
-          if (match) {
-            let regionalCode = match[1] ? ('+' + match[1] + ' ') : '';
-            return [regionalCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+      lastname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          isEmail: true,
+        },
+      },
+      phone: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true,
+          isValid(phone) {
+            if (phone.startsWith("INVALID-"))
+              throw new Error("Invalid phone number.");
+          },
+        },
+        set(value) {
+          function format(phone) {
+            var cleaned = ("" + phone).replace(/\D/g, "");
+            var match = cleaned.match(/^(\d{1,5}|)?(\d{3})(\d{3})(\d{4})$/);
+
+            if (match) {
+              let regionalCode = match[1] ? "+" + match[1] + " " : "";
+              return [
+                regionalCode,
+                "(",
+                match[2],
+                ") ",
+                match[3],
+                "-",
+                match[4],
+              ].join("");
+            }
+
+            return "INVALID-" + phone;
           }
 
-          return "INVALID-" + phone;
-        }
-
-        this.setDataValue('phone', format(value));
-      }
+          this.setDataValue("phone", format(value));
+        },
+      },
+      birthdate: {
+        type: DataTypes.DATE,
+      },
+      admin: {
+        type: DataTypes.BOOLEAN,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      emailVerifiedAt: {
+        type: DataTypes.DATE,
+        validate: {
+          isDate: true,
+        },
+      },
     },
-    birthdate: {
-      type: DataTypes.DATE
-    },
-    admin: {
-      type: DataTypes.BOOLEAN,
-      validate: {
-        notEmpty: true
-      }
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
-    emailVerifiedAt: {
-      type: DataTypes.DATE,
-      validate: {
-        isDate: true
-      }
-    }
-  }, {
+    {
       timestamps: true,
       paranoid: true,
       underscored: false,
       freezeTableName: false,
-      tableName: 'users'
-    });
+      tableName: "users",
+    }
+  );
   User.associate = (models) => {
     User.hasMany(models.PaidBill, {
-      foreignKey: 'paidByUserId',
-      sourceKey: 'id'
+      foreignKey: "paidByUserId",
+      sourceKey: "id",
     });
     User.hasMany(models.Notification, {
-      foreignKey: 'userId',
-      sourceKey: 'id'
+      foreignKey: "userId",
+      sourceKey: "id",
     });
     User.hasMany(models.Semester, {
-      foreignKey: 'userId',
-      sourceKey: 'id'
+      foreignKey: "userId",
+      sourceKey: "id",
     });
     User.hasMany(models.Grocery, {
-      as: 'CreatedGroceries',
-      foreignKey: 'createdByUserId',
-      sourceKey: 'id'
+      as: "CreatedGroceries",
+      foreignKey: "createdByUserId",
+      sourceKey: "id",
     });
     User.belongsToMany(models.PaidBill, {
-      as: 'BillsToPay',
+      as: "BillsToPay",
       through: models.BillBorrowers,
-      foreignKey: 'userId',
-      otherKey: 'paidBillId'
+      foreignKey: "userId",
+      otherKey: "paidBillId",
     });
     User.belongsToMany(models.Task, {
-      as: 'Tasks',
+      as: "Tasks",
       through: models.TaskDates,
-      foreignKey: 'userId',
-      otherKey: 'taskId'
+      foreignKey: "userId",
+      otherKey: "taskId",
     });
     User.belongsToMany(models.Address, {
-      as: 'Addresses',
+      as: "Addresses",
       through: models.UserAddresses,
-      foreignKey: 'userId',
-      otherKey: 'addressId'
+      foreignKey: "userId",
+      otherKey: "addressId",
     });
     User.belongsToMany(models.App, {
-      as: 'Apps',
+      as: "Apps",
       through: models.UserApps,
-      foreignKey: 'userId',
-      otherKey: 'appId'
+      foreignKey: "userId",
+      otherKey: "appId",
     });
     User.belongsToMany(models.User, {
-      as: 'Friends',
+      as: "Friends",
       through: models.UserFriends,
-      foreignKey: 'userId',
-      otherKey: 'friendId'
+      foreignKey: "userId",
+      otherKey: "friendId",
     }); // working?? self-referencing belongsToMany..
     User.belongsToMany(models.Setting, {
-      as: 'Settings',
+      as: "Settings",
       through: models.UserSettings,
-      foreignKey: 'userId',
-      otherKey: 'settingId'
+      foreignKey: "userId",
+      otherKey: "settingId",
     });
   };
 
@@ -141,7 +153,7 @@ module.exports = (sequelize, DataTypes) => {
       if (err) console.log(err);
       return done(null, isMatch ? user : false);
     });
-  }
+  };
 
   User.beforeCreate((user, options) => {
     return new Promise((resolve, reject) => {
@@ -153,11 +165,13 @@ module.exports = (sequelize, DataTypes) => {
           return resolve(hash);
         });
       });
-    }).then(password => {
-      user.password = password;
-    }).catch(err => {
-      console.log(err);
-    });
+    })
+      .then((password) => {
+        user.password = password;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   return User;

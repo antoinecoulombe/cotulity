@@ -16,7 +16,7 @@ const express_1 = __importDefault(require("express"));
 const GeneralMiddleware_1 = __importDefault(require("../middlewares/GeneralMiddleware"));
 const Users = express_1.default.Router();
 Users.use(GeneralMiddleware_1.default);
-Users.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).json({ banane: 1 });
 }));
 exports.default = Users;
