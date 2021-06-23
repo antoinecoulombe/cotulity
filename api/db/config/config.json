@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "cotulity_user",
+    "password": "cotulity_password",
+    "database": "cotulity",
+    "host": "127.0.0.1",
+    "dialect": "mariadb"
+  },
+  "test": {
+    "username": "cotulity_user",
+    "password": "cotulity_password",
+    "database": "cotulity_test",
+    "host": "127.0.0.1",
+    "dialect": "mariadb"
+  },
+  "production": {
+    "username": "cotulity_user",
+    "password": "cotulity_password",
+    "database": "cotulity_prod",
+    "host": "127.0.0.1",
+    "dialect": "mariadb"
+  }
+}

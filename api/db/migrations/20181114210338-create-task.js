@@ -1,45 +1,44 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('Tasks', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      firstname: {
+      homeId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'home',
+          key: 'id',
+        },
+      },
+      userId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+      },
+      name: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      lastname: {
+      dueDateTime: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.DATETIME,
       },
-      username: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        unique: true,
-      },
-      phone: {
-        type: Sequelize.STRING,
-        defaultValue: null,
-      },
-      birthdate: {
-        type: Sequelize.DATE,
-      },
-      admin: {
-        allowNull: false,
+      important: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
-      password: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      emailVerifiedAt: {
-        type: Sequelize.DATE,
-        defaultValue: null,
+      shared: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       createdAt: {
         allowNull: false,
@@ -58,6 +57,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('Tasks');
   },
 };

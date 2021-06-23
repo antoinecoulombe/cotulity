@@ -1,45 +1,38 @@
-'use strict';
+"use strict";
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable("apps", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      firstname: {
+      categoryId: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "app_categories",
+          key: "id",
+        },
       },
-      lastname: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      username: {
+      name: {
         allowNull: false,
         type: Sequelize.STRING,
         unique: true,
       },
-      phone: {
-        type: Sequelize.STRING,
-        defaultValue: null,
+      description: {
+        type: Sequelize.TEXT,
       },
-      birthdate: {
-        type: Sequelize.DATE,
-      },
-      admin: {
+      visible: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
-      password: {
+      image: {
         allowNull: false,
         type: Sequelize.STRING,
-      },
-      emailVerifiedAt: {
-        type: Sequelize.DATE,
-        defaultValue: null,
+        defaultValue: "fa-question-circle",
       },
       createdAt: {
         allowNull: false,
@@ -57,7 +50,7 @@ module.exports = {
       },
     });
   },
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable("apps");
   },
 };

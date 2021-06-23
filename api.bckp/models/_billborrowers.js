@@ -1,9 +1,9 @@
 // This is a 'belongsToMany' link model, it should therefore most likely not have assocations.
 
-"use strict";
+'use strict';
 module.exports = (sequelize, DataTypes) => {
   const BillBorrower = sequelize.define(
-    "BillBorrowers",
+    'BillBorrowers',
     {
       toPay: {
         type: DataTypes.DECIMAL(19, 4),
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
       underscored: false,
       freezeTableName: false,
-      tableName: "bill_borrowers",
+      tableName: 'bill_borrowers',
     }
   );
   BillBorrower.associate = (models) => {
