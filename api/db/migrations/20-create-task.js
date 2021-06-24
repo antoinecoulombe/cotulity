@@ -1,14 +1,23 @@
 'use strict';
-module.exports = {
+
+export default {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Homes', {
+    await queryInterface.createTable('Tasks', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      creatorUserId: {
+      homeId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Homes',
+          key: 'id',
+        },
+      },
+      creatorId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -16,13 +25,26 @@ module.exports = {
           key: 'id',
         },
       },
-      refNumber: {
+      name: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      name: {
+      dueDateTime: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.DATE,
+      },
+      important: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      shared: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+      },
+      completedOn: {
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
@@ -41,6 +63,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Homes');
+    await queryInterface.dropTable('Tasks');
   },
 };

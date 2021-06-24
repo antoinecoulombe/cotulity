@@ -1,5 +1,6 @@
 'use strict';
-module.exports = {
+
+export default {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
       .createTable('ExpenseSplits', {
@@ -39,14 +40,11 @@ module.exports = {
         },
       })
       .then(() =>
-        queryInterface.addConstraint(
-          'ExpenseSplits',
-          ['borrowerUserId', 'expenseId'],
-          {
-            type: 'primary key',
-            name: 'user_expense_pk',
-          }
-        )
+        queryInterface.addConstraint('ExpenseSplits', {
+          type: 'primary key',
+          name: 'user_expense_pk',
+          fields: ['borrowerUserId', 'expenseId'],
+        })
       );
   },
   down: async (queryInterface, Sequelize) => {

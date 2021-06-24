@@ -1,5 +1,6 @@
 'use strict';
-module.exports = {
+
+export default {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Notifications', {
       id: {
@@ -23,10 +24,6 @@ module.exports = {
           model: 'Users',
           key: 'id',
         },
-      },
-      dateTime: {
-        allowNull: false,
-        type: Sequelize.DATETIME,
       },
       title: {
         allowNull: false,
