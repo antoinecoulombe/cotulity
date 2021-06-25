@@ -25,6 +25,11 @@ export default {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      expirationDays: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        defaultValue: 3,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

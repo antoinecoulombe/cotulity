@@ -9,7 +9,7 @@ export default {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      creatorUserId: {
+      ownerId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -23,7 +23,7 @@ export default {
       },
       name: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

@@ -17,7 +17,7 @@ export default {
           key: 'id',
         },
       },
-      creatorId: {
+      ownerId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {

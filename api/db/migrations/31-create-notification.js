@@ -17,7 +17,7 @@ export default {
           key: 'id',
         },
       },
-      toUserId: {
+      toId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {

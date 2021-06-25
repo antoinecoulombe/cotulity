@@ -9,22 +9,8 @@ const app = express_1.default();
 const port = 3000;
 app.use('/users', Users_1.default);
 app.get('/', (req, res) => {
-    // connection.query('SHOW TABLES', (err: any, row: any) => {
-    //   console.log(`ok:${JSON.stringify(row)}`);
-    // });
     res.send('The sedulous hyena ate the antelope!');
 });
 app.listen(port, () => {
     return console.log(`server is listening on ${port}`);
 });
-// import mysql from 'mysql';
-// const connection = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'cotulity_user',
-//   password: 'cotulity_password',
-//   database: 'cotulity',
-// });
-// connection.connect((err) => {
-//   if (err) throw err;
-//   console.log('Connected!');
-// });

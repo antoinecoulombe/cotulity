@@ -17,7 +17,15 @@ export default {
           key: 'id',
         },
       },
-      recipientUserId: {
+      fromId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+      },
+      toId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {

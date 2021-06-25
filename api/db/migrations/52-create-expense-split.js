@@ -12,7 +12,7 @@ export default {
             key: 'id',
           },
         },
-        borrowerUserId: {
+        userId: {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
@@ -43,7 +43,7 @@ export default {
         queryInterface.addConstraint('ExpenseSplits', {
           type: 'primary key',
           name: 'user_expense_pk',
-          fields: ['borrowerUserId', 'expenseId'],
+          fields: ['userId', 'expenseId'],
         })
       );
   },
