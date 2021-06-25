@@ -4,20 +4,6 @@
   width: 355px; //487px;
 }
 
-#logo {
-  .logo();
-
-  position: relative;
-  opacity: 0;
-
-  > h1 {
-    font-size: 78px;
-  }
-  > h2 {
-    font-size: 24px;
-  }
-}
-
 form {
   opacity: 0;
   margin: 0;
@@ -30,19 +16,17 @@ form {
 
     position: relative;
     top: -4px;
-    color: #05355e;
-    opacity: 0.6;
-    font-size: 37px;
+    color: var(--gradient-btn-color);
+    opacity: var(--gradient-btn-opacity);
+    font-size: 37px; //37px
     line-height: 50px;
     height: 50px;
     margin-left: 9px;
     cursor: pointer;
 
-    &:hover {
-      opacity: 0.8;
-    }
+    &:hover,
     &:active {
-      opacity: 1;
+      opacity: 0.8;
     }
   }
 }
@@ -50,26 +34,27 @@ form {
 .toggle {
   .font-default();
   font-size: 12px;
-  color: white;
   text-align: right;
   padding-right: 50px;
   margin: 6px 0 0 0;
 
   > i {
     font-style: normal;
-  }
 
-  > i:first-of-type {
-    opacity: 0.5;
-  }
+    &:first-of-type {
+      color: var(--login-p-color);
+      opacity: var(--loign-p-opacity);
+    }
 
-  > i:last-of-type {
-    opacity: 0.8;
-    cursor: pointer;
+    &:last-of-type {
+      color: var(--login-p-sub-color);
+      cursor: pointer;
+      opacity: var(--loign-p-sub-opacity);
 
-    &:hover {
-      opacity: 1;
-      text-decoration: underline;
+      &:hover {
+        opacity: 1;
+        text-decoration: underline;
+      }
     }
   }
 }
