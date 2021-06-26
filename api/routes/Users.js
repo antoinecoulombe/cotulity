@@ -13,10 +13,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const GeneralMiddleware_1 = __importDefault(require("../middlewares/GeneralMiddleware"));
 const Users = express_1.default.Router();
-Users.use(GeneralMiddleware_1.default);
+const db = require('../db/models');
+// Users.use(GeneralMiddleware);
 Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.status(200).json({ banane: 1 });
+    try {
+        const users = yield db.User.findAll();
+        res.json({ users });
+    }
+    catch (e) {
+        res.json({ msg: e.message });
+    }
+}));
+Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, password, firstname, lastname, phone } = req.body;
+        const user = yield db.User.create({
+            email,
+            password,
+            firstname,
+            lastname,
+            phone,
+        });
+        res.json({ user, msg: 'User created successfully.' });
+    }
+    catch (e) {
+        res.json({ msg: e.message });
+    }
 }));
 exports.default = Users;

@@ -1,12 +1,9 @@
 'use strict';
-import { Model } from 'sequelize';
-export default (sequelize, DataTypes) => {
+
+const { Model } = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       User.hasMany(models.Home, {
         foreignKey: 'ownerId',
@@ -134,39 +131,38 @@ export default (sequelize, DataTypes) => {
             args: true,
             msg: 'Please enter your phone number.',
           },
-          isValid(phone) {
-            if (phone.startsWith('INVALID-'))
-              throw new Error('Invalid phone number.');
-          },
+          // isValid(phone) {
+          //   if (phone.startsWith('INVALID-'))
+          //     throw new Error('Invalid phone number.');
+          // },
         },
-        set(value) {
-          this.setDataValue('phone', (value) => {
-            var cleaned = ('' + value).replace(/\D/g, '');
-            var match = cleaned.match(/^(\d{1,5}|)?(\d{3})(\d{3})(\d{4})$/);
+        // set(value) {
+        //   this.setDataValue('phone', (value) => {
+        //     var cleaned = ('' + value).replace(/\D/g, '');
+        //     var match = cleaned.match(/^(\d{1,5}|)?(\d{3})(\d{3})(\d{4})$/);
 
-            if (match) {
-              let regionalCode = match[1] ? '+' + match[1] + ' ' : '';
-              return [
-                regionalCode,
-                '(',
-                match[2],
-                ') ',
-                match[3],
-                '-',
-                match[4],
-              ].join('');
-            }
+        //     if (match) {
+        //       let regionalCode = match[1] ? '+' + match[1] + ' ' : '';
+        //       return [
+        //         regionalCode,
+        //         '(',
+        //         match[2],
+        //         ') ',
+        //         match[3],
+        //         '-',
+        //         match[4],
+        //       ].join('');
+        //     }
 
-            return 'INVALID-' + value;
-          });
-        },
+        //     return 'INVALID-' + value;
+        //   });
+        // },
       },
       image: {
         type: DataTypes.STRING,
       },
       admin: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
       },
       emailVerifiedAt: DataTypes.DATE,
     },

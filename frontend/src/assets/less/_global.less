@@ -24,8 +24,10 @@
 // #region global classes/ids/tags
 
 html,
-body {
+body,
+.App {
   min-height: 400px;
+  // min-width: 1000px;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -33,9 +35,7 @@ body {
 
 .App {
   position: absolute;
-  height: 100%;
   width: 100%;
-  min-height: 400px;
 
   @bg: #global.bg();
   background-image: @bg[gradient];
@@ -169,8 +169,8 @@ input:-webkit-autofill {
     width: 100%;
     height: 100%;
     opacity: 0;
-    // z-index: -99999;
     pointer-events: none;
+    // background-size: 60%;
   }
 
   &.small {
