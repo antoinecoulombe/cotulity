@@ -5,7 +5,6 @@ import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '../forms/input';
 import FormToggle from './formToggle';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 // TODO: Request login/subscribe to Rest API on ['submit click', 'enter keypress']
 // TODO: Add validation

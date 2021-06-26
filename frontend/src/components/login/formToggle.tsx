@@ -1,7 +1,5 @@
-import React from "react";
-import $ from "jquery";
-
-// TODO: FIND HOW TO STOP _*.less FROM COMPILING
+import React from 'react';
+import $ from 'jquery';
 
 interface FormToggleProps {
   login: boolean;
@@ -18,13 +16,13 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
   p = {
     signup: {
       text: "Don't have an account?",
-      link: "Sign up",
-      class: "login-p",
+      link: 'Sign up',
+      class: 'login-p',
     },
     login: {
-      text: "Already a member?",
-      link: "Log in",
-      class: "signup-p",
+      text: 'Already a member?',
+      link: 'Log in',
+      class: 'signup-p',
     },
   };
 
@@ -46,22 +44,22 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
   }
 
   toggleForm(signup: boolean) {
-    $(".toggle").css("opacity", 0);
-    $(".toggle").hide();
+    $('.toggle').css('opacity', 0);
+    $('.toggle').hide();
 
-    $(".form-input.signup").animate({ opacity: signup ? 1 : 0 }, 500, () => {
-      if (!signup) $(".form-input.signup").hide();
+    $('.form-input.signup').animate({ opacity: signup ? 1 : 0 }, 500, () => {
+      if (!signup) $('.form-input.signup').hide();
 
-      $(".toggle").css("padding-right", signup ? 56 : 50);
-      $(".toggle").show();
-      $(".toggle").animate({ opacity: 1 }, 500);
+      $('.toggle').css('padding-right', signup ? 56 : 50);
+      $('.toggle').show();
+      $('.toggle').animate({ opacity: 1 }, 500);
     });
 
     if (signup) {
-      $(".form-input.signup").css("display", "inline-block");
-      setTimeout(() => $(".submit").animate({ top: 119 }, 275), 150);
+      $('.form-input.signup').css('display', 'inline-block');
+      setTimeout(() => $('.submit').animate({ top: 119 }, 275), 150);
     } else {
-      $(".submit").animate({ top: -4 }, 275);
+      $('.submit').animate({ top: -4 }, 275);
     }
   }
 
@@ -74,7 +72,7 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
   render() {
     return (
       <p className="toggle">
-        <i>{this.state.text + " "}</i>
+        <i>{this.state.text + ' '}</i>
         <i onClick={this.handleClick.bind(this)}>{this.state.clickableText}</i>
       </p>
     );
