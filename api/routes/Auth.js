@@ -17,24 +17,22 @@ const express_1 = __importDefault(require("express"));
 const Router = express_1.default.Router();
 const db = require('../db/models');
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
+const bcrypt = require('bcryptjs');
 Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (email && password) {
         let user = yield db.User.findOne({ where: { email: email } });
-        if (!user) {
-            res.status(401).json({ msg: 'User not found', user });
-        }
-        if (user.password === password) {
+        if (!user)
+            res.status(401).json({ error: 'User not found' });
+        if (bcrypt.compareSync(password, user.password)) {
             let payload = { id: user.id };
             let token = jwt.sign(payload, process.env.JWT_SECRET, {
                 expiresIn: '24h',
             });
-            res.json({ msg: 'ok', token: token });
+            res.json({ success: 'User login authorized', token: token });
         }
-        else {
-            res.status(401).json({ msg: 'The entered password is incorrect' });
-        }
+        else
+            res.status(401).json({ error: 'The entered password is incorrect' });
     }
 }));
 exports.default = Router;

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const Users = express_1.default.Router();
 const db = require('../db/models');
+const bcrypt = require('bcryptjs');
 // Users.use(GeneralMiddleware);
 Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -22,12 +23,15 @@ Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ users });
     }
     catch (e) {
-        res.json({ msg: e.message });
+        res.json({ error: e });
     }
 }));
 Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let pwdHash = null;
     try {
-        const { email, password, firstname, lastname, phone } = req.body;
+        const { email, firstname, lastname, phone } = req.body;
+        const salt = bcrypt.genSaltSync(10);
+        const password = bcrypt.hashSync(req.body.password, salt);
         const user = yield db.User.create({
             email,
             password,
@@ -38,7 +42,7 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
         res.json({ user, msg: 'User created successfully.' });
     }
     catch (e) {
-        res.json({ msg: e.message });
+        res.json({ error: e, pwd: pwdHash });
     }
 }));
 exports.default = Users;

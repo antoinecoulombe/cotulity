@@ -1,7 +1,6 @@
 import React, { ComponentState } from 'react';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '../forms/input';
 import FormToggle from './formToggle';
@@ -71,7 +70,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
         />
 
         <FontAwesomeIcon
-          icon={faArrowAltCircleRight}
+          icon="arrow-alt-circle-right"
           className="submit"
         ></FontAwesomeIcon>
 
