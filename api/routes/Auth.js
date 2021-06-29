@@ -22,17 +22,25 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const { email, password } = req.body;
     if (email && password) {
         let user = yield db.User.findOne({ where: { email: email } });
-        if (!user)
-            res.status(401).json({ error: 'User not found' });
+        if (!user) {
+            res.status(401).json({
+                title: 'Login failed',
+                msg: 'Incorrect username or password.',
+            });
+        }
         if (bcrypt.compareSync(password, user.password)) {
             let payload = { id: user.id };
             let token = jwt.sign(payload, process.env.JWT_SECRET, {
                 expiresIn: '24h',
             });
-            res.json({ success: 'User login authorized', token: token });
+            res.json({ msg: 'User authorized', token: token });
         }
-        else
-            res.status(401).json({ error: 'The entered password is incorrect' });
+        else {
+            res.status(401).json({
+                title: 'Login failed',
+                msg: 'Incorrect username or password.',
+            });
+        }
     }
 }));
 exports.default = Router;

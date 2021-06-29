@@ -16,8 +16,8 @@ const express_1 = __importDefault(require("express"));
 const Users = express_1.default.Router();
 const db = require('../db/models');
 const bcrypt = require('bcryptjs');
-// Users.use(GeneralMiddleware);
 Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('USERS INDEX');
     try {
         const users = yield db.User.findAll();
         res.json({ users });
@@ -39,10 +39,18 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
             lastname,
             phone,
         });
-        res.json({ user, msg: 'User created successfully.' });
+        res.json({
+            title: 'Registration completed',
+            msg: 'Welcome aboard!',
+        });
     }
     catch (e) {
-        res.json({ error: e, pwd: pwdHash });
+        let error;
+        if (e.name == 'SequelizeUniqueConstraintError')
+            error = { title: 'Registration Failed', msg: e.errors[0].message };
+        res
+            .status(500)
+            .json(error || { title: 'An error occured', msg: 'Please try again.' });
     }
 }));
 exports.default = Users;

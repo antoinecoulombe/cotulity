@@ -12,7 +12,13 @@ Router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   if (email && password) {
     let user = await db.User.findOne({ where: { email: email } });
-    if (!user) res.status(401).json({ error: 'User not found' });
+
+    if (!user) {
+      res.status(401).json({
+        title: 'Login failed',
+        msg: 'Incorrect username or password.',
+      });
+    }
 
     if (bcrypt.compareSync(password, user.password)) {
       let payload = { id: user.id };
@@ -21,8 +27,13 @@ Router.post('/login', async (req, res) => {
         expiresIn: '24h',
       });
 
-      res.json({ success: 'User login authorized', token: token });
-    } else res.status(401).json({ error: 'The entered password is incorrect' });
+      res.json({ msg: 'User authorized', token: token });
+    } else {
+      res.status(401).json({
+        title: 'Login failed',
+        msg: 'Incorrect username or password.',
+      });
+    }
   }
 });
 
