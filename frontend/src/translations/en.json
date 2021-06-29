@@ -14,5 +14,13 @@
       "static": "Already a member?",
       "link": "Log in"
     }
+  },
+  "notif": {
+    "title": {
+      "errorHappened": "An error happened!"
+    },
+    "msg": {
+      "tryAgain": "Please try again."
+    }
   }
 }

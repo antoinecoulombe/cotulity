@@ -14,5 +14,13 @@
       "static": "Déjà membre?",
       "link": "Se connecter"
     }
+  },
+  "notif": {
+    "title": {
+      "errorHappened": "Une erreur est survenue!"
+    },
+    "msg": {
+      "tryAgain": "Veuillez réessayer."
+    }
   }
 }

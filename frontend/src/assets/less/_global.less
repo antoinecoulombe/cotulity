@@ -1,6 +1,8 @@
-// out: false
+//out:false
 
 // #region variables/maps
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 
 #global() {
   .bg() {
@@ -31,11 +33,13 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .App {
   position: absolute;
   width: 100%;
+  overflow: hidden;
 
   @bg: #global.bg();
   background-image: @bg[gradient];
@@ -186,44 +190,6 @@ input:-webkit-autofill {
 
     &:hover {
       opacity: 0.9;
-    }
-  }
-}
-
-.notifications {
-  position: absolute;
-  top: 0;
-
-  > .notification {
-    > .vertical-line {
-      position: relative;
-    }
-
-    > .icon {
-      &.error {
-        color: var(--error-color);
-      }
-      &.warning {
-        color: var(--warning-color);
-      }
-      &.info {
-        color: var(--info-color);
-      }
-      &.success {
-        color: var(--success-color);
-      }
-    }
-
-    > .close {
-      &:hover {
-        position: relative;
-      }
-    }
-  }
-
-  > .nav {
-    &:hover {
-      position: relative;
     }
   }
 }

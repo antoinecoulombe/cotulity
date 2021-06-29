@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import '../assets/css/theme.css';
 import { useTranslation } from 'react-i18next';
+
+// CSS
+import '../assets/css/theme.css';
 
 // Pages
 import LoginPage from './login';
 import AppsPage from './apps';
+import Notifications from '../components/utils/notifications';
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -16,6 +19,7 @@ import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 library.add(faArrowAltCircleRight);
 library.add(faAngleRight);
 library.add(faAngleLeft);
@@ -23,6 +27,7 @@ library.add(faExclamationCircle);
 library.add(faTimesCircle);
 library.add(faInfoCircle);
 library.add(faCheckCircle);
+library.add(faTimes);
 
 export default function App() {
   const [theme, setTheme] = useState('light');
@@ -39,6 +44,7 @@ export default function App() {
 
   return (
     <div className={`App ${theme}`}>
+      <Notifications />
       <Switch>
         <Route exact path="/" component={LoginPage} />
         <Route exact path="/apps" component={AppsPage} />

@@ -36,12 +36,14 @@ class Notification extends React.Component<NotificationProps> {
           }
           className={`icon ${this.props.type}`}
         />
-        <h1>
-          <Translate name={this.props.title} />
-        </h1>
-        <p>
-          <Translate name={this.props.msg} />
-        </p>
+        <div className="text">
+          <h1>
+            <Translate name={`notif.title.${this.props.title}`} />
+          </h1>
+          <p>
+            <Translate name={`notif.msg.${this.props.msg}`} />
+          </p>
+        </div>
         <FontAwesomeIcon icon="times" className="close" />
       </div>
     );

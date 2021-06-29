@@ -11,23 +11,37 @@ class Notifications extends React.Component<NotificationsProps> {
 
   render() {
     return (
-      <div className="notifications">
-        <FontAwesomeIcon
-          icon="angle-left"
-          className="nav prev"
-        ></FontAwesomeIcon>
+      <div className="notif-container">
+        {/* 
+          TODO: WHEN NEXT NOTIF IS SELECTED WITHOUT CLOSING 'notif-current', 
+            -> MOVE 'notif-current' HERE 
+            -> RESET NOTIF TIMER
+        */}
+        <div className="notif-list prev">
+          <Notification title="errorHappened" msg="tryAgain" type="success" />
+          <Notification title="errorHappened" msg="tryAgain" type="success" />
+        </div>
 
-        {/* TODO: For each notifications received from backend, add notification */}
-        <Notification
-          title="An error occured"
-          msg="Unhandled exception."
-          type="error"
-        />
+        <div className="notif-current">
+          <FontAwesomeIcon
+            icon="angle-left"
+            className="nav prev"
+          ></FontAwesomeIcon>
 
-        <FontAwesomeIcon
-          icon="angle-right"
-          className="nav next"
-        ></FontAwesomeIcon>
+          {/* TODO: SHOW FIRST NOTIF HERE */}
+          <Notification title="errorHappened" msg="tryAgain" type="error" />
+
+          <FontAwesomeIcon
+            icon="angle-right"
+            className="nav next"
+          ></FontAwesomeIcon>
+        </div>
+
+        {/* TODO: SHOW ALL REMAINING NOTIFICATIONS HERE (ALL BUT FIRST ONE SHOWN IN 'notif-current') */}
+        <div className="notif-list next">
+          <Notification title="errorHappened" msg="tryAgain" type="success" />
+          <Notification title="errorHappened" msg="tryAgain" type="success" />
+        </div>
       </div>
     );
   }
