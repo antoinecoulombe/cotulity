@@ -16,11 +16,14 @@ import AuthMiddleware from './middlewares/AuthMiddleware';
 app.use(AuthMiddleware);
 
 // Routes
+import Auth from './routes/Auth';
+app.use('/auth', Auth);
+
 import Users from './routes/Users';
 app.use('/users', Users);
 
-import Auth from './routes/Auth';
-app.use('/auth', Auth);
+import Notifications from './routes/Notifications';
+app.use('/notifications', Notifications);
 
 // Express Start
 app.listen(app.get('port'), () => {

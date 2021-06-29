@@ -16,10 +16,12 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
 const AuthMiddleware_1 = __importDefault(require("./middlewares/AuthMiddleware"));
 app.use(AuthMiddleware_1.default);
 // Routes
-const Users_1 = __importDefault(require("./routes/Users"));
-app.use('/users', Users_1.default);
 const Auth_1 = __importDefault(require("./routes/Auth"));
 app.use('/auth', Auth_1.default);
+const Users_1 = __importDefault(require("./routes/Users"));
+app.use('/users', Users_1.default);
+const Notifications_1 = __importDefault(require("./routes/Notifications"));
+app.use('/notifications', Notifications_1.default);
 // Express Start
 app.listen(app.get('port'), () => {
     return console.log(`server is listening on ${app.get('port')}`);

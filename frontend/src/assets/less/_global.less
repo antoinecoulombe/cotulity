@@ -190,4 +190,42 @@ input:-webkit-autofill {
   }
 }
 
+.notifications {
+  position: absolute;
+  top: 0;
+
+  > .notification {
+    > .vertical-line {
+      position: relative;
+    }
+
+    > .icon {
+      &.error {
+        color: var(--error-color);
+      }
+      &.warning {
+        color: var(--warning-color);
+      }
+      &.info {
+        color: var(--info-color);
+      }
+      &.success {
+        color: var(--success-color);
+      }
+    }
+
+    > .close {
+      &:hover {
+        position: relative;
+      }
+    }
+  }
+
+  > .nav {
+    &:hover {
+      position: relative;
+    }
+  }
+}
+
 // #endregion

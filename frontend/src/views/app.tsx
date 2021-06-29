@@ -3,12 +3,26 @@ import { Route, Switch } from 'react-router-dom';
 import '../assets/css/theme.css';
 import { useTranslation } from 'react-i18next';
 
+// Pages
 import LoginPage from './login';
 import AppsPage from './apps';
 
+// Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 library.add(faArrowAltCircleRight);
+library.add(faAngleRight);
+library.add(faAngleLeft);
+library.add(faExclamationCircle);
+library.add(faTimesCircle);
+library.add(faInfoCircle);
+library.add(faCheckCircle);
 
 export default function App() {
   const [theme, setTheme] = useState('light');

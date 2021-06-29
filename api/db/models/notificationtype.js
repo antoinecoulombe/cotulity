@@ -14,8 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   NotificationType.init(
     {
       name: DataTypes.STRING,
-      icon: DataTypes.STRING,
-      hexColor: DataTypes.STRING,
       showTime: DataTypes.INTEGER,
     },
     {
