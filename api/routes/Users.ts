@@ -6,7 +6,6 @@ const db = require('../db/models');
 const bcrypt = require('bcryptjs');
 
 Users.get('/', async (req, res) => {
-  console.log('USERS INDEX');
   try {
     const users = await db.User.findAll();
     res.json({ users });

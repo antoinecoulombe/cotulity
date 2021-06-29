@@ -5,9 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from '../forms/input';
 import FormToggle from './formToggle';
 
-// TODO: Request login/subscribe to Rest API on ['submit click', 'enter keypress']
-// TODO: Add validation
-
 interface LoginFormProps {}
 
 interface LoginFormState {
@@ -55,16 +52,18 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
 
   render() {
     return (
-      <form id="login" action="/authenticate" method="post">
+      <form
+        id="login"
+        action={this.state.login ? '/auth/login' : '/users/register'}
+        method="post"
+      >
         <Input
           name={'email'}
-          label={'Email'}
           type={'email'}
           onChange={this.handleInputChange}
         />
         <Input
           name={'password'}
-          label={'Password'}
           type={'password'}
           onChange={this.handleInputChange}
         />
@@ -76,28 +75,24 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
 
         <Input
           name={'phone'}
-          label={'Phone'}
           type={'phone'}
           classes={['signup']}
           onChange={this.handleInputChange}
         />
         <Input
           name={'cpassword'}
-          label={'Confirm Password'}
           type={'password'}
           classes={['signup']}
           onChange={this.handleInputChange}
         />
         <Input
           name={'firstname'}
-          label={'Firstname'}
           type={'text'}
           classes={['signup']}
           onChange={this.handleInputChange}
         />
         <Input
           name={'lastname'}
-          label={'Lastname'}
           type={'text'}
           classes={['signup']}
           onChange={this.handleInputChange}

@@ -1,12 +1,11 @@
-import React from "react";
-import $ from "jquery";
-
-// TODO: Add validation error label + error styling (red border + shadow?)
+import React from 'react';
+import $ from 'jquery';
+import Translate from '../utils/translate';
 
 interface InputProps {
   name: string;
-  type: "text" | "password" | "phone" | "email" | "password";
-  label: string;
+  type: 'text' | 'password' | 'phone' | 'email' | 'password';
+  label?: string;
   classes?: Array<string>;
   onChange: (name: string, value: string) => void;
 }
@@ -24,7 +23,7 @@ class Input extends React.Component<InputProps> {
     return (
       <div
         className={
-          "form-input " + this.props.classes?.toString().replace(",", " ")
+          'form-input ' + this.props.classes?.toString().replace(',', ' ')
         }
       >
         <input
@@ -33,16 +32,18 @@ class Input extends React.Component<InputProps> {
           type={this.props.type}
           onBlur={(e) => {
             if (e.target.value.length == 0) {
-              $(e.target).removeClass("filled");
-              $(e.target).next().removeClass("filled");
+              $(e.target).removeClass('filled');
+              $(e.target).next().removeClass('filled');
             } else {
-              $(e.target).addClass("filled");
-              $(e.target).next().addClass("filled");
+              $(e.target).addClass('filled');
+              $(e.target).next().addClass('filled');
             }
           }}
           onChange={this.handleChange.bind(this)}
         ></input>
-        <label htmlFor={this.props.name}>{this.props.label}</label>
+        <label htmlFor={this.props.name}>
+          <Translate name={this.props.label ?? this.props.name} />
+        </label>
       </div>
     );
   }

@@ -1,5 +1,8 @@
 import React from 'react';
 import $ from 'jquery';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import Translate from '../utils/translate';
 
 interface FormToggleProps {
   login: boolean;
@@ -15,32 +18,17 @@ interface FormToggleState {
 class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
   p = {
     signup: {
-      text: "Don't have an account?",
-      link: 'Sign up',
-      class: 'login-p',
+      static: 'login.signup-p.static',
+      link: 'login.signup-p.link',
     },
     login: {
-      text: 'Already a member?',
-      link: 'Log in',
-      class: 'signup-p',
+      static: 'login.login-p.static',
+      link: 'login.login-p.link',
     },
   };
 
   constructor(props: any) {
     super(props);
-    this.state = {
-      text: this.p.signup.text,
-      clickableText: this.p.signup.link,
-      class: this.p.signup.class,
-    };
-  }
-
-  toggleState(prop: { text: string; link: string; class: string }) {
-    this.setState({
-      text: prop.text,
-      clickableText: prop.link,
-      class: prop.class,
-    });
   }
 
   toggleForm(signup: boolean) {
@@ -64,7 +52,6 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
   }
 
   handleClick() {
-    this.toggleState(this.props.login ? this.p.login : this.p.signup);
     this.toggleForm(this.props.login);
     this.props.onClick();
   }
@@ -72,8 +59,19 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
   render() {
     return (
       <p className="toggle">
-        <i>{this.state.text + ' '}</i>
-        <i onClick={this.handleClick.bind(this)}>{this.state.clickableText}</i>
+        <i>
+          <Translate
+            name={
+              !this.props.login ? this.p.login.static : this.p.signup.static
+            }
+            spaceAfter={true}
+          />
+        </i>
+        <i onClick={this.handleClick.bind(this)}>
+          <Translate
+            name={!this.props.login ? this.p.login.link : this.p.signup.link}
+          />
+        </i>
       </p>
     );
   }

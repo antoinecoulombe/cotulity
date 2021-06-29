@@ -1,0 +1,18 @@
+{
+  "email": "Courriel",
+  "password": "Mot de passe",
+  "phone": "Téléphone",
+  "cpassword": "Confirmer le mot de passe",
+  "firstname": "Prénom",
+  "lastname": "Nom",
+  "login": {
+    "signup-p": {
+      "static": "Vous n'avez pas de compte?",
+      "link": "Créer un compte"
+    },
+    "login-p": {
+      "static": "Déjà membre?",
+      "link": "Se connecter"
+    }
+  }
+}

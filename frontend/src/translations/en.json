@@ -1,0 +1,18 @@
+{
+  "email": "Email",
+  "password": "Password",
+  "phone": "Phone",
+  "cpassword": "Confirm Password",
+  "firstname": "Firstname",
+  "lastname": "Lastname",
+  "login": {
+    "signup-p": {
+      "static": "Don't have an account?",
+      "link": "Sign up"
+    },
+    "login-p": {
+      "static": "Already a member?",
+      "link": "Log in"
+    }
+  }
+}

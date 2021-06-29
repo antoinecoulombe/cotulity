@@ -17,7 +17,6 @@ const Users = express_1.default.Router();
 const db = require('../db/models');
 const bcrypt = require('bcryptjs');
 Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('USERS INDEX');
     try {
         const users = yield db.User.findAll();
         res.json({ users });
