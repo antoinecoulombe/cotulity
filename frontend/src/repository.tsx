@@ -1,23 +1,15 @@
-import axios from 'axios';
-
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
-  'x-access-token'
-)}`;
-
-// https://cors-anywhere.herokuapp.com/{type_your_url_here}
-const BASE_URL = 'http://localhost:3000';
-const TOKEN_EXPIRATION_H = 24;
+import axios from './fetchClient';
 
 export function getNotifications() {
   return axios
-    .get(`${BASE_URL}/notifications`)
+    .get(`/notifications`)
     .then((res) => res.data)
     .catch((err) => Promise.reject(err));
 }
 
 export function login(data) {
   return axios
-    .post(`${BASE_URL}/auth/login`, {
+    .post(`/auth/login`, {
       email: data.email,
       password: data.password,
     })
@@ -25,7 +17,7 @@ export function login(data) {
       localStorage.setItem('x-access-token', res.data.token);
       localStorage.setItem(
         'x-access-token-expiration',
-        (Date.now() + TOKEN_EXPIRATION_H * 60 * 60 * 1000).toString()
+        (Date.now() + 2 * 60 * 60 * 1000).toString()
       );
       return res.data;
     })
@@ -34,9 +26,13 @@ export function login(data) {
     });
 }
 
+export function logout() {
+  localStorage.clear();
+}
+
 export function register(data) {
   return axios
-    .post(`${BASE_URL}/users/register`, {
+    .post(`/users/register`, {
       email: data.email,
       password: data.password,
       firstname: data.firstname,
