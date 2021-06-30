@@ -5,9 +5,10 @@ import Translate from '../utils/translate';
 interface InputProps {
   name: string;
   type: 'text' | 'password' | 'phone' | 'email' | 'password';
+  value?: string;
   label?: string;
   classes?: Array<string>;
-  onChange: (name: string, value: string) => void;
+  onChange: (e: any) => void;
 }
 
 class Input extends React.Component<InputProps> {
@@ -16,7 +17,7 @@ class Input extends React.Component<InputProps> {
   }
 
   handleChange(event: any) {
-    this.props.onChange(event.target.name, event.target.value);
+    this.props.onChange(event);
   }
 
   render() {
@@ -30,6 +31,7 @@ class Input extends React.Component<InputProps> {
           id={this.props.name}
           name={this.props.name}
           type={this.props.type}
+          value={this.props.value}
           onBlur={(e) => {
             if (e.target.value.length == 0) {
               $(e.target).removeClass('filled');
@@ -42,7 +44,7 @@ class Input extends React.Component<InputProps> {
           onChange={this.handleChange.bind(this)}
         ></input>
         <label htmlFor={this.props.name}>
-          <Translate name={this.props.label ?? this.props.name} />
+          <Translate name={`form.${this.props.label ?? this.props.name}`} />
         </label>
       </div>
     );

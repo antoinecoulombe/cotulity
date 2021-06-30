@@ -1,10 +1,12 @@
 {
-  "email": "Courriel",
-  "password": "Mot de passe",
-  "phone": "Téléphone",
-  "cpassword": "Confirmer le mot de passe",
-  "firstname": "Prénom",
-  "lastname": "Nom",
+  "form": {
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "phone": "Téléphone",
+    "cpassword": "Confirmer le mot de passe",
+    "firstname": "Prénom",
+    "lastname": "Nom"
+  },
   "login": {
     "signup-p": {
       "static": "Vous n'avez pas de compte?",
@@ -17,7 +19,11 @@
   },
   "notif": {
     "title": {
-      "errorHappened": "Une erreur est survenue!",
+      "request": {
+        "error": "Une erreur est survenue!",
+        "success": "Opération réussie!",
+        "notFound": "Ressource introuvable"
+      },
       "login": {
         "authorized": "Connexion réussie",
         "failed": "Échec de la connexion"
@@ -28,7 +34,11 @@
       }
     },
     "msg": {
-      "tryAgain": "Veuillez réessayer.",
+      "request": {
+        "error": "Veuillez réessayer.",
+        "success": "L'opération s'est executée avec succès.",
+        "notFound": "La ressource demandée est introuvable."
+      },
       "login": {
         "authorized": "Vous êtes maintenant connecté.",
         "failed": "Courriel ou mot de passe invalide."

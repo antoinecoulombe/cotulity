@@ -1,40 +1,30 @@
-import React, { ComponentState } from 'react';
+import React, { ComponentState, useEffect, useState } from 'react';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  getNotifications,
-  login as loginPost,
-  register as registerPost,
-} from '../../repository';
+import { getNotifications } from '../../repository';
 
 import Input from '../forms/input';
 import FormToggle from './formToggle';
+import axios from '../../fetchClient';
+import { useNotifications } from '../../contexts/NotificationsContext';
 
-interface LoginFormProps {}
+export default function LoginForm() {
+  const { setNotification } = useNotifications();
+  const [isLogin, setLogin] = useState(true);
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    cpassword: '',
+    phone: '',
+    firstname: '',
+    lastname: '',
+  });
 
-interface LoginFormState {
-  login: boolean;
-}
+  useEffect(() => {
+    handleLoad();
+  }, []);
 
-class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      login: true,
-    };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
-
-  componentDidMount() {
-    window.addEventListener('load', this.handleLoad);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('load', this.handleLoad);
-  }
-
-  handleLoad() {
+  function handleLoad() {
     $('.logo.big').animate({ opacity: 1 }, 400);
 
     setTimeout(() => {
@@ -47,78 +37,96 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     }, 900);
   }
 
-  handleToggleClick() {
-    this.setState({ login: !this.state.login });
+  async function login() {
+    return await axios
+      .post(`/auth/login`, form)
+      .then(async (res) => {
+        localStorage.setItem('x-access-token', res.data.token);
+        localStorage.setItem(
+          'x-access-token-expiration',
+          (Date.now() + 2 * 60 * 60 * 1000).toString()
+        );
+
+        const notifications = await getNotifications();
+        setNotification(notifications);
+
+        return res.data;
+      })
+      .catch((err) => {
+        Promise.reject(err);
+      });
   }
 
-  handleInputChange(field: string, value: string) {
-    this.setState({ [field]: value } as ComponentState);
+  function logout() {
+    localStorage.clear();
   }
 
-  async handleSubmit(event: any) {
-    const res = this.state.login
-      ? await loginPost(this.state)
-      : await registerPost(this.state);
-
-    console.log(res);
-
-    // JSON.parse() <-> JSON.stringify() with $.validator.format(title, ['', ''])
-    const notif = await getNotifications();
-    console.log(notif);
+  async function register() {
+    return axios
+      .post(`/users/register`, form)
+      .then((res) => res.data)
+      .catch((err) => Promise.reject(err));
   }
 
-  render() {
-    return (
-      <form id="login" onSubmit={(event) => this.handleSubmit(event)}>
-        <Input
-          name={'email'}
-          type={'email'}
-          onChange={this.handleInputChange}
-        />
-        <Input
-          name={'password'}
-          type={'password'}
-          onChange={this.handleInputChange}
-        />
-
-        <FontAwesomeIcon
-          icon="arrow-alt-circle-right"
-          className="submit"
-          onClick={this.handleSubmit.bind(this)}
-        ></FontAwesomeIcon>
-
-        <Input
-          name={'phone'}
-          type={'phone'}
-          classes={['signup']}
-          onChange={this.handleInputChange}
-        />
-        <Input
-          name={'cpassword'}
-          type={'password'}
-          classes={['signup']}
-          onChange={this.handleInputChange}
-        />
-        <Input
-          name={'firstname'}
-          type={'text'}
-          classes={['signup']}
-          onChange={this.handleInputChange}
-        />
-        <Input
-          name={'lastname'}
-          type={'text'}
-          classes={['signup']}
-          onChange={this.handleInputChange}
-        />
-
-        <FormToggle
-          login={this.state.login}
-          onClick={this.handleToggleClick.bind(this)}
-        />
-      </form>
-    );
+  function handleToggleClick() {
+    setLogin(!isLogin);
   }
+
+  async function handleSubmit(event: any) {
+    const res = isLogin ? await login() : await register();
+  }
+
+  return (
+    <form id="login" onSubmit={(event) => handleSubmit(event)}>
+      <Input
+        name={'email'}
+        type={'email'}
+        value={form.email}
+        onChange={(e: any) => setForm({ ...form, email: e.target.value })}
+      />
+      <Input
+        name={'password'}
+        type={'password'}
+        value={form.password}
+        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+      />
+
+      <FontAwesomeIcon
+        icon="arrow-alt-circle-right"
+        className="submit"
+        onClick={handleSubmit}
+      ></FontAwesomeIcon>
+
+      <Input
+        name={'phone'}
+        type={'phone'}
+        value={form.phone}
+        classes={['signup']}
+        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+      />
+      <Input
+        name={'cpassword'}
+        type={'password'}
+        value={form.cpassword}
+        classes={['signup']}
+        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+      />
+      <Input
+        name={'firstname'}
+        type={'text'}
+        value={form.firstname}
+        classes={['signup']}
+        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+      />
+      <Input
+        name={'lastname'}
+        type={'text'}
+        value={form.lastname}
+        classes={['signup']}
+        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+      />
+
+      <FormToggle login={isLogin} onClick={handleToggleClick} />
+    </form>
+  );
 }
-
-export default LoginForm;

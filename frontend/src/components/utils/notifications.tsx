@@ -1,28 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getNotifications } from '../../repository';
 import Notification from './notification';
+import { useNotifications } from '../../contexts/NotificationsContext';
 
-interface NotificationsProps {}
+export default function Notifications() {
+  const { notifications } = useNotifications();
 
-class Notifications extends React.Component<NotificationsProps> {
-  constructor(props: NotificationsProps) {
-    super(props);
-  }
+  useEffect(() => {
+    $('.notif-container').animate({ opacity: 1 }, 500);
+  });
 
-  render() {
-    return (
-      <div className="notif-container">
-        {/* 
+  function handlePrevClose() {}
+  function handleClose() {}
+  function handleNextClose() {}
+
+  return (
+    <div className="notif-container">
+      {/* 
           TODO: WHEN NEXT NOTIF IS SELECTED WITHOUT CLOSING 'notif-current', 
             -> MOVE 'notif-current' HERE 
             -> RESET NOTIF TIMER
         */}
-        <div className="notif-list prev">
-          <Notification title="errorHappened" msg="tryAgain" type="success" />
-          <Notification title="errorHappened" msg="tryAgain" type="success" />
-        </div>
-
+      {/* <div className="notif-list prev">
+        <Notification json={notifications[0]} onClose={handlePrevClose}/>
+        <Notification title="errorHappened" msg="tryAgain" type="success" />
+      </div> */}
+      {notifications.length > 0 && (
         <div className="notif-current">
           <FontAwesomeIcon
             icon="angle-left"
@@ -30,22 +34,23 @@ class Notifications extends React.Component<NotificationsProps> {
           ></FontAwesomeIcon>
 
           {/* TODO: SHOW FIRST NOTIF HERE */}
-          <Notification title="errorHappened" msg="tryAgain" type="error" />
+          <Notification json={notifications[0]} onClose={handleClose} />
 
           <FontAwesomeIcon
             icon="angle-right"
             className="nav next"
           ></FontAwesomeIcon>
         </div>
+      )}
 
-        {/* TODO: SHOW ALL REMAINING NOTIFICATIONS HERE (ALL BUT FIRST ONE SHOWN IN 'notif-current') */}
+      {/* NEXT NOTIFICATIONS */}
+      {notifications.length > 1 && (
         <div className="notif-list next">
-          <Notification title="errorHappened" msg="tryAgain" type="success" />
-          <Notification title="errorHappened" msg="tryAgain" type="success" />
+          {notifications.slice(1).map((notification) => (
+            <Notification json={notification} onClose={handleNextClose} />
+          ))}
         </div>
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 }
-
-export default Notifications;

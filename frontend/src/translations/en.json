@@ -1,10 +1,12 @@
 {
-  "email": "Email",
-  "password": "Password",
-  "phone": "Phone",
-  "cpassword": "Confirm Password",
-  "firstname": "Firstname",
-  "lastname": "Lastname",
+  "form": {
+    "email": "Email",
+    "password": "Password",
+    "phone": "Phone",
+    "cpassword": "Confirm Password",
+    "firstname": "Firstname",
+    "lastname": "Lastname"
+  },
   "login": {
     "signup-p": {
       "static": "Don't have an account?",
@@ -17,7 +19,11 @@
   },
   "notif": {
     "title": {
-      "errorHappened": "An error happened!",
+      "request": {
+        "error": "An error happened!",
+        "success": "Success!",
+        "notFound": "Resource not found"
+      },
       "login": {
         "authorized": "Connection successfull",
         "failed": "Login failed"
@@ -28,7 +34,11 @@
       }
     },
     "msg": {
-      "tryAgain": "Please try again.",
+      "request": {
+        "error": "Please try again.",
+        "success": "The operation completed successfully.",
+        "notFound": "The resource you are looking for couldn't be found."
+      },
       "login": {
         "loggedIn": "You are now logged in.",
         "failed": "Incorrect email or password."

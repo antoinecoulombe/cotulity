@@ -2,6 +2,8 @@ import React from 'react';
 import { render } from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
+import { NotificationsProvider } from './contexts/NotificationsContext';
+
 import App from './views/app';
 
 import i18next from 'i18next';
@@ -21,7 +23,9 @@ render(
   <React.StrictMode>
     <I18nextProvider i18n={i18next}>
       <BrowserRouter>
-        <App />
+        <NotificationsProvider>
+          <App />
+        </NotificationsProvider>
       </BrowserRouter>
     </I18nextProvider>
   </React.StrictMode>,
