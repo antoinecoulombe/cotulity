@@ -6,10 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
+// CORS
+var cors = require('cors');
 // Express
 const app = express_1.default();
 // Express Settings
 app.set('port', process.env.PORT || 3000);
+app.use(cors());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 // Middlewares

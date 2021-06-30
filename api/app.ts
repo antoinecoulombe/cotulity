@@ -2,12 +2,16 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
+// CORS
+var cors = require('cors');
+
 // Express
 const app = express();
 
 // Express Settings
 app.set('port', process.env.PORT || 3000);
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

@@ -1,6 +1,11 @@
 import React, { ComponentState } from 'react';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  getNotifications,
+  login as loginPost,
+  register as registerPost,
+} from '../../repository';
 
 import Input from '../forms/input';
 import FormToggle from './formToggle';
@@ -50,13 +55,21 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
     this.setState({ [field]: value } as ComponentState);
   }
 
+  async handleSubmit(event: any) {
+    const res = this.state.login
+      ? await loginPost(this.state)
+      : await registerPost(this.state);
+
+    console.log(res);
+
+    // JSON.parse() <-> JSON.stringify() with $.validator.format(title, ['', ''])
+    const notif = await getNotifications();
+    console.log(notif);
+  }
+
   render() {
     return (
-      <form
-        id="login"
-        action={this.state.login ? '/auth/login' : '/users/register'}
-        method="post"
-      >
+      <form id="login" onSubmit={(event) => this.handleSubmit(event)}>
         <Input
           name={'email'}
           type={'email'}
@@ -71,6 +84,7 @@ class LoginForm extends React.Component<LoginFormProps, LoginFormState> {
         <FontAwesomeIcon
           icon="arrow-alt-circle-right"
           className="submit"
+          onClick={this.handleSubmit.bind(this)}
         ></FontAwesomeIcon>
 
         <Input

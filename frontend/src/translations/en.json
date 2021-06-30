@@ -17,10 +17,28 @@
   },
   "notif": {
     "title": {
-      "errorHappened": "An error happened!"
+      "errorHappened": "An error happened!",
+      "login": {
+        "authorized": "Connection successfull",
+        "failed": "Login failed"
+      },
+      "homes": {
+        "memberLost": "{0} lost a member!",
+        "memberAdded": "{0} has a new member!"
+      }
     },
     "msg": {
-      "tryAgain": "Please try again."
+      "tryAgain": "Please try again.",
+      "login": {
+        "loggedIn": "You are now logged in.",
+        "failed": "Incorrect email or password."
+      },
+      "homes": {
+        "memberExcluded": "{0} was excluded from {1} by the house leader.",
+        "memberQuit": "{0} has left {1}.",
+        "memberAcceptedInvite": "{0} accepted the invitation to join {1}.",
+        "memberRequestApproved": "{0}'s request to join {1} was approved."
+      }
     }
   }
 }

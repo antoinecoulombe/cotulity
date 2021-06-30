@@ -19,28 +19,42 @@ const db = require('../db/models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
-    if (email && password) {
-        let user = yield db.User.findOne({ where: { email: email } });
-        if (!user) {
+    try {
+        const { email, password } = req.body;
+        if (email && password) {
+            let user = yield db.User.findOne({ where: { email: email } });
+            if (!user) {
+                res.status(401).json({
+                    title: 'login.failed',
+                    msg: 'login.failed',
+                });
+            }
+            if (bcrypt.compareSync(password, user.password)) {
+                let payload = { id: user.id };
+                let token = jwt.sign(payload, process.env.JWT_SECRET, {
+                    expiresIn: '24h',
+                });
+                res.json({
+                    title: 'login.authorized',
+                    msg: 'login.loggedIn',
+                    token: token,
+                });
+            }
+            else {
+                res.status(401).json({
+                    title: 'login.failed',
+                    msg: 'login.failed',
+                });
+            }
+        }
+        else
             res.status(401).json({
-                title: 'Login failed',
-                msg: 'Incorrect username or password.',
+                title: 'login.failed',
+                msg: 'login.failed',
             });
-        }
-        if (bcrypt.compareSync(password, user.password)) {
-            let payload = { id: user.id };
-            let token = jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: '24h',
-            });
-            res.json({ msg: 'User authorized', token: token });
-        }
-        else {
-            res.status(401).json({
-                title: 'Login failed',
-                msg: 'Incorrect username or password.',
-            });
-        }
+    }
+    catch (error) {
+        res.status(500).json({ msg: error.message });
     }
 }));
 exports.default = Router;

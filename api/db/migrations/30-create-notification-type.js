@@ -14,16 +14,6 @@ export default {
         type: Sequelize.STRING,
         unique: true,
       },
-      icon: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        unique: true,
-      },
-      hexColor: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        unique: true,
-      },
       showTime: {
         allowNull: false,
         type: Sequelize.INTEGER,

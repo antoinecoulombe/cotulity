@@ -4,7 +4,8 @@
     "password": "cotulity_password",
     "database": "cotulity",
     "host": "127.0.0.1",
-    "dialect": "mariadb"
+    "dialect": "mariadb",
+    "dialectOptions": { "autoJsonmap": false }
   },
   "test": {
     "username": "cotulity_user",

@@ -6,25 +6,25 @@ module.exports = {
       'NotificationTypes',
       [
         {
-          name: 'Success',
+          name: 'success',
           showTime: 3,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
-          name: 'Info',
+          name: 'info',
           showTime: 5,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
-          name: 'Warning',
+          name: 'warning',
           showTime: 5,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
-          name: 'Error',
+          name: 'error',
           showTime: 10,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),

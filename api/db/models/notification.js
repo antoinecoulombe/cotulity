@@ -5,12 +5,14 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Notification extends Model {
     static associate(models) {
-      Notification.belongsTo(models.Home, {
+      Notification.belongsTo(models.NotificationType, {
+        as: 'type',
         foreignKey: 'typeId',
         targetKey: 'id',
         allowNull: false,
       });
       Notification.belongsTo(models.User, {
+        as: 'to',
         foreignKey: 'toId',
         targetKey: 'id',
         allowNull: false,
@@ -19,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Notification.init(
     {
-      title: DataTypes.STRING,
-      description: DataTypes.STRING,
+      title: DataTypes.TEXT,
+      description: DataTypes.TEXT,
     },
     {
       timestamps: true,

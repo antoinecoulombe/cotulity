@@ -1,5 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getNotifications } from '../../repository';
 import Notification from './notification';
 
 interface NotificationsProps {}

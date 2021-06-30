@@ -13,7 +13,7 @@ export default {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'NotificationTypes',
+          model: 'NotificationType',
           key: 'id',
         },
       },
@@ -21,17 +21,17 @@ export default {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
+          model: 'User',
           key: 'id',
         },
       },
       title: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       description: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
