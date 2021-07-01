@@ -8,7 +8,6 @@ import {
 
 interface NotificationProps {
   json: strictJsonNotification;
-  onClose: () => void;
 }
 
 export default function Notification(props: NotificationProps) {

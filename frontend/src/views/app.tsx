@@ -3,6 +3,7 @@ import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PrivateRoute, PublicRoute } from '../components/utils/routes';
 import { useNotifications } from '../contexts/NotificationsContext';
+import { getNotifications } from '../utils/global';
 
 // CSS
 import '../assets/css/theme.css';
@@ -34,7 +35,7 @@ library.add(faTimes);
 
 export default function App() {
   const history = useHistory();
-  const { clearAllNotifications } = useNotifications();
+  const { clearAllNotifications, setNotificationArray } = useNotifications();
   const [theme, setTheme] = useState('light');
 
   function ToggleLanguage() {
@@ -53,6 +54,11 @@ export default function App() {
     history.push('/');
   }
 
+  async function handleNotifications() {
+    const notifications = await getNotifications();
+    setNotificationArray(notifications);
+  }
+
   return (
     <div className={`App ${theme}`}>
       <Notifications />
@@ -63,13 +69,22 @@ export default function App() {
         <Route exact path="/404" component={NotFoundPage} />
         <Redirect to="/404" />
       </Switch>
-      <div className="logo small"></div>
+      <Link
+        className="logo small"
+        style={
+          window.location.pathname == '/'
+            ? { display: 'none' }
+            : { display: 'block' }
+        }
+        to="/"
+      ></Link>
 
       <div className="trashDiv">
         <button onClick={() => setTheme(theme == 'light' ? 'dark' : 'light')}>
           {theme == 'light' ? 'Lights out' : 'Brighten the mood'}
         </button>
         <button onClick={logout}>Logout</button>
+        <button onClick={handleNotifications}>Get Notifications</button>
         <Link to="/apps" className="trashLink">
           Apps
         </Link>

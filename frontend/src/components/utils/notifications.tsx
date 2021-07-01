@@ -5,49 +5,55 @@ import Notification from './notification';
 import { useNotifications } from '../../contexts/NotificationsContext';
 
 export default function Notifications() {
-  const { notifications } = useNotifications();
+  const { notifications, current, nextNotification, prevNotification } =
+    useNotifications();
 
   useEffect(() => {
     $('.notif-container').animate({ opacity: 1 }, 500);
   });
 
-  function handlePrevClose() {}
-  function handleClose() {}
-  function handleNextClose() {}
-
   return (
     <div className="notif-container">
-      {/* 
-          TODO: WHEN NEXT NOTIF IS SELECTED WITHOUT CLOSING 'notif-current', 
-            -> MOVE 'notif-current' HERE 
-            -> RESET NOTIF TIMER
-        */}
-      {/* <div className="notif-list prev">
-        <Notification json={notifications[0]} onClose={handlePrevClose}/>
-        <Notification title="errorHappened" msg="tryAgain" type="success" />
-      </div> */}
+      {/* PREVIOUS NOTIFICATIONS */}
+      {current > 0 && (
+        <div className="notif-list prev">
+          {notifications.slice(current).map((notification) => (
+            <Notification json={notification} key={notification.id} />
+          ))}
+        </div>
+      )}
+
       {notifications.length > 0 && (
         <div className="notif-current">
-          <FontAwesomeIcon
-            icon="angle-left"
-            className="nav prev"
-          ></FontAwesomeIcon>
+          {current > 0 && (
+            <FontAwesomeIcon
+              icon="angle-left"
+              className="nav prev"
+              onClick={prevNotification}
+            ></FontAwesomeIcon>
+          )}
 
-          {/* TODO: SHOW FIRST NOTIF HERE */}
-          <Notification json={notifications[0]} onClose={handleClose} />
+          {/* CURRENT NOTIFICATION */}
+          <Notification
+            json={notifications[current]}
+            key={notifications[current].id}
+          />
 
-          <FontAwesomeIcon
-            icon="angle-right"
-            className="nav next"
-          ></FontAwesomeIcon>
+          {current < notifications.length - 1 && (
+            <FontAwesomeIcon
+              icon="angle-right"
+              className="nav next"
+              onClick={nextNotification}
+            ></FontAwesomeIcon>
+          )}
         </div>
       )}
 
       {/* NEXT NOTIFICATIONS */}
-      {notifications.length > 1 && (
+      {current < notifications.length - 1 && (
         <div className="notif-list next">
-          {notifications.slice(1).map((notification) => (
-            <Notification json={notification} onClose={handleNextClose} />
+          {notifications.slice(current + 1).map((notification) => (
+            <Notification json={notification} key={notification.id} />
           ))}
         </div>
       )}
