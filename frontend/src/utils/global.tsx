@@ -10,9 +10,7 @@ export function getNotifications() {
 export function isAuthenticated() {
   return (
     localStorage.getItem('x-access-token') &&
-    Date.parse(
-      localStorage.getItem('x-access-token-expiration') ??
-        '01 Jan 1970 00:00:00 GMT'
-    ) > Date.now()
+    parseInt(localStorage.getItem('x-access-token-expiration') ?? '0') >
+      Date.now()
   );
 }

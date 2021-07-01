@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 
 const Notifications = express.Router();
 
@@ -18,6 +17,7 @@ Notifications.get('/', async (req: any, res: any) => {
         attributes: ['name', 'showTime'],
       },
     });
+    await notifications.forEach((n: any) => (n.dataValues.db = true));
     res.json(notifications);
   } catch (error) {
     console.log(error);
@@ -25,26 +25,24 @@ Notifications.get('/', async (req: any, res: any) => {
   }
 });
 
-Notifications.delete(
-  '/notifications/delete/:id',
-  async (req: any, res: any) => {
-    try {
-      const notification = await db.Notification.findOne({
-        where: { toId: req.user.id, id: req.params.id },
-      });
+Notifications.delete('/delete/:userId', async (req: any, res: any) => {
+  try {
+    console.log(req.params.userId);
+    const notification = await db.Notification.findOne({
+      where: { toId: req.user.id, id: req.params.userId },
+    });
 
-      if (!notification)
-        return res
-          .status(404)
-          .json({ title: 'request.notFound', msg: 'request.notFound' });
+    if (!notification)
+      return res
+        .status(404)
+        .json({ title: 'request.notFound', msg: 'request.notFound' });
 
-      notification.destroy();
-      return res.json({ title: 'request.success', msg: 'request.success' });
-    } catch (error) {
-      console.log(error);
-      res.json({ title: 'request.error', msg: 'request.error' });
-    }
+    notification.destroy();
+    return res.json({ title: 'request.success', msg: 'request.success' });
+  } catch (error) {
+    console.log(error);
+    res.json({ title: 'request.error', msg: 'request.error' });
   }
-);
+});
 
 export default Notifications;

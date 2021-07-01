@@ -65,14 +65,28 @@ form {
   opacity: 0;
 }
 
-.btnToTrash {
+.trashDiv {
   position: absolute;
   top: 0;
   left: 0;
-}
+  width: 100%;
+  height: auto;
 
-.toggleToTrash {
-  position: absolute;
-  top: 0;
-  right: 0;
+  button {
+    position: relative;
+    float: left;
+  }
+
+  .trashLink {
+    float: right;
+    color: var(--lightGray);
+    text-decoration: none;
+    margin-right: 10px;
+    font-family: 'DM Sans';
+
+    &:hover {
+      color: white;
+      text-decoration: underline;
+    }
+  }
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import '../assets/css/apps.css';
 
 export default function AppsPage() {

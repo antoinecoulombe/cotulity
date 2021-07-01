@@ -25,10 +25,6 @@ const Users_1 = __importDefault(require("./routes/Users"));
 app.use('/users', Users_1.default);
 const Notifications_1 = __importDefault(require("./routes/Notifications"));
 app.use('/notifications', Notifications_1.default);
-// Express Start
-app.listen(app.get('port'), () => {
-    return console.log(`server is listening on ${app.get('port')}`);
-});
 // Generic Error Handler
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({
@@ -43,4 +39,8 @@ app.use((req, res) => {
         title: '404 - Not found',
         msg: "Our robots can't find what you are looking for.",
     });
+});
+// Express Start
+app.listen(app.get('port'), () => {
+    return console.log(`server is listening on ${app.get('port')}`);
 });

@@ -29,11 +29,6 @@ app.use('/users', Users);
 import Notifications from './routes/Notifications';
 app.use('/notifications', Notifications);
 
-// Express Start
-app.listen(app.get('port'), () => {
-  return console.log(`server is listening on ${app.get('port')}`);
-});
-
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   res.status(err.status || 500).json({
@@ -49,4 +44,9 @@ app.use((req, res) => {
     title: '404 - Not found',
     msg: "Our robots can't find what you are looking for.",
   });
+});
+
+// Express Start
+app.listen(app.get('port'), () => {
+  return console.log(`server is listening on ${app.get('port')}`);
 });

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PrivateRoute, PublicRoute } from '../components/utils/routes';
+import { useNotifications } from '../contexts/NotificationsContext';
 
 // CSS
 import '../assets/css/theme.css';
@@ -9,6 +11,7 @@ import '../assets/css/theme.css';
 import LoginPage from './login';
 import AppsPage from './apps';
 import Notifications from '../components/utils/notifications';
+import NotFoundPage from './404';
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -30,6 +33,8 @@ library.add(faCheckCircle);
 library.add(faTimes);
 
 export default function App() {
+  const history = useHistory();
+  const { clearAllNotifications } = useNotifications();
   const [theme, setTheme] = useState('light');
 
   function ToggleLanguage() {
@@ -42,21 +47,40 @@ export default function App() {
     );
   }
 
+  function logout() {
+    localStorage.clear();
+    clearAllNotifications();
+    history.push('/');
+  }
+
   return (
     <div className={`App ${theme}`}>
       <Notifications />
       <Switch>
-        <Route exact path="/" component={LoginPage} />
-        <Route exact path="/apps" component={AppsPage} />
+        <PublicRoute exact path="/" component={LoginPage} />
+        <PrivateRoute exact path="/apps" component={AppsPage} />
+
+        <Route exact path="/404" component={NotFoundPage} />
+        <Redirect to="/404" />
       </Switch>
       <div className="logo small"></div>
-      <button
-        className="btnToTrash"
-        onClick={() => setTheme(theme == 'light' ? 'dark' : 'light')}
-      >
-        {theme == 'light' ? 'Lights out' : 'Brighten the mood'}
-      </button>
-      <ToggleLanguage />
+
+      <div className="trashDiv">
+        <button onClick={() => setTheme(theme == 'light' ? 'dark' : 'light')}>
+          {theme == 'light' ? 'Lights out' : 'Brighten the mood'}
+        </button>
+        <button onClick={logout}>Logout</button>
+        <Link to="/apps" className="trashLink">
+          Apps
+        </Link>
+        <Link to="/" className="trashLink">
+          Home
+        </Link>
+        <Link to="/oops" className="trashLink">
+          Lost
+        </Link>
+        <ToggleLanguage />
+      </div>
     </div>
   );
 }

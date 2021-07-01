@@ -1,5 +1,4 @@
 import React from 'react';
-import $ from 'jquery';
 import { useTranslation } from 'react-i18next';
 
 export default function Translate(obj: any) {
@@ -19,7 +18,6 @@ export default function Translate(obj: any) {
   let translated;
   try {
     let json = JSON.parse(obj.name);
-    console.log(json.format);
     translated = format(t(obj.prefix + json.translate), json.format);
   } catch (error) {
     translated = t((obj.prefix ?? '') + obj.name);

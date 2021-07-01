@@ -28,6 +28,7 @@ Notifications.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function*
                 attributes: ['name', 'showTime'],
             },
         });
+        yield notifications.forEach((n) => (n.dataValues.db = true));
         res.json(notifications);
     }
     catch (error) {
@@ -35,10 +36,11 @@ Notifications.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-Notifications.delete('/notifications/delete/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Notifications.delete('/delete/:userId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log(req.params.userId);
         const notification = yield db.Notification.findOne({
-            where: { toId: req.user.id, id: req.params.id },
+            where: { toId: req.user.id, id: req.params.userId },
         });
         if (!notification)
             return res

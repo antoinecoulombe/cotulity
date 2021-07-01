@@ -1,15 +1,21 @@
-import React, { ComponentState, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getNotifications } from '../../repository';
+import { getNotifications, isAuthenticated } from '../../utils/global';
 
 import Input from '../forms/input';
 import FormToggle from './formToggle';
-import axios from '../../fetchClient';
-import { useNotifications } from '../../contexts/NotificationsContext';
+import axios from '../../utils/fetchClient';
+import {
+  jsonNotification,
+  useNotifications,
+} from '../../contexts/NotificationsContext';
+import { useHistory } from 'react-router';
 
 export default function LoginForm() {
-  const { setNotification } = useNotifications();
+  const { setNotification, setNotificationArray } = useNotifications();
+  const history = useHistory();
+
   const [isLogin, setLogin] = useState(true);
   const [form, setForm] = useState({
     email: '',
@@ -38,6 +44,8 @@ export default function LoginForm() {
   }
 
   async function login() {
+    if (isAuthenticated()) return;
+
     return await axios
       .post(`/auth/login`, form)
       .then(async (res) => {
@@ -47,18 +55,16 @@ export default function LoginForm() {
           (Date.now() + 2 * 60 * 60 * 1000).toString()
         );
 
+        history.push('/apps');
+
         const notifications = await getNotifications();
-        setNotification(notifications);
+        setNotificationArray(notifications);
 
         return res.data;
       })
       .catch((err) => {
-        Promise.reject(err);
+        setNotification(err.response.data);
       });
-  }
-
-  function logout() {
-    localStorage.clear();
   }
 
   async function register() {

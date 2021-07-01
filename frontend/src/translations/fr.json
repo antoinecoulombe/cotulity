@@ -30,7 +30,7 @@
       },
       "homes": {
         "memberLost": "{0} a perdu un membre!",
-        "memberAdded": "Un nouveau membre fait parti de {0}."
+        "memberAdded": "{0} a un nouveau membre!"
       }
     },
     "msg": {
@@ -44,10 +44,10 @@
         "failed": "Courriel ou mot de passe invalide."
       },
       "homes": {
-        "memberExcluded": "{0} a été exclu de {1} par le créateur de la maison.",
+        "memberExcluded": "{0} a été exclu de {1}.",
         "memberQuit": "{0} a quitté {1}.",
-        "memberAcceptedInvite": "{0} a accepté l'invitation à rejoindre {1}.",
-        "memberRequestApproved": "La requête de {0} de rejoindre {1} a été approuvée."
+        "memberAcceptedInvite": "{0} a accepté de rejoindre {1}.",
+        "memberRequestApproved": "La demande de {0} a été approuvée."
       }
     }
   }

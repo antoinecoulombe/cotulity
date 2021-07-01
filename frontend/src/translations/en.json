@@ -37,17 +37,17 @@
       "request": {
         "error": "Please try again.",
         "success": "The operation completed successfully.",
-        "notFound": "The resource you are looking for couldn't be found."
+        "notFound": "The requested resource couldn't be found."
       },
       "login": {
         "loggedIn": "You are now logged in.",
         "failed": "Incorrect email or password."
       },
       "homes": {
-        "memberExcluded": "{0} was excluded from {1} by the house leader.",
+        "memberExcluded": "{0} was excluded from {1}.",
         "memberQuit": "{0} has left {1}.",
-        "memberAcceptedInvite": "{0} accepted the invitation to join {1}.",
-        "memberRequestApproved": "{0}'s request to join {1} was approved."
+        "memberAcceptedInvite": "{0} has joined {1}.",
+        "memberRequestApproved": "{0}'s request was approved."
       }
     }
   }
