@@ -32,10 +32,16 @@ export default function Notification(props: NotificationProps) {
       />
       <div className="text">
         <h1>
-          <Translate name={props.json.title} prefix="notif.title." />
+          <Translate
+            name={props.json.title ?? 'request.error'}
+            prefix="notif.title."
+          />
         </h1>
         <p>
-          <Translate name={props.json.msg} prefix="notif.msg." />
+          <Translate
+            name={props.json.title ? props.json.msg : 'request.error'}
+            prefix="notif.msg."
+          />
         </p>
       </div>
       <FontAwesomeIcon icon="times" className="close" onClick={handleClose} />
