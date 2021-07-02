@@ -26,7 +26,7 @@ Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b, _c, _d;
     let pwdHash = null;
     try {
         const { email, firstname, lastname, phone } = req.body;
@@ -47,7 +47,8 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (e) {
         res.status(500).json({
             title: e.errors[0] ? 'register.error' : 'request.error',
-            msg: (_a = e.errors[0].message) !== null && _a !== void 0 ? _a : 'request.error',
+            msg: (_b = (_a = e.errors[0]) === null || _a === void 0 ? void 0 : _a.message) !== null && _b !== void 0 ? _b : 'request.error',
+            input: (_d = (_c = e.errors[0]) === null || _c === void 0 ? void 0 : _c.path) !== null && _d !== void 0 ? _d : null,
         });
     }
 }));

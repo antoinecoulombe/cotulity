@@ -27,8 +27,18 @@ export default function LoginForm() {
     lastname: '',
   };
 
+  const errorForm = {
+    email: false,
+    password: false,
+    cpassword: false,
+    phone: false,
+    firstname: false,
+    lastname: false,
+  };
+
   const [isLogin, setLogin] = useState(true);
   const [form, setForm] = useState(initForm);
+  const [errors, setError] = useState(errorForm);
 
   useEffect(() => {
     handleLoad();
@@ -72,10 +82,17 @@ export default function LoginForm() {
   }
 
   function setValidationNotification(input: string[], errorMsg: string) {
+    input.forEach((i: string) => {
+      setError({ ...errorForm, [i]: true });
+    });
+
     setErrorNotification({
       title: 'register.error',
-      msg: `form.error.${errorMsg}`,
+      msg: errorMsg,
     });
+
+    console.log('ERRORS:');
+    console.log(errors);
   }
 
   function resetForm() {
@@ -91,10 +108,13 @@ export default function LoginForm() {
 
   async function register() {
     if (isAuthenticated()) return;
+
+    setError({ ...errorForm });
+
     if (form.cpassword != form.password)
       return setValidationNotification(
-        ['password, cpassword'],
-        'password.mustEqual'
+        ['password', 'cpassword'],
+        'form.error.password.mustEqual'
       );
 
     return axios
@@ -104,7 +124,10 @@ export default function LoginForm() {
         resetForm();
       })
       .catch((err) => {
-        setNotification(err.response.data);
+        setValidationNotification(
+          err.response?.data?.input ? [err.response.data.input] : [],
+          err.response?.data?.msg ?? 'request.error'
+        );
       });
   }
 
@@ -123,6 +146,7 @@ export default function LoginForm() {
         type={'email'}
         value={form.email}
         onChange={(e: any) => setForm({ ...form, email: e.target.value })}
+        error={errors.email}
       />
       <Input
         name={'password'}
@@ -130,6 +154,7 @@ export default function LoginForm() {
         value={form.password}
         onChange={(e: any) => setForm({ ...form, password: e.target.value })}
         onKeyPress={handleKeyPress}
+        error={errors.password}
       />
 
       <FontAwesomeIcon
@@ -144,6 +169,7 @@ export default function LoginForm() {
         value={form.phone}
         classes={['signup']}
         onChange={(e: any) => setForm({ ...form, phone: e.target.value })}
+        error={errors.phone}
       />
       <Input
         name={'cpassword'}
@@ -151,6 +177,7 @@ export default function LoginForm() {
         value={form.cpassword}
         classes={['signup']}
         onChange={(e: any) => setForm({ ...form, cpassword: e.target.value })}
+        error={errors.cpassword}
       />
       <Input
         name={'firstname'}
@@ -158,6 +185,7 @@ export default function LoginForm() {
         value={form.firstname}
         classes={['signup']}
         onChange={(e: any) => setForm({ ...form, firstname: e.target.value })}
+        error={errors.firstname}
       />
       <Input
         name={'lastname'}
@@ -166,6 +194,7 @@ export default function LoginForm() {
         classes={['signup']}
         onChange={(e: any) => setForm({ ...form, lastname: e.target.value })}
         onKeyPress={handleKeyPress}
+        error={errors.lastname}
       />
 
       <FormToggle login={isLogin} onClick={() => setLogin(!isLogin)} />

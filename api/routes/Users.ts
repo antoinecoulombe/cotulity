@@ -36,7 +36,8 @@ Users.post('/register', async (req, res) => {
   } catch (e) {
     res.status(500).json({
       title: e.errors[0] ? 'register.error' : 'request.error',
-      msg: e.errors[0].message ?? 'request.error',
+      msg: e.errors[0]?.message ?? 'request.error',
+      input: e.errors[0]?.path ?? null,
     });
   }
 });

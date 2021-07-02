@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Translate from './translate';
 import {
@@ -18,6 +19,10 @@ export default function Notification(props: NotificationProps) {
     success: 'check-circle',
   };
   const { clearNotification } = useNotifications();
+
+  useEffect(() => {
+    $('.notification').animate({ opacity: 1 }, 200);
+  });
 
   async function handleClose() {
     clearNotification(props.json.id);

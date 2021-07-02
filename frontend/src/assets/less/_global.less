@@ -94,7 +94,6 @@ input:-webkit-autofill {
   }
 
   .label-filled {
-    color: var(--gradient-input-label); //#a3adb6;
     font-size: 12px;
     line-height: 26px;
     height: 26px;
@@ -155,6 +154,13 @@ input:-webkit-autofill {
 
     &:-webkit-autofill + label {
       .label-filled();
+    }
+  }
+
+  &.error {
+    > label {
+      color: var(--error-color) !important;
+      font-weight: 500;
     }
   }
 }
@@ -332,6 +338,7 @@ input:-webkit-autofill {
     padding: @padding;
     border-radius: 10px;
     background-color: var(--gradient-input-bg);
+    opacity: 0;
 
     &.error {
       > .icon {

@@ -74,17 +74,11 @@ export function NotificationsProvider({ children }: any) {
   }
 
   const prevNotification = React.useCallback(() => {
-    console.log(
-      `decrement: ${current} - notif.length = ${notifications.length}`
-    );
     if (current > 0) setCurrentNotification(current - 1);
     return null;
   }, [notifications, setNotifications, current, setCurrentNotification]);
 
   const nextNotification = React.useCallback(() => {
-    console.log(
-      `increment: ${current} - notif.length = ${notifications.length}`
-    );
     if (current < notifications.length - 1) setCurrentNotification(current + 1);
     return null;
   }, [notifications, setNotifications, current, setCurrentNotification]);
@@ -159,7 +153,6 @@ export function NotificationsProvider({ children }: any) {
   // Delete a notification from 'id', and delete it from database if needed.
   const clearNotification = React.useCallback(
     (id: number) => {
-      console.log(`notif.length = ${notifications.length}`);
       let notification = notifications.find((n) => n.id === id);
       if (!notification) return null;
 
