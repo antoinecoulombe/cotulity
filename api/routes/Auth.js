@@ -25,8 +25,8 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             let user = yield db.User.findOne({ where: { email: email } });
             if (!user) {
                 res.status(401).json({
-                    title: 'login.failed',
-                    msg: 'login.failed',
+                    title: 'login.error',
+                    msg: 'login.error',
                 });
             }
             if (bcrypt.compareSync(password, user.password)) {
@@ -35,22 +35,22 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     expiresIn: '24h',
                 });
                 res.json({
-                    title: 'login.authorized',
-                    msg: 'login.loggedIn',
+                    title: 'login.success',
+                    msg: 'login.success',
                     token: token,
                 });
             }
             else {
                 res.status(401).json({
-                    title: 'login.failed',
-                    msg: 'login.failed',
+                    title: 'login.error',
+                    msg: 'login.error',
                 });
             }
         }
         else
             res.status(401).json({
-                title: 'login.failed',
-                msg: 'login.failed',
+                title: 'login.error',
+                msg: 'login.error',
             });
     }
     catch (error) {

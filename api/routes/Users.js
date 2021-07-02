@@ -26,6 +26,7 @@ Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     let pwdHash = null;
     try {
         const { email, firstname, lastname, phone } = req.body;
@@ -39,17 +40,15 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
             phone,
         });
         res.json({
-            title: 'Registration completed',
-            msg: 'Welcome aboard!',
+            title: 'register.success',
+            msg: 'register.success',
         });
     }
     catch (e) {
-        let error;
-        if (e.name == 'SequelizeUniqueConstraintError')
-            error = { title: 'Registration Failed', msg: e.errors[0].message };
-        res
-            .status(500)
-            .json(error || { title: 'An error occured', msg: 'Please try again.' });
+        res.status(500).json({
+            title: e.errors[0] ? 'register.error' : 'request.error',
+            msg: (_a = e.errors[0].message) !== null && _a !== void 0 ? _a : 'request.error',
+        });
     }
 }));
 exports.default = Users;

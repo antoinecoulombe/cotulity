@@ -64,16 +64,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'Please enter your email address.',
+          msg: 'register',
         },
         unique: {
           args: true,
-          msg: 'This email address already exists.',
+          msg: 'form.error.email.exists',
         },
         validate: {
           isEmail: {
             args: true,
-            msg: 'Please enter a valid email address.',
+            msg: 'form.error.email.valid',
           },
         },
       },
@@ -81,16 +81,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'Please enter a password.',
+          msg: 'form.error.password.missing',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter a password.',
+            msg: 'form.error.password.missing',
           },
           len: {
             args: [60, 60],
-            msg: 'The password must be between 6 and 30 caracters.',
+            msg: 'request.error',
           },
         },
       },
@@ -98,12 +98,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'Please enter your firstname.',
+          msg: 'form.error.firstname.missing',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter your firstname.',
+            msg: 'form.error.firstname.missing',
           },
         },
       },
@@ -111,12 +111,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'Please enter your lastname.',
+          msg: 'form.error.lastname.missing',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter your lastname.',
+            msg: 'form.error.lastname.missing',
           },
         },
       },
@@ -124,12 +124,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: {
           args: true,
-          msg: 'This phone number is already linked to another account.',
+          msg: 'form.error.phone.exists',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter your phone number.',
+            msg: 'form.error.phone.missing',
           },
           // isValid(phone) {
           //   if (phone.startsWith('INVALID-'))

@@ -25,8 +25,12 @@
         "notFound": "Ressource introuvable"
       },
       "login": {
-        "authorized": "Connexion réussie",
-        "failed": "Échec de la connexion"
+        "success": "Connexion réussie",
+        "error": "Échec de la connexion"
+      },
+      "register": {
+        "success": "Inscription réussie",
+        "error": "Échec lors de l'inscription"
       },
       "homes": {
         "memberLost": "{0} a perdu un membre!",
@@ -35,13 +39,39 @@
     },
     "msg": {
       "request": {
-        "error": "Veuillez réessayer.",
         "success": "L'opération s'est executée avec succès.",
+        "error": "Veuillez réessayer.",
         "notFound": "La ressource demandée est introuvable."
       },
       "login": {
-        "authorized": "Vous êtes maintenant connecté.",
-        "failed": "Courriel ou mot de passe invalide."
+        "success": "Vous êtes maintenant connecté.",
+        "error": "Courriel ou mot de passe invalide."
+      },
+      "register": {
+        "success": "Vous pouvez maintenant vous connecter."
+      },
+      "form": {
+        "error": {
+          "password": {
+            "mustEqual": "Les mots de passe doivent être équivalents.",
+            "missing": "Veuillez entrer un mot de passe."
+          },
+          "email": {
+            "exists": "Cette addresse courriel existe déja.",
+            "valid": "Veuillez entrer une addresse courriel valide.",
+            "missing": "Veuillez entrer une addresse courriel."
+          },
+          "phone": {
+            "exists": "Ce numéro de téléphone existe déja.",
+            "missing": "Veuillez entrer un numéro de téléphone."
+          },
+          "firstname": {
+            "missing": "Veuillez entrer votre prénom."
+          },
+          "lastname": {
+            "missing": "Veuillez entrer votre nom de famille."
+          }
+        }
       },
       "homes": {
         "memberExcluded": "{0} a été exclu de {1}.",

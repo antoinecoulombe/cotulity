@@ -16,8 +16,8 @@ Router.post('/login', async (req, res) => {
 
       if (!user) {
         res.status(401).json({
-          title: 'login.failed',
-          msg: 'login.failed',
+          title: 'login.error',
+          msg: 'login.error',
         });
       }
 
@@ -29,20 +29,20 @@ Router.post('/login', async (req, res) => {
         });
 
         res.json({
-          title: 'login.authorized',
-          msg: 'login.loggedIn',
+          title: 'login.success',
+          msg: 'login.success',
           token: token,
         });
       } else {
         res.status(401).json({
-          title: 'login.failed',
-          msg: 'login.failed',
+          title: 'login.error',
+          msg: 'login.error',
         });
       }
     } else
       res.status(401).json({
-        title: 'login.failed',
-        msg: 'login.failed',
+        title: 'login.error',
+        msg: 'login.error',
       });
   } catch (error) {
     res.status(500).json({ msg: error.message });

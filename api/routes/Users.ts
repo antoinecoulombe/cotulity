@@ -30,17 +30,14 @@ Users.post('/register', async (req, res) => {
     });
 
     res.json({
-      title: 'Registration completed',
-      msg: 'Welcome aboard!',
+      title: 'register.success',
+      msg: 'register.success',
     });
   } catch (e) {
-    let error;
-    if (e.name == 'SequelizeUniqueConstraintError')
-      error = { title: 'Registration Failed', msg: e.errors[0].message };
-
-    res
-      .status(500)
-      .json(error || { title: 'An error occured', msg: 'Please try again.' });
+    res.status(500).json({
+      title: e.errors[0] ? 'register.error' : 'request.error',
+      msg: e.errors[0].message ?? 'request.error',
+    });
   }
 });
 

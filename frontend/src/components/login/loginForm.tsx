@@ -6,25 +6,29 @@ import { getNotifications, isAuthenticated } from '../../utils/global';
 import Input from '../forms/input';
 import FormToggle from './formToggle';
 import axios from '../../utils/fetchClient';
-import {
-  jsonNotification,
-  useNotifications,
-} from '../../contexts/NotificationsContext';
+import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
 
 export default function LoginForm() {
-  const { setNotification, setNotificationArray } = useNotifications();
+  const {
+    setNotification,
+    setSuccessNotification,
+    setErrorNotification,
+    setNotificationArray,
+  } = useNotifications();
   const history = useHistory();
 
-  const [isLogin, setLogin] = useState(true);
-  const [form, setForm] = useState({
+  const initForm = {
     email: '',
     password: '',
     cpassword: '',
     phone: '',
     firstname: '',
     lastname: '',
-  });
+  };
+
+  const [isLogin, setLogin] = useState(true);
+  const [form, setForm] = useState(initForm);
 
   useEffect(() => {
     handleLoad();
@@ -67,19 +71,49 @@ export default function LoginForm() {
       });
   }
 
-  async function register() {
-    return axios
-      .post(`/users/register`, form)
-      .then((res) => res.data)
-      .catch((err) => Promise.reject(err));
+  function setValidationNotification(input: string[], errorMsg: string) {
+    setErrorNotification({
+      title: 'register.error',
+      msg: `form.error.${errorMsg}`,
+    });
   }
 
-  function handleToggleClick() {
-    setLogin(!isLogin);
+  function resetForm() {
+    $('#login > .toggle > i:last-child').trigger('click');
+    setForm({ ...initForm, email: form.email, password: form.password });
+
+    let inputs = $('.form-input > input').slice(2);
+    for (let i = 2; i < inputs.length; ++i) {
+      $(inputs[i]).removeClass('filled');
+      $(inputs[i]).next().removeClass('filled');
+    }
+  }
+
+  async function register() {
+    if (isAuthenticated()) return;
+    if (form.cpassword != form.password)
+      return setValidationNotification(
+        ['password, cpassword'],
+        'password.mustEqual'
+      );
+
+    return axios
+      .post(`/users/register`, form)
+      .then((res) => {
+        setSuccessNotification(res.data);
+        resetForm();
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   }
 
   async function handleSubmit(event: any) {
     const res = isLogin ? await login() : await register();
+  }
+
+  function handleKeyPress(event: any) {
+    if (event.key === 'Enter') handleSubmit(event);
   }
 
   return (
@@ -95,6 +129,7 @@ export default function LoginForm() {
         type={'password'}
         value={form.password}
         onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+        onKeyPress={handleKeyPress}
       />
 
       <FontAwesomeIcon
@@ -108,31 +143,32 @@ export default function LoginForm() {
         type={'phone'}
         value={form.phone}
         classes={['signup']}
-        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+        onChange={(e: any) => setForm({ ...form, phone: e.target.value })}
       />
       <Input
         name={'cpassword'}
         type={'password'}
         value={form.cpassword}
         classes={['signup']}
-        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+        onChange={(e: any) => setForm({ ...form, cpassword: e.target.value })}
       />
       <Input
         name={'firstname'}
         type={'text'}
         value={form.firstname}
         classes={['signup']}
-        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+        onChange={(e: any) => setForm({ ...form, firstname: e.target.value })}
       />
       <Input
         name={'lastname'}
         type={'text'}
         value={form.lastname}
         classes={['signup']}
-        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+        onChange={(e: any) => setForm({ ...form, lastname: e.target.value })}
+        onKeyPress={handleKeyPress}
       />
 
-      <FormToggle login={isLogin} onClick={handleToggleClick} />
+      <FormToggle login={isLogin} onClick={() => setLogin(!isLogin)} />
     </form>
   );
 }

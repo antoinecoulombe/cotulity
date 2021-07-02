@@ -1,7 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import Translate from '../utils/translate';
 
 interface FormToggleProps {

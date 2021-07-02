@@ -25,8 +25,12 @@
         "notFound": "Resource not found"
       },
       "login": {
-        "authorized": "Connection successfull",
-        "failed": "Login failed"
+        "success": "Connection successfull",
+        "error": "Login failed"
+      },
+      "register": {
+        "success": "Registration completed!",
+        "error": "Registration failed"
       },
       "homes": {
         "memberLost": "{0} lost a member!",
@@ -35,13 +39,39 @@
     },
     "msg": {
       "request": {
-        "error": "Please try again.",
         "success": "The operation completed successfully.",
+        "error": "Please try again.",
         "notFound": "The requested resource couldn't be found."
       },
       "login": {
-        "loggedIn": "You are now logged in.",
-        "failed": "Incorrect email or password."
+        "success": "You are now logged in.",
+        "error": "Incorrect email or password."
+      },
+      "register": {
+        "success": "You can now log in."
+      },
+      "form": {
+        "error": {
+          "password": {
+            "mustEqual": "Passwords must be the same.",
+            "missing": "Please enter a password."
+          },
+          "email": {
+            "exists": "This email already exists.",
+            "valid": "Please enter a valid email address.",
+            "missing": "Please enter an email address."
+          },
+          "phone": {
+            "exists": "This phone number already exists.",
+            "missing": "Please enter your phone number."
+          },
+          "firstname": {
+            "missing": "Please enter your firstname."
+          },
+          "lastname": {
+            "missing": "Please enter your lastname."
+          }
+        }
       },
       "homes": {
         "memberExcluded": "{0} was excluded from {1}.",

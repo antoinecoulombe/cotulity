@@ -1,6 +1,13 @@
 import * as React from 'react';
 import axios from '../utils/fetchClient';
 
+export const notificationTypes = {
+  error: { name: 'error', showTime: 10 },
+  warning: { name: 'warning', showTime: 5 },
+  info: { name: 'info', showTime: 5 },
+  success: { name: 'success', showTime: 3 },
+};
+
 export interface jsonNotification {
   id?: number;
   db?: boolean;
@@ -27,6 +34,10 @@ const defaultApi = {
   current: 0 as number,
   notifications: [] as strictJsonNotification[],
   setNotification: (notification: jsonNotification) => null,
+  setErrorNotification: (notification: jsonNotification) => null,
+  setSuccessNotification: (notification: jsonNotification) => null,
+  setWarningNotification: (notification: jsonNotification) => null,
+  setInfoNotification: (notification: jsonNotification) => null,
   setNotificationArray: (notifications: jsonNotification[]) => null,
   clearNotification: (id: number) => null,
   clearAllNotifications: () => null,
@@ -46,13 +57,19 @@ export function NotificationsProvider({ children }: any) {
   >(defaultApi.notifications);
 
   // Convert a jsonNotification to a strictJsonNotificaiton.
-  function toStrict(n: jsonNotification): strictJsonNotification {
+  function toStrict(
+    n: jsonNotification,
+    type?: { name: string; showTime: number }
+  ): strictJsonNotification {
     return {
       id: n.id ?? new Date().getTime(),
       db: n.db ?? false,
       title: n.title,
       msg: n.msg,
-      type: { name: n.type?.name ?? 'error', showTime: n.type?.showTime ?? 5 },
+      type: type ?? {
+        name: n.type?.name ?? 'error',
+        showTime: n.type?.showTime ?? 5,
+      },
     };
   }
 
@@ -81,6 +98,50 @@ export function NotificationsProvider({ children }: any) {
       );
 
       setNotifications(notifications.concat(newFilteredNotifications));
+      return null;
+    },
+    [notifications, setNotifications]
+  );
+
+  const setErrorNotification = React.useCallback(
+    (newNotification: jsonNotification) => {
+      setNotifications(
+        notifications.concat(toStrict(newNotification, notificationTypes.error))
+      );
+      return null;
+    },
+    [notifications, setNotifications]
+  );
+
+  const setWarningNotification = React.useCallback(
+    (newNotification: jsonNotification) => {
+      setNotifications(
+        notifications.concat(
+          toStrict(newNotification, notificationTypes.warning)
+        )
+      );
+      return null;
+    },
+    [notifications, setNotifications]
+  );
+
+  const setInfoNotification = React.useCallback(
+    (newNotification: jsonNotification) => {
+      setNotifications(
+        notifications.concat(toStrict(newNotification, notificationTypes.info))
+      );
+      return null;
+    },
+    [notifications, setNotifications]
+  );
+
+  const setSuccessNotification = React.useCallback(
+    (newNotification: jsonNotification) => {
+      setNotifications(
+        notifications.concat(
+          toStrict(newNotification, notificationTypes.success)
+        )
+      );
       return null;
     },
     [notifications, setNotifications]
@@ -133,6 +194,10 @@ export function NotificationsProvider({ children }: any) {
         current,
         notifications,
         setNotification,
+        setErrorNotification,
+        setWarningNotification,
+        setSuccessNotification,
+        setInfoNotification,
         setNotificationArray,
         clearNotification,
         clearAllNotifications,
