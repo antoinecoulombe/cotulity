@@ -1,31 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import $ from 'jquery';
 import '../assets/css/apps.css';
+import App from '../components/apps/app';
 
 export default function AppsPage() {
+  useEffect(() => {
+    function handleResize() {
+      let containerWidth = $('#apps-container').outerWidth() ?? 500,
+        appWidth = $('.app-container').outerWidth(true) ?? 500,
+        appsPerLine = Math.floor(containerWidth / appWidth);
+
+      if (appsPerLine > $('.app-container').length)
+        appsPerLine = $('.app-container').length;
+
+      $('#apps').css({
+        width: appWidth * appsPerLine,
+        left: (containerWidth - appWidth * appsPerLine) / 2,
+      });
+    }
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div id="apps-container">
       <div id="apps">
-        <div className="app" id="app-calendar">
-          <i className="far fa-calendar-alt"></i>
-        </div>
-        <div className="app" id="app-bills">
-          <i className="fas fa-file-invoice-dollar"></i>
-        </div>
-        <div className="app" id="app-account">
-          <i className="fas fa-user-circle"></i>
-        </div>
-        <div className="app" id="app-tasks">
-          <i className="fas fa-tasks"></i>
-        </div>
-        <div className="app" id="app-groceries">
-          <i className="fas fa-utensils"></i>
-        </div>
-        <div className="app" id="app-stocks">
-          <i className="fas fa-chart-line"></i>
-        </div>
-        <div className="app" id="app-preferences">
-          <i className="fas fa-cogs"></i>
-        </div>
+        <App icon="home" id="calendar"></App>
+        <App icon="file-invoice-dollar" id="finance"></App>
+        <App icon="tasks" id="tasks"></App>
+        <App icon="utensils" id="groceries"></App>
+        <App icon="cogs" id="settings"></App>
       </div>
     </div>
   );

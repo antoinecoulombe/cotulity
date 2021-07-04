@@ -2,10 +2,10 @@ import * as React from 'react';
 import axios from '../utils/fetchClient';
 
 export const notificationTypes = {
-  error: { name: 'error', showTime: 10 },
-  warning: { name: 'warning', showTime: 5 },
-  info: { name: 'info', showTime: 5 },
-  success: { name: 'success', showTime: 3 },
+  error: { name: 'error', showTime: 5 },
+  warning: { name: 'warning', showTime: 3 },
+  info: { name: 'info', showTime: 3 },
+  success: { name: 'success', showTime: 2 },
 };
 
 export interface jsonNotification {
@@ -31,15 +31,15 @@ export interface strictJsonNotification {
 }
 
 const defaultApi = {
-  current: 0 as number,
+  currentNotification: 0 as number,
   notifications: [] as strictJsonNotification[],
+  setNotificationArray: (notifications: jsonNotification[]) => null,
   setNotification: (notification: jsonNotification) => null,
   setErrorNotification: (notification: jsonNotification) => null,
   setSuccessNotification: (notification: jsonNotification) => null,
   setWarningNotification: (notification: jsonNotification) => null,
   setInfoNotification: (notification: jsonNotification) => null,
-  setNotificationArray: (notifications: jsonNotification[]) => null,
-  clearNotification: (id: number) => null,
+  clearNotification: () => null,
   clearAllNotifications: () => null,
   prevNotification: () => null,
   nextNotification: () => null,
@@ -51,7 +51,9 @@ export const NotificationsContext =
   React.createContext<NotificationsContextValue>(defaultApi);
 
 export function NotificationsProvider({ children }: any) {
-  const [current, setCurrentNotification] = React.useState(defaultApi.current);
+  const [currentNotification, setCurrentNotification] = React.useState(
+    defaultApi.currentNotification
+  );
   const [notifications, setNotifications] = React.useState<
     strictJsonNotification[]
   >(defaultApi.notifications);
@@ -67,21 +69,33 @@ export function NotificationsProvider({ children }: any) {
       title: n.title,
       msg: n.msg,
       type: type ?? {
-        name: n.type?.name ?? 'error',
-        showTime: n.type?.showTime ?? 5,
+        name: n.type?.name ?? notificationTypes.error.name,
+        showTime: n.type?.showTime ?? notificationTypes.info.showTime,
       },
     };
   }
 
   const prevNotification = React.useCallback(() => {
-    if (current > 0) setCurrentNotification(current - 1);
+    if (currentNotification > 0)
+      setCurrentNotification(currentNotification - 1);
     return null;
-  }, [notifications, setNotifications, current, setCurrentNotification]);
+  }, [
+    notifications,
+    setNotifications,
+    currentNotification,
+    setCurrentNotification,
+  ]);
 
   const nextNotification = React.useCallback(() => {
-    if (current < notifications.length - 1) setCurrentNotification(current + 1);
+    if (currentNotification < notifications.length - 1)
+      setCurrentNotification(currentNotification + 1);
     return null;
-  }, [notifications, setNotifications, current, setCurrentNotification]);
+  }, [
+    notifications,
+    setNotifications,
+    currentNotification,
+    setCurrentNotification,
+  ]);
 
   // Append an array of notifications at the end of the notification array.
   const setNotificationArray = React.useCallback(
@@ -90,7 +104,6 @@ export function NotificationsProvider({ children }: any) {
       newNotifications.forEach((n) =>
         newFilteredNotifications.push(toStrict(n))
       );
-
       setNotifications(notifications.concat(newFilteredNotifications));
       return null;
     },
@@ -151,40 +164,52 @@ export function NotificationsProvider({ children }: any) {
   );
 
   // Delete a notification from 'id', and delete it from database if needed.
-  const clearNotification = React.useCallback(
-    (id: number) => {
-      let notification = notifications.find((n) => n.id === id);
-      if (!notification) return null;
+  const clearNotification = React.useCallback(() => {
+    // TODO: uncomment this to delete from database
+    // let notification = notifications[currentNotification];
+    // if (notification?.db) {
+    //   axios
+    //     .delete(`/notifications/delete/${notification.id}`)
+    //     .then((res) => res.data)
+    //     .catch();
+    // }
 
-      // TODO: uncomment this to delete from database
-      // if (notification?.db) {
-      //   axios
-      //     .delete(`/notifications/delete/${id}`)
-      //     .then((res) => res.data)
-      //     .catch();
-      // }
+    setNotifications(
+      notifications
+        .slice(0, currentNotification)
+        .concat(notifications.splice(currentNotification + 1))
+    );
 
-      setNotifications(notifications.filter((n) => n.id !== id));
+    if (
+      currentNotification >= notifications.length - 1 &&
+      currentNotification != 0
+    )
+      setCurrentNotification(currentNotification - 1);
 
-      if (notifications.findIndex((n) => n.id === id) <= current)
-        setCurrentNotification(current === 0 ? current : current - 1);
-
-      return null;
-    },
-    [notifications, setNotifications, current, setCurrentNotification]
-  );
-
-  // Delete all notifications, previous and current. Does not delete from database.
-  const clearAllNotifications = React.useCallback(() => {
-    setCurrentNotification(0);
-    setNotifications([]);
     return null;
-  }, [notifications, setNotifications, current, setCurrentNotification]);
+  }, [
+    notifications,
+    setNotifications,
+    currentNotification,
+    setCurrentNotification,
+  ]);
+
+  // Delete a notification from 'id', and delete it from database if needed.
+  const clearAllNotifications = React.useCallback(() => {
+    setNotifications([]);
+    setCurrentNotification(0);
+    return null;
+  }, [
+    notifications,
+    setNotifications,
+    currentNotification,
+    setCurrentNotification,
+  ]);
 
   return (
     <NotificationsContext.Provider
       value={{
-        current,
+        currentNotification,
         notifications,
         setNotification,
         setErrorNotification,

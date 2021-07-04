@@ -5,27 +5,35 @@ import Notification from './notification';
 import { useNotifications } from '../../contexts/NotificationsContext';
 
 export default function Notifications() {
-  const { notifications, current, nextNotification, prevNotification } =
-    useNotifications();
+  const {
+    notifications,
+    currentNotification,
+    nextNotification,
+    prevNotification,
+  } = useNotifications();
 
   useEffect(() => {
     $('.notif-container').animate({ opacity: 1 }, 500);
-  });
+  }, []);
 
   return (
     <div className="notif-container">
       {/* PREVIOUS NOTIFICATIONS */}
-      {current > 0 && (
+      {currentNotification > 0 && (
         <div className="notif-list prev">
-          {notifications.slice(current).map((notification) => (
-            <Notification json={notification} key={notification.id} />
+          {notifications.slice(0, currentNotification).map((notification) => (
+            <Notification
+              json={notification}
+              current={false}
+              key={notification.id}
+            />
           ))}
         </div>
       )}
 
       {notifications.length > 0 && (
         <div className="notif-current">
-          {current > 0 && (
+          {currentNotification > 0 && (
             <FontAwesomeIcon
               icon="angle-left"
               className="nav prev"
@@ -35,11 +43,12 @@ export default function Notifications() {
 
           {/* CURRENT NOTIFICATION */}
           <Notification
-            json={notifications[current]}
-            key={notifications[current].id}
+            json={notifications[currentNotification]}
+            current={true}
+            key={notifications[currentNotification].id}
           />
 
-          {current < notifications.length - 1 && (
+          {currentNotification < notifications.length - 1 && (
             <FontAwesomeIcon
               icon="angle-right"
               className="nav next"
@@ -50,10 +59,14 @@ export default function Notifications() {
       )}
 
       {/* NEXT NOTIFICATIONS */}
-      {current < notifications.length - 1 && (
+      {currentNotification < notifications.length - 1 && (
         <div className="notif-list next">
-          {notifications.slice(current + 1).map((notification) => (
-            <Notification json={notification} key={notification.id} />
+          {notifications.slice(currentNotification + 1).map((notification) => (
+            <Notification
+              json={notification}
+              current={false}
+              key={notification.id}
+            />
           ))}
         </div>
       )}

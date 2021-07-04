@@ -9,6 +9,7 @@ import {
 
 interface NotificationProps {
   json: strictJsonNotification;
+  current: boolean;
 }
 
 export default function Notification(props: NotificationProps) {
@@ -22,10 +23,13 @@ export default function Notification(props: NotificationProps) {
 
   useEffect(() => {
     $('.notification').animate({ opacity: 1 }, 200);
-  });
+    // setTimeout(() => {
+    //   handleClose();
+    // }, props.json.type.showTime * 1000);
+  }, []);
 
   async function handleClose() {
-    clearNotification(props.json.id);
+    if (props.current && props.json.id) clearNotification();
   }
 
   return (

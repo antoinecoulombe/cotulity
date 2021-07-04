@@ -7,25 +7,25 @@ module.exports = {
       [
         {
           name: 'success',
-          showTime: 3,
+          showTime: 2,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
           name: 'info',
-          showTime: 5,
+          showTime: 3,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
           name: 'warning',
-          showTime: 5,
+          showTime: 3,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
           name: 'error',
-          showTime: 10,
+          showTime: 5,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },

@@ -16,64 +16,47 @@
 
 #apps-container {
   position: relative;
-  top: 8px;
-  left: 8px;
   overflow: hidden;
+  width: 70%;
 
   > #apps {
-    width: 100%;
-    height: 100%;
-    // overflow: auto;
-    // padding-right: 17px;xxxxxxxxxxx
-
+    position: relative;
     @app-size: 176px;
-    @margin-size: 17px;
+    @margin: 9px;
 
-    // (x * 0.48) / 193 = floor(y) = z boxes
-    // x = 2560, y = 6.36, z = 6
-    // x = 1920, y = 4.78, z = 4
-    // x = 1280, y = 3.18, z = 3
-    // x = 1024, y = 2.55, z = 2
-
-    > .app {
+    > .app-container {
       position: relative;
       float: left;
       width: @app-size;
       height: @app-size;
-      background-color: white;
-      margin-right: @margin-size;
-      margin-bottom: @margin-size;
+      margin: @margin;
       cursor: pointer;
-      border-radius: 10px;
 
-      > i {
-        @bg: #global.bg();
-
-        // background: @bg[gradient-dark];
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-
-        font-size: 70px;
-        line-height: @app-size;
-        display: inline-block;
+      > .app {
+        display: flex;
         width: 100%;
-        text-align: center;
+        height: 100%;
+        justify-content: center;
+        background-color: var(--gradient-input-bg);
+        color: var(--apps-icon-color);
+        border-radius: 10px;
+
+        > svg {
+          font-size: 70px;
+          height: 100%;
+        }
       }
 
       &:hover {
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-        @bg: #global.bg();
-        // background-image: @bg[gradient-dark];
+        > .app {
+          @new-app-size: 162px;
+          width: @new-app-size;
+          height: @new-app-size;
+          margin: ((@app-size - @new-app-size) / 2);
 
-        > i {
-          background: transparent;
-          color: white;
-          -webkit-background-clip: border-box;
-          -webkit-text-fill-color: currentcolor;
-          background-clip: text;
+          > svg {
+            font-size: 64px;
+          }
         }
       }
     }

@@ -16,22 +16,39 @@ import NotFoundPage from './404';
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faArrowAltCircleRight } from '@fortawesome/free-solid-svg-icons';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
-import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-library.add(faArrowAltCircleRight);
-library.add(faAngleRight);
-library.add(faAngleLeft);
-library.add(faExclamationCircle);
-library.add(faTimesCircle);
-library.add(faInfoCircle);
-library.add(faCheckCircle);
-library.add(faTimes);
+import {
+  faArrowAltCircleRight,
+  faAngleRight,
+  faAngleLeft,
+  faExclamationCircle,
+  faTimesCircle,
+  faInfoCircle,
+  faCheckCircle,
+  faTimes,
+  faFileInvoiceDollar,
+  faTasks,
+  faCogs,
+  faUtensils,
+  faHome,
+  faQuestionCircle,
+} from '@fortawesome/free-solid-svg-icons';
+
+library.add(
+  faArrowAltCircleRight,
+  faAngleRight,
+  faAngleLeft,
+  faExclamationCircle,
+  faTimesCircle,
+  faInfoCircle,
+  faCheckCircle,
+  faTimes,
+  faFileInvoiceDollar,
+  faTasks,
+  faCogs,
+  faUtensils,
+  faHome,
+  faQuestionCircle
+);
 
 export default function App() {
   const history = useHistory();

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 export default function Translate(obj: any) {
   const { t, i18n } = useTranslation('common');
 
-  function format(string, params) {
+  function format(string: string, params: string[]) {
     var str = string;
 
     for (var i = 0; i < arguments[1].length; i++) {
