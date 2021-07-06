@@ -27,19 +27,21 @@ const Notifications_1 = __importDefault(require("./routes/Notifications"));
 app.use('/notifications', Notifications_1.default);
 const Apps_1 = __importDefault(require("./routes/Apps"));
 app.use('/apps', Apps_1.default);
+const Homes_1 = __importDefault(require("./routes/Homes"));
+app.use('/homes', Homes_1.default);
 // Generic Error Handler
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({
-        title: err.title || 'An error occured',
-        msg: err.msg || 'Please try again.',
+        title: err.title || 'request.error',
+        msg: err.msg || 'request.error',
         err: err.complete,
     });
 });
 // 404 Handler
 app.use((req, res) => {
     res.status(404).send({
-        title: '404 - Not found',
-        msg: "Our robots can't find what you are looking for.",
+        title: 'request.notFound',
+        msg: 'request.notFound',
     });
 });
 // Express Start

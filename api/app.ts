@@ -32,11 +32,14 @@ app.use('/notifications', Notifications);
 import Apps from './routes/Apps';
 app.use('/apps', Apps);
 
+import Homes from './routes/Homes';
+app.use('/homes', Homes);
+
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   res.status(err.status || 500).json({
-    title: err.title || 'An error occured',
-    msg: err.msg || 'Please try again.',
+    title: err.title || 'request.error',
+    msg: err.msg || 'request.error',
     err: err.complete,
   });
 });
@@ -44,8 +47,8 @@ app.use((err: any, req: any, res: any, next: any) => {
 // 404 Handler
 app.use((req, res) => {
   res.status(404).send({
-    title: '404 - Not found',
-    msg: "Our robots can't find what you are looking for.",
+    title: 'request.notFound',
+    msg: 'request.notFound',
   });
 });
 

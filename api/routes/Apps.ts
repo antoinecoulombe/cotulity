@@ -3,12 +3,31 @@ import express from 'express';
 const Apps = express.Router();
 const db = require('../db/models');
 
-const validateApp = async (req: any, res: any, next: any) => {
+const validateHome = async (req: any, res: any, next: any) => {
   try {
-    if (!req.params.name)
+    if (!req.params.homeId)
       return next({ title: 'request.notFound', msg: 'request.notFound' });
 
-    const app = await db.App.findOne({ where: { name: req.params.name } });
+    const home = await req.user.getHomes({
+      where: { id: req.params.homeId },
+    });
+
+    if (home.length === 0)
+      return next({ title: 'request.notFound', msg: 'request.notFound' });
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    return next({ title: 'request.error', msg: 'request.error' });
+  }
+};
+
+const validateApp = async (req: any, res: any, next: any) => {
+  try {
+    if (!req.params.appName)
+      return next({ title: 'request.notFound', msg: 'request.notFound' });
+
+    const app = await db.App.findOne({ where: { name: req.params.appName } });
 
     if (!app)
       return next({ title: 'request.notFound', msg: 'request.notFound' });
@@ -22,7 +41,7 @@ const validateApp = async (req: any, res: any, next: any) => {
   }
 };
 
-Apps.use('/:name/', validateApp, (req, res) => {
+Apps.use('/:appName/:homeId/', validateApp, validateHome, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 

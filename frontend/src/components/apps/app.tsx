@@ -7,7 +7,7 @@ import Tooltip from '../utils/tooltip';
 import axios from '../../utils/fetchClient';
 
 interface AppProps {
-  id: number;
+  id?: number;
   name: string;
   icon: string;
 }

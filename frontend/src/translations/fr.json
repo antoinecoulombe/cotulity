@@ -23,6 +23,14 @@
     "settings": {
       "name": "Paramètres",
       "desc": "Modifiez Cotulity comme vous le souhaitez avec ces paramètres."
+    },
+    "join": {
+      "name": "Rejoindre une maison",
+      "desc": "Rejoignez une maison existante."
+    },
+    "create": {
+      "name": "Créer une nouvelle maison",
+      "desc": "Créez une nouvelle maison."
     }
   },
   "form": {
@@ -49,7 +57,7 @@
         "error": "Une erreur est survenue!",
         "success": "Opération réussie!",
         "notFound": "Ressource introuvable",
-        "denied": "Access denied",
+        "denied": "Accès refusé",
         "authorized": "Authorisé"
       },
       "apps": {
@@ -72,8 +80,9 @@
       "request": {
         "success": "L'opération s'est executée avec succès.",
         "error": "Veuillez réessayer.",
-        "notFound": "La ressource demandée est introuvable.",
-        "reload": "Veuillez rafraîchir la page."
+        "notFound": "Nos robots ne trouvent pas ce que vous cherchez.",
+        "reload": "Veuillez rafraîchir la page.",
+        "unauthorized": "Vous n'êtes pas authorisé à accéder à cette ressource."
       },
       "apps": {
         "offline": "Cette application est actuellement hors-ligne."

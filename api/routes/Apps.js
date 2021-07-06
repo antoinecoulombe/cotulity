@@ -15,11 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const Apps = express_1.default.Router();
 const db = require('../db/models');
+const validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.params.homeId)
+            return next({ title: 'request.notFound', msg: 'request.notFound' });
+        const home = yield req.user.getHomes({
+            where: { id: req.params.homeId },
+        });
+        if (home.length === 0)
+            return next({ title: 'request.notFound', msg: 'request.notFound' });
+        return next();
+    }
+    catch (error) {
+        console.log(error);
+        return next({ title: 'request.error', msg: 'request.error' });
+    }
+});
 const validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!req.params.name)
+        if (!req.params.appName)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
-        const app = yield db.App.findOne({ where: { name: req.params.name } });
+        const app = yield db.App.findOne({ where: { name: req.params.appName } });
         if (!app)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
         if (!app.online)
@@ -31,7 +47,7 @@ const validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
-Apps.use('/:name/', validateApp, (req, res) => {
+Apps.use('/:appName/:homeId/', validateApp, validateHome, (req, res) => {
     res.json({ title: 'request.authorized' });
 });
 Apps.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

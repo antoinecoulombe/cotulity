@@ -13,6 +13,7 @@ import LoginPage from './login';
 import AppsPage from './apps';
 import Notifications from '../components/utils/notifications';
 import NotFoundPage from './404';
+import newHomePage from './apps/newHome';
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -82,6 +83,7 @@ export default function App() {
       <Switch>
         <PublicRoute exact path="/" component={LoginPage} />
         <PrivateRoute exact path="/apps" component={AppsPage} />
+        <PrivateRoute exact path="/apps/homes/new" component={newHomePage} />
 
         <Route exact path="/404" component={NotFoundPage} />
         <Redirect to="/404" />
