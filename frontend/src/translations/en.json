@@ -1,4 +1,30 @@
 {
+  "apps": {
+    "homes": {
+      "name": "Homes",
+      "desc": "Manage your homes and join other homes."
+    },
+    "tasks": {
+      "name": "Tasks",
+      "desc": "Keep track of the tasks to do in your home."
+    },
+    "groceries": {
+      "name": "Groceries",
+      "desc": "Note what's missing in your home here!"
+    },
+    "finances": {
+      "name": "Finances",
+      "desc": "Manage your home's expenses."
+    },
+    "calendar": {
+      "name": "Calendar",
+      "desc": "See what your roomates are doing these days!"
+    },
+    "settings": {
+      "name": "Settings",
+      "desc": "Set Cotulity the way you like it with those settings."
+    }
+  },
   "form": {
     "email": "Email",
     "password": "Password",
@@ -22,7 +48,12 @@
       "request": {
         "error": "An error happened!",
         "success": "Success!",
-        "notFound": "Resource not found"
+        "notFound": "Resource not found",
+        "denied": "Access denied",
+        "authorized": "Authorized"
+      },
+      "apps": {
+        "error": "Applications could not be loaded"
       },
       "login": {
         "success": "Connection successfull",
@@ -41,7 +72,11 @@
       "request": {
         "success": "The operation completed successfully.",
         "error": "Please try again.",
-        "notFound": "The requested resource couldn't be found."
+        "notFound": "The requested resource couldn't be found.",
+        "reload": "Please reload the page."
+      },
+      "apps": {
+        "offline": "This app is currently offline."
       },
       "login": {
         "success": "You are now logged in.",

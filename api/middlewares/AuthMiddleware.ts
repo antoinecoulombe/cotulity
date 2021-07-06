@@ -1,4 +1,4 @@
-import express = require('express');
+import express from 'express';
 import jwtDecode from 'jwt-decode';
 
 const passport = require('passport');

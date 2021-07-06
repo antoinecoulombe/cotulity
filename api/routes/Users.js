@@ -16,15 +16,6 @@ const express_1 = __importDefault(require("express"));
 const Users = express_1.default.Router();
 const db = require('../db/models');
 const bcrypt = require('bcryptjs');
-Users.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const users = yield db.User.findAll();
-        res.json({ users });
-    }
-    catch (e) {
-        res.json({ error: e });
-    }
-}));
 Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
     let pwdHash = null;

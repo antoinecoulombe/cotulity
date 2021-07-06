@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
   App.init(
     {
       name: DataTypes.STRING,
-      description: DataTypes.TEXT,
       online: DataTypes.BOOLEAN,
       image: DataTypes.STRING,
     },

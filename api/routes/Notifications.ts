@@ -25,11 +25,10 @@ Notifications.get('/', async (req: any, res: any) => {
   }
 });
 
-Notifications.delete('/delete/:userId', async (req: any, res: any) => {
+Notifications.delete('/delete/:id', async (req: any, res: any) => {
   try {
-    console.log(req.params.userId);
     const notification = await db.Notification.findOne({
-      where: { toId: req.user.id, id: req.params.userId },
+      where: { toId: req.user.id, id: req.params.id },
     });
 
     if (!notification)

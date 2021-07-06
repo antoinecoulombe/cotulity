@@ -25,6 +25,8 @@ const Users_1 = __importDefault(require("./routes/Users"));
 app.use('/users', Users_1.default);
 const Notifications_1 = __importDefault(require("./routes/Notifications"));
 app.use('/notifications', Notifications_1.default);
+const Apps_1 = __importDefault(require("./routes/Apps"));
+app.use('/apps', Apps_1.default);
 // Generic Error Handler
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({

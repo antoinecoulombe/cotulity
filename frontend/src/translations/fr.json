@@ -1,4 +1,30 @@
 {
+  "apps": {
+    "homes": {
+      "name": "Maisons",
+      "desc": "Gérez et joignez vos maisons."
+    },
+    "tasks": {
+      "name": "Tâches",
+      "desc": "Maintenez une liste des tâches à faire dans votre maison."
+    },
+    "groceries": {
+      "name": "Épicerie",
+      "desc": "Notez ce qu'il manque dans votre maison ici!"
+    },
+    "finances": {
+      "name": "Finances",
+      "desc": "Gérez les dépenses de votre maison."
+    },
+    "calendar": {
+      "name": "Calendrier",
+      "desc": "Voyez ce que font vos colocataires!"
+    },
+    "settings": {
+      "name": "Paramètres",
+      "desc": "Modifiez Cotulity comme vous le souhaitez avec ces paramètres."
+    }
+  },
   "form": {
     "email": "Courriel",
     "password": "Mot de passe",
@@ -22,7 +48,12 @@
       "request": {
         "error": "Une erreur est survenue!",
         "success": "Opération réussie!",
-        "notFound": "Ressource introuvable"
+        "notFound": "Ressource introuvable",
+        "denied": "Access denied",
+        "authorized": "Authorisé"
+      },
+      "apps": {
+        "error": "Erreur lors du chargement des applications"
       },
       "login": {
         "success": "Connexion réussie",
@@ -41,7 +72,11 @@
       "request": {
         "success": "L'opération s'est executée avec succès.",
         "error": "Veuillez réessayer.",
-        "notFound": "La ressource demandée est introuvable."
+        "notFound": "La ressource demandée est introuvable.",
+        "reload": "Veuillez rafraîchir la page."
+      },
+      "apps": {
+        "offline": "Cette application est actuellement hors-ligne."
       },
       "login": {
         "success": "Vous êtes maintenant connecté.",

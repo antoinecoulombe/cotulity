@@ -14,9 +14,6 @@ export default {
         type: Sequelize.STRING,
         unique: true,
       },
-      description: {
-        type: Sequelize.TEXT,
-      },
       online: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

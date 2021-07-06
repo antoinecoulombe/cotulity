@@ -36,11 +36,10 @@ Notifications.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-Notifications.delete('/delete/:userId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Notifications.delete('/delete/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.params.userId);
         const notification = yield db.Notification.findOne({
-            where: { toId: req.user.id, id: req.params.userId },
+            where: { toId: req.user.id, id: req.params.id },
         });
         if (!notification)
             return res

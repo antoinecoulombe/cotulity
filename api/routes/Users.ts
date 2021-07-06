@@ -5,15 +5,6 @@ const Users = express.Router();
 const db = require('../db/models');
 const bcrypt = require('bcryptjs');
 
-Users.get('/', async (req, res) => {
-  try {
-    const users = await db.User.findAll();
-    res.json({ users });
-  } catch (e) {
-    res.json({ error: e });
-  }
-});
-
 Users.post('/register', async (req, res) => {
   let pwdHash = null;
   try {

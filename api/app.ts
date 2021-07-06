@@ -29,6 +29,9 @@ app.use('/users', Users);
 import Notifications from './routes/Notifications';
 app.use('/notifications', Notifications);
 
+import Apps from './routes/Apps';
+app.use('/apps', Apps);
+
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   res.status(err.status || 500).json({
