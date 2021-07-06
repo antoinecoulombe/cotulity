@@ -3,7 +3,7 @@ import $ from 'jquery';
 import '../../assets/css/apps.css';
 import App from '../../components/apps/app';
 
-export default function NewHomePage() {
+export default function AppNewHome() {
   function handleResize() {
     let containerWidth = $('#apps-container').outerWidth() ?? 500,
       appWidth = $('.app-container').outerWidth(true) ?? 500,

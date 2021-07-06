@@ -9,11 +9,14 @@ interface TooltipProps {
 export default function Tooltip(props: TooltipProps) {
   return (
     <>
-      {!props.hovered && (
-        <div className="tooltip">
-          <p>
-            <Translate name={props.children}></Translate>
-          </p>
+      {props.hovered && (
+        <div className="tooltip-container">
+          <div className="tooltip">
+            <p>
+              <Translate name={props.children}></Translate>
+            </p>
+          </div>
+          <div className="triangle"></div>
         </div>
       )}
     </>

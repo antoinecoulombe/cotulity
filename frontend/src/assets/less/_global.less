@@ -43,6 +43,13 @@ body,
   overflow: hidden;
 }
 
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .App {
   position: absolute;
   width: 100%;
@@ -50,10 +57,7 @@ body,
 
   @bg: #global.bg();
   background-image: @bg[gradient];
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  .centered();
 }
 
 input:-webkit-autofill {
@@ -461,12 +465,40 @@ input:-webkit-autofill {
 
 // #region tooltip
 
-.tooltip {
-  > p {
-    .font-default();
+.tooltip-container {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: -38px;
+  pointer-events: none;
+  .centered();
 
-    font-size: 18px;
-    color: white;
+  > .tooltip {
+    position: relative;
+    display: inline-block;
+    background-color: rgba(49, 24, 24, 0.7);
+    width: auto;
+    max-width: 500px;
+    min-width: 80px;
+    padding: 8.5px 17px;
+    border-radius: 24px;
+    text-align: center;
+
+    > p {
+      .font-default();
+      font-size: 17px;
+      color: white;
+      margin: 0;
+    }
+  }
+
+  > .triangle {
+    width: 0;
+    height: 0;
+    border-left: 22px solid transparent;
+    border-right: 22px solid transparent;
+
+    border-top: 16px solid rgba(49, 24, 24, 0.7);
   }
 }
 

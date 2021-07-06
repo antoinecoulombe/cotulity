@@ -6,14 +6,14 @@ import axios from '../utils/fetchClient';
 import { useNotifications } from '../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
 
-interface App {
+interface OnlineApp {
   id: number;
   name: string;
   image: string;
   description?: string;
 }
 
-interface Home {
+interface UserHome {
   id: number;
   name: string;
   refNumber: string;
@@ -21,9 +21,9 @@ interface Home {
 
 export default function AppsPage() {
   const { setNotification } = useNotifications();
-  const [apps, setApps] = useState<App[]>([]);
-  const [homes, setHomes] = useState<Home[]>([]);
-  const [currentHome, setCurrentHome] = useState<Home>();
+  const [apps, setApps] = useState<OnlineApp[]>([]);
+  const [homes, setHomes] = useState<UserHome[]>([]);
+  const [currentHome, setCurrentHome] = useState<UserHome>();
   const history = useHistory();
 
   function handleResize() {

@@ -35,12 +35,12 @@ export default function App(props: AppProps) {
       onMouseLeave={() => setHover(false)}
       onClick={handleClick}
     >
+      <Tooltip hovered={hovered}>{`apps.${props.name}.name`}</Tooltip>
       <div className="app">
         <FontAwesomeIcon
           icon={['fas', props.icon as IconName]}
         ></FontAwesomeIcon>
       </div>
-      <Tooltip hovered={hovered}>{`apps.${props.name}.name`}</Tooltip>
     </div>
   );
 }

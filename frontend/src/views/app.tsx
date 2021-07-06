@@ -8,12 +8,21 @@ import { getNotifications } from '../utils/global';
 // CSS
 import '../assets/css/theme.css';
 
+// Components
+import Notifications from '../components/utils/notifications';
+
 // Pages
 import LoginPage from './login';
 import AppsPage from './apps';
-import Notifications from '../components/utils/notifications';
 import NotFoundPage from './404';
-import newHomePage from './apps/newHome';
+
+// Apps
+import AppNewHome from './apps/newHome';
+import AppTasks from './apps/tasks';
+import AppGroceries from './apps/groceries';
+import AppSettings from './apps/settings';
+import AppHomes from './apps/homes';
+import AppFinances from './apps/finances';
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -83,7 +92,13 @@ export default function App() {
       <Switch>
         <PublicRoute exact path="/" component={LoginPage} />
         <PrivateRoute exact path="/apps" component={AppsPage} />
-        <PrivateRoute exact path="/apps/homes/new" component={newHomePage} />
+
+        <PrivateRoute exact path="/apps/homes/new" component={AppNewHome} />
+        <PrivateRoute exact path="/apps/homes" component={AppHomes} />
+        <PrivateRoute exact path="/apps/finances" component={AppFinances} />
+        <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
+        <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />
+        <PrivateRoute exact path="/apps/settings" component={AppSettings} />
 
         <Route exact path="/404" component={NotFoundPage} />
         <Redirect to="/404" />
