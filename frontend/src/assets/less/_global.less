@@ -468,21 +468,31 @@ input:-webkit-autofill {
 // #region tooltip
 
 .tooltip-container {
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  pointer-events: none;
-  .centered();
   .noselect();
+
+  &.parent-centered {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    .centered();
+
+    > .tooltip {
+      position: absolute;
+      bottom: 4px;
+
+      &.over {
+        bottom: -16px;
+      }
+    }
+  }
 
   > .tooltip {
     .centered();
-    position: absolute;
     width: auto;
     max-width: 500px;
     text-align: center;
-    bottom: 4px;
 
     &.over {
       bottom: -16px;

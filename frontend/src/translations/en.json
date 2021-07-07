@@ -51,6 +51,9 @@
       "link": "Log in"
     }
   },
+  "homes": {
+    "joinOrCreate": "Join or create a home"
+  },
   "notif": {
     "title": {
       "request": {

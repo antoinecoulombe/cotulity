@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tooltip from '../utils/tooltip';
 import { useHistory } from 'react-router';
+import IconToolTip from '../utils/iconTooltip';
 
 export interface UserHome {
   id: number;
@@ -20,7 +21,7 @@ export default function HomesDropdown(props: HomesDropdownProps) {
   const history = useHistory();
 
   function handleClick() {
-    setActive(!active);
+    if (props.homes.length > 1) setActive(!active);
   }
 
   function handleChange(event: any) {
@@ -35,12 +36,14 @@ export default function HomesDropdown(props: HomesDropdownProps) {
     setActive(false);
   }
 
+  const iconWidth = 32;
+
   if (!props.homes || props.homes.length === 0) return <></>;
   else
     return (
       <div className={`homes-dropdown-container ${active ? 'active' : ''}`}>
         <div className="homes selected">
-          <div className="home">
+          <div className={`home ${props.homes.length <= 1 ? 'alone' : ''}`}>
             <h1 onClick={handleClick}>
               {props.homes[0].UserHome.nickname ?? props.homes[0].name}
             </h1>
@@ -52,11 +55,17 @@ export default function HomesDropdown(props: HomesDropdownProps) {
                   onClick={handleClick}
                 ></FontAwesomeIcon>
                 {active && (
-                  <FontAwesomeIcon
+                  <IconToolTip
                     icon="plus-circle"
-                    className="icon"
                     onClick={() => history.push('/apps/homes/new')}
-                  ></FontAwesomeIcon>
+                    style={{
+                      iconWidth: iconWidth,
+                      tooltipMultiplier: 8,
+                      marginRight: iconWidth,
+                    }}
+                  >
+                    homes.joinOrCreate
+                  </IconToolTip>
                 )}
               </>
             )}
