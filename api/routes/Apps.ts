@@ -41,6 +41,10 @@ const validateApp = async (req: any, res: any, next: any) => {
   }
 };
 
+Apps.use('/:appName/', validateApp, (req, res) => {
+  res.json({ title: 'request.authorized' });
+});
+
 Apps.use('/:appName/:homeId/', validateApp, validateHome, (req, res) => {
   res.json({ title: 'request.authorized' });
 });

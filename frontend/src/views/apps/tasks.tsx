@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
 
 export default function AppTasks() {
-  return <></>;
+  return <div>Tasks</div>;
 }

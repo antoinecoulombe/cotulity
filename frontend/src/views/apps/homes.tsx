@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
 
 export default function AppHomes() {
-  return <></>;
+  return <div>Homes</div>;
 }

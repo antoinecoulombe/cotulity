@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
 
 export default function AppFinances() {
-  return <></>;
+  return <div>Finances</div>;
 }

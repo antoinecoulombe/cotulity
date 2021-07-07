@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
 
 export default function AppSettings() {
-  return <></>;
+  return <div>Settings</div>;
 }

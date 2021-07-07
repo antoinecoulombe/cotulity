@@ -1,9 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import $ from 'jquery';
 import '../../assets/css/apps.css';
 import App from '../../components/apps/app';
 
 export default function AppNewHome() {
+  const [action, setAction] = useState<string>('create');
+
+  function handleClick(name: string) {
+    console.log(name);
+    setAction(name);
+    // TODO: show input
+  }
+
   function handleResize() {
     let containerWidth = $('#apps-container').outerWidth() ?? 500,
       appWidth = $('.app-container').outerWidth(true) ?? 500,
@@ -26,8 +34,8 @@ export default function AppNewHome() {
     <>
       <div id="apps-container">
         <div id="apps">
-          <App icon="home" name="create"></App>
-          <App icon="home" name="join"></App>
+          <App icon="home" name="create" onClick={handleClick}></App>
+          <App icon="home" name="join" onClick={handleClick}></App>
         </div>
       </div>
     </>

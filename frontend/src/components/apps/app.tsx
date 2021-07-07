@@ -10,6 +10,7 @@ interface AppProps {
   id?: number;
   name: string;
   icon: string;
+  onClick?: (name: string) => void;
 }
 
 export default function App(props: AppProps) {
@@ -18,14 +19,16 @@ export default function App(props: AppProps) {
   const history = useHistory();
 
   function handleClick() {
-    axios
-      .get(`/apps/${props.name}`)
-      .then(async (res: any) => {
-        history.push(`/apps/${props.name}`);
-      })
-      .catch((err) => {
-        setNotification(err.response.data);
-      });
+    if (props.onClick) props.onClick(props.name);
+    else
+      axios
+        .get(`/apps/${props.name}`)
+        .then(async (res: any) => {
+          history.push(`/apps/${props.name}`);
+        })
+        .catch((err) => {
+          setNotification(err.response.data);
+        });
   }
 
   return (

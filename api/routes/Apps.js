@@ -47,6 +47,9 @@ const validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
+Apps.use('/:appName/', validateApp, (req, res) => {
+    res.json({ title: 'request.authorized' });
+});
 Apps.use('/:appName/:homeId/', validateApp, validateHome, (req, res) => {
     res.json({ title: 'request.authorized' });
 });
