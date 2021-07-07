@@ -17,10 +17,21 @@ const Homes = express_1.default.Router();
 const db = require('../db/models');
 Homes.use('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const homes = yield req.user.getHomes();
-        res.json({ homes });
+        const dbHomes = yield req.user.getHomes({
+            attributes: ['id', 'refNumber', 'name'],
+        });
+        res.json({
+            homes: JSON.parse(JSON.stringify(dbHomes, [
+                'id',
+                'refNumber',
+                'name',
+                'UserHome',
+                'nickname',
+            ])),
+        });
     }
     catch (e) {
+        console.log(e);
         res.json({ title: 'request.error', msg: 'request.error' });
     }
 }));

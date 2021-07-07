@@ -5,9 +5,23 @@ const db = require('../db/models');
 
 Homes.use('/', async (req: any, res) => {
   try {
-    const homes = await req.user.getHomes();
-    res.json({ homes });
+    const dbHomes = await req.user.getHomes({
+      attributes: ['id', 'refNumber', 'name'],
+    });
+
+    res.json({
+      homes: JSON.parse(
+        JSON.stringify(dbHomes, [
+          'id',
+          'refNumber',
+          'name',
+          'UserHome',
+          'nickname',
+        ])
+      ),
+    });
   } catch (e) {
+    console.log(e);
     res.json({ title: 'request.error', msg: 'request.error' });
   }
 });

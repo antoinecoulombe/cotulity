@@ -25,11 +25,11 @@
       "desc": "Set Cotulity the way you like it with those settings."
     },
     "join": {
-      "name": "Join a home",
+      "name": "Join a home!",
       "desc": "Join an existing home."
     },
     "create": {
-      "name": "Create a new home",
+      "name": "Create a new home!",
       "desc": "Create a new home."
     }
   },

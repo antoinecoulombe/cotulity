@@ -1,7 +1,7 @@
-@import '_global.less';
+@import '_global.less'; // xxxxxxxxxx
 
 #logo {
-  .logo(); //xxxxxxxx
+  .logo();
 
   position: fixed;
   bottom: 0;
@@ -15,8 +15,9 @@
 }
 
 #apps-container {
+  .centered();
+
   position: relative;
-  // overflow: hidden;
   width: 70%;
 
   > #apps {
@@ -57,6 +58,121 @@
           > svg {
             font-size: 64px;
           }
+        }
+      }
+    }
+  }
+}
+
+.homes-dropdown-container {
+  .centered();
+  .font-default();
+
+  @fontSize: 36px;
+  @padding: 20px;
+  @radius: 25px;
+  @iconSize: 32px;
+
+  position: absolute;
+  width: 100%;
+  max-width: 500px;
+  min-width: 350px;
+  top: -120px;
+  color: white;
+  z-index: 1;
+
+  &.active {
+    background-image: linear-gradient(
+      to right,
+      var(--gradient-from-80),
+      var(--gradient-to-80)
+    );
+    border-radius: @radius;
+
+    > .homes.selected {
+      background-color: var(--black-20);
+      border-radius: @radius @radius 0 0;
+    }
+  }
+
+  > .homes {
+    .centered();
+
+    position: relative;
+    width: 100%;
+    height: auto;
+    width: 100%;
+
+    h1,
+    .icon,
+    .chevron {
+      cursor: pointer;
+    }
+
+    > .home {
+      .centered();
+      padding: @padding 0;
+      width: 100%;
+
+      > h1 {
+        .noselect();
+        font-family: 'Roboto';
+        font-size: @fontSize;
+        font-weight: 200;
+        margin: 0;
+        max-width: calc(100% - (@iconSize * 5));
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      > .chevron {
+        width: 14px;
+      }
+
+      > .icon {
+        position: absolute;
+        right: 0;
+        height: @iconSize;
+        width: @iconSize;
+        margin-right: @iconSize;
+      }
+    }
+
+    &.selected {
+      > .home {
+        padding: (@padding * 1.25) 0;
+      }
+      .icon {
+        opacity: 0.7;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    &.list > .home {
+      cursor: pointer;
+
+      > h1,
+      .icon {
+        pointer-events: none;
+      }
+
+      > .icon {
+        display: none;
+      }
+
+      &:last-of-type {
+        border-radius: 0 0 @radius @radius;
+      }
+
+      &:hover {
+        background-color: var(--white-20);
+        > .icon {
+          display: block;
+          opacity: 0.8;
         }
       }
     }

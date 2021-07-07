@@ -25,11 +25,11 @@
       "desc": "Modifiez Cotulity comme vous le souhaitez avec ces paramètres."
     },
     "join": {
-      "name": "Rejoindre une maison",
+      "name": "Rejoindre une maison!",
       "desc": "Rejoignez une maison existante."
     },
     "create": {
-      "name": "Créer une nouvelle maison",
+      "name": "Créer une nouvelle maison!",
       "desc": "Créez une nouvelle maison."
     }
   },

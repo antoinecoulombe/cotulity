@@ -41,6 +41,9 @@ import {
   faUtensils,
   faHome,
   faQuestionCircle,
+  faPlusCircle,
+  faChevronDown,
+  faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -57,7 +60,10 @@ library.add(
   faCogs,
   faUtensils,
   faHome,
-  faQuestionCircle
+  faQuestionCircle,
+  faPlusCircle,
+  faChevronDown,
+  faChevronUp
 );
 
 export default function App() {

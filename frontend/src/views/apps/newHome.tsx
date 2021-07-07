@@ -14,11 +14,11 @@ export default function AppNewHome() {
 
     $('#apps').css({
       width: appWidth * appsPerLine,
-      left: (containerWidth - appWidth * appsPerLine) / 2,
     });
   }
 
   useEffect(() => {
+    handleResize();
     window.addEventListener('resize', handleResize);
   }, []);
 

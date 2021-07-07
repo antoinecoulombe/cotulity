@@ -5,6 +5,7 @@ import App from '../components/apps/app';
 import axios from '../utils/fetchClient';
 import { useNotifications } from '../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
+import HomesDropdown, { UserHome } from '../components/apps/homesDropdown';
 
 interface OnlineApp {
   id: number;
@@ -13,18 +14,17 @@ interface OnlineApp {
   description?: string;
 }
 
-interface UserHome {
-  id: number;
-  name: string;
-  refNumber: string;
-}
-
 export default function AppsPage() {
   const { setNotification } = useNotifications();
   const [apps, setApps] = useState<OnlineApp[]>([]);
   const [homes, setHomes] = useState<UserHome[]>([]);
   const [currentHome, setCurrentHome] = useState<UserHome>();
   const history = useHistory();
+
+  function handleHomeChange(home: UserHome[]) {
+    setHomes(home);
+    setCurrentHome(home[0]);
+  }
 
   function handleResize() {
     let containerWidth = $('#apps-container').outerWidth() ?? 500,
@@ -36,7 +36,6 @@ export default function AppsPage() {
 
     $('#apps').css({
       width: appWidth * appsPerLine,
-      left: (containerWidth - appWidth * appsPerLine) / 2,
     });
   }
 
@@ -44,23 +43,23 @@ export default function AppsPage() {
     window.addEventListener('resize', handleResize);
 
     axios
-      .get(`/homes`)
-      .then(async (res: any) => {
-        if (!res.data.homes || res.data.homes.length === 0)
-          history.push('/apps/homes/new');
-
-        setHomes(res.data.homes);
-        setCurrentHome(res.data.homes[0]);
-      })
-      .catch((err) => {
-        setNotification(err.response.data);
-      });
-
-    axios
       .get(`/apps`)
       .then(async (res: any) => {
         setApps(res.data.apps);
         handleResize();
+
+        axios
+          .get(`/homes`)
+          .then((res: any) => {
+            if (!res.data.homes || res.data.homes.length === 0)
+              history.push('/apps/homes/new');
+
+            setHomes(res.data.homes);
+            setCurrentHome(res.data.homes[0]);
+          })
+          .catch((err) => {
+            setNotification(err.response.data);
+          });
       })
       .catch((err) => {
         setNotification(err.response.data);
@@ -69,14 +68,11 @@ export default function AppsPage() {
 
   return (
     <>
-      <div id="homes-list">
-        {homes.map((home) => (
-          <div key={home.id}>
-            <h1>{home.name}</h1>
-          </div>
-        ))}
-      </div>
       <div id="apps-container">
+        <HomesDropdown
+          homes={homes}
+          onChange={handleHomeChange}
+        ></HomesDropdown>
         <div id="apps">
           {apps.map((app) => (
             <App
