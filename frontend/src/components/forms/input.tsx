@@ -9,7 +9,7 @@ interface InputProps {
   value: string;
   error?: boolean;
   label?: string;
-  classes?: Array<string>;
+  className?: string;
   onChange: (e: any) => void;
   onKeyPress?: (e: any) => void;
 }
@@ -44,9 +44,9 @@ class Input extends React.Component<InputProps> {
   render() {
     return (
       <div
-        className={`form-input ${
-          this.props.classes ? this.props.classes?.join(' ') : ''
-        } ${this.props.error ? 'error' : ''}`}
+        className={`form-input ${this.props.className} ${
+          this.props.error ? 'error' : ''
+        }`}
       >
         <input
           id={this.props.name}

@@ -147,6 +147,7 @@ export default function LoginForm() {
         type={'email'}
         value={form.email}
         onChange={(e: any) => setForm({ ...form, email: e.target.value })}
+        onKeyPress={handleKeyPress}
         error={errors.email}
       />
       <Input
@@ -168,7 +169,7 @@ export default function LoginForm() {
         name={'form.phone'}
         type={'phone'}
         value={form.phone}
-        classes={['signup']}
+        className="signup"
         onChange={(e: any) => setForm({ ...form, phone: e.target.value })}
         error={errors.phone}
       />
@@ -176,7 +177,7 @@ export default function LoginForm() {
         name={'form.cpassword'}
         type={'password'}
         value={form.cpassword}
-        classes={['signup']}
+        className="signup"
         onChange={(e: any) => setForm({ ...form, cpassword: e.target.value })}
         error={errors.cpassword}
       />
@@ -184,7 +185,7 @@ export default function LoginForm() {
         name={'form.firstname'}
         type={'text'}
         value={form.firstname}
-        classes={['signup']}
+        className="signup"
         onChange={(e: any) => setForm({ ...form, firstname: e.target.value })}
         error={errors.firstname}
       />
@@ -192,7 +193,7 @@ export default function LoginForm() {
         name={'form.lastname'}
         type={'text'}
         value={form.lastname}
-        classes={['signup']}
+        className="signup"
         onChange={(e: any) => setForm({ ...form, lastname: e.target.value })}
         onKeyPress={handleKeyPress}
         error={errors.lastname}

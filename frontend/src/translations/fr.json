@@ -33,6 +33,12 @@
       "desc": "Créez une nouvelle maison."
     }
   },
+  "nav": {
+    "next": "Suivant",
+    "prev": "Précédent",
+    "goBack": "Retour en arrière",
+    "submit": "Soumettre"
+  },
   "form": {
     "email": "Courriel",
     "password": "Mot de passe",
@@ -96,7 +102,9 @@
         "requestSent": "Demande envoyée!"
       },
       "newHome": {
-        "missingId": "Identifiant manquant"
+        "missingId": "Identifiant manquant",
+        "missingName": "Nom manquant",
+        "created": "Maison créée"
       }
     },
     "msg": {
@@ -153,7 +161,9 @@
         "requestSent": "Votre demande a été envoyée au créateur de la maison."
       },
       "newHome": {
-        "missingId": "Veuillez entrer les informations de la maison."
+        "missingId": "Veuillez entrer l'identifiant de la maison.",
+        "missingName": "Veuillez entrer le nom de la maison.",
+        "created": "Bienvenue dans votre nouvelle maison"
       }
     }
   }

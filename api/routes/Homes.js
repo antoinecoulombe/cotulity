@@ -36,8 +36,35 @@ Homes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-Homes.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.post('/create/:homeName', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!req.params.homeName)
+            return res.status(500).json({ title: '', msg: '' });
+        const home = yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            const refNumberDigits = 6;
+            let refNumber;
+            do {
+                refNumber = Math.random()
+                    .toString()
+                    .slice(2, 2 + refNumberDigits);
+            } while ((yield db.Home.findOne({ where: { refNumber: refNumber } })) != null);
+            const home = yield db.Home.create({
+                refNumber: refNumber,
+                name: req.params.homeName,
+                ownerId: req.user.id,
+            }, { transaction: t });
+            yield db.UserHome.create({
+                userId: req.user.id,
+                homeId: home.id,
+                accepted: 1,
+            }, { transaction: t });
+            return home;
+        }));
+        res.json({
+            title: 'newHome.created',
+            msg: 'newHome.created',
+            refNumber: home.refNumber,
+        });
     }
     catch (e) {
         console.log(e);
@@ -45,7 +72,6 @@ Homes.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
     try {
         console.log(req.params.refNumber);
         const userHome = yield req.user.getHomes({
@@ -64,11 +90,11 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
             else {
                 if (userHome[0].UserHome.accepted)
                     return res.status(500).json({
-                        title: 'homes.alreadyInHome',
+                        title: 'homes.couldNotJoin',
                         msg: 'homes.alreadyInHome',
                     });
                 return res.status(500).json({
-                    title: 'homes.requestAlreadySent',
+                    title: 'homes.couldNotJoin',
                     msg: 'homes.requestAlreadySent',
                 });
             }
@@ -80,16 +106,19 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
             return res
                 .status(500)
                 .json({ title: 'homes.notFound', msg: 'homes.notFound' });
-        db.Notification.create({
-            typeId: 2,
-            toId: home.ownerId,
-            title: `{"translate":"homes.newRequest","format":["${home.name}"]}`,
-            description: `{"translate":"homes.newRequest","format":["${req.user.firstname}","${home.name}"]}`,
-        });
-        if (((_b = (_a = userHome[0]) === null || _a === void 0 ? void 0 : _a.UserHome) === null || _b === void 0 ? void 0 : _b.deletedAt) != null)
-            userHome[0].UserHome.restore();
-        else
-            req.user.addHomes(home.id);
+        yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            var _a, _b;
+            db.Notification.create({
+                typeId: 2,
+                toId: home.ownerId,
+                title: `{"translate":"homes.newRequest","format":["${home.name}"]}`,
+                description: `{"translate":"homes.newRequest","format":["${req.user.firstname}","${home.name}"]}`,
+            }, { transaction: t });
+            if (((_b = (_a = userHome[0]) === null || _a === void 0 ? void 0 : _a.UserHome) === null || _b === void 0 ? void 0 : _b.deletedAt) != null)
+                return userHome[0].UserHome.restore({}, { transaction: t });
+            else
+                return req.user.addHomes(home.id, { transaction: t });
+        }));
         res.json({ title: 'homes.requestSent', msg: 'homes.requestSent' });
     }
     catch (e) {

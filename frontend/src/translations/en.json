@@ -33,6 +33,12 @@
       "desc": "Create a new home."
     }
   },
+  "nav": {
+    "next": "Next",
+    "prev": "Previous",
+    "goBack": "Go back",
+    "submit": "Submit"
+  },
   "form": {
     "email": "Email",
     "password": "Password",
@@ -96,7 +102,9 @@
         "requestSent": "Request sent!"
       },
       "newHome": {
-        "missingId": "Identifier missing"
+        "missingId": "Identifier missing",
+        "missingName": "Name missing",
+        "created": "Home created"
       }
     },
     "msg": {
@@ -153,7 +161,9 @@
         "requestSent": "Your request was sent to the home creator."
       },
       "newHome": {
-        "missingId": "Please enter the house identifier."
+        "missingId": "Please enter the house identifier.",
+        "missingName": "Please enter the house name.",
+        "created": "Welcome to your new home!"
       }
     }
   }

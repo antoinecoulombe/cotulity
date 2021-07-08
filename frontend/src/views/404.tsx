@@ -5,7 +5,7 @@ import { isAuthenticated } from '../utils/global';
 
 export default function NotFoundPage() {
   return (
-    <div className="container">
+    <div className="container-404">
       <h1>404</h1>
       <h2>
         <i>Uh-Oh!</i> It seems like you lost your way. <br />

@@ -53,6 +53,7 @@ export default function IconToolTip(props: IconTooltipProps) {
           style={{
             width: props.style.iconWidth,
             height: props.style.iconWidth,
+            cursor: props.onClick ? 'pointer' : 'default',
           }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}

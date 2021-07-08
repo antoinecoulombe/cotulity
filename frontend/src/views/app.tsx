@@ -7,6 +7,7 @@ import { getNotifications } from '../utils/global';
 
 // CSS
 import '../assets/css/theme.css';
+import '../assets/css/global.css';
 
 // Components
 import Notifications from '../components/utils/notifications';
@@ -28,6 +29,7 @@ import AppFinances from './apps/finances';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faArrowAltCircleRight,
+  faArrowAltCircleLeft,
   faAngleRight,
   faAngleLeft,
   faExclamationCircle,
@@ -48,6 +50,7 @@ import {
 
 library.add(
   faArrowAltCircleRight,
+  faArrowAltCircleLeft,
   faAngleRight,
   faAngleLeft,
   faExclamationCircle,

@@ -1,5 +1,3 @@
-//out: false
-
 // #region variables/maps
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
@@ -84,6 +82,99 @@ input:-webkit-autofill {
 
 // #endregion
 
+// #region Single Input Form
+
+.si-form {
+  @iconSize: 36px;
+  @iconMargin: 10px;
+
+  .centered();
+
+  position: relative;
+  max-width: 536px;
+  width: 80%;
+
+  position: relative;
+  max-width: 536px;
+
+  .icon-tooltip {
+    position: relative !important;
+  }
+
+  > .title {
+    position: relative;
+    width: calc(100% - @iconSize - @iconMargin);
+    padding-left: @iconSize + @iconMargin;
+    margin: 12px 0;
+
+    > h2 {
+      .font-default();
+
+      display: block;
+      float: left;
+      font-size: 16px;
+      color: var(--white);
+      margin: 0;
+    }
+
+    > .icon-tooltip {
+      margin-left: 10px;
+      float: left;
+      color: var(--black);
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  > .input-container {
+    width: 100%;
+
+    > .icon-tooltip {
+      float: left;
+      top: 7px;
+      color: var(--white);
+
+      &:hover {
+        > .icon {
+          opacity: 0.9 !important;
+        }
+      }
+
+      &:first-of-type {
+        float: left;
+        margin-right: @iconMargin;
+
+        > .icon {
+          opacity: 0.25;
+        }
+      }
+
+      &:last-of-type {
+        float: right;
+        margin-left: @iconMargin;
+
+        > .icon {
+          opacity: 0.6;
+        }
+      }
+    }
+
+    > .form-input {
+      &.offset {
+        margin-left: @iconMargin + @iconSize !important;
+      }
+
+      width: calc(100% - @iconSize * 2 - @iconMargin * 2);
+      margin-left: 0;
+    }
+  }
+}
+
+// #endregion
+
 // #region input
 
 .form-input {
@@ -162,7 +253,7 @@ input:-webkit-autofill {
     &:focus,
     &.filled,
     &:-webkit-autofill {
-      padding-top: 8%;
+      padding-top: 18px;
     }
 
     &:focus ~ label {
@@ -500,7 +591,7 @@ input:-webkit-autofill {
 
     > p {
       .font-default();
-      font-size: 17px;
+      font-size: 16px;
       color: white;
       margin: 0;
       padding: 8.5px 17px;

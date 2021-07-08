@@ -1,18 +1,6 @@
-@import '_global.less'; //xxxxx
+@import (reference) 'global.less'; //xx
 
-#logo {
-  .logo();
-
-  position: fixed;
-  bottom: 0;
-  right: 0;
-
-  margin: 30px;
-
-  > h1 {
-    font-size: 46px;
-  }
-}
+// #region Apps
 
 #apps-container {
   .centered();
@@ -63,6 +51,10 @@
     }
   }
 }
+
+// #endregion
+
+// #region Home dropdown
 
 .homes-dropdown-container {
   .centered();
@@ -182,3 +174,5 @@
     }
   }
 }
+
+// #endregion
