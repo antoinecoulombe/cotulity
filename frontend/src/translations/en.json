@@ -54,6 +54,18 @@
   "homes": {
     "joinOrCreate": "Join or create a home"
   },
+  "newHome": {
+    "join": {
+      "tooltip": "The unique identifier is the name of the house you wish to join, followed by a pound (#) and 6 digits. Ask the home owner for it!",
+      "label": "MyCoolHouse#123456",
+      "title": "Enter the house identifier's"
+    },
+    "create": {
+      "tooltip": "This name will be seen by members you invite into your house.",
+      "label": "Name it anything you'd like!",
+      "title": "Enter the name of your new house"
+    }
+  },
   "notif": {
     "title": {
       "request": {
@@ -76,7 +88,11 @@
       },
       "homes": {
         "memberLost": "{0} lost a member!",
-        "memberAdded": "{0} has a new member!"
+        "memberAdded": "{0} has a new member!",
+        "notFound": "House not found",
+        "newRequest": "{0} has a new request!",
+        "couldNotJoin": "Couldn't join home",
+        "requestAlreadyDenied": "Your request was denied"
       }
     },
     "msg": {
@@ -124,7 +140,12 @@
         "memberExcluded": "{0} was excluded from {1}.",
         "memberQuit": "{0} has left {1}.",
         "memberAcceptedInvite": "{0} has joined {1}.",
-        "memberRequestApproved": "{0}'s request was approved."
+        "memberRequestApproved": "{0}'s request was approved.",
+        "notFound": "We couldn't find a house associated to that identifier.",
+        "newRequest": "{0} requested to join {1}.",
+        "alreadyInHome": "You are already part of that home.",
+        "requestAlreadySent": "You already sent a request to that home.",
+        "waitWeek": "Please wait 7 days to send another request."
       }
     }
   }

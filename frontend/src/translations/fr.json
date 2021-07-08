@@ -54,6 +54,18 @@
   "homes": {
     "joinOrCreate": "Créez ou rejoignez une maison"
   },
+  "newHome": {
+    "join": {
+      "tooltip": "L'identifiant unique de la maison est le nom de la maison que vous souhaitez rejoindre, suivi du carreau et 6 chiffres. Demandez au créateur de la maison pour l'obtenir!",
+      "label": "MaMagnifiqueMaison#123456",
+      "title": "Veuillez entrer l'identificant de la maison"
+    },
+    "create": {
+      "tooltip": "La maison sera visible sous ce nom par les nouveaux membres.",
+      "label": "Nommez la comme vous le voulez!",
+      "title": "Veuillez entrer le nom de votre nouvelle maison"
+    }
+  },
   "notif": {
     "title": {
       "request": {
@@ -76,7 +88,11 @@
       },
       "homes": {
         "memberLost": "{0} a perdu un membre!",
-        "memberAdded": "{0} a un nouveau membre!"
+        "memberAdded": "{0} a un nouveau membre!",
+        "notFound": "Maison introuvable",
+        "newRequest": "{0} a une nouvelle demande!",
+        "couldNotJoin": "Impossible de rejoindre la maison",
+        "requestAlreadyDenied": "Votre demande a été refusée"
       }
     },
     "msg": {
@@ -124,7 +140,12 @@
         "memberExcluded": "{0} a été exclu de {1}.",
         "memberQuit": "{0} a quitté {1}.",
         "memberAcceptedInvite": "{0} a accepté de rejoindre {1}.",
-        "memberRequestApproved": "La demande de {0} a été approuvée."
+        "memberRequestApproved": "La demande de {0} a été approuvée.",
+        "notFound": "Auncune maison n'est associée à cet identifiant.",
+        "newRequest": "{0} à demandé de rejoindre {1}.",
+        "alreadyInHome": "Vous êtes déjà membre de cette maison.",
+        "requestAlreadySent": "Vous avez déjà envoyé une demande à cette maison.",
+        "waitWeek": "Veuillez attendre 7 jours avant de faire une nouvelle demande."
       }
     }
   }

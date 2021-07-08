@@ -5,7 +5,7 @@ import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 interface IconTooltipProps {
   icon: string;
-  onClick: () => void;
+  onClick?: (e: any) => void;
   children: string;
   style: {
     iconWidth: number;

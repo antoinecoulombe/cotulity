@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 interface InputProps {
   name: string;
   type: 'text' | 'password' | 'phone' | 'email';
+  value: string;
   error?: boolean;
-  value?: string;
   label?: string;
   classes?: Array<string>;
   onChange: (e: any) => void;
@@ -58,7 +58,7 @@ class Input extends React.Component<InputProps> {
           onKeyPress={this.props.onKeyPress}
         ></input>
         <label htmlFor={this.props.name}>
-          <Translate name={`form.${this.props.label ?? this.props.name}`} />{' '}
+          <Translate name={`${this.props.label ?? this.props.name}`} />{' '}
           {this.props.error && (
             <FontAwesomeIcon icon="times-circle"></FontAwesomeIcon>
           )}

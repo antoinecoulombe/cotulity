@@ -77,6 +77,7 @@ export default function LoginForm() {
         return res.data;
       })
       .catch((err) => {
+        console.log(err);
         setNotification(err.response.data);
       });
   }
@@ -142,14 +143,14 @@ export default function LoginForm() {
   return (
     <form id="login" onSubmit={(event) => handleSubmit(event)}>
       <Input
-        name={'email'}
+        name={'form.email'}
         type={'email'}
         value={form.email}
         onChange={(e: any) => setForm({ ...form, email: e.target.value })}
         error={errors.email}
       />
       <Input
-        name={'password'}
+        name={'form.password'}
         type={'password'}
         value={form.password}
         onChange={(e: any) => setForm({ ...form, password: e.target.value })}
@@ -164,7 +165,7 @@ export default function LoginForm() {
       ></FontAwesomeIcon>
 
       <Input
-        name={'phone'}
+        name={'form.phone'}
         type={'phone'}
         value={form.phone}
         classes={['signup']}
@@ -172,7 +173,7 @@ export default function LoginForm() {
         error={errors.phone}
       />
       <Input
-        name={'cpassword'}
+        name={'form.cpassword'}
         type={'password'}
         value={form.cpassword}
         classes={['signup']}
@@ -180,7 +181,7 @@ export default function LoginForm() {
         error={errors.cpassword}
       />
       <Input
-        name={'firstname'}
+        name={'form.firstname'}
         type={'text'}
         value={form.firstname}
         classes={['signup']}
@@ -188,7 +189,7 @@ export default function LoginForm() {
         error={errors.firstname}
       />
       <Input
-        name={'lastname'}
+        name={'form.lastname'}
         type={'text'}
         value={form.lastname}
         classes={['signup']}
