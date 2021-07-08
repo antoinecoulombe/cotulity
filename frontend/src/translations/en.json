@@ -92,7 +92,11 @@
         "notFound": "House not found",
         "newRequest": "{0} has a new request!",
         "couldNotJoin": "Couldn't join home",
-        "requestAlreadyDenied": "Your request was denied"
+        "requestAlreadyDenied": "Your request was denied",
+        "requestSent": "Request sent!"
+      },
+      "newHome": {
+        "missingId": "Identifier missing"
       }
     },
     "msg": {
@@ -145,7 +149,11 @@
         "newRequest": "{0} requested to join {1}.",
         "alreadyInHome": "You are already part of that home.",
         "requestAlreadySent": "You already sent a request to that home.",
-        "waitWeek": "Please wait 7 days to send another request."
+        "waitWeek": "Please wait 7 days to send another request.",
+        "requestSent": "Your request was sent to the home creator."
+      },
+      "newHome": {
+        "missingId": "Please enter the house identifier."
       }
     }
   }

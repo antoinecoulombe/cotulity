@@ -92,7 +92,11 @@
         "notFound": "Maison introuvable",
         "newRequest": "{0} a une nouvelle demande!",
         "couldNotJoin": "Impossible de rejoindre la maison",
-        "requestAlreadyDenied": "Votre demande a été refusée"
+        "requestAlreadyDenied": "Votre demande a été refusée",
+        "requestSent": "Demande envoyée!"
+      },
+      "newHome": {
+        "missingId": "Identifiant manquant"
       }
     },
     "msg": {
@@ -145,7 +149,11 @@
         "newRequest": "{0} à demandé de rejoindre {1}.",
         "alreadyInHome": "Vous êtes déjà membre de cette maison.",
         "requestAlreadySent": "Vous avez déjà envoyé une demande à cette maison.",
-        "waitWeek": "Veuillez attendre 7 jours avant de faire une nouvelle demande."
+        "waitWeek": "Veuillez attendre 7 jours avant de faire une nouvelle demande.",
+        "requestSent": "Votre demande a été envoyée au créateur de la maison."
+      },
+      "newHome": {
+        "missingId": "Veuillez entrer les informations de la maison."
       }
     }
   }

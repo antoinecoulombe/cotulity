@@ -5,7 +5,7 @@ import App from '../../components/apps/app';
 import Input from '../../components/forms/input';
 import SingleInput from '../../components/forms/SingleInput';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
+import axios from '../../utils/fetchClient';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
 
@@ -37,16 +37,30 @@ export default function AppNewHome() {
     });
   }
 
-  function handleSubmit() {
+  function postJoin() {
+    let split = form.name.split('#');
+    if (split.length < 2)
+      return setErrorNotification({
+        title: 'newHome.missingId',
+        msg: 'newHome.missingId',
+      });
+
     axios
-      .post(`/homes/${action}`, form)
+      .post(`/homes/join/${split[1]}`)
       .then((res) => {
         setSuccessNotification(res.data);
         history.push('/apps');
       })
       .catch((err) => {
-        setErrorNotification(err.data);
+        setErrorNotification(err.response.data);
       });
+  }
+
+  function postCreate() {}
+
+  function handleSubmit() {
+    if (action === 'join') postJoin();
+    else postCreate();
   }
 
   useEffect(() => {

@@ -33,7 +33,7 @@ Homes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (e) {
         console.log(e);
-        res.json({ title: 'request.error', msg: 'request.error' });
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
 Homes.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,12 +41,13 @@ Homes.post('/create', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (e) {
         console.log(e);
-        res.json({ title: 'request.error', msg: 'request.error' });
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
 Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     try {
+        console.log(req.params.refNumber);
         const userHome = yield req.user.getHomes({
             where: { refNumber: req.params.refNumber },
             through: { paranoid: false },
@@ -55,18 +56,18 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
             if (userHome[0].UserHome.deletedAt != null) {
                 if (new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) <
                     userHome[0].UserHome.deletedAt)
-                    return res.json({
+                    return res.status(500).json({
                         title: 'homes.requestAlreadyDenied',
                         msg: 'homes.waitWeek',
                     });
             }
             else {
                 if (userHome[0].UserHome.accepted)
-                    return res.json({
+                    return res.status(500).json({
                         title: 'homes.alreadyInHome',
                         msg: 'homes.alreadyInHome',
                     });
-                return res.json({
+                return res.status(500).json({
                     title: 'homes.requestAlreadySent',
                     msg: 'homes.requestAlreadySent',
                 });
@@ -76,7 +77,9 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
             where: { refNumber: req.params.refNumber },
         });
         if (!home)
-            return res.json({ title: 'homes.notFound', msg: 'homes.notFound' });
+            return res
+                .status(500)
+                .json({ title: 'homes.notFound', msg: 'homes.notFound' });
         db.Notification.create({
             typeId: 2,
             toId: home.ownerId,
@@ -87,11 +90,11 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
             userHome[0].UserHome.restore();
         else
             req.user.addHomes(home.id);
-        res.json({ title: 'request.success' });
+        res.json({ title: 'homes.requestSent', msg: 'homes.requestSent' });
     }
     catch (e) {
         console.log(e);
-        res.json({ title: 'request.error', msg: 'request.error' });
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
 exports.default = Homes;

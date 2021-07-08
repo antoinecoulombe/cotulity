@@ -1,4 +1,3 @@
-import e from 'express';
 import express from 'express';
 
 const Homes = express.Router();
@@ -24,7 +23,7 @@ Homes.get('/', async (req: any, res) => {
     });
   } catch (e) {
     console.log(e);
-    res.json({ title: 'request.error', msg: 'request.error' });
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
 
@@ -32,12 +31,13 @@ Homes.post('/create', async (req: any, res) => {
   try {
   } catch (e) {
     console.log(e);
-    res.json({ title: 'request.error', msg: 'request.error' });
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
 
 Homes.post('/join/:refNumber', async (req: any, res) => {
   try {
+    console.log(req.params.refNumber);
     const userHome = await req.user.getHomes({
       where: { refNumber: req.params.refNumber },
       through: { paranoid: false },
@@ -49,18 +49,18 @@ Homes.post('/join/:refNumber', async (req: any, res) => {
           new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) <
           userHome[0].UserHome.deletedAt
         )
-          return res.json({
+          return res.status(500).json({
             title: 'homes.requestAlreadyDenied',
             msg: 'homes.waitWeek',
           });
       } else {
         if (userHome[0].UserHome.accepted)
-          return res.json({
+          return res.status(500).json({
             title: 'homes.alreadyInHome',
             msg: 'homes.alreadyInHome',
           });
 
-        return res.json({
+        return res.status(500).json({
           title: 'homes.requestAlreadySent',
           msg: 'homes.requestAlreadySent',
         });
@@ -72,7 +72,9 @@ Homes.post('/join/:refNumber', async (req: any, res) => {
     });
 
     if (!home)
-      return res.json({ title: 'homes.notFound', msg: 'homes.notFound' });
+      return res
+        .status(500)
+        .json({ title: 'homes.notFound', msg: 'homes.notFound' });
 
     db.Notification.create({
       typeId: 2,
@@ -85,10 +87,10 @@ Homes.post('/join/:refNumber', async (req: any, res) => {
       userHome[0].UserHome.restore();
     else req.user.addHomes(home.id);
 
-    res.json({ title: 'request.success' });
+    res.json({ title: 'homes.requestSent', msg: 'homes.requestSent' });
   } catch (e) {
     console.log(e);
-    res.json({ title: 'request.error', msg: 'request.error' });
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
 
