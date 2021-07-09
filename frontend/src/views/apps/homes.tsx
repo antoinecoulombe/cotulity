@@ -11,9 +11,18 @@ import Translate from '../../components/utils/translate';
 import axios from '../../utils/fetchClient';
 import { useNotifications } from '../../contexts/NotificationsContext';
 
+export interface Home {
+  id: number;
+  ownerId: number;
+  refNumber: number;
+  name: string;
+  memberCount: number;
+  UserHome: { nickname: string; accepted: boolean };
+}
+
 export default function AppHomes() {
   const history = useHistory();
-  const [homes, setHomes] = useState([]);
+  const [homes, setHomes] = useState<Home[]>([]);
   const { setNotification } = useNotifications();
 
   useEffect(() => {
@@ -60,13 +69,6 @@ export default function AppHomes() {
     tooltipMultiplier: 10,
   };
 
-  const iconStyleCircled = {
-    // iconWidth:
-  };
-
-  let creator = false;
-  let pending = true;
-
   return (
     <AppContainer
       title="yourHomes"
@@ -74,113 +76,119 @@ export default function AppHomes() {
       onAddClick={() => history.push('/apps/homes/new')}
     >
       <List>
-        <ListItem>
-          <ListItemLeft style={{ height: iconStyle.iconWidth }}>
-            <h3>Blainville </h3>
-            <p>
-              - 4 <Translate name="members" prefix="homes.list."></Translate>
-            </p>
-          </ListItemLeft>
-          <ListItemRight>
-            {pending && (
-              <>
-                <IconToolTip
-                  icon="times-circle"
-                  style={iconStyle}
-                  error={true}
-                  onClick={cancelRequest}
-                >
-                  {ReactDOMServer.renderToStaticMarkup(
+        {homes.map((home) => (
+          <ListItem key={home.id}>
+            <ListItemLeft style={{ height: iconStyle.iconWidth }}>
+              <h3>{home.UserHome.nickname ?? home.name}</h3>
+              <p>
+                - {home.memberCount}{' '}
+                <Translate name="member" prefix="homes.list."></Translate>
+                {home.memberCount === 1 ? '' : 's'}
+              </p>
+            </ListItemLeft>
+            <ListItemRight>
+              {!home.UserHome.accepted && (
+                <>
+                  <IconToolTip
+                    icon="times-circle"
+                    style={iconStyle}
+                    error={true}
+                    onClick={cancelRequest}
+                  >
+                    {ReactDOMServer.renderToStaticMarkup(
+                      <Translate
+                        name="cancelRequest"
+                        prefix="homes.action."
+                      ></Translate>
+                    )}
+                  </IconToolTip>
+                  <div className="tag">
                     <Translate
-                      name="cancelRequest"
-                      prefix="homes.action."
+                      name="requestPending"
+                      prefix="homes.tag."
                     ></Translate>
-                  )}
-                </IconToolTip>
-                <div className="tag">
-                  <Translate
-                    name="requestPending"
-                    prefix="homes.tag."
-                  ></Translate>
-                </div>
-              </>
-            )}
-            {creator && !pending && (
-              <>
-                <IconToolTip
-                  icon="times-circle"
-                  style={iconStyle}
-                  error={true}
-                  onClick={deleteHome}
-                >
-                  {ReactDOMServer.renderToStaticMarkup(
-                    <Translate
-                      name="deleteHome"
-                      prefix="homes.action."
-                    ></Translate>
-                  )}
-                </IconToolTip>
-                <IconToolTip
-                  icon="pen"
-                  style={iconStyle}
-                  circled={{ value: true, multiplier: 0.45 }}
-                  onClick={editHome}
-                >
-                  {ReactDOMServer.renderToStaticMarkup(
-                    <Translate
-                      name="editHome"
-                      prefix="homes.action."
-                    ></Translate>
-                  )}
-                </IconToolTip>
-                <IconToolTip
-                  icon="user-plus"
-                  style={iconStyle}
-                  circled={{ value: true, multiplier: 0.55, offset: 1 }}
-                  onClick={addMember}
-                >
-                  {ReactDOMServer.renderToStaticMarkup(
-                    <Translate
-                      name="addMember"
-                      prefix="homes.action."
-                    ></Translate>
-                  )}
-                </IconToolTip>
-              </>
-            )}
-            {!creator && !pending && (
-              <>
-                <IconToolTip
-                  icon="sign-out-alt"
-                  style={iconStyle}
-                  circled={{ value: true, multiplier: 0.58, offset: 1 }}
-                  error={true}
-                  onClick={quitHome}
-                >
-                  {ReactDOMServer.renderToStaticMarkup(
-                    <Translate
-                      name="quitHome"
-                      prefix="homes.action."
-                    ></Translate>
-                  )}
-                </IconToolTip>
-                <IconToolTip
-                  icon="pen"
-                  style={iconStyle}
-                  circled={{ value: true, multiplier: 0.45 }}
-                  onClick={renameHome}
-                >
-                  {ReactDOMServer.renderToStaticMarkup(
-                    <Translate
-                      name="renameHome"
-                      prefix="homes.action."
-                    ></Translate>
-                  )}
-                </IconToolTip>
-              </>
-            )}
-          </ListItemRight>
-        </ListItem>
+                  </div>
+                </>
+              )}
+              {localStorage.getItem('userId') == home.ownerId.toString() &&
+                home.UserHome.accepted && (
+                  <>
+                    <IconToolTip
+                      icon="times-circle"
+                      style={iconStyle}
+                      error={true}
+                      onClick={deleteHome}
+                    >
+                      {ReactDOMServer.renderToStaticMarkup(
+                        <Translate
+                          name="deleteHome"
+                          prefix="homes.action."
+                        ></Translate>
+                      )}
+                    </IconToolTip>
+                    <IconToolTip
+                      icon="pen"
+                      style={iconStyle}
+                      circled={{ value: true, multiplier: 0.45 }}
+                      onClick={editHome}
+                    >
+                      {ReactDOMServer.renderToStaticMarkup(
+                        <Translate
+                          name="editHome"
+                          prefix="homes.action."
+                        ></Translate>
+                      )}
+                    </IconToolTip>
+                    <IconToolTip
+                      icon="user-plus"
+                      style={iconStyle}
+                      circled={{ value: true, multiplier: 0.55, offset: 1 }}
+                      onClick={addMember}
+                    >
+                      {ReactDOMServer.renderToStaticMarkup(
+                        <Translate
+                          name="addMember"
+                          prefix="homes.action."
+                        ></Translate>
+                      )}
+                    </IconToolTip>
+                  </>
+                )}
+              {!(localStorage.getItem('userId') == home.ownerId.toString()) &&
+                home.UserHome.accepted && (
+                  <>
+                    <IconToolTip
+                      icon="sign-out-alt"
+                      style={iconStyle}
+                      circled={{ value: true, multiplier: 0.58, offset: 1 }}
+                      error={true}
+                      onClick={quitHome}
+                    >
+                      {ReactDOMServer.renderToStaticMarkup(
+                        <Translate
+                          name="quitHome"
+                          prefix="homes.action."
+                        ></Translate>
+                      )}
+                    </IconToolTip>
+                    <IconToolTip
+                      icon="pen"
+                      style={iconStyle}
+                      circled={{ value: true, multiplier: 0.45 }}
+                      onClick={renameHome}
+                    >
+                      {ReactDOMServer.renderToStaticMarkup(
+                        <Translate
+                          name="renameHome"
+                          prefix="homes.action."
+                        ></Translate>
+                      )}
+                    </IconToolTip>
+                  </>
+                )}
+            </ListItemRight>
+          </ListItem>
+        ))}
       </List>
     </AppContainer>
   );

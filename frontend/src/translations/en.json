@@ -80,7 +80,7 @@
       "requestPending": "Request Pending"
     },
     "list": {
-      "members": "members"
+      "member": "member"
     }
   },
   "newHome": {

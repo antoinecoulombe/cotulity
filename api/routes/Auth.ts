@@ -32,6 +32,7 @@ Router.post('/login', async (req, res) => {
           title: 'login.success',
           msg: 'login.success',
           token: token,
+          userId: user.id,
         });
       } else {
         res.status(401).json({

@@ -38,6 +38,7 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     title: 'login.success',
                     msg: 'login.success',
                     token: token,
+                    userId: user.id,
                 });
             }
             else {

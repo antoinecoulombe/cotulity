@@ -68,6 +68,7 @@ export default function LoginForm() {
           'x-access-token-expiration',
           (Date.now() + 2 * 60 * 60 * 1000).toString()
         );
+        localStorage.setItem('userId', res.data.userId);
 
         history.push('/apps');
 

@@ -82,7 +82,7 @@
       "requestPending": "Demande en attente"
     },
     "list": {
-      "members": "membres"
+      "member": "membre"
     }
   },
   "newHome": {

@@ -5,7 +5,8 @@ import App from '../components/apps/app';
 import axios from '../utils/fetchClient';
 import { useNotifications } from '../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
-import HomesDropdown, { UserHome } from '../components/apps/homesDropdown';
+import HomesDropdown from '../components/apps/homesDropdown';
+import { Home } from './apps/homes';
 
 interface OnlineApp {
   id: number;
@@ -17,11 +18,11 @@ interface OnlineApp {
 export default function AppsPage() {
   const { setNotification } = useNotifications();
   const [apps, setApps] = useState<OnlineApp[]>([]);
-  const [homes, setHomes] = useState<UserHome[]>([]);
-  const [currentHome, setCurrentHome] = useState<UserHome>();
+  const [homes, setHomes] = useState<Home[]>([]);
+  const [currentHome, setCurrentHome] = useState<Home>();
   const history = useHistory();
 
-  function handleHomeChange(home: UserHome[]) {
+  function handleHomeChange(home: Home[]) {
     setHomes(home);
     setCurrentHome(home[0]);
   }

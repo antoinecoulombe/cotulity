@@ -19,16 +19,42 @@ Homes.get('/:option?', (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const getAll = req.params.option === 'all';
         const dbHomes = yield req.user.getHomes({
-            through: { where: { accepted: getAll ? false : true } },
-            attributes: ['id', 'refNumber', 'name'],
+            group: ['Home.id'],
+            through: !getAll ? { where: { accepted: true } } : {},
+            attributes: [
+                'id',
+                'ownerId',
+                'refNumber',
+                'name',
+                [
+                    db.sequelize.fn('COUNT', db.sequelize.col('Members.id')),
+                    'memberCount',
+                ],
+            ],
+            include: [
+                {
+                    model: db.User,
+                    as: 'Members',
+                    through: {
+                        where: { accepted: true },
+                    },
+                },
+            ],
+            order: [
+                'name',
+                [db.sequelize.fn('COUNT', db.sequelize.col('Members.id')), 'DESC'],
+            ],
         });
         res.json({
             homes: JSON.parse(JSON.stringify(dbHomes, [
                 'id',
+                'ownerId',
                 'refNumber',
                 'name',
+                'memberCount',
                 'UserHome',
                 'nickname',
+                'accepted',
             ])),
         });
     }

@@ -1,5 +1,4 @@
 import express from 'express';
-import { all } from 'sequelize/types/lib/operators';
 
 const Homes = express.Router();
 const db = require('../db/models');
@@ -8,18 +7,44 @@ Homes.get('/:option?', async (req: any, res) => {
   try {
     const getAll: boolean = req.params.option === 'all';
     const dbHomes = await req.user.getHomes({
-      through: { where: { accepted: getAll ? false : true } },
-      attributes: ['id', 'refNumber', 'name'],
+      group: ['Home.id'],
+      through: !getAll ? { where: { accepted: true } } : {},
+      attributes: [
+        'id',
+        'ownerId',
+        'refNumber',
+        'name',
+        [
+          db.sequelize.fn('COUNT', db.sequelize.col('Members.id')),
+          'memberCount',
+        ],
+      ],
+      include: [
+        {
+          model: db.User,
+          as: 'Members',
+          through: {
+            where: { accepted: true },
+          },
+        },
+      ],
+      order: [
+        'name',
+        [db.sequelize.fn('COUNT', db.sequelize.col('Members.id')), 'DESC'],
+      ],
     });
 
     res.json({
       homes: JSON.parse(
         JSON.stringify(dbHomes, [
           'id',
+          'ownerId',
           'refNumber',
           'name',
+          'memberCount',
           'UserHome',
           'nickname',
+          'accepted',
         ])
       ),
     });

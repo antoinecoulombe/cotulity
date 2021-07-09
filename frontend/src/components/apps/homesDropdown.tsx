@@ -3,17 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tooltip from '../utils/tooltip';
 import { useHistory } from 'react-router';
 import IconToolTip from '../utils/iconTooltip';
-
-export interface UserHome {
-  id: number;
-  refNumber: number;
-  name: string;
-  UserHome: { nickname: string };
-}
+import { Home } from '../../views/apps/homes';
 
 interface HomesDropdownProps {
-  homes: UserHome[];
-  onChange: (home: UserHome[]) => void;
+  homes: Home[];
+  onChange: (home: Home[]) => void;
 }
 
 export default function HomesDropdown(props: HomesDropdownProps) {
