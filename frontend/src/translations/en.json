@@ -33,6 +33,12 @@
       "desc": "Create a new home."
     }
   },
+  "subHeader": {
+    "all": "All",
+    "important": "Important",
+    "orderBy": "Order By",
+    "filters": "Filters"
+  },
   "nav": {
     "next": "Next",
     "prev": "Previous",
@@ -58,7 +64,24 @@
     }
   },
   "homes": {
-    "joinOrCreate": "Join or create a home"
+    "tooltip": { "add": "Join or create a home" },
+    "title": {
+      "yourHomes": "Your Homes"
+    },
+    "action": {
+      "editHome": "Edit",
+      "deleteHome": "Delete",
+      "cancelRequest": "Cancel Request",
+      "quitHome": "Quit",
+      "renameHome": "Rename",
+      "addMember": "Add Member"
+    },
+    "tag": {
+      "requestPending": "Request Pending"
+    },
+    "list": {
+      "members": "members"
+    }
   },
   "newHome": {
     "join": {
@@ -71,6 +94,10 @@
       "label": "Name it anything you'd like!",
       "title": "Enter the name of your new house"
     }
+  },
+  "notFound": {
+    "title": "It seems like you lost your way.",
+    "link": "Help us get you back to safety"
   },
   "notif": {
     "title": {

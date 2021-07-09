@@ -15,10 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const Homes = express_1.default.Router();
 const db = require('../db/models');
-Homes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.get('/:option?', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const getAll = req.params.option === 'all';
         const dbHomes = yield req.user.getHomes({
-            through: { where: { accepted: true } },
+            through: { where: { accepted: getAll ? false : true } },
             attributes: ['id', 'refNumber', 'name'],
         });
         res.json({

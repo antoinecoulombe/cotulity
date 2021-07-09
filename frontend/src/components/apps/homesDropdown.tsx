@@ -64,7 +64,7 @@ export default function HomesDropdown(props: HomesDropdownProps) {
                       marginRight: iconWidth,
                     }}
                   >
-                    homes.joinOrCreate
+                    homes.tooltip.add
                   </IconToolTip>
                 )}
               </>

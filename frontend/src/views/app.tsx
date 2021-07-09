@@ -46,6 +46,9 @@ import {
   faPlusCircle,
   faChevronDown,
   faChevronUp,
+  faSignOutAlt,
+  faPen,
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -66,7 +69,10 @@ library.add(
   faQuestionCircle,
   faPlusCircle,
   faChevronDown,
-  faChevronUp
+  faChevronUp,
+  faSignOutAlt,
+  faPen,
+  faUserPlus
 );
 
 export default function App() {

@@ -1,25 +1,13 @@
 import React from 'react';
 
 interface ButtonProps {
-  name?: string;
-  type?: 'text' | 'password' | 'phone' | 'email' | 'password';
-  label?: string;
-  classes?: Array<string>;
-  onClick: void;
+  className?: string;
 }
 
-class Button extends React.Component<ButtonProps> {
-  constructor(props: ButtonProps) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <div className={this.props.classes?.toString().replace(',', ' ')}>
-        <button>Change theme</button>
-      </div>
-    );
-  }
+export default function Button(props: ButtonProps) {
+  return (
+    <div className={props.className ?? ''}>
+      <button>Change theme</button>
+    </div>
+  );
 }
-
-export default Button;

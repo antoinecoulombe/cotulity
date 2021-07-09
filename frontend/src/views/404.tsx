@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../assets/css/404.css';
+import Translate from '../components/utils/translate';
 import { isAuthenticated } from '../utils/global';
 
 export default function NotFoundPage() {
@@ -8,9 +9,10 @@ export default function NotFoundPage() {
     <div className="container-404">
       <h1>404</h1>
       <h2>
-        <i>Uh-Oh!</i> It seems like you lost your way. <br />
+        <i>Uh-Oh! </i>
+        <Translate name="title" prefix="notFound."></Translate> <br />
         <Link to={isAuthenticated() ? '/apps' : '/'}>
-          Help us get you back to safety
+          <Translate name="link" prefix="notFound."></Translate>
         </Link>
         .
       </h2>

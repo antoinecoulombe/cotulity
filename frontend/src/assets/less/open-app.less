@@ -1,0 +1,198 @@
+@import (reference) 'global.less';
+
+.open-app-container {
+  @app-padding: 60px;
+
+  position: relative;
+  width: 70%;
+  height: auto;
+  background-color: var(--gradient-btn-color);
+  border-radius: 10px;
+  padding: @app-padding;
+  box-shadow: 0px 1.5px 2.5px 0 rgba(0, 0, 0, 0.07);
+  border: solid 0.5px #d8d8d8;
+
+  > .headers {
+    > div:last-child {
+      margin-bottom: 60px;
+    }
+
+    > .header {
+      display: block;
+      float: left;
+      height: auto;
+      margin-bottom: 26px;
+
+      > .add-btn {
+        top: @app-padding + 4;
+        margin-right: @app-padding;
+
+        &:hover {
+          color: var(--success-color);
+          opacity: 0.9;
+        }
+      }
+
+      > h1 {
+        .font-default();
+        font-size: 36px;
+        margin: 0;
+      }
+    }
+
+    > .sub-header {
+      position: relative;
+      width: 100%;
+      height: auto;
+      float: left;
+
+      > .tabs,
+      > .options {
+        display: block;
+      }
+
+      > .tabs {
+        float: left;
+      }
+
+      > .options {
+        float: right;
+      }
+
+      h2 {
+        .font-default();
+        .noselect();
+
+        display: inline-block;
+        width: auto;
+        font-size: 18px;
+        color: var(--lightGray);
+        margin: 0;
+        margin-right: 36px;
+        cursor: pointer;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+
+        &.selected {
+          color: var(--black);
+        }
+
+        &:hover {
+          color: var(--black);
+        }
+      }
+    }
+  }
+
+  > .app-body {
+    @paddingSide: 12px;
+    @paddingTop: 15px;
+
+    position: relative;
+    float: left;
+    clear: both;
+    width: 100%;
+    top: 0;
+    left: 0;
+
+    .list {
+      position: relative;
+      display: block;
+      float: left;
+      width: 100%;
+
+      > .list-item {
+        position: relative;
+        display: block;
+        float: left;
+        width: calc(100% - @paddingSide * 2);
+        border-radius: 10px;
+        border: solid 1px #d8d8d800;
+        padding: @paddingTop @paddingSide;
+
+        &:hover {
+          box-shadow: 0px 3px 5px 0 rgba(0, 0, 0, 0.07);
+          border: solid 1px #d8d8d8;
+
+          .icon-tooltip {
+            display: block !important;
+          }
+        }
+
+        .tag {
+          .font-default();
+
+          position: relative;
+          float: right;
+          font-size: 15px;
+          font-weight: 500;
+          padding: 7px 14px;
+          border-radius: 200px;
+          color: #e77e89;
+          background-color: #fde6e9;
+          white-space: nowrap;
+        }
+
+        > .list-item-left,
+        > .list-item-right {
+          position: relative;
+
+          > h3,
+          > p {
+            .font-default();
+
+            position: relative;
+            display: contents;
+            margin: 0;
+            width: auto;
+            float: left;
+            vertical-align: center;
+          }
+
+          > h3 {
+            font-size: 17px;
+            font-weight: bold;
+            color: var(--darkGray);
+          }
+
+          > p {
+            font-size: 15px;
+            color: var(--gray);
+          }
+
+          .icon-tooltip {
+            position: relative !important;
+            cursor: pointer;
+            margin-left: 10px;
+            display: none;
+          }
+        }
+
+        > .list-item-left {
+          float: left;
+          .centered();
+
+          .icon-tooltip {
+            float: left;
+          }
+        }
+        > .list-item-right {
+          float: right;
+
+          .icon-tooltip {
+            float: right;
+          }
+        }
+      }
+    }
+  }
+
+  &.homes {
+    max-width: 1000px;
+    min-width: 700px - @app-padding * 2;
+    max-height: 70%;
+    min-height: 600px - @app-padding * 2;
+  }
+}

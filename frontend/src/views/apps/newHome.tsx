@@ -6,7 +6,6 @@ import SingleInputForm from '../../components/forms/singleInputForm';
 import axios from '../../utils/fetchClient';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
-import IconToolTip from '../../components/utils/iconTooltip';
 
 export default function AppNewHome() {
   const { setSuccessNotification, setErrorNotification } = useNotifications();

@@ -1,7 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function Translate(obj: any) {
+export interface TranslateProps {
+  name: string;
+  prefix?: string;
+  suffix?: string;
+  spaceBefore?: boolean;
+  spaceAfter?: boolean;
+}
+
+export default function Translate(props: TranslateProps) {
   const { t, i18n } = useTranslation('common');
 
   function format(string: string, params: string[]) {
@@ -17,17 +25,17 @@ export default function Translate(obj: any) {
 
   let translated;
   try {
-    let json = JSON.parse(obj.name);
-    translated = format(t(obj.prefix + json.translate), json.format);
+    let json = JSON.parse(props.name);
+    translated = format(t(props.prefix + json.translate), json.format);
   } catch (error) {
-    translated = t((obj.prefix ?? '') + obj.name);
+    translated = t((props.prefix ?? '') + props.name + (props.suffix ?? ''));
   }
 
   return (
     <>
-      {obj.spaceBefore ? ' ' : ''}
+      {props.spaceBefore ? ' ' : ''}
       {translated}
-      {obj.spaceAfter ? ' ' : ''}
+      {props.spaceAfter ? ' ' : ''}
     </>
   );
 }

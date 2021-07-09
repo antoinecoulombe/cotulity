@@ -33,6 +33,12 @@
       "desc": "Créez une nouvelle maison."
     }
   },
+  "subHeader": {
+    "all": "Tout",
+    "important": "Important",
+    "orderBy": "Trier par",
+    "filters": "Filtrer"
+  },
   "nav": {
     "next": "Suivant",
     "prev": "Précédent",
@@ -58,7 +64,26 @@
     }
   },
   "homes": {
-    "joinOrCreate": "Créez ou rejoignez une maison"
+    "tooltip": {
+      "add": "Créez ou rejoignez une maison"
+    },
+    "title": {
+      "yourHomes": "Vos maisons"
+    },
+    "action": {
+      "editHome": "Modifier",
+      "deleteHome": "Supprimer",
+      "cancelRequest": "Annuler la demande",
+      "quitHome": "Quitter",
+      "renameHome": "Renommer",
+      "addMember": "Ajouter un membre"
+    },
+    "tag": {
+      "requestPending": "Demande en attente"
+    },
+    "list": {
+      "members": "membres"
+    }
   },
   "newHome": {
     "join": {
@@ -71,6 +96,10 @@
       "label": "Nommez la comme vous le voulez!",
       "title": "Veuillez entrer le nom de votre nouvelle maison"
     }
+  },
+  "notFound": {
+    "title": "Vous semblez être perdu.",
+    "link": "Laissez-nous vous remmener à sécurité"
   },
   "notif": {
     "title": {

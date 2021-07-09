@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import $ from 'jquery';
+import React from 'react';
 import Translate from './translate';
 
 interface TooltipProps {

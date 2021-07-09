@@ -1,12 +1,14 @@
 import express from 'express';
+import { all } from 'sequelize/types/lib/operators';
 
 const Homes = express.Router();
 const db = require('../db/models');
 
-Homes.get('/', async (req: any, res) => {
+Homes.get('/:option?', async (req: any, res) => {
   try {
+    const getAll: boolean = req.params.option === 'all';
     const dbHomes = await req.user.getHomes({
-      through: { where: { accepted: true } },
+      through: { where: { accepted: getAll ? false : true } },
       attributes: ['id', 'refNumber', 'name'],
     });
 

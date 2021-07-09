@@ -612,3 +612,37 @@ input:-webkit-autofill {
 }
 
 // #endregion
+
+// #region IconToolTip
+
+.icon-tooltip {
+  &.circled {
+    background-color: var(--lightGray);
+    border-radius: 200px;
+    color: white;
+
+    &:hover {
+      background-color: var(--gray);
+    }
+
+    &.error {
+      opacity: 0.7;
+      background-color: var(--error-color);
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  &.error:not(.circled) {
+    opacity: 0.7;
+    color: var(--error-color);
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// #endregion
