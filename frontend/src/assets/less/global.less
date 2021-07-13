@@ -119,6 +119,31 @@ input:-webkit-autofill {
 
   > .warning-popup {
     position: relative;
+    @iconSize: 50px;
+
+    > .icon {
+      .centered();
+
+      position: relative;
+      width: 100%;
+      height: @iconSize;
+
+      > .icon-tooltip {
+        position: relative;
+        display: block;
+        margin-right: calc(50% - (@iconSize / 2));
+      }
+    }
+
+    h2,
+    h3,
+    button {
+      .font-default();
+    }
+
+    h2 {
+      margin-top: 24px;
+    }
   }
 }
 
