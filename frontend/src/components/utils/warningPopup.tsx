@@ -8,6 +8,8 @@ interface WarningPopupProps {
   yesText: string;
   noText: string;
   children?: string;
+  cancelAction: (event: any) => void;
+  doAction: (event: any) => void;
 }
 
 export default function WarningPopup(props: WarningPopupProps) {
@@ -32,11 +34,15 @@ export default function WarningPopup(props: WarningPopupProps) {
           </h3>
         </div>
         <div className="buttons">
-          <button>
-            <Translate name={props.noText} />
+          <button className="no" onClick={props.cancelAction}>
+            <p>
+              <Translate name={props.noText} />
+            </p>
           </button>
-          <button>
-            <Translate name={props.yesText} />
+          <button className="yes" onClick={props.doAction}>
+            <p>
+              <Translate name={props.yesText} />
+            </p>
           </button>
         </div>
       </div>

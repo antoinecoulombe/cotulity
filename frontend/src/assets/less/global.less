@@ -135,14 +135,65 @@ input:-webkit-autofill {
       }
     }
 
-    h2,
-    h3,
-    button {
-      .font-default();
+    > .warning-info {
+      > h2 {
+        .font-default();
+
+        margin: 0;
+        margin-top: 24px;
+        font-size: 20px;
+        color: #000000;
+      }
+
+      > h3 {
+        .font-default();
+
+        margin: 0;
+        margin-bottom: 24px;
+        opacity: 0.6;
+        font-size: 16px;
+      }
     }
 
-    h2 {
-      margin-top: 24px;
+    > .buttons {
+      display: flex;
+      justify-content: space-between;
+
+      > button {
+        @margin: 6px;
+
+        cursor: pointer;
+        // max-width: calc(50% - 6px);
+        border-radius: 50px;
+        border: 0;
+        padding: 15px 20px;
+        opacity: 0.7;
+
+        > p {
+          font-size: 17px;
+          margin: 0;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        &.yes {
+          background-color: var(--error-color);
+          margin-left: @margin;
+          color: white;
+        }
+
+        &.no {
+          background-color: white;
+          border: 1px solid var(--darkestGray);
+          color: var(--darkestGray);
+          margin-right: @margin;
+          opacity: 0.6;
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
   }
 }

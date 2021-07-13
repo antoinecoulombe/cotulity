@@ -22,11 +22,13 @@ export interface Home {
   UserHome: { nickname: string; accepted: boolean };
 }
 
+const nullJSX: JSX.Element = <></>;
+
 export default function AppHomes() {
   const history = useHistory();
   const [homes, setHomes] = useState<Home[]>([]);
   const { setNotification, setSuccessNotification } = useNotifications();
-  const [popup, setPopup] = useState<JSX.Element>(<></>);
+  const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [refNumber, setRefNumber] = useState<number>();
 
   useEffect(() => {
@@ -49,17 +51,29 @@ export default function AppHomes() {
     return `{"translate":"${translate}", "format": ["${format.join('","')}"]}`;
   }
 
+  function closeAndSuccess(data: any) {
+    setSuccessNotification(data);
+    setPopup(nullJSX);
+  }
+
+  function closeAndError(data: any) {
+    setNotification(data);
+    setPopup(nullJSX);
+  }
+
   function showWarningPopup(event: any, action: string) {
     setRefNumber(getRefNumber(event));
 
     setPopup(
       <WarningPopup
-        title={getTranslateJSON('homes.delete.text.title', ['currentName'])}
-        desc="homes.delete.text.desc"
-        yesText="homes.delete.buttons.yes"
-        noText="homes.delete.buttons.no"
+        title={getTranslateJSON(`homes.${action}.text.title`, ['currentName'])}
+        desc={`homes.${action}.text.desc`}
+        yesText={`homes.${action}.buttons.yes`}
+        noText={`homes.${action}.buttons.no`}
+        cancelAction={() => setPopup(nullJSX)}
+        doAction={action === 'quit' ? quitHome : deleteHome}
       >
-        homes.tooltip.deleteHome
+        {`homes.tooltip.${action === 'quit' ? 'quitHome' : 'deleteHome'}`}
       </WarningPopup>
     );
   }
@@ -69,10 +83,10 @@ export default function AppHomes() {
     axios
       .delete(`/homes/delete/${getRefNumber(event)}`)
       .then((res: any) => {
-        setSuccessNotification(res.data);
+        closeAndSuccess(res.data);
       })
       .catch((err) => {
-        setNotification(err.response.data);
+        closeAndError(err.response.data);
       });
   }
 
@@ -81,23 +95,10 @@ export default function AppHomes() {
     axios
       .delete(`/homes/quit/${getRefNumber(event)}`)
       .then((res: any) => {
-        setSuccessNotification(res.data);
+        closeAndSuccess(res.data);
       })
       .catch((err) => {
-        setNotification(err.response.data);
-      });
-  }
-
-  function editHome(event: any) {
-    // if home creator
-    // get all home information
-    axios
-      .get(`/homes/${getRefNumber(event)}`)
-      .then((res: any) => {
-        setSuccessNotification(res.data);
-      })
-      .catch((err) => {
-        setNotification(err.response.data);
+        closeAndError(err.response.data);
       });
   }
 
@@ -120,10 +121,10 @@ export default function AppHomes() {
     axios
       .post(`/homes/rename/${refNumber}`, { data: { nickname: value } })
       .then((res: any) => {
-        setSuccessNotification(res.data);
+        closeAndSuccess(res.data);
       })
       .catch((err) => {
-        setNotification(err.response.data);
+        closeAndError(err.response.data);
       });
   }
 
@@ -131,6 +132,19 @@ export default function AppHomes() {
     // if home creator (otherwise hidden)
     axios
       .post(`/homes/invite/${refNumber}`, { data: { email: value } })
+      .then((res: any) => {
+        closeAndSuccess(res.data);
+      })
+      .catch((err) => {
+        closeAndError(err.response.data);
+      });
+  }
+
+  function editHome(event: any) {
+    // if home creator
+    // get all home information
+    axios
+      .get(`/homes/${getRefNumber(event)}`)
       .then((res: any) => {
         setSuccessNotification(res.data);
       })

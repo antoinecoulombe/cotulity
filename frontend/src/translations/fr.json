@@ -68,7 +68,8 @@
       "add": "Créez ou rejoignez une maison",
       "renameHome": "Cette action renomme la maison uniquement pour vous, les autres membres verront toujours la maison comme '{0}'.",
       "inviteMember": "Une invitation sera envoyée à l'adresse courriel spécifiée.",
-      "deleteHome": "Étant le propriétaire de cette maison, sa suppression entraînera l'expulsion de tous les membres qui s'y trouvent et la supprimera définitivement."
+      "deleteHome": "Étant le propriétaire de cette maison, sa suppression entraînera l'expulsion de tous les membres qui s'y trouvent et la supprimera définitivement.",
+      "quitHome": "Les données associées à cette maison seront supprimées définitivement."
     },
     "title": {
       "yourHomes": "Vos maisons",
@@ -100,6 +101,16 @@
       },
       "buttons": {
         "yes": "Oui, supprimer la maison",
+        "no": "Non, conserver la maison"
+      }
+    },
+    "quit": {
+      "text": {
+        "title": "Êtes-vous sûr de vouloir quitter '{0}'?",
+        "desc": "Cette action est irréversible."
+      },
+      "buttons": {
+        "yes": "Oui, quitter la maison",
         "no": "Non, conserver la maison"
       }
     }
