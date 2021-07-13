@@ -26,7 +26,10 @@ export default function Translate(props: TranslateProps) {
   let translated;
   try {
     let json = JSON.parse(props.name);
-    translated = format(t(props.prefix + json.translate), json.format);
+    translated = format(
+      t((props.prefix ?? '') + json.translate + (props.suffix ?? '')),
+      json.format
+    );
   } catch (error) {
     translated = t((props.prefix ?? '') + props.name + (props.suffix ?? ''));
   }

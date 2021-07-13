@@ -3,7 +3,7 @@ import Input from './input';
 import IconToolTip from '../utils/iconTooltip';
 import Translate from '../utils/translate';
 
-interface SingleInputFormProps {
+export interface SingleInputFormProps {
   name: string;
   title: string;
   style: {
@@ -15,6 +15,7 @@ interface SingleInputFormProps {
   label?: string;
   children?: string;
   error?: boolean;
+  className?: string;
   onSubmit: (value: string) => void;
   onHelpClick?: (e: any) => void;
   onBack?: (e: any) => void;
@@ -28,7 +29,11 @@ export default function SingleInputForm(props: SingleInputFormProps) {
   }
 
   return (
-    <div className="si-form">
+    <div
+      className={`si-form ${!props.onBack ? 'offset' : ''} ${
+        props.className ?? ''
+      }`}
+    >
       <div className="title">
         <h2>
           <Translate name={props.title}></Translate>
@@ -61,7 +66,6 @@ export default function SingleInputForm(props: SingleInputFormProps) {
           error={props.error}
           onChange={(e: any) => setValue(e.target.value)}
           onKeyPress={handleKeyPress}
-          className={!props.onBack ? 'offset' : ''}
         ></Input>
         <IconToolTip
           icon="arrow-alt-circle-right"

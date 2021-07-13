@@ -64,9 +64,20 @@
     }
   },
   "homes": {
-    "tooltip": { "add": "Join or create a home" },
+    "tooltip": {
+      "add": "Join or create a home",
+      "renameHome": "This will only rename it for yourself, others will still see the house as '{0}'.",
+      "inviteMember": "An invitation email will be sent to the specified email.",
+      "deleteHome": "Since you are the owner of this home, deleting it will kick any members currently in it and remove it permanently."
+    },
     "title": {
-      "yourHomes": "Your Homes"
+      "yourHomes": "Your Homes",
+      "renameHome": "Rename {0}",
+      "inviteMember": "Invite a member to join {0}"
+    },
+    "name": {
+      "inviteMember": "Enter the email of the new member",
+      "renameHome": "Enter your new house name"
     },
     "action": {
       "editHome": "Edit",
@@ -81,6 +92,16 @@
     },
     "list": {
       "member": "member"
+    },
+    "delete": {
+      "text": {
+        "title": "Are you sure you want to delete '{0}'?",
+        "desc": "This action is permanent."
+      },
+      "buttons": {
+        "yes": "Yes, Delete Home",
+        "no": "No, Keep Home"
+      }
     }
   },
   "newHome": {

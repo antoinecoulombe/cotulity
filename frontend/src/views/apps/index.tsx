@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
-import '../assets/css/apps.css';
-import App from '../components/apps/app';
-import axios from '../utils/fetchClient';
-import { useNotifications } from '../contexts/NotificationsContext';
+import '../../assets/css/apps.css';
+import App from '../../components/apps/app';
+import axios from '../../utils/fetchClient';
+import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
-import HomesDropdown from '../components/apps/homesDropdown';
-import { Home } from './apps/homes';
+import HomesDropdown from '../../components/apps/homesDropdown';
+import { Home } from './homes';
 
 interface OnlineApp {
   id: number;

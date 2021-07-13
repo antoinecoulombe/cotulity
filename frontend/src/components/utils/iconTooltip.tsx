@@ -5,12 +5,12 @@ import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 interface IconTooltipProps {
   icon: string;
-  children: string;
   style: {
     iconWidth: number;
     tooltipMultiplier: number;
     marginRight?: number;
   };
+  children?: string;
   circled?: { value: boolean; multiplier: number; offset?: number };
   error?: boolean;
   onClick?: (e: any) => void;
@@ -39,20 +39,22 @@ export default function IconToolTip(props: IconTooltipProps) {
           marginRight: props.style.marginRight,
         }}
       >
-        <Tooltip
-          hovered={hovered}
-          parentCentered={false}
-          style={{
-            position: 'absolute',
-            width: props.style.iconWidth * props.style.tooltipMultiplier,
-            bottom: props.style.iconWidth + 8,
-            right:
-              -(props.style.iconWidth * (props.style.tooltipMultiplier - 1)) /
-              2,
-          }}
-        >
-          {props.children}
-        </Tooltip>
+        {props.children && (
+          <Tooltip
+            hovered={hovered}
+            parentCentered={false}
+            style={{
+              position: 'absolute',
+              width: props.style.iconWidth * props.style.tooltipMultiplier,
+              bottom: props.style.iconWidth + 8,
+              right:
+                -(props.style.iconWidth * (props.style.tooltipMultiplier - 1)) /
+                2,
+            }}
+          >
+            {props.children}
+          </Tooltip>
+        )}
 
         <FontAwesomeIcon
           icon={['fas', props.icon as IconName]}

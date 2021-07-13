@@ -13,12 +13,14 @@ interface AppContainerProps {
     orderBy?: Array<{ name: string; action: () => void }>;
     filters?: Array<{ name: string; action: () => void }>;
   };
+  popup?: JSX.Element;
   onAddClick?: (e: any) => void;
 }
 
 export default function AppContainer(props: AppContainerProps) {
   return (
     <div className={`open-app-container ${props.appName}`}>
+      {props.popup}
       <div className="headers">
         <Header
           appName={props.appName}

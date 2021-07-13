@@ -10,6 +10,8 @@ import ListItemRight from '../../components/utils/lists/listRight';
 import Translate from '../../components/utils/translate';
 import axios from '../../utils/fetchClient';
 import { useNotifications } from '../../contexts/NotificationsContext';
+import SingleInputPopup from '../../components/utils/singleInputPopup';
+import WarningPopup from '../../components/utils/warningPopup';
 
 export interface Home {
   id: number;
@@ -23,7 +25,9 @@ export interface Home {
 export default function AppHomes() {
   const history = useHistory();
   const [homes, setHomes] = useState<Home[]>([]);
-  const { setNotification } = useNotifications();
+  const { setNotification, setSuccessNotification } = useNotifications();
+  const [popup, setPopup] = useState<JSX.Element>(<></>);
+  const [refNumber, setRefNumber] = useState<number>();
 
   useEffect(() => {
     axios
@@ -37,32 +41,117 @@ export default function AppHomes() {
       });
   }, []);
 
+  function getRefNumber(event: any): number {
+    return 1;
+  }
+
+  function getTranslateJSON(translate: string, format: Array<string>) {
+    return `{"translate":"${translate}", "format": ["${format.join('","')}"]}`;
+  }
+
+  function showWarningPopup(event: any, action: string) {
+    setRefNumber(getRefNumber(event));
+
+    setPopup(
+      <WarningPopup
+        title={getTranslateJSON('homes.delete.text.title', ['currentName'])}
+        desc="homes.delete.text.desc"
+        yesText="homes.delete.buttons.yes"
+        noText="homes.delete.buttons.no"
+      >
+        homes.tooltip.deleteHome
+      </WarningPopup>
+    );
+  }
+
   function deleteHome(event: any) {
     // if home creator
-    console.log('delete');
+    axios
+      .delete(`/homes/delete/${getRefNumber(event)}`)
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   }
 
   function quitHome(event: any) {
     // if not home creator (replaces removeHome)
-    console.log('quit');
+    axios
+      .delete(`/homes/quit/${getRefNumber(event)}`)
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   }
 
   function editHome(event: any) {
     // if home creator
-    console.log('edit');
+    // get all home information
+    axios
+      .get(`/homes/${getRefNumber(event)}`)
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   }
 
-  function renameHome(event: any) {
-    // if not home creator (replaces editHome)
-    console.log('rename');
+  function showPopup(event: any, action: string) {
+    setRefNumber(getRefNumber(event));
+
+    setPopup(
+      <SingleInputPopup
+        name={`homes.name.${action}`}
+        title={getTranslateJSON(`homes.title.${action}`, ['currentName'])}
+        onSubmit={action === 'addMember' ? addMember : renameHome}
+        style={{ iconWidth: 32, tooltipMultiplier: 15 }}
+      >
+        {getTranslateJSON(`homes.tooltip.${action}`, ['defaultName'])}
+      </SingleInputPopup>
+    );
   }
 
-  function addMember(event: any) {
+  function renameHome(value: string) {
+    axios
+      .post(`/homes/rename/${refNumber}`, { data: { nickname: value } })
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
+  }
+
+  function addMember(value: string) {
     // if home creator (otherwise hidden)
-    console.log('add member');
+    axios
+      .post(`/homes/invite/${refNumber}`, { data: { email: value } })
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   }
 
-  function cancelRequest(event: any) {}
+  function cancelRequest(event: any) {
+    setRefNumber(getRefNumber(event));
+
+    // if request pending
+    axios
+      .post(`/homes/cancelRequest/${refNumber}`)
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
+  }
 
   const iconStyle = {
     iconWidth: 34,
@@ -74,6 +163,7 @@ export default function AppHomes() {
       title="yourHomes"
       appName="homes"
       onAddClick={() => history.push('/apps/homes/new')}
+      popup={popup}
     >
       <List>
         {homes.map((home) => (
@@ -117,7 +207,7 @@ export default function AppHomes() {
                       icon="times-circle"
                       style={iconStyle}
                       error={true}
-                      onClick={deleteHome}
+                      onClick={(e) => showWarningPopup(e, 'delete')}
                     >
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate
@@ -143,7 +233,7 @@ export default function AppHomes() {
                       icon="user-plus"
                       style={iconStyle}
                       circled={{ value: true, multiplier: 0.55, offset: 1 }}
-                      onClick={addMember}
+                      onClick={(e) => showPopup(e, 'inviteMember')}
                     >
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate
@@ -162,7 +252,7 @@ export default function AppHomes() {
                       style={iconStyle}
                       circled={{ value: true, multiplier: 0.58, offset: 1 }}
                       error={true}
-                      onClick={quitHome}
+                      onClick={(e) => showWarningPopup(e, 'quit')}
                     >
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate
@@ -175,7 +265,7 @@ export default function AppHomes() {
                       icon="pen"
                       style={iconStyle}
                       circled={{ value: true, multiplier: 0.45 }}
-                      onClick={renameHome}
+                      onClick={(e) => showPopup(e, 'renameHome')}
                     >
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate

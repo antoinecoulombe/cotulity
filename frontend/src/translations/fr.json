@@ -43,7 +43,7 @@
     "next": "Suivant",
     "prev": "Précédent",
     "goBack": "Retour en arrière",
-    "submit": "Soumettre"
+    "submit": "Envoyer"
   },
   "form": {
     "email": "Courriel",
@@ -65,10 +65,19 @@
   },
   "homes": {
     "tooltip": {
-      "add": "Créez ou rejoignez une maison"
+      "add": "Créez ou rejoignez une maison",
+      "renameHome": "Cette action renomme la maison uniquement pour vous, les autres membres verront toujours la maison comme '{0}'.",
+      "inviteMember": "Une invitation sera envoyée à l'adresse courriel spécifiée.",
+      "deleteHome": "Étant le propriétaire de cette maison, sa suppression entraînera l'expulsion de tous les membres qui s'y trouvent et la supprimera définitivement."
     },
     "title": {
-      "yourHomes": "Vos maisons"
+      "yourHomes": "Vos maisons",
+      "renameHome": "Renommer {0}",
+      "inviteMember": "Inviter un membre à rejoindre {0}."
+    },
+    "name": {
+      "inviteMember": "Veuillez entrer l'adresse courriel du membre à inviter",
+      "renameHome": "Veuillez entrer le nouveau nom de votre maison"
     },
     "action": {
       "editHome": "Modifier",
@@ -83,6 +92,16 @@
     },
     "list": {
       "member": "membre"
+    },
+    "delete": {
+      "text": {
+        "title": "Êtes-vous sûr de vouloir supprimer '{0}'?",
+        "desc": "Cette action est irréversible."
+      },
+      "buttons": {
+        "yes": "Oui, supprimer la maison",
+        "no": "Non, conserver la maison"
+      }
     }
   },
   "newHome": {

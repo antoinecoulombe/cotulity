@@ -14,7 +14,7 @@ import Notifications from '../components/utils/notifications';
 
 // Pages
 import LoginPage from './login';
-import AppsPage from './apps';
+import AppsPage from './apps/index';
 import NotFoundPage from './404';
 
 // Apps

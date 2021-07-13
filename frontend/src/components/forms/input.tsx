@@ -44,7 +44,7 @@ class Input extends React.Component<InputProps> {
   render() {
     return (
       <div
-        className={`form-input ${this.props.className} ${
+        className={`form-input ${this.props.className ?? ''} ${
           this.props.error ? 'error' : ''
         }`}
       >
