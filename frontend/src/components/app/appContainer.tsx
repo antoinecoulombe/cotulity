@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../../assets/css/open-app.css';
-import IconToolTip from '../utils/iconTooltip';
 import Header from './Header';
 import SubHeader from './subHeader';
 

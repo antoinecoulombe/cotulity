@@ -59,9 +59,7 @@ class Input extends React.Component<InputProps> {
         ></input>
         <label htmlFor={this.props.name}>
           <Translate name={`${this.props.label ?? this.props.name}`} />{' '}
-          {this.props.error && (
-            <FontAwesomeIcon icon="times-circle"></FontAwesomeIcon>
-          )}
+          {this.props.error && <FontAwesomeIcon icon="times-circle" />}
         </label>
       </div>
     );

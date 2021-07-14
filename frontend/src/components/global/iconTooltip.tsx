@@ -71,7 +71,7 @@ export default function IconToolTip(props: IconTooltipProps) {
           }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
-        ></FontAwesomeIcon>
+        />
       </div>
     </>
   );

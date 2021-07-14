@@ -1,5 +1,5 @@
 import React from 'react';
-import Translate from './translate';
+import Translate from '../utils/translate';
 
 interface TooltipProps {
   children: string;

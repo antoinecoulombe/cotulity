@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Translate from './translate';
+import Translate from '../utils/translate';
 import {
   strictJsonNotification,
   useNotifications,

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Tooltip from '../utils/tooltip';
 import { useHistory } from 'react-router';
-import IconToolTip from '../utils/iconTooltip';
+import IconToolTip from '../global/iconTooltip';
 import { Home } from '../../views/apps/homes';
 
 interface HomesDropdownProps {
@@ -47,7 +46,7 @@ export default function HomesDropdown(props: HomesDropdownProps) {
                   icon={active ? 'chevron-up' : 'chevron-down'}
                   className="chevron"
                   onClick={handleClick}
-                ></FontAwesomeIcon>
+                />
                 {active && (
                   <IconToolTip
                     icon="plus-circle"
@@ -79,7 +78,7 @@ export default function HomesDropdown(props: HomesDropdownProps) {
                   <FontAwesomeIcon
                     icon="arrow-alt-circle-right"
                     className="icon"
-                  ></FontAwesomeIcon>
+                  />
                 </div>
               ))}
           </div>

@@ -38,7 +38,7 @@ export default function Notifications() {
               icon="angle-left"
               className="nav prev"
               onClick={prevNotification}
-            ></FontAwesomeIcon>
+            />
           )}
 
           {/* CURRENT NOTIFICATION */}
@@ -53,7 +53,7 @@ export default function Notifications() {
               icon="angle-right"
               className="nav next"
               onClick={nextNotification}
-            ></FontAwesomeIcon>
+            />
           )}
         </div>
       )}

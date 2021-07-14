@@ -1,7 +1,5 @@
-import { faTablets } from '@fortawesome/free-solid-svg-icons';
-import React, { useState } from 'react';
+import React from 'react';
 import '../../assets/css/open-app.css';
-import IconToolTip from '../utils/iconTooltip';
 import Translate from '../utils/translate';
 
 interface SubHeaderProps {

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getNotifications, isAuthenticated } from '../../utils/global';
-
 import Input from '../forms/input';
 import FormToggle from './formToggle';
 import axios from '../../utils/fetchClient';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getNotifications, isAuthenticated } from '../../utils/global';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
 
@@ -164,7 +163,7 @@ export default function LoginForm() {
         icon="arrow-alt-circle-right"
         className="submit"
         onClick={handleSubmit}
-      ></FontAwesomeIcon>
+      />
 
       <Input
         name={'form.phone'}

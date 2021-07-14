@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import ReactDOMServer from 'react-dom/server';
 import AppContainer from '../../components/app/appContainer';
-import IconToolTip from '../../components/utils/iconTooltip';
+import IconToolTip from '../../components/global/iconTooltip';
 import List from '../../components/utils/lists/list';
 import ListItem from '../../components/utils/lists/listItem';
 import ListItemLeft from '../../components/utils/lists/listLeft';
@@ -10,8 +10,8 @@ import ListItemRight from '../../components/utils/lists/listRight';
 import Translate from '../../components/utils/translate';
 import axios from '../../utils/fetchClient';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import SingleInputPopup from '../../components/utils/singleInputPopup';
-import WarningPopup from '../../components/utils/warningPopup';
+import SingleInputPopup from '../../components/forms/singleInputPopup';
+import WarningPopup from '../../components/global/warningPopup';
 
 export interface Home {
   id: number;
@@ -25,11 +25,11 @@ export interface Home {
 const nullJSX: JSX.Element = <></>;
 
 export default function AppHomes() {
-  const history = useHistory();
-  const [homes, setHomes] = useState<Home[]>([]);
   const { setNotification, setSuccessNotification } = useNotifications();
+  const history = useHistory();
+
+  const [homes, setHomes] = useState<Home[]>([]);
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
-  const [refNumber, setRefNumber] = useState<number>();
 
   useEffect(() => {
     axios
@@ -43,45 +43,50 @@ export default function AppHomes() {
       });
   }, []);
 
-  function getRefNumber(event: any): number {
-    return 1;
+  async function getRefNumber(event: any) {
+    return await event.target.closest('.list-item').dataset.uid;
   }
 
   function getTranslateJSON(translate: string, format: Array<string>) {
     return `{"translate":"${translate}", "format": ["${format.join('","')}"]}`;
   }
 
+  function closePopup() {
+    setPopup(nullJSX);
+  }
+
   function closeAndSuccess(data: any) {
     setSuccessNotification(data);
-    setPopup(nullJSX);
+    closePopup();
   }
 
   function closeAndError(data: any) {
     setNotification(data);
-    setPopup(nullJSX);
+    closePopup();
   }
 
-  function showWarningPopup(event: any, action: string) {
-    setRefNumber(getRefNumber(event));
+  async function showWarningPopup(event: any, action: string) {
+    const ref = await getRefNumber(event);
 
     setPopup(
       <WarningPopup
-        title={getTranslateJSON(`homes.${action}.text.title`, ['currentName'])}
+        title={getTranslateJSON(`homes.${action}.text.title`, [
+          homes.find((h) => h.refNumber == ref)?.name ?? '',
+        ])}
         desc={`homes.${action}.text.desc`}
         yesText={`homes.${action}.buttons.yes`}
         noText={`homes.${action}.buttons.no`}
-        cancelAction={() => setPopup(nullJSX)}
-        doAction={action === 'quit' ? quitHome : deleteHome}
+        onCancel={closePopup}
+        onSubmit={() => (action === 'quit' ? quitHome(ref) : deleteHome(ref))}
       >
         {`homes.tooltip.${action === 'quit' ? 'quitHome' : 'deleteHome'}`}
       </WarningPopup>
     );
   }
 
-  function deleteHome(event: any) {
-    // if home creator
+  function deleteHome(refNumber: number) {
     axios
-      .delete(`/homes/delete/${getRefNumber(event)}`)
+      .delete(`/homes/delete/${refNumber}`)
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -90,10 +95,9 @@ export default function AppHomes() {
       });
   }
 
-  function quitHome(event: any) {
-    // if not home creator (replaces removeHome)
+  function quitHome(refNumber: number) {
     axios
-      .delete(`/homes/quit/${getRefNumber(event)}`)
+      .delete(`/homes/quit/${refNumber}`)
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -102,14 +106,21 @@ export default function AppHomes() {
       });
   }
 
-  function showPopup(event: any, action: string) {
-    setRefNumber(getRefNumber(event));
+  async function showPopup(event: any, action: string) {
+    const ref = await getRefNumber(event);
 
     setPopup(
       <SingleInputPopup
         name={`homes.name.${action}`}
-        title={getTranslateJSON(`homes.title.${action}`, ['currentName'])}
-        onSubmit={action === 'addMember' ? addMember : renameHome}
+        title={getTranslateJSON(`homes.title.${action}`, [
+          homes.find((h) => h.refNumber == ref)?.name ?? '',
+        ])}
+        onCancel={closePopup}
+        onSubmit={(value: string) =>
+          action === 'addMember'
+            ? addMember(value, ref)
+            : renameHome(value, ref)
+        }
         style={{ iconWidth: 32, tooltipMultiplier: 15 }}
       >
         {getTranslateJSON(`homes.tooltip.${action}`, ['defaultName'])}
@@ -117,7 +128,7 @@ export default function AppHomes() {
     );
   }
 
-  function renameHome(value: string) {
+  function renameHome(value: string, refNumber: number) {
     axios
       .post(`/homes/rename/${refNumber}`, { data: { nickname: value } })
       .then((res: any) => {
@@ -128,8 +139,7 @@ export default function AppHomes() {
       });
   }
 
-  function addMember(value: string) {
-    // if home creator (otherwise hidden)
+  function addMember(value: string, refNumber: number) {
     axios
       .post(`/homes/invite/${refNumber}`, { data: { email: value } })
       .then((res: any) => {
@@ -140,25 +150,24 @@ export default function AppHomes() {
       });
   }
 
-  function editHome(event: any) {
-    // if home creator
-    // get all home information
-    axios
-      .get(`/homes/${getRefNumber(event)}`)
-      .then((res: any) => {
-        setSuccessNotification(res.data);
-      })
-      .catch((err) => {
-        setNotification(err.response.data);
-      });
+  async function editHome(event: any) {
+    console.log(`NOT IMPLEMENTED YET. (edit)`);
+    // const ref = await getRefNumber(event);
+    // axios
+    //   .get(`/homes/${ref}`)
+    //   .then((res: any) => {
+    //     setSuccessNotification(res.data);
+    //   })
+    //   .catch((err) => {
+    //     setNotification(err.response.data);
+    //   });
   }
 
-  function cancelRequest(event: any) {
-    setRefNumber(getRefNumber(event));
+  async function cancelRequest(event: any) {
+    const ref = await getRefNumber(event);
 
-    // if request pending
     axios
-      .post(`/homes/cancelRequest/${refNumber}`)
+      .post(`/homes/cancelRequest/${ref}`)
       .then((res: any) => {
         setSuccessNotification(res.data);
       })
@@ -181,7 +190,7 @@ export default function AppHomes() {
     >
       <List>
         {homes.map((home) => (
-          <ListItem key={home.id}>
+          <ListItem key={home.id} uid={home.refNumber}>
             <ListItemLeft style={{ height: iconStyle.iconWidth }}>
               <h3>{home.UserHome.nickname ?? home.name}</h3>
               <p>

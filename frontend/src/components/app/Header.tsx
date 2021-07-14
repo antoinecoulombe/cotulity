@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../../assets/css/open-app.css';
-import IconToolTip from '../utils/iconTooltip';
+import IconToolTip from '../global/iconTooltip';
 import Translate from '../utils/translate';
 
 interface HeaderProps {

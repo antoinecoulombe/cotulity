@@ -10,7 +10,7 @@ import '../assets/css/theme.css';
 import '../assets/css/global.css';
 
 // Components
-import Notifications from '../components/utils/notifications';
+import Notifications from '../components/global/notifications';
 
 // Pages
 import LoginPage from './login';

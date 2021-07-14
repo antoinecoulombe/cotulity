@@ -1,6 +1,7 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconToolTip from './iconTooltip';
-import Translate from './translate';
+import Translate from '../utils/translate';
 
 interface WarningPopupProps {
   title: string;
@@ -8,14 +9,21 @@ interface WarningPopupProps {
   yesText: string;
   noText: string;
   children?: string;
-  cancelAction: (event: any) => void;
-  doAction: (event: any) => void;
+  onCancel(...attr: any): any;
+  onSubmit(...attr: any): any;
 }
 
 export default function WarningPopup(props: WarningPopupProps) {
   return (
     <div className="popup-container">
       <div className="warning-popup">
+        <div className="close">
+          <FontAwesomeIcon
+            icon="times"
+            className="icon"
+            onClick={props.onCancel}
+          />
+        </div>
         <div className="icon">
           <IconToolTip
             icon="exclamation-circle"
@@ -34,12 +42,12 @@ export default function WarningPopup(props: WarningPopupProps) {
           </h3>
         </div>
         <div className="buttons">
-          <button className="no" onClick={props.cancelAction}>
+          <button className="no" onClick={props.onCancel}>
             <p>
               <Translate name={props.noText} />
             </p>
           </button>
-          <button className="yes" onClick={props.doAction}>
+          <button className="yes" onClick={props.onSubmit}>
             <p>
               <Translate name={props.yesText} />
             </p>

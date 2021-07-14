@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { useHistory } from 'react-router';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import Tooltip from '../utils/tooltip';
+import Tooltip from '../global/tooltip';
 import axios from '../../utils/fetchClient';
 
 interface AppProps {
@@ -43,9 +43,7 @@ export default function App(props: AppProps) {
         over={true}
       >{`apps.${props.name}.name`}</Tooltip>
       <div className="app">
-        <FontAwesomeIcon
-          icon={['fas', props.icon as IconName]}
-        ></FontAwesomeIcon>
+        <FontAwesomeIcon icon={['fas', props.icon as IconName]} />
       </div>
     </div>
   );

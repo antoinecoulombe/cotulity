@@ -1,6 +1,6 @@
 import React from 'react';
 import Input from './input';
-import IconToolTip from '../utils/iconTooltip';
+import IconToolTip from '../global/iconTooltip';
 import Translate from '../utils/translate';
 
 interface InputTitleProps {
