@@ -12,6 +12,7 @@ import axios from '../../utils/fetchClient';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
+import EditPopup from '../../components/homes/editPopup';
 
 export interface Home {
   id: number;
@@ -33,7 +34,7 @@ export default function AppHomes() {
 
   useEffect(() => {
     axios
-      .get(`/homes/all`)
+      .get(`/homes`)
       .then((res: any) => {
         if (res.data.homes && res.data.homes.length > 0)
           setHomes(res.data.homes);
@@ -86,7 +87,7 @@ export default function AppHomes() {
 
   function deleteHome(refNumber: number) {
     axios
-      .delete(`/homes/delete/${refNumber}`)
+      .delete(`/homes/${refNumber}/delete`)
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -97,7 +98,7 @@ export default function AppHomes() {
 
   function quitHome(refNumber: number) {
     axios
-      .delete(`/homes/quit/${refNumber}`)
+      .delete(`/homes/${refNumber}/quit`)
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -130,7 +131,7 @@ export default function AppHomes() {
 
   function renameHome(value: string, refNumber: number) {
     axios
-      .post(`/homes/rename/${refNumber}`, { data: { nickname: value } })
+      .post(`/homes/${refNumber}/rename`, { data: { nickname: value } })
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -141,7 +142,7 @@ export default function AppHomes() {
 
   function addMember(value: string, refNumber: number) {
     axios
-      .post(`/homes/invite/${refNumber}`, { data: { email: value } })
+      .post(`/homes/${refNumber}/members/invite`, { data: { email: value } })
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -150,11 +151,23 @@ export default function AppHomes() {
       });
   }
 
-  async function editHome(event: any) {
+  async function showEditPopup(event: any) {
     console.log(`NOT IMPLEMENTED YET. (edit)`);
+    const ref = await getRefNumber(event);
+    axios
+      .get(`/homes/${ref}`)
+      .then((res: any) => {
+        setPopup(<EditPopup onCancel={closePopup} onSubmit={editHome} />);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
+  }
+
+  async function editHome() {
     // const ref = await getRefNumber(event);
     // axios
-    //   .get(`/homes/${ref}`)
+    //   .get(`/homes/${ref}/edit`)
     //   .then((res: any) => {
     //     setSuccessNotification(res.data);
     //   })
@@ -167,7 +180,7 @@ export default function AppHomes() {
     const ref = await getRefNumber(event);
 
     axios
-      .post(`/homes/cancelRequest/${ref}`)
+      .post(`/homes/${ref}/request/cancel`)
       .then((res: any) => {
         setSuccessNotification(res.data);
       })
@@ -185,7 +198,7 @@ export default function AppHomes() {
     <AppContainer
       title="yourHomes"
       appName="homes"
-      onAddClick={() => history.push('/apps/homes/new')}
+      onAddClick={() => history.push('/homes/new')}
       popup={popup}
     >
       <List>
@@ -243,7 +256,7 @@ export default function AppHomes() {
                       icon="pen"
                       style={iconStyle}
                       circled={{ value: true, multiplier: 0.45 }}
-                      onClick={editHome}
+                      onClick={showEditPopup}
                     >
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate

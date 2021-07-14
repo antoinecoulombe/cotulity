@@ -12,18 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateApp = exports.validateHome = void 0;
 const express_1 = __importDefault(require("express"));
 const Apps = express_1.default.Router();
 const db = require('../db/models');
-const validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!req.params.homeId)
+        if (!req.params.refnumber)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
         const home = yield req.user.getHomes({
-            where: { id: req.params.homeId },
+            where: { refNumber: req.params.refnumber },
         });
         if (home.length === 0)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
+        res.locals.home = home;
         return next();
     }
     catch (error) {
@@ -31,11 +33,11 @@ const validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
-const validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!req.params.appName)
+        if (!req.params.appname)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
-        const app = yield db.App.findOne({ where: { name: req.params.appName } });
+        const app = yield db.App.findOne({ where: { name: req.params.appname } });
         if (!app)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
         if (!app.online)
@@ -47,10 +49,10 @@ const validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
-Apps.get('/:appName/', validateApp, (req, res) => {
+Apps.get('/:appname/', exports.validateApp, (req, res) => {
     res.json({ title: 'request.authorized' });
 });
-Apps.get('/:appName/:homeId/', validateApp, validateHome, (req, res) => {
+Apps.get('/:appname/:refnumber/', exports.validateApp, exports.validateHome, (req, res) => {
     res.json({ title: 'request.authorized' });
 });
 Apps.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,4 +67,5 @@ Apps.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ title: 'apps.error', msg: 'request.reload' });
     }
 }));
+// Routes
 exports.default = Apps;

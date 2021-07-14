@@ -50,7 +50,7 @@ export default function AppsPage() {
         handleResize();
 
         axios
-          .get(`/homes`)
+          .get(`/homes/accepted`)
           .then((res: any) => {
             if (!res.data.homes || res.data.homes.length === 0)
               history.push('/apps/homes/new');

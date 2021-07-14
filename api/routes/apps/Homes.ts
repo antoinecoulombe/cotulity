@@ -1,14 +1,19 @@
 import express from 'express';
+import { validateHome, validateApp } from '../Apps';
 
 const Homes = express.Router();
-const db = require('../db/models');
+const db = require('../../db/models');
 
-Homes.get('/:option?', async (req: any, res) => {
+Homes.use(async (req: any, res, next) => {
+  req.params.appname = 'homes';
+  validateApp(req, res, next);
+});
+
+async function getHomes(req: any, res: any, all: boolean) {
   try {
-    const getAll: boolean = req.params.option === 'all';
     const dbHomes = await req.user.getHomes({
       group: ['Home.id'],
-      through: !getAll ? { where: { accepted: true } } : {},
+      through: !all ? { where: { accepted: true } } : {},
       attributes: [
         'id',
         'ownerId',
@@ -48,10 +53,18 @@ Homes.get('/:option?', async (req: any, res) => {
         ])
       ),
     });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
+}
+
+Homes.get('/', async (req: any, res) => {
+  getHomes(req, res, true);
+});
+
+Homes.get('/accepted', async (req: any, res) => {
+  getHomes(req, res, false);
 });
 
 Homes.post('/create/:homeName', async (req: any, res) => {
@@ -97,8 +110,8 @@ Homes.post('/create/:homeName', async (req: any, res) => {
       msg: 'newHome.created',
       refNumber: home.refNumber,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -161,10 +174,104 @@ Homes.post('/join/:refNumber', async (req: any, res) => {
     });
 
     res.json({ title: 'homes.requestSent', msg: 'homes.requestSent' });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
+
+// ######################## Home Management ########################
+
+Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
+  try {
+    res.json({});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+Homes.post('/:refnumber/edit', validateHome, async (req: any, res: any) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+Homes.delete('/:refnumber/delete', validateHome, async (req: any, res: any) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+Homes.delete('/:refnumber/quit', validateHome, async (req: any, res: any) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+Homes.post('/:refnumber/rename', validateHome, async (req: any, res: any) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// ######################## Members ########################
+
+Homes.post(
+  '/:refnumber/members/invite',
+  validateHome,
+  async (req: any, res: any) => {
+    try {
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+  }
+);
+Homes.delete(
+  '/:refnumber/members/remove',
+  validateHome,
+  async (req: any, res: any) => {
+    try {
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+  }
+);
+
+// ######################## Requests ########################
+
+Homes.delete('/:refnumber/request/cancel', async (req: any, res: any) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+Homes.post(
+  '/:refnumber/request/:action/:id',
+  validateHome,
+  async (req: any, res: any) => {
+    try {
+      const actions = ['accept', 'reject'];
+      const action = req.params.action;
+      if (!action || !actions.includes(action))
+        res
+          .status(404)
+          .json({ title: 'request.notFound', msg: 'request.notFound' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+  }
+);
 
 export default Homes;

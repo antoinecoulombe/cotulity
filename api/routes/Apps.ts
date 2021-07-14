@@ -3,18 +3,19 @@ import express from 'express';
 const Apps = express.Router();
 const db = require('../db/models');
 
-const validateHome = async (req: any, res: any, next: any) => {
+export const validateHome = async (req: any, res: any, next: any) => {
   try {
-    if (!req.params.homeId)
+    if (!req.params.refnumber)
       return next({ title: 'request.notFound', msg: 'request.notFound' });
 
     const home = await req.user.getHomes({
-      where: { id: req.params.homeId },
+      where: { refNumber: req.params.refnumber },
     });
 
     if (home.length === 0)
       return next({ title: 'request.notFound', msg: 'request.notFound' });
 
+    res.locals.home = home;
     return next();
   } catch (error) {
     console.log(error);
@@ -22,12 +23,12 @@ const validateHome = async (req: any, res: any, next: any) => {
   }
 };
 
-const validateApp = async (req: any, res: any, next: any) => {
+export const validateApp = async (req: any, res: any, next: any) => {
   try {
-    if (!req.params.appName)
+    if (!req.params.appname)
       return next({ title: 'request.notFound', msg: 'request.notFound' });
 
-    const app = await db.App.findOne({ where: { name: req.params.appName } });
+    const app = await db.App.findOne({ where: { name: req.params.appname } });
 
     if (!app)
       return next({ title: 'request.notFound', msg: 'request.notFound' });
@@ -41,11 +42,11 @@ const validateApp = async (req: any, res: any, next: any) => {
   }
 };
 
-Apps.get('/:appName/', validateApp, (req, res) => {
+Apps.get('/:appname/', validateApp, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 
-Apps.get('/:appName/:homeId/', validateApp, validateHome, (req, res) => {
+Apps.get('/:appname/:refnumber/', validateApp, validateHome, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 
@@ -60,5 +61,7 @@ Apps.get('/', async (req, res) => {
     res.json({ title: 'apps.error', msg: 'request.reload' });
   }
 });
+
+// Routes
 
 export default Apps;

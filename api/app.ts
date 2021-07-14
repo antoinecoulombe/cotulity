@@ -29,11 +29,23 @@ app.use('/users', Users);
 import Notifications from './routes/Notifications';
 app.use('/notifications', Notifications);
 
-import Apps from './routes/Apps';
+import Apps, { validateHome } from './routes/Apps';
 app.use('/apps', Apps);
 
-import Homes from './routes/Homes';
+import Homes from './routes/apps/Homes';
 app.use('/homes', Homes);
+
+import Finances from './routes/apps/Finances';
+app.use('/finances/:refnumber', validateHome, Finances);
+
+import Groceries from './routes/apps/Groceries';
+app.use('/groceries/:refnumber', validateHome, Groceries);
+
+import Tasks from './routes/apps/Tasks';
+app.use('/tasks/:refnumber', validateHome, Tasks);
+
+import Settings from './routes/apps/Settings';
+app.use('/settings', Settings);
 
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
