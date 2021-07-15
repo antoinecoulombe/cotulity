@@ -68,11 +68,12 @@ export default function AppHomes() {
 
   async function showWarningPopup(event: any, action: string) {
     const ref = await getRefNumber(event);
+    const home = homes.find((h) => h.refNumber == ref);
 
     setPopup(
       <WarningPopup
         title={getTranslateJSON(`homes.${action}.text.title`, [
-          homes.find((h) => h.refNumber == ref)?.name ?? '',
+          home?.UserHome.nickname ?? home?.name ?? '',
         ])}
         desc={`homes.${action}.text.desc`}
         yesText={`homes.${action}.buttons.yes`}
@@ -89,6 +90,7 @@ export default function AppHomes() {
     axios
       .delete(`/homes/${refNumber}/delete`)
       .then((res: any) => {
+        deleteHomeState(refNumber);
         closeAndSuccess(res.data);
       })
       .catch((err) => {
@@ -100,6 +102,7 @@ export default function AppHomes() {
     axios
       .delete(`/homes/${refNumber}/quit`)
       .then((res: any) => {
+        deleteHomeState(refNumber);
         closeAndSuccess(res.data);
       })
       .catch((err) => {
@@ -109,12 +112,13 @@ export default function AppHomes() {
 
   async function showPopup(event: any, action: string) {
     const ref = await getRefNumber(event);
+    const home = homes.find((h) => h.refNumber == ref);
 
     setPopup(
       <SingleInputPopup
         name={`homes.name.${action}`}
         title={getTranslateJSON(`homes.title.${action}`, [
-          homes.find((h) => h.refNumber == ref)?.name ?? '',
+          home?.UserHome.nickname ?? home?.name ?? '',
         ])}
         onCancel={closePopup}
         onSubmit={(value: string) =>
@@ -129,10 +133,28 @@ export default function AppHomes() {
     );
   }
 
+  function updateHomeState(
+    refNumber: number,
+    homeField: null | Array<{ name: string; value: any }>,
+    userHomeField: null | Array<{ name: string; value: any }>
+  ) {
+    let homesCopy = homes.slice();
+    const i = homesCopy.findIndex((h) => h.refNumber == refNumber);
+    homeField?.forEach((f) => (homesCopy[i][f.name] = f.value));
+    userHomeField?.forEach((f) => (homesCopy[i].UserHome[f.name] = f.value));
+    setHomes(homesCopy);
+  }
+
+  function deleteHomeState(refNumber: number) {
+    const i = homes.findIndex((h) => h.refNumber == refNumber);
+    setHomes(homes.slice(0, i).concat(homes.slice(i + 1)));
+  }
+
   function renameHome(value: string, refNumber: number) {
     axios
-      .post(`/homes/${refNumber}/rename`, { data: { nickname: value } })
+      .post(`/homes/${refNumber}/rename`, { nickname: value })
       .then((res: any) => {
+        updateHomeState(refNumber, null, [{ name: 'nickname', value: value }]);
         closeAndSuccess(res.data);
       })
       .catch((err) => {
@@ -180,8 +202,9 @@ export default function AppHomes() {
     const ref = await getRefNumber(event);
 
     axios
-      .post(`/homes/${ref}/request/cancel`)
+      .delete(`/homes/${ref}/request/cancel`)
       .then((res: any) => {
+        deleteHomeState(ref);
         setSuccessNotification(res.data);
       })
       .catch((err) => {
@@ -198,7 +221,7 @@ export default function AppHomes() {
     <AppContainer
       title="yourHomes"
       appName="homes"
-      onAddClick={() => history.push('/homes/new')}
+      onAddClick={() => history.push('/apps/homes/new')}
       popup={popup}
     >
       <List>

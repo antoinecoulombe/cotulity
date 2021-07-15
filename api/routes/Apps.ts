@@ -15,7 +15,7 @@ export const validateHome = async (req: any, res: any, next: any) => {
     if (home.length === 0)
       return next({ title: 'request.notFound', msg: 'request.notFound' });
 
-    res.locals.home = home;
+    res.locals.home = home[0];
     return next();
   } catch (error) {
     console.log(error);

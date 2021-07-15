@@ -1,13 +1,16 @@
-import express from 'express';
+import express, { request } from 'express';
 import { validateHome, validateApp } from '../Apps';
 
 const Homes = express.Router();
 const db = require('../../db/models');
 
+// Middlewares
 Homes.use(async (req: any, res, next) => {
   req.params.appname = 'homes';
   validateApp(req, res, next);
 });
+
+// ######################## Getters / Globals ########################
 
 async function getHomes(req: any, res: any, all: boolean) {
   try {
@@ -59,6 +62,16 @@ async function getHomes(req: any, res: any, all: boolean) {
   }
 }
 
+async function denyIfNotOwner(req: any, res: any) {
+  if (res.locals.home.ownerId !== req.user.id) {
+    res
+      .status(403)
+      .json({ title: 'request.denied', msg: 'request.unauthorized' });
+    return true;
+  }
+  return false;
+}
+
 Homes.get('/', async (req: any, res) => {
   getHomes(req, res, true);
 });
@@ -66,6 +79,31 @@ Homes.get('/', async (req: any, res) => {
 Homes.get('/accepted', async (req: any, res) => {
   getHomes(req, res, false);
 });
+
+Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
+  try {
+    if (await denyIfNotOwner(req, res)) return;
+
+    const home = await req.user.getHomes({
+      where: { refNumber: res.locals.home.refNumber },
+      attributes: ['ownerId', 'refNumber', 'name'],
+      include: [
+        {
+          model: db.User,
+          as: 'Members',
+          attributes: ['id', 'firstname', 'lastname', 'image'],
+        },
+      ],
+    });
+
+    res.json(home);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// ######################## Join/Create (homes/new) ########################
 
 Homes.post('/create/:homeName', async (req: any, res) => {
   try {
@@ -180,41 +218,104 @@ Homes.post('/join/:refNumber', async (req: any, res) => {
   }
 });
 
-// ######################## Home Management ########################
-
-Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
-  try {
-    res.json({});
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
+// ######################## Edit ########################
 
 Homes.post('/:refnumber/edit', validateHome, async (req: any, res: any) => {
   try {
+    if (await denyIfNotOwner(req, res)) return;
+
+    res.json({ title: 'homes.', msg: 'homes.' });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
 
+Homes.delete(
+  '/:refnumber/members/remove',
+  validateHome,
+  async (req: any, res: any) => {
+    try {
+      if (await denyIfNotOwner(req, res)) return;
+
+      res.json({ title: 'homes.', msg: 'homes.' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+  }
+);
+
+Homes.post(
+  '/:refnumber/request/:action/:id',
+  validateHome,
+  async (req: any, res: any) => {
+    try {
+      const actions = ['accept', 'reject'];
+      const action = req.params.action;
+      if (!action || !actions.includes(action))
+        res
+          .status(404)
+          .json({ title: 'request.notFound', msg: 'request.notFound' });
+
+      if (await denyIfNotOwner(req, res)) return;
+
+      res.json({ title: 'homes.', msg: 'homes.' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+  }
+);
+
+// ######################## Home management ########################
+
 Homes.delete('/:refnumber/delete', validateHome, async (req: any, res: any) => {
   try {
+    if (await denyIfNotOwner(req, res)) return;
+    res.locals.home.destroy();
+
+    res.json({ title: 'homes.homeDeleted', msg: 'homes.homeDeleted' });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
+
 Homes.delete('/:refnumber/quit', validateHome, async (req: any, res: any) => {
   try {
+    res.locals.home.UserHome.destroy({ force: true });
+    res.json({ title: 'homes.homeLeft', msg: 'homes.homeLeft' });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
+
 Homes.post('/:refnumber/rename', validateHome, async (req: any, res: any) => {
   try {
+    const nickname = req.body.nickname;
+    let home = res.locals.home;
+
+    if (home.ownerId === req.user.id) {
+      if (!nickname || nickname.length == 0)
+        return res
+          .status(500)
+          .json({ title: 'homes.nameUndefined', msg: 'homes.nameUndefined' });
+
+      home.name = nickname;
+      home.save({ fields: ['name'] });
+    } else {
+      home.UserHome.nickname =
+        nickname && nickname.length > 0 ? nickname : null;
+      home.UserHome.save({ fields: ['nickname'] });
+    }
+
+    await home.save();
+    res.json({
+      title: 'homes.homeRenamed',
+      msg: 'homes.homeRenamed',
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -228,17 +329,12 @@ Homes.post(
   validateHome,
   async (req: any, res: any) => {
     try {
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-  }
-);
-Homes.delete(
-  '/:refnumber/members/remove',
-  validateHome,
-  async (req: any, res: any) => {
-    try {
+      if (await denyIfNotOwner(req, res)) return;
+
+      // add invitation db
+      // send email
+
+      res.json({ title: 'homes.invitationSent', msg: 'homes.invitationSent' });
     } catch (error) {
       console.log(error);
       res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -248,25 +344,23 @@ Homes.delete(
 
 // ######################## Requests ########################
 
-Homes.delete('/:refnumber/request/cancel', async (req: any, res: any) => {
-  try {
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
-
-Homes.post(
-  '/:refnumber/request/:action/:id',
+Homes.delete(
+  '/:refnumber/request/cancel',
   validateHome,
   async (req: any, res: any) => {
     try {
-      const actions = ['accept', 'reject'];
-      const action = req.params.action;
-      if (!action || !actions.includes(action))
-        res
-          .status(404)
-          .json({ title: 'request.notFound', msg: 'request.notFound' });
+      let home = res.locals.home;
+      if (home.accepted)
+        return res
+          .status(501)
+          .json({ title: 'homes.couldNotJoin', msg: 'homes.alreadyInHome' });
+
+      home.UserHome.destroy({ force: true });
+
+      res.json({
+        title: 'homes.requestCancelled',
+        msg: 'homes.requestCancelled',
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ title: 'request.error', msg: 'request.error' });

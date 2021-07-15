@@ -25,7 +25,7 @@ exports.validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         });
         if (home.length === 0)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
-        res.locals.home = home;
+        res.locals.home = home[0];
         return next();
     }
     catch (error) {

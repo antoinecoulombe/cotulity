@@ -16,10 +16,12 @@ const express_1 = __importDefault(require("express"));
 const Apps_1 = require("../Apps");
 const Homes = express_1.default.Router();
 const db = require('../../db/models');
+// Middlewares
 Homes.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     req.params.appname = 'homes';
     Apps_1.validateApp(req, res, next);
 }));
+// ######################## Getters / Globals ########################
 function getHomes(req, res, all) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -69,12 +71,46 @@ function getHomes(req, res, all) {
         }
     });
 }
+function denyIfNotOwner(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (res.locals.home.ownerId !== req.user.id) {
+            res
+                .status(403)
+                .json({ title: 'request.denied', msg: 'request.unauthorized' });
+            return true;
+        }
+        return false;
+    });
+}
 Homes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     getHomes(req, res, true);
 }));
 Homes.get('/accepted', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     getHomes(req, res, false);
 }));
+Homes.get('/:refnumber', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        const home = yield req.user.getHomes({
+            where: { refNumber: res.locals.home.refNumber },
+            attributes: ['ownerId', 'refNumber', 'name'],
+            include: [
+                {
+                    model: db.User,
+                    as: 'Members',
+                    attributes: ['id', 'firstname', 'lastname', 'image'],
+                },
+            ],
+        });
+        res.json(home);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// ######################## Join/Create (homes/new) ########################
 Homes.post('/create/:homeName', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.params.homeName)
@@ -165,51 +201,12 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-// ######################## Home Management ########################
-Homes.get('/:refnumber', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json({});
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
+// ######################## Edit ########################
 Homes.post('/:refnumber/edit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-// ######################## Members ########################
-Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        res.json({ title: 'homes.', msg: 'homes.' });
     }
     catch (error) {
         console.log(error);
@@ -218,15 +215,9 @@ Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __aw
 }));
 Homes.delete('/:refnumber/members/remove', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-// ######################## Requests ########################
-Homes.delete('/:refnumber/request/cancel', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        res.json({ title: 'homes.', msg: 'homes.' });
     }
     catch (error) {
         console.log(error);
@@ -241,6 +232,93 @@ Homes.post('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) =>
             res
                 .status(404)
                 .json({ title: 'request.notFound', msg: 'request.notFound' });
+        if (yield denyIfNotOwner(req, res))
+            return;
+        res.json({ title: 'homes.', msg: 'homes.' });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// ######################## Home management ########################
+Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        res.locals.home.destroy();
+        res.json({ title: 'homes.homeDeleted', msg: 'homes.homeDeleted' });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.locals.home.UserHome.destroy({ force: true });
+        res.json({ title: 'homes.homeLeft', msg: 'homes.homeLeft' });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const nickname = req.body.nickname;
+        let home = res.locals.home;
+        if (home.ownerId === req.user.id) {
+            if (!nickname || nickname.length == 0)
+                return res
+                    .status(500)
+                    .json({ title: 'homes.nameUndefined', msg: 'homes.nameUndefined' });
+            home.name = nickname;
+            home.save({ fields: ['name'] });
+        }
+        else {
+            home.UserHome.nickname =
+                nickname && nickname.length > 0 ? nickname : null;
+            home.UserHome.save({ fields: ['nickname'] });
+        }
+        yield home.save();
+        res.json({
+            title: 'homes.homeRenamed',
+            msg: 'homes.homeRenamed',
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// ######################## Members ########################
+Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        // add invitation db
+        // send email
+        res.json({ title: 'homes.invitationSent', msg: 'homes.invitationSent' });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// ######################## Requests ########################
+Homes.delete('/:refnumber/request/cancel', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let home = res.locals.home;
+        if (home.accepted)
+            return res
+                .status(501)
+                .json({ title: 'homes.couldNotJoin', msg: 'homes.alreadyInHome' });
+        home.UserHome.destroy({ force: true });
+        res.json({
+            title: 'homes.requestCancelled',
+            msg: 'homes.requestCancelled',
+        });
     }
     catch (error) {
         console.log(error);
