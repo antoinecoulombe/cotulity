@@ -96,7 +96,7 @@ Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
       ],
     });
 
-    res.json(home);
+    res.json(home[0]);
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });

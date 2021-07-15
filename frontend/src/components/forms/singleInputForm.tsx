@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Input from './input';
 import IconToolTip from '../global/iconTooltip';
 import Translate from '../utils/translate';
@@ -15,8 +15,10 @@ export interface SingleInputFormProps {
   label?: string;
   children?: string;
   error?: boolean;
+  required?: boolean;
   className?: string;
-  onSubmit: (value: string) => void;
+  parent?: { value?: string; onChange: (e: any) => void };
+  onSubmit?: (value: string) => void;
   onHelpClick?: (e: any) => void;
   onBack?: (e: any) => void;
 }
@@ -24,19 +26,29 @@ export interface SingleInputFormProps {
 export default function SingleInputForm(props: SingleInputFormProps) {
   const [value, setValue] = useState<string>('');
 
+  useEffect(() => {
+    setValue(value == '' ? props.parent?.value ?? '' : value);
+  });
+
   function handleKeyPress(event: any) {
-    if (event.key === 'Enter') props.onSubmit(value);
+    if (event.key === 'Enter') props.onSubmit?.(value);
+  }
+
+  function onChange(event: any) {
+    setValue(event.target.value);
+    if (props.parent?.onChange) props.parent.onChange(event);
   }
 
   return (
     <div
-      className={`si-form ${!props.onBack ? 'offset' : ''} ${
-        props.className ?? ''
-      }`}
+      className={`si-form${
+        !props.onBack && props.onSubmit != undefined ? ' offset' : ''
+      } ${props.className ?? ''}${!props.onSubmit ? ' r-offset' : ''}`}
     >
       <div className="title">
         <h2>
           <Translate name={props.title}></Translate>
+          {props.required ? <b className="input-required">*</b> : ''}
         </h2>
         {props.children && (
           <IconToolTip
@@ -62,20 +74,23 @@ export default function SingleInputForm(props: SingleInputFormProps) {
           name={props.name}
           label={props.label}
           type={props.type ?? 'text'}
-          value={value}
+          value={props.parent?.value ?? value}
           error={props.error}
-          onChange={(e: any) => setValue(e.target.value)}
+          onChange={onChange}
           onKeyPress={handleKeyPress}
+          filled={props.parent?.value != undefined}
         ></Input>
-        <IconToolTip
-          icon="arrow-alt-circle-right"
-          style={props.style}
-          onClick={() => {
-            props.onSubmit(value);
-          }}
-        >
-          nav.submit
-        </IconToolTip>
+        {props.onSubmit && (
+          <IconToolTip
+            icon="arrow-alt-circle-right"
+            style={props.style}
+            onClick={() => {
+              props.onSubmit?.(value);
+            }}
+          >
+            nav.submit
+          </IconToolTip>
+        )}
       </div>
     </div>
   );

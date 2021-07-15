@@ -10,6 +10,7 @@ interface InputProps {
   error?: boolean;
   label?: string;
   className?: string;
+  filled?: boolean;
   onChange: (e: any) => void;
   onKeyPress?: (e: any) => void;
 }
@@ -56,8 +57,12 @@ class Input extends React.Component<InputProps> {
           onBlur={handleBlur}
           onChange={this.props.onChange}
           onKeyPress={this.props.onKeyPress}
+          className={this.props.filled ? 'filled' : ''}
         ></input>
-        <label htmlFor={this.props.name}>
+        <label
+          htmlFor={this.props.name}
+          className={this.props.filled ? 'filled' : ''}
+        >
           <Translate name={`${this.props.label ?? this.props.name}`} />{' '}
           {this.props.error && <FontAwesomeIcon icon="times-circle" />}
         </label>

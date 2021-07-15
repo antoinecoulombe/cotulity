@@ -103,7 +103,7 @@ Homes.get('/:refnumber', Apps_1.validateHome, (req, res) => __awaiter(void 0, vo
                 },
             ],
         });
-        res.json(home);
+        res.json(home[0]);
     }
     catch (error) {
         console.log(error);

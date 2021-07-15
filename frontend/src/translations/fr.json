@@ -43,7 +43,12 @@
     "next": "Suivant",
     "prev": "Précédent",
     "goBack": "Retour en arrière",
-    "submit": "Envoyer"
+    "submit": "Envoyer",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "delete": "Supprimer",
+    "accept": "Accepter",
+    "decline": "Refuser"
   },
   "form": {
     "email": "Courriel",
@@ -51,7 +56,8 @@
     "phone": "Téléphone",
     "cpassword": "Confirmer le mot de passe",
     "firstname": "Prénom",
-    "lastname": "Nom"
+    "lastname": "Nom",
+    "name": "Nom"
   },
   "login": {
     "signup-p": {
@@ -66,10 +72,12 @@
   "homes": {
     "tooltip": {
       "add": "Créez ou rejoignez une maison",
-      "renameHome": "Cette action renomme la maison uniquement pour vous, les autres membres verront toujours la maison comme '{0}'.",
+      "renameHome": "Cette action renomme la maison uniquement pour vous, les autres membres verront toujours la maison comme '{0}'. Si vous laissez le champ vide, le nom sera réinitialisé à '{0}'.",
       "inviteMember": "Une invitation sera envoyée à l'adresse courriel spécifiée.",
       "deleteHome": "Étant le propriétaire de cette maison, sa suppression entraînera l'expulsion de tous les membres qui s'y trouvent et la supprimera définitivement.",
-      "quitHome": "Les données associées à cette maison seront supprimées définitivement."
+      "quitHome": "Les données associées à cette maison seront supprimées définitivement.",
+      "kickMember": "Exclure le membre",
+      "homeOwner": "Créateur de la maison"
     },
     "title": {
       "yourHomes": "Vos maisons",
@@ -92,7 +100,10 @@
       "requestPending": "Demande en attente"
     },
     "list": {
-      "member": "membre"
+      "member": "membre",
+      "members": "Membres",
+      "requests": "Demandes",
+      "noRequests": "Aucune demande"
     },
     "delete": {
       "text": {

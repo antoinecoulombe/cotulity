@@ -87,106 +87,12 @@
   }
 
   > .app-body {
-    @paddingSide: 12px;
-    @paddingTop: 15px;
-
     position: relative;
     float: left;
     clear: both;
     width: 100%;
     top: 0;
     left: 0;
-
-    .list {
-      position: relative;
-      display: block;
-      float: left;
-      width: 100%;
-
-      > .list-item {
-        position: relative;
-        display: block;
-        float: left;
-        width: calc(100% - @paddingSide * 2);
-        border-radius: 10px;
-        border: solid 1px #d8d8d800;
-        padding: @paddingTop @paddingSide;
-
-        &:hover {
-          box-shadow: 0px 3px 5px 0 rgba(0, 0, 0, 0.07);
-          border: solid 1px #d8d8d8;
-
-          .icon-tooltip {
-            display: block !important;
-          }
-        }
-
-        .tag {
-          .font-default();
-
-          position: relative;
-          float: right;
-          font-size: 15px;
-          font-weight: 500;
-          padding: 7px 14px;
-          border-radius: 200px;
-          color: #e77e89;
-          background-color: #fde6e9;
-          white-space: nowrap;
-        }
-
-        > .list-item-left,
-        > .list-item-right {
-          position: relative;
-
-          > h3,
-          > p {
-            .font-default();
-
-            position: relative;
-            display: contents;
-            margin: 0;
-            width: auto;
-            float: left;
-            vertical-align: center;
-          }
-
-          > h3 {
-            font-size: 17px;
-            font-weight: bold;
-            color: var(--darkGray);
-          }
-
-          > p {
-            font-size: 15px;
-            color: var(--gray);
-          }
-
-          .icon-tooltip {
-            position: relative !important;
-            cursor: pointer;
-            margin-left: 10px;
-            display: none;
-          }
-        }
-
-        > .list-item-left {
-          float: left;
-          .centered();
-
-          .icon-tooltip {
-            float: left;
-          }
-        }
-        > .list-item-right {
-          float: right;
-
-          .icon-tooltip {
-            float: right;
-          }
-        }
-      }
-    }
   }
 
   &.homes {

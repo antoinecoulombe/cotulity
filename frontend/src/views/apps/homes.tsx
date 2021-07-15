@@ -19,7 +19,7 @@ export interface Home {
   ownerId: number;
   refNumber: number;
   name: string;
-  memberCount: number;
+  memberCount?: number;
   UserHome: { nickname: string; accepted: boolean };
 }
 
@@ -66,8 +66,12 @@ export default function AppHomes() {
     closePopup();
   }
 
-  async function showWarningPopup(event: any, action: string) {
-    const ref = await getRefNumber(event);
+  async function showWarningPopup(
+    event: any,
+    action: string,
+    refNumber?: number
+  ) {
+    const ref = refNumber ?? (await getRefNumber(event));
     const home = homes.find((h) => h.refNumber == ref);
 
     setPopup(
@@ -128,7 +132,7 @@ export default function AppHomes() {
         }
         style={{ iconWidth: 32, tooltipMultiplier: 15 }}
       >
-        {getTranslateJSON(`homes.tooltip.${action}`, ['defaultName'])}
+        {getTranslateJSON(`homes.tooltip.${action}`, [home?.name ?? ''])}
       </SingleInputPopup>
     );
   }
@@ -164,7 +168,7 @@ export default function AppHomes() {
 
   function addMember(value: string, refNumber: number) {
     axios
-      .post(`/homes/${refNumber}/members/invite`, { data: { email: value } })
+      .post(`/homes/${refNumber}/members/invite`, { email: value })
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -174,28 +178,26 @@ export default function AppHomes() {
   }
 
   async function showEditPopup(event: any) {
-    console.log(`NOT IMPLEMENTED YET. (edit)`);
     const ref = await getRefNumber(event);
     axios
       .get(`/homes/${ref}`)
       .then((res: any) => {
-        setPopup(<EditPopup onCancel={closePopup} onSubmit={editHome} />);
+        setPopup(
+          <EditPopup
+            onCancel={closePopup}
+            onSubmit={(value: string, refNumber: number) =>
+              renameHome(value, refNumber)
+            }
+            onDelete={(refNumber: number) =>
+              showWarningPopup(event, 'delete', refNumber)
+            }
+            home={res.data}
+          />
+        );
       })
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
-
-  async function editHome() {
-    // const ref = await getRefNumber(event);
-    // axios
-    //   .get(`/homes/${ref}/edit`)
-    //   .then((res: any) => {
-    //     setSuccessNotification(res.data);
-    //   })
-    //   .catch((err) => {
-    //     setNotification(err.response.data);
-    //   });
   }
 
   async function cancelRequest(event: any) {

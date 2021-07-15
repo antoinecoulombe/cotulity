@@ -49,6 +49,10 @@ import {
   faSignOutAlt,
   faPen,
   faUserPlus,
+  faTrash,
+  faUserCircle,
+  faUserMinus,
+  faCrown,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -72,7 +76,11 @@ library.add(
   faChevronUp,
   faSignOutAlt,
   faPen,
-  faUserPlus
+  faUserPlus,
+  faTrash,
+  faUserCircle,
+  faUserMinus,
+  faCrown
 );
 
 export default function App() {

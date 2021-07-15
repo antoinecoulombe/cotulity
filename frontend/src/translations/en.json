@@ -43,7 +43,12 @@
     "next": "Next",
     "prev": "Previous",
     "goBack": "Go back",
-    "submit": "Submit"
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "accept": "Accept",
+    "decline": "Decline"
   },
   "form": {
     "email": "Email",
@@ -51,7 +56,8 @@
     "phone": "Phone",
     "cpassword": "Confirm Password",
     "firstname": "Firstname",
-    "lastname": "Lastname"
+    "lastname": "Lastname",
+    "name": "Name"
   },
   "login": {
     "signup-p": {
@@ -66,10 +72,12 @@
   "homes": {
     "tooltip": {
       "add": "Join or create a home",
-      "renameHome": "This will only rename it for yourself, others will still see the house as '{0}'.",
+      "renameHome": "This will only rename it for yourself, others will still see the house as '{0}'. If you leave the field blank, the name will be reset to '{0}'.",
       "inviteMember": "An invitation email will be sent to the specified email.",
       "deleteHome": "Since you are the owner of this home, deleting it will kick any members currently in it and remove it permanently.",
-      "quitHome": "All data associated to this house will be permanently deleted."
+      "quitHome": "All data associated to this house will be permanently deleted.",
+      "kickMember": "Kick Member",
+      "homeOwner": "Home Owner"
     },
     "title": {
       "yourHomes": "Your Homes",
@@ -92,7 +100,10 @@
       "requestPending": "Request Pending"
     },
     "list": {
-      "member": "member"
+      "member": "member",
+      "members": "Members",
+      "requests": "Requests",
+      "noRequests": "No Requests"
     },
     "delete": {
       "text": {
