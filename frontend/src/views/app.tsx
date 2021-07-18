@@ -54,6 +54,7 @@ import {
   faUserMinus,
   faCrown,
 } from '@fortawesome/free-solid-svg-icons';
+import EditPopup from '../components/homes/editPopup';
 
 library.add(
   faArrowAltCircleRight,
@@ -117,7 +118,7 @@ export default function App() {
         <PrivateRoute exact path="/apps" component={AppsPage} />
 
         <PrivateRoute exact path="/apps/homes/new" component={AppNewHome} />
-        <PrivateRoute exact path="/apps/homes" component={AppHomes} />
+        <PrivateRoute path="/apps/homes" component={AppHomes} />
         <PrivateRoute exact path="/apps/finances" component={AppFinances} />
         <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
         <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />

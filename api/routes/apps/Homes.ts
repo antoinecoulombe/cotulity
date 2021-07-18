@@ -220,25 +220,29 @@ Homes.post('/join/:refNumber', async (req: any, res) => {
 
 // ######################## Edit ########################
 
-Homes.post('/:refnumber/edit', validateHome, async (req: any, res: any) => {
-  try {
-    if (await denyIfNotOwner(req, res)) return;
-
-    res.json({ title: 'homes.', msg: 'homes.' });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
-
 Homes.delete(
-  '/:refnumber/members/remove',
+  '/:refnumber/members/remove/:id',
   validateHome,
   async (req: any, res: any) => {
     try {
       if (await denyIfNotOwner(req, res)) return;
+      if (req.params.id == res.locals.home.ownerId)
+        return res
+          .status(403)
+          .json({ title: 'request.denied', msg: 'request.unauthorized' });
 
-      res.json({ title: 'homes.', msg: 'homes.' });
+      let userHome = await db.UserHome.findOne({
+        where: { userId: req.params.id, homeId: res.locals.home.id },
+      });
+
+      if (!userHome)
+        return res
+          .status(404)
+          .json({ title: 'request.notFound', msg: 'request.notFound' });
+
+      await userHome.destroy({ force: true });
+
+      res.json({ title: 'request.success', msg: 'request.success' });
     } catch (error) {
       console.log(error);
       res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -254,13 +258,45 @@ Homes.post(
       const actions = ['accept', 'reject'];
       const action = req.params.action;
       if (!action || !actions.includes(action))
-        res
+        return res
           .status(404)
           .json({ title: 'request.notFound', msg: 'request.notFound' });
 
       if (await denyIfNotOwner(req, res)) return;
 
-      res.json({ title: 'homes.', msg: 'homes.' });
+      return await db.sequelize.transaction(async (t: any) => {
+        let userHome = await db.UserHome.findOne({
+          where: { userId: req.params.id, homeId: res.locals.home.id },
+        });
+
+        if (!userHome)
+          return res
+            .status(404)
+            .json({ title: 'request.notFound', msg: 'request.notFound' });
+
+        if (action == 'accept') {
+          userHome.accepted = true;
+          await userHome.save({ transaction: t });
+        } else if (action == 'reject') {
+          await userHome.destroy({ transaction: t });
+        }
+
+        await db.Notification.create(
+          {
+            typeId: action == 'accept' ? 2 : 3,
+            toId: req.params.id,
+            title: `{"translate":"homes.${
+              action == 'accept' ? 'requestAccepted' : 'requestDenied'
+            }","format":["${res.locals.home.name}"]}`,
+            description: `{"translate":"homes.${
+              action == 'accept' ? 'requestAccepted' : 'requestDenied'
+            }","format":["${res.locals.home.name}"]}`,
+          },
+          { transaction: t }
+        );
+
+        return res.json({ title: 'request.success', msg: 'request.success' });
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -331,6 +367,8 @@ Homes.post(
     try {
       if (await denyIfNotOwner(req, res)) return;
 
+      // if home.members contains email -> error, already in home
+      // TODO: notifications
       // add invitation db
       // send email
 

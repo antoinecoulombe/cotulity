@@ -202,22 +202,23 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 }));
 // ######################## Edit ########################
-Homes.post('/:refnumber/edit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.delete('/:refnumber/members/remove/:id', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (yield denyIfNotOwner(req, res))
             return;
-        res.json({ title: 'homes.', msg: 'homes.' });
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.delete('/:refnumber/members/remove', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if (yield denyIfNotOwner(req, res))
-            return;
-        res.json({ title: 'homes.', msg: 'homes.' });
+        if (req.params.id == res.locals.home.ownerId)
+            return res
+                .status(403)
+                .json({ title: 'request.denied', msg: 'request.unauthorized' });
+        let userHome = yield db.UserHome.findOne({
+            where: { userId: req.params.id, homeId: res.locals.home.id },
+        });
+        if (!userHome)
+            return res
+                .status(404)
+                .json({ title: 'request.notFound', msg: 'request.notFound' });
+        yield userHome.destroy({ force: true });
+        res.json({ title: 'request.success', msg: 'request.success' });
     }
     catch (error) {
         console.log(error);
@@ -229,12 +230,34 @@ Homes.post('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) =>
         const actions = ['accept', 'reject'];
         const action = req.params.action;
         if (!action || !actions.includes(action))
-            res
+            return res
                 .status(404)
                 .json({ title: 'request.notFound', msg: 'request.notFound' });
         if (yield denyIfNotOwner(req, res))
             return;
-        res.json({ title: 'homes.', msg: 'homes.' });
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            let userHome = yield db.UserHome.findOne({
+                where: { userId: req.params.id, homeId: res.locals.home.id },
+            });
+            if (!userHome)
+                return res
+                    .status(404)
+                    .json({ title: 'request.notFound', msg: 'request.notFound' });
+            if (action == 'accept') {
+                userHome.accepted = true;
+                yield userHome.save({ transaction: t });
+            }
+            else if (action == 'reject') {
+                yield userHome.destroy({ transaction: t });
+            }
+            yield db.Notification.create({
+                typeId: action == 'accept' ? 2 : 3,
+                toId: req.params.id,
+                title: `{"translate":"homes.${action == 'accept' ? 'requestAccepted' : 'requestDenied'}","format":["${res.locals.home.name}"]}`,
+                description: `{"translate":"homes.${action == 'accept' ? 'requestAccepted' : 'requestDenied'}","format":["${res.locals.home.name}"]}`,
+            }, { transaction: t });
+            return res.json({ title: 'request.success', msg: 'request.success' });
+        }));
     }
     catch (error) {
         console.log(error);
@@ -297,6 +320,8 @@ Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __aw
     try {
         if (yield denyIfNotOwner(req, res))
             return;
+        // if home.members contains email -> error, already in home
+        // TODO: notifications
         // add invitation db
         // send email
         res.json({ title: 'homes.invitationSent', msg: 'homes.invitationSent' });

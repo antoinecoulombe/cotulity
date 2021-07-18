@@ -13,6 +13,12 @@ import { useNotifications } from '../../contexts/NotificationsContext';
 import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
 import EditPopup from '../../components/homes/editPopup';
+import {
+  getCopyIndex,
+  getTranslateJSON,
+  useForceUpdate,
+} from '../../utils/global';
+import _ from 'lodash';
 
 export interface Home {
   id: number;
@@ -44,12 +50,12 @@ export default function AppHomes() {
       });
   }, []);
 
+  useEffect(() => {
+    console.log(homes);
+  }, [homes]);
+
   async function getRefNumber(event: any) {
     return await event.target.closest('.list-item').dataset.uid;
-  }
-
-  function getTranslateJSON(translate: string, format: Array<string>) {
-    return `{"translate":"${translate}", "format": ["${format.join('","')}"]}`;
   }
 
   function closePopup() {
@@ -137,18 +143,6 @@ export default function AppHomes() {
     );
   }
 
-  function updateHomeState(
-    refNumber: number,
-    homeField: null | Array<{ name: string; value: any }>,
-    userHomeField: null | Array<{ name: string; value: any }>
-  ) {
-    let homesCopy = homes.slice();
-    const i = homesCopy.findIndex((h) => h.refNumber == refNumber);
-    homeField?.forEach((f) => (homesCopy[i][f.name] = f.value));
-    userHomeField?.forEach((f) => (homesCopy[i].UserHome[f.name] = f.value));
-    setHomes(homesCopy);
-  }
-
   function deleteHomeState(refNumber: number) {
     const i = homes.findIndex((h) => h.refNumber == refNumber);
     setHomes(homes.slice(0, i).concat(homes.slice(i + 1)));
@@ -158,7 +152,12 @@ export default function AppHomes() {
     axios
       .post(`/homes/${refNumber}/rename`, { nickname: value })
       .then((res: any) => {
-        updateHomeState(refNumber, null, [{ name: 'nickname', value: value }]);
+        let homecp = getCopyIndex(homes, (h: Home) => h.refNumber == refNumber);
+        if (homecp) {
+          homecp.cp[homecp.i].UserHome.nickname = value;
+          setHomes(homecp.cp);
+        }
+
         closeAndSuccess(res.data);
       })
       .catch((err) => {
@@ -177,27 +176,33 @@ export default function AppHomes() {
       });
   }
 
-  async function showEditPopup(event: any) {
-    const ref = await getRefNumber(event);
-    axios
-      .get(`/homes/${ref}`)
-      .then((res: any) => {
-        setPopup(
-          <EditPopup
-            onCancel={closePopup}
-            onSubmit={(value: string, refNumber: number) =>
-              renameHome(value, refNumber)
-            }
-            onDelete={(refNumber: number) =>
-              showWarningPopup(event, 'delete', refNumber)
-            }
-            home={res.data}
-          />
-        );
-      })
-      .catch((err) => {
-        setNotification(err.response.data);
-      });
+  function updateMemberCount(refNumber: number, count: number) {
+    let h = getCopyIndex(homes, (h: Home) => h.refNumber == refNumber);
+    if (h) {
+      h.cp[h.i].memberCount = count;
+      setHomes(h.cp);
+    }
+  }
+
+  async function showEditPopup(event: any, refN?: number) {
+    const ref = refN ?? (await getRefNumber(event));
+    const home = homes.find((h) => h.refNumber == ref) ?? homes[0];
+
+    setPopup(
+      <EditPopup
+        onCancel={closePopup}
+        onSubmit={(value: string, refNumber: number) =>
+          renameHome(value, refNumber)
+        }
+        onDelete={(refNumber: number) =>
+          showWarningPopup(event, 'delete', refNumber)
+        }
+        updateMemberCount={(refNumber: number, change: number) =>
+          updateMemberCount(refNumber, change)
+        }
+        home={home}
+      />
+    );
   }
 
   async function cancelRequest(event: any) {

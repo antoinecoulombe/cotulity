@@ -165,14 +165,13 @@ export function NotificationsProvider({ children }: any) {
 
   // Delete a notification from 'id', and delete it from database if needed.
   const clearNotification = React.useCallback(() => {
-    // TODO: uncomment this to delete from database
-    // let notification = notifications[currentNotification];
-    // if (notification?.db) {
-    //   axios
-    //     .delete(`/notifications/delete/${notification.id}`)
-    //     .then((res) => res.data)
-    //     .catch();
-    // }
+    let notification = notifications[currentNotification];
+    if (notification?.db) {
+      axios
+        .delete(`/notifications/delete/${notification.id}`)
+        .then((res) => res.data)
+        .catch();
+    }
 
     setNotifications(
       notifications

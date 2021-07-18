@@ -56,7 +56,7 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
 
   render() {
     return (
-      <p className="toggle">
+      <p className="toggle" style={{ paddingRight: 50 }}>
         <i>
           <Translate
             name={
