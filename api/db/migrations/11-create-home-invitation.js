@@ -17,10 +17,6 @@ export default {
           key: 'id',
         },
       },
-      email: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
       token: {
         allowNull: false,
         type: Sequelize.STRING,

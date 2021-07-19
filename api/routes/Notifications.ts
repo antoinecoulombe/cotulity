@@ -44,4 +44,22 @@ Notifications.delete('/delete/:id', async (req: any, res: any) => {
   }
 });
 
+export async function sendNotifications(
+  userIds: number[],
+  notification: any,
+  transaction?: any
+) {
+  function getNotification(toId: number, notification: any) {
+    notification.toId = toId;
+    return notification;
+  }
+
+  let notifications: any[] = [];
+  userIds.forEach((id: number) =>
+    notifications.push(getNotification(id, notification))
+  );
+
+  await db.Notification.bulkCreate(notifications, { transaction: transaction });
+}
+
 export default Notifications;

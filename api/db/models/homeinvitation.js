@@ -14,19 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   HomeInvitation.init(
     {
-      email: {
-        type: DataTypes.STRING,
-        allowNull: {
-          args: false,
-          msg: 'Please enter your email address.',
-        },
-        validate: {
-          isEmail: {
-            args: true,
-            msg: 'Please enter a valid email address.',
-          },
-        },
-      },
       token: DataTypes.STRING,
       expirationDays: {
         type: DataTypes.INTEGER,

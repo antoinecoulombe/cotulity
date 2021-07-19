@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendNotifications = void 0;
 const express_1 = __importDefault(require("express"));
 const Notifications = express_1.default.Router();
 const db = require('../db/models');
@@ -53,4 +54,16 @@ Notifications.delete('/delete/:id', (req, res) => __awaiter(void 0, void 0, void
         res.json({ title: 'request.error', msg: 'request.error' });
     }
 }));
+function sendNotifications(userIds, notification, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        function getNotification(toId, notification) {
+            notification.toId = toId;
+            return notification;
+        }
+        let notifications = [];
+        userIds.forEach((id) => notifications.push(getNotification(id, notification)));
+        yield db.Notification.bulkCreate(notifications, { transaction: transaction });
+    });
+}
+exports.sendNotifications = sendNotifications;
 exports.default = Notifications;

@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,7 +32,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const Translate = __importStar(require("../Translate"));
 const Apps_1 = require("../Apps");
+const Notifications_1 = require("../Notifications");
 const Homes = express_1.default.Router();
 const db = require('../../db/models');
 // Middlewares
@@ -80,6 +101,22 @@ function denyIfNotOwner(req, res) {
             return true;
         }
         return false;
+    });
+}
+function getMembersExceptOwner(res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield res.locals.home
+            .getMembers()
+            .filter((m) => m.id !== res.locals.home.ownerId)
+            .map((m) => m.id);
+    });
+}
+function getMembersExceptRequester(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield res.locals.home
+            .getMembers()
+            .filter((m) => m.id !== req.user.id)
+            .map((m) => m.id);
     });
 }
 Homes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -183,7 +220,7 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
                 .json({ title: 'homes.notFound', msg: 'homes.notFound' });
         yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             var _a, _b;
-            db.Notification.create({
+            yield db.Notification.create({
                 typeId: 2,
                 toId: home.ownerId,
                 title: `{"translate":"homes.newRequest","format":["${home.name}"]}`,
@@ -210,15 +247,27 @@ Homes.delete('/:refnumber/members/remove/:id', Apps_1.validateHome, (req, res) =
             return res
                 .status(403)
                 .json({ title: 'request.denied', msg: 'request.unauthorized' });
-        let userHome = yield db.UserHome.findOne({
-            where: { userId: req.params.id, homeId: res.locals.home.id },
-        });
-        if (!userHome)
-            return res
-                .status(404)
-                .json({ title: 'request.notFound', msg: 'request.notFound' });
-        yield userHome.destroy({ force: true });
-        res.json({ title: 'request.success', msg: 'request.success' });
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            let userHome = yield db.UserHome.findOne({
+                where: { userId: req.params.id, homeId: res.locals.home.id },
+                include: db.Home,
+            });
+            if (!userHome)
+                return res
+                    .status(404)
+                    .json({ title: 'request.notFound', msg: 'request.notFound' });
+            yield Notifications_1.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), { typeId: 2 }, t);
+            yield db.Notification.create({
+                typeId: 3,
+                toId: req.params.id,
+                title: Translate.getJSON('homes.excludedByOwner', [
+                    userHome.home.name,
+                ]),
+                description: 'homes.excludedByOwner',
+            }, { transaction: t });
+            yield userHome.destroy({ force: true }, { transaction: t });
+            return res.json({ title: 'request.success', msg: 'request.success' });
+        }));
     }
     catch (error) {
         console.log(error);
@@ -238,6 +287,7 @@ Homes.post('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) =>
         return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             let userHome = yield db.UserHome.findOne({
                 where: { userId: req.params.id, homeId: res.locals.home.id },
+                include: [db.Home, db.User],
             });
             if (!userHome)
                 return res
@@ -246,15 +296,25 @@ Homes.post('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) =>
             if (action == 'accept') {
                 userHome.accepted = true;
                 yield userHome.save({ transaction: t });
+                yield Notifications_1.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
+                    typeId: 2,
+                    title: Translate.getJSON('homes.memberAdded', [
+                        userHome.home.name,
+                    ]),
+                    description: Translate.getJSON('memberRequestApproved', [
+                        userHome.user.firstname,
+                    ]),
+                }, t);
             }
             else if (action == 'reject') {
                 yield userHome.destroy({ transaction: t });
             }
+            const translateJSON = Translate.getJSON(`homes.request${action == 'accept' ? 'Accepted' : 'Denied'}`, [res.locals.home.name]);
             yield db.Notification.create({
                 typeId: action == 'accept' ? 2 : 3,
                 toId: req.params.id,
-                title: `{"translate":"homes.${action == 'accept' ? 'requestAccepted' : 'requestDenied'}","format":["${res.locals.home.name}"]}`,
-                description: `{"translate":"homes.${action == 'accept' ? 'requestAccepted' : 'requestDenied'}","format":["${res.locals.home.name}"]}`,
+                title: translateJSON,
+                description: translateJSON,
             }, { transaction: t });
             return res.json({ title: 'request.success', msg: 'request.success' });
         }));
@@ -269,8 +329,17 @@ Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(
     try {
         if (yield denyIfNotOwner(req, res))
             return;
-        res.locals.home.destroy();
-        res.json({ title: 'homes.homeDeleted', msg: 'homes.homeDeleted' });
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            yield Notifications_1.sendNotifications(yield getMembersExceptOwner(res), {
+                typeId: 3,
+                title: 'homes.excludedFromHome',
+                description: Translate.getJSON('homes.homeDeletedByOwner', [
+                    res.locals.home.name,
+                ]),
+            }, t);
+            yield res.locals.home.destroy({ transaction: t });
+            return res.json({ title: 'homes.homeDeleted', msg: 'homes.homeDeleted' });
+        }));
     }
     catch (error) {
         console.log(error);
@@ -279,8 +348,18 @@ Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(
 }));
 Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.locals.home.UserHome.destroy({ force: true });
-        res.json({ title: 'homes.homeLeft', msg: 'homes.homeLeft' });
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            yield Notifications_1.sendNotifications(yield getMembersExceptRequester(req, res), {
+                typeId: 2,
+                title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
+                description: Translate.getJSON('homes.memberQuit', [
+                    res.user.firstname,
+                    res.locals.home.name,
+                ]),
+            }, t);
+            yield res.locals.home.UserHome.destroy({ force: true }, { transaction: t });
+            return res.json({ title: 'homes.homeLeft', msg: 'homes.homeLeft' });
+        }));
     }
     catch (error) {
         console.log(error);
@@ -292,20 +371,31 @@ Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(vo
         const nickname = req.body.nickname;
         let home = res.locals.home;
         if (home.ownerId === req.user.id) {
-            if (!nickname || nickname.length == 0)
-                return res
-                    .status(500)
-                    .json({ title: 'homes.nameUndefined', msg: 'homes.nameUndefined' });
-            home.name = nickname;
-            home.save({ fields: ['name'] });
+            yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+                if (!nickname || nickname.length == 0)
+                    return res
+                        .status(500)
+                        .json({ title: 'homes.nameUndefined', msg: 'homes.nameUndefined' });
+                yield Notifications_1.sendNotifications(yield getMembersExceptOwner(res), {
+                    typeId: 2,
+                    title: Translate.getJSON('homes.homeRenamed', [
+                        home.name,
+                    ]),
+                    description: Translate.getJSON('homes.homeRenamed', [
+                        home.name,
+                        nickname,
+                    ]),
+                }, t);
+                home.name = nickname;
+                yield home.save({ fields: ['name'] }, { transaction: t });
+            }));
         }
         else {
             home.UserHome.nickname =
                 nickname && nickname.length > 0 ? nickname : null;
             home.UserHome.save({ fields: ['nickname'] });
         }
-        yield home.save();
-        res.json({
+        return res.json({
             title: 'homes.homeRenamed',
             msg: 'homes.homeRenamed',
         });
@@ -325,6 +415,67 @@ Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __aw
         // add invitation db
         // send email
         res.json({ title: 'homes.invitationSent', msg: 'homes.invitationSent' });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+Homes.post('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            const invite = yield db.HomeInvitation.findOne({
+                where: { token: req.params.token },
+                include: db.Home,
+            });
+            if (!invite) {
+                return res.status(404).json({
+                    title: 'homes.inviteNotFound',
+                    msg: 'homes.inviteNotFound',
+                });
+            }
+            const expiration = new Date(Date.parse(invite.createdAt) +
+                invite.expirationDays * 24 * 60 * 60 * 1000);
+            if (new Date(Date.now()) > expiration)
+                return res.status(500).json({
+                    title: 'homes.inviteExpired',
+                    msg: 'homes.inviteExpired',
+                });
+            yield Notifications_1.sendNotifications(yield getMembersExceptRequester(req, res), {
+                typeId: 2,
+                title: Translate.getJSON('homes.memberAdded', [invite.home.name]),
+                description: Translate.getJSON('homes.memberAcceptedInvite', [
+                    req.user.firstname,
+                    invite.home.name,
+                ]),
+            }, t);
+            yield db.UserHome.create({
+                homeId: invite.home.id,
+                userId: req.user.id,
+                accepted: true,
+            }, { transaction: t });
+            return res.json({
+                title: Translate.getJSON('homes.homeJoined', [invite.home.name]),
+                msg: 'homes.homeJoined',
+            });
+        }));
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+Homes.post('/:token/members/invite/decline', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const invite = yield db.HomeInvitation.findOne({
+            where: { token: req.params.token },
+        });
+        if (invite)
+            yield invite.destroy();
+        res.json({
+            title: 'homes.invitationDeclined',
+            msg: 'homes.invitationDeclined',
+        });
     }
     catch (error) {
         console.log(error);
