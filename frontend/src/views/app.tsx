@@ -143,15 +143,6 @@ export default function App() {
         </button>
         <button onClick={logout}>Logout</button>
         <button onClick={handleNotifications}>Get Notifications</button>
-        <Link to="/apps" className="trashLink">
-          Apps
-        </Link>
-        <Link to="/" className="trashLink">
-          Home
-        </Link>
-        <Link to="/oops" className="trashLink">
-          Lost
-        </Link>
         <ToggleLanguage />
       </div>
     </div>

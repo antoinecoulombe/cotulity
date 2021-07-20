@@ -46,7 +46,7 @@ Notifications.delete('/delete/:id', (req, res) => __awaiter(void 0, void 0, void
             return res
                 .status(404)
                 .json({ title: 'request.notFound', msg: 'request.notFound' });
-        notification.destroy();
+        notification.destroy({ force: true });
         return res.json({ title: 'request.success', msg: 'request.success' });
     }
     catch (error) {

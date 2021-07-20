@@ -410,7 +410,7 @@ Homes.delete('/:refnumber/quit', validateHome, async (req: any, res: any) => {
           typeId: 2,
           title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
           description: Translate.getJSON('homes.memberQuit', [
-            res.user.firstname,
+            req.user.firstname,
             res.locals.home.name,
           ]),
         },
@@ -460,7 +460,7 @@ Homes.post('/:refnumber/rename', validateHome, async (req: any, res: any) => {
         );
 
         home.name = nickname;
-        await home.save({ fields: ['name'] }, { transaction: t });
+        await home.save({ transaction: t });
       });
     } else {
       home.UserHome.nickname =
@@ -475,13 +475,20 @@ Homes.post('/:refnumber/rename', validateHome, async (req: any, res: any) => {
   } catch (e) {
     console.log(e);
     res.status(500).json({
-      title: e.errors[0] ? 'homes.renameError' : 'request.error',
-      msg: e.errors[0]?.message ?? 'request.error',
+      title: e.errors?.[0] ? 'homes.renameError' : 'request.error',
+      msg: e.errors?.[0]?.message ?? 'request.error',
     });
   }
 });
 
 // ######################## Members ########################
+
+function createToken(loopTimes: number) {
+  let token = Math.random().toString(36).substring(2, 15);
+  for (let i = 0; i < loopTimes - 1; ++i)
+    token += Math.random().toString(36).substring(2, 15);
+  return token;
+}
 
 Homes.post(
   '/:refnumber/members/invite',
@@ -490,24 +497,41 @@ Homes.post(
     try {
       if (await denyIfNotOwner(req, res)) return;
 
-      const token = '';
+      const member = await res.locals.home.getMembers({
+        where: { email: req.body.email },
+      });
 
-      db.HomeInvitation.create({
-        homeId: res.locals.home.name,
+      if (member.length > 0)
+        return res.status(500).json({
+          title: 'homes.couldNotSendInvite',
+          msg: 'homes.emailAlreadyInHome',
+        });
+
+      const token = createToken(10);
+
+      const invite = await db.HomeInvitation.create({
+        homeId: res.locals.home.id,
         email: req.body.email,
         token: token,
       });
-      // if home.members contains email -> error, already in home
-      // TODO: notifications
-      // add invitation db
+
       // send email
+
+      let emailFailedToSend = true;
+      if (emailFailedToSend) {
+        invite.destroy({ force: true });
+        return res.status(500).json({
+          title: 'homes.emailDidNotSend',
+          msg: 'request.error',
+        });
+      }
 
       res.json({ title: 'homes.invitationSent', msg: 'homes.invitationSent' });
     } catch (e) {
       console.log(e);
       res.status(500).json({
-        title: e.errors[0] ? 'homes.inviteError' : 'request.error',
-        msg: e.errors[0]?.message ?? 'request.error',
+        title: e.errors?.[0] ? 'homes.inviteError' : 'request.error',
+        msg: e.errors?.[0]?.message ?? 'request.error',
       });
     }
   }

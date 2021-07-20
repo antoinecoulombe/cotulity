@@ -363,7 +363,7 @@ Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(vo
                 typeId: 2,
                 title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
                 description: Translate.getJSON('homes.memberQuit', [
-                    res.user.firstname,
+                    req.user.firstname,
                     res.locals.home.name,
                 ]),
             }, t);
@@ -380,7 +380,7 @@ Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(vo
     }
 }));
 Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c, _d;
+    var _c, _d, _e, _f;
     try {
         const nickname = req.body.nickname;
         let home = res.locals.home;
@@ -401,7 +401,7 @@ Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(vo
                     ]),
                 }, t);
                 home.name = nickname;
-                yield home.save({ fields: ['name'] }, { transaction: t });
+                yield home.save({ transaction: t });
             }));
         }
         else {
@@ -417,34 +417,53 @@ Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(vo
     catch (e) {
         console.log(e);
         res.status(500).json({
-            title: e.errors[0] ? 'homes.renameError' : 'request.error',
-            msg: (_d = (_c = e.errors[0]) === null || _c === void 0 ? void 0 : _c.message) !== null && _d !== void 0 ? _d : 'request.error',
+            title: ((_c = e.errors) === null || _c === void 0 ? void 0 : _c[0]) ? 'homes.renameError' : 'request.error',
+            msg: (_f = (_e = (_d = e.errors) === null || _d === void 0 ? void 0 : _d[0]) === null || _e === void 0 ? void 0 : _e.message) !== null && _f !== void 0 ? _f : 'request.error',
         });
     }
 }));
 // ######################## Members ########################
+function createToken(loopTimes) {
+    let token = Math.random().toString(36).substring(2, 15);
+    for (let i = 0; i < loopTimes - 1; ++i)
+        token += Math.random().toString(36).substring(2, 15);
+    return token;
+}
 Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e, _f;
+    var _g, _h, _j, _k;
     try {
         if (yield denyIfNotOwner(req, res))
             return;
-        const token = '';
-        db.HomeInvitation.create({
-            homeId: res.locals.home.name,
+        const member = yield res.locals.home.getMembers({
+            where: { email: req.body.email },
+        });
+        if (member.length > 0)
+            return res.status(500).json({
+                title: 'homes.couldNotSendInvite',
+                msg: 'homes.emailAlreadyInHome',
+            });
+        const token = createToken(10);
+        const invite = yield db.HomeInvitation.create({
+            homeId: res.locals.home.id,
             email: req.body.email,
             token: token,
         });
-        // if home.members contains email -> error, already in home
-        // TODO: notifications
-        // add invitation db
         // send email
+        let emailFailedToSend = true;
+        if (emailFailedToSend) {
+            invite.destroy({ force: true });
+            return res.status(500).json({
+                title: 'homes.emailDidNotSend',
+                msg: 'request.error',
+            });
+        }
         res.json({ title: 'homes.invitationSent', msg: 'homes.invitationSent' });
     }
     catch (e) {
         console.log(e);
         res.status(500).json({
-            title: e.errors[0] ? 'homes.inviteError' : 'request.error',
-            msg: (_f = (_e = e.errors[0]) === null || _e === void 0 ? void 0 : _e.message) !== null && _f !== void 0 ? _f : 'request.error',
+            title: ((_g = e.errors) === null || _g === void 0 ? void 0 : _g[0]) ? 'homes.inviteError' : 'request.error',
+            msg: (_k = (_j = (_h = e.errors) === null || _h === void 0 ? void 0 : _h[0]) === null || _j === void 0 ? void 0 : _j.message) !== null && _k !== void 0 ? _k : 'request.error',
         });
     }
 }));

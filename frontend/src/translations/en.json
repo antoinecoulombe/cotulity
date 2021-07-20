@@ -187,7 +187,8 @@
         "inviteExpired": "Invitation link expired",
         "inviteDeclined": "An invitation to join {0} was declined",
         "renameError": "Rename failed",
-        "inviteError": "Invitation failed"
+        "inviteError": "Invitation failed",
+        "emailDidNotSend": "Failed to send email"
       },
       "newHome": {
         "missingId": "Identifier missing",
@@ -272,6 +273,7 @@
         "notFound": "We couldn't find a house associated to that identifier.",
         "newRequest": "{0} requested to join {1}.",
         "alreadyInHome": "You are already part of that home.",
+        "emailAlreadyInHome": "That email is associated to a user already in your home.",
         "requestAlreadySent": "You already sent a request to that home.",
         "waitWeek": "Please wait 7 days to send another request.",
         "requestSent": "Your request was sent to the home creator.",

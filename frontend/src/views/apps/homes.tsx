@@ -116,8 +116,13 @@ export default function AppHomes() {
       });
   }
 
-  async function showPopup(event: any, action: string) {
-    const ref = await getRefNumber(event);
+  async function showPopup(
+    event: any,
+    action: string,
+    refNumber?: number,
+    error?: boolean
+  ) {
+    const ref = refNumber ?? (await getRefNumber(event));
     const home = homes.find((h) => h.refNumber == ref);
 
     setPopup(
@@ -133,6 +138,7 @@ export default function AppHomes() {
             : renameHome(value, ref)
         }
         style={{ iconWidth: 32, tooltipMultiplier: 15 }}
+        error={error ?? false}
       >
         {getTranslateJSON(`homes.tooltip.${action}`, [home?.name ?? ''])}
       </SingleInputPopup>
@@ -168,6 +174,7 @@ export default function AppHomes() {
         closeAndSuccess(res.data);
       })
       .catch((err) => {
+        showPopup(null, 'inviteMember', refNumber, true);
         setErrorNotification(err.response.data);
       });
   }
