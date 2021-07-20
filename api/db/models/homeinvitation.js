@@ -14,17 +14,30 @@ module.exports = (sequelize, DataTypes) => {
   }
   HomeInvitation.init(
     {
+      email: {
+        type: DataTypes.STRING,
+        allowNull: {
+          args: false,
+          msg: 'form.error.email.missing',
+        },
+        validate: {
+          isEmail: {
+            args: true,
+            msg: 'form.error.email.valid',
+          },
+        },
+      },
       token: DataTypes.STRING,
       expirationDays: {
         type: DataTypes.INTEGER,
         validate: {
           isInt: {
             args: true,
-            msg: 'Please enter a valid expiration time.',
+            msg: 'form.error.expirationDays.valid',
           },
           len: {
             args: [1, 14],
-            msg: 'Please enter a value between 1 and 14 days.',
+            msg: 'form.error.expirationDays.range',
           },
         },
       },

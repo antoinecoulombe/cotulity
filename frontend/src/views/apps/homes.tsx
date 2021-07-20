@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
+import { useNotifications } from '../../contexts/NotificationsContext';
+import { getCopyIndex, getTranslateJSON } from '../../utils/global';
 import ReactDOMServer from 'react-dom/server';
 import AppContainer from '../../components/app/appContainer';
 import IconToolTip from '../../components/global/iconTooltip';
@@ -9,15 +11,9 @@ import ListItemLeft from '../../components/utils/lists/listLeft';
 import ListItemRight from '../../components/utils/lists/listRight';
 import Translate from '../../components/utils/translate';
 import axios from '../../utils/fetchClient';
-import { useNotifications } from '../../contexts/NotificationsContext';
 import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
 import EditPopup from '../../components/homes/editPopup';
-import {
-  getCopyIndex,
-  getTranslateJSON,
-  useForceUpdate,
-} from '../../utils/global';
 import _ from 'lodash';
 
 export interface Home {
@@ -32,7 +28,8 @@ export interface Home {
 const nullJSX: JSX.Element = <></>;
 
 export default function AppHomes() {
-  const { setNotification, setSuccessNotification } = useNotifications();
+  const { setNotification, setErrorNotification, setSuccessNotification } =
+    useNotifications();
   const history = useHistory();
 
   const [homes, setHomes] = useState<Home[]>([]);
@@ -44,15 +41,12 @@ export default function AppHomes() {
       .then((res: any) => {
         if (res.data.homes && res.data.homes.length > 0)
           setHomes(res.data.homes);
+        else history.push('/apps/homes/new');
       })
       .catch((err) => {
         setNotification(err.response.data);
       });
   }, []);
-
-  useEffect(() => {
-    console.log(homes);
-  }, [homes]);
 
   async function getRefNumber(event: any) {
     return await event.target.closest('.list-item').dataset.uid;
@@ -100,8 +94,10 @@ export default function AppHomes() {
     axios
       .delete(`/homes/${refNumber}/delete`)
       .then((res: any) => {
+        const redirect = homes.length <= 1;
         deleteHomeState(refNumber);
         closeAndSuccess(res.data);
+        if (redirect) history.push('/apps/homes/new');
       })
       .catch((err) => {
         closeAndError(err.response.data);
@@ -132,7 +128,7 @@ export default function AppHomes() {
         ])}
         onCancel={closePopup}
         onSubmit={(value: string) =>
-          action === 'addMember'
+          action === 'inviteMember'
             ? addMember(value, ref)
             : renameHome(value, ref)
         }
@@ -161,7 +157,7 @@ export default function AppHomes() {
         closeAndSuccess(res.data);
       })
       .catch((err) => {
-        closeAndError(err.response.data);
+        setErrorNotification(err.response.data);
       });
   }
 
@@ -172,7 +168,7 @@ export default function AppHomes() {
         closeAndSuccess(res.data);
       })
       .catch((err) => {
-        closeAndError(err.response.data);
+        setErrorNotification(err.response.data);
       });
   }
 

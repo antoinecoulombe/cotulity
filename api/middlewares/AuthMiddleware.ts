@@ -1,5 +1,4 @@
 import express from 'express';
-import jwtDecode from 'jwt-decode';
 
 const passport = require('passport');
 require('../config/passport');
@@ -8,7 +7,8 @@ const AuthMiddleware = express.Router();
 
 AuthMiddleware.use(async (req: any, res, next) => {
   const publicPaths = ['/auth/login', '/users/register'];
-  if (publicPaths.includes(req.path)) return next();
+  if (publicPaths.includes(req.path) || req.path.startsWith('/public'))
+    return next();
 
   passport.authenticate(
     'jwt',

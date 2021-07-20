@@ -30,12 +30,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'Please enter a task name.',
+          msg: 'form.error.taskName.missing',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter a task name.',
+            msg: 'form.error.taskName.missing',
           },
         },
       },

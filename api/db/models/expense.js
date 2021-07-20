@@ -29,12 +29,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'Please enter a store name.',
+          msg: 'form.error.storeName.missing',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter a store name.',
+            msg: 'form.error.storeName.missing',
           },
         },
       },
@@ -43,12 +43,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DECIMAL(19, 4),
         allowNull: {
           args: false,
-          msg: 'Please enter an expense cost.',
+          msg: 'form.error.expenseCost.missing',
         },
         validate: {
           isDecimal: {
             args: true,
-            msg: 'Please enter a valid expense cost.',
+            msg: 'form.error.expenseCost.valid',
           },
         },
       },
@@ -56,12 +56,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: {
           args: false,
-          msg: 'Please enter a description.',
+          msg: 'form.error.description.missing',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter a description.',
+            msg: 'form.error.description.missing',
           },
         },
       },

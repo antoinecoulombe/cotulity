@@ -168,8 +168,26 @@
         "notFound": "House not found",
         "newRequest": "{0} has a new request!",
         "couldNotJoin": "Couldn't join home",
+        "couldNotCancelRequest": "Couldn't cancel request",
         "requestAlreadyDenied": "Your request was denied",
-        "requestSent": "Request sent!"
+        "requestSent": "Request sent!",
+        "excludedByOwner": "You were kicked from {0}",
+        "requestAccepted": "{0} accepted your request",
+        "requestDenied": "{0} denied your request",
+        "requestCancelled": "Request Cancelled",
+        "homeDeleted": "{0} has been deleted",
+        "homeLeft": "You left {0}",
+        "homeRenamedByOwner": "{0} was renamed",
+        "homeRenamed": "You renamed {0}",
+        "homeJoined": "You have joined {0}",
+        "couldNotRename": "Couldn't rename home",
+        "invitationSent": "Invitation sent!",
+        "inviteNotFound": "Couldn't find invitation",
+        "couldNotSendInvite": "Couldn't send invitation",
+        "inviteExpired": "Invitation link expired",
+        "inviteDeclined": "An invitation to join {0} was declined",
+        "renameError": "Rename failed",
+        "inviteError": "Invitation failed"
       },
       "newHome": {
         "missingId": "Identifier missing",
@@ -215,6 +233,34 @@
           },
           "lastname": {
             "missing": "Please enter your lastname."
+          },
+          "expirationDays": {
+            "valid": "Please enter a valid expiration time.",
+            "range": "Please enter a value between 1 and 14."
+          },
+          "storeName": {
+            "missing": "Please enter a store name."
+          },
+          "expenseCost": {
+            "missing": "Please enter an expense cost.",
+            "valid": "Please enter a valid expense cost."
+          },
+          "description": {
+            "missing": "Please enter a description."
+          },
+          "amount": {
+            "missing": "Please enter an amount.",
+            "valid": "Please enter a valid amount."
+          },
+          "houseName": {
+            "missing": "Please enter a house name."
+          },
+          "taskName": {
+            "missing": "Please enter a task name."
+          },
+          "transferAmount": {
+            "missing": "Please enter a transfer amount.",
+            "valid": "Please enter a valid transfer amount."
           }
         }
       },
@@ -228,7 +274,20 @@
         "alreadyInHome": "You are already part of that home.",
         "requestAlreadySent": "You already sent a request to that home.",
         "waitWeek": "Please wait 7 days to send another request.",
-        "requestSent": "Your request was sent to the home creator."
+        "requestSent": "Your request was sent to the home creator.",
+        "excludedByOwner": "The home owner kicked you out.",
+        "requestDenied": "Your request was denied by the home owner.",
+        "requestCancelled": "Your request to join {0} was cancelled.",
+        "homeDeletedByOwner": "{0} was deleted by the home owner.",
+        "homeDeleted": "You can contact support if this action was unwanted.",
+        "homeLeft": "You can make a request to the home owner to get back in.",
+        "homeRenamedByOwner": "{0} is now named {1}.",
+        "homeRenamed": "The home is now named {0}.",
+        "nameUndefined": "Please enter a house name.",
+        "invitationSent": "You will be notified when the recipient responds to the invitation.",
+        "inviteNotFound": "No invitation is linked to that token.",
+        "inviteExpired": "This invitation link has expired, ask the home owner for another one.",
+        "inviteDeclined": "'{0}' declined your invitation to join {1}."
       },
       "newHome": {
         "missingId": "Please enter the house identifier.",

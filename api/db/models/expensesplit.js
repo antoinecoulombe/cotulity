@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DECIMAL(19, 4),
         allowNull: {
           args: false,
-          msg: 'Please enter an amount.',
+          msg: 'form.error.amount.missing',
         },
         validate: {
           isDecimal: {
             args: true,
-            msg: 'Please enter a valid amount.',
+            msg: 'form.error.amount.valid',
           },
         },
       },

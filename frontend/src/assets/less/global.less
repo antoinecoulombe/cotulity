@@ -778,6 +778,7 @@ button {
   @navWidth: 19px;
 
   opacity: 0;
+  z-index: 99999;
 
   position: absolute;
   display: flex;
@@ -788,6 +789,7 @@ button {
   width: 100%;
   height: @height + (@padding * 2);
   margin-top: 30px;
+  pointer-events: none;
 
   > :first-child:not(.notif-list) > .notification {
     margin-left: 59px;
@@ -800,7 +802,7 @@ button {
 
   > .notif-list {
     position: relative;
-    width: @width + (@padding * 2); //x
+    width: @width + (@padding * 2);
 
     &:first-child:nth-last-child(3) ~ .notif-list {
       &:last-child {
@@ -830,8 +832,8 @@ button {
         }
 
         > .text,
-        .icon,
-        .vertical-line {
+        > .icon,
+        > .line-container > .vertical-line {
           display: none;
         }
       }
@@ -873,17 +875,39 @@ button {
       color: var(--white);
       cursor: pointer;
       padding: 0 @navMargin 0 @navMargin;
+      pointer-events: auto;
 
       &.prev {
         float: left;
       }
 
       &.next {
+        position: absolute;
         float: right;
       }
 
       &:hover {
         opacity: 1;
+      }
+    }
+
+    .notification {
+      box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
+      border: solid 1px var(--lighteGray);
+      pointer-events: auto;
+
+      &:hover {
+        height: auto;
+
+        > .text {
+          height: auto;
+
+          > h1,
+          > p {
+            height: auto;
+            white-space: normal;
+          }
+        }
       }
     }
   }
@@ -909,7 +933,7 @@ button {
       > .icon {
         color: var(--error-color);
       }
-      > .vertical-line {
+      > .line-container > .vertical-line {
         background-color: var(--error-color);
       }
     }
@@ -918,7 +942,7 @@ button {
       > .icon {
         color: var(--warning-color);
       }
-      > .vertical-line {
+      > .line-container > .vertical-line {
         background-color: var(--warning-color);
       }
     }
@@ -927,7 +951,7 @@ button {
       > .icon {
         color: var(--info-color);
       }
-      > .vertical-line {
+      > .line-container > .vertical-line {
         background-color: var(--info-color);
       }
     }
@@ -936,18 +960,25 @@ button {
       > .icon {
         color: var(--success-color);
       }
-      > .vertical-line {
+      > .line-container > .vertical-line {
         background-color: var(--success-color);
       }
     }
 
-    > .vertical-line {
-      position: relative;
-      float: left;
-      left: 0;
-      width: @lineWidth;
-      height: 100%;
-      border-radius: 3px;
+    > .line-container {
+      position: absolute;
+      display: block;
+      width: calc(100% - @padding * 2);
+      height: calc(100% - @padding * 2);
+
+      > .vertical-line {
+        position: relative;
+        float: left;
+        left: 0;
+        width: @lineWidth;
+        height: 100%;
+        border-radius: 10px;
+      }
     }
 
     > .icon {
@@ -986,6 +1017,7 @@ button {
         font-size: 15px;
         color: var(--gray);
         margin-top: 0;
+        margin-bottom: 0;
       }
     }
 

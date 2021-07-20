@@ -46,12 +46,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'Please enter a house name.',
+          msg: 'form.error.houseName.missing',
         },
         validate: {
           notEmpty: {
             args: true,
-            msg: 'Please enter a house name.',
+            msg: 'form.error.houseName.missing',
           },
         },
       },

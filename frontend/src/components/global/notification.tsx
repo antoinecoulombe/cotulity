@@ -34,7 +34,9 @@ export default function Notification(props: NotificationProps) {
 
   return (
     <div className={`notification ${props.json.type.name}`}>
-      <div className="vertical-line"></div>
+      <div className="line-container">
+        <div className="vertical-line"></div>
+      </div>
       <FontAwesomeIcon
         icon={icons[props.json.type.name]}
         className={`icon ${props.json.type.name}`}

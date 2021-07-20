@@ -168,8 +168,26 @@
         "notFound": "Maison introuvable",
         "newRequest": "{0} a une nouvelle demande!",
         "couldNotJoin": "Impossible de rejoindre la maison",
+        "couldNotCancelRequest": "Impossible d'annuler la demande",
         "requestAlreadyDenied": "Votre demande a été refusée",
-        "requestSent": "Demande envoyée!"
+        "requestSent": "Demande envoyée!",
+        "excludedByOwner": "Vous avez été exclu de {0}",
+        "requestAccepted": "{0} a accepté votre demande",
+        "requestDenied": "{0} a refusé votre demande",
+        "requestCancelled": "Demande annulée",
+        "homeDeleted": "{0} a été supprimé",
+        "homeLeft": "Vous avez quitté {0}",
+        "homeRenamedByOwner": "{0} a été renommé",
+        "homeRenamed": "Vous avez renommé {0}",
+        "homeJoined": "Vous avez rejoin {0}",
+        "couldNotRename": "Impossible de renommer la maison",
+        "invitationSent": "Invitation envoyée!",
+        "couldNotSendInvite": "Impossible d'envoyer l'invitation",
+        "inviteNotFound": "Invitation introuvable",
+        "inviteExpired": "Lien d'invitation expiré",
+        "inviteDeclined": "Une invitation à rejoindre {0} fût rejetée",
+        "renameError": "Échec du changement de nom",
+        "inviteError": "Erreur lors de l'envoi de l'invitation"
       },
       "newHome": {
         "missingId": "Identifiant manquant",
@@ -215,6 +233,34 @@
           },
           "lastname": {
             "missing": "Veuillez entrer votre nom de famille."
+          },
+          "expirationDays": {
+            "valid": "Veuillez entrer une expiration valide.",
+            "range": "Veuillez entrer une expiration entre 1 et 14."
+          },
+          "storeName": {
+            "missing": "Veuillez entrer un nom de magasin."
+          },
+          "expenseCost": {
+            "missing": "Veuillez entrer un coût.",
+            "valid": "Veuillez entrer un coût valide."
+          },
+          "description": {
+            "missing": "Veuillez entrer une description."
+          },
+          "amount": {
+            "missing": "Veuillez entrer un montant.",
+            "valid": "Veuillez entrer un montant valide."
+          },
+          "houseName": {
+            "missing": "Veuillez entrer un nom de maison."
+          },
+          "taskName": {
+            "missing": "Veuillez entrer un nom de tâche."
+          },
+          "transferAmount": {
+            "missing": "Veuillez entrer un montant de transfer.",
+            "valid": "Veuillez entrer un montant de transfer valide."
           }
         }
       },
@@ -228,7 +274,20 @@
         "alreadyInHome": "Vous êtes déjà membre de cette maison.",
         "requestAlreadySent": "Vous avez déjà envoyé une demande à cette maison.",
         "waitWeek": "Veuillez attendre 7 jours avant de faire une nouvelle demande.",
-        "requestSent": "Votre demande a été envoyée au créateur de la maison."
+        "requestSent": "Votre demande a été envoyée au créateur de la maison.",
+        "excludedByOwner": "Le créateur de la maison vous a exclu.",
+        "requestDenied": "Votre demande a été refusée par le créateur de la maison.",
+        "requestCancelled": "Votre demande à rejoindre {0} fût annulée.",
+        "homeDeletedByOwner": "{0} a été supprimé par le créateur de la maison.",
+        "homeDeleted": "Vous pouvez contacter le support si cette action était indésirable.",
+        "homeLeft": "Vous pouvez faire une nouvelle demande au créateur de la maison.",
+        "homeRenamedByOwner": "{0} se nomme maintenant {1}.",
+        "homeRenamed": "La maison est maintenant nommée {0}.",
+        "nameUndefined": "Veuillez entrer un nom de maison.",
+        "invitationSent": "Vous serez averti lorsque le destinataire répondra à l'invitation.",
+        "inviteNotFound": "Aucune invitation n'est liée à ce jeton.",
+        "inviteExpired": "Ce lien d'invitation a expiré, demandez-en un autre au propriétaire de la maison.",
+        "inviteDeclined": "'{0}' a refusé votre invitation à rejoindre {1}."
       },
       "newHome": {
         "missingId": "Veuillez entrer l'identifiant de la maison.",

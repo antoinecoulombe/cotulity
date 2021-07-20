@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: {
           args: false,
-          msg: 'register',
+          msg: 'form.error.email.missing',
         },
         unique: {
           args: true,
