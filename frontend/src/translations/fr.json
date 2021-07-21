@@ -142,6 +142,29 @@
     "title": "Vous semblez être perdu.",
     "link": "Laissez-nous vous remmener à sécurité"
   },
+  "settings": {
+    "title": { "settings": "Paramètres" },
+    "changePicture": "Image profil",
+    "deleteAccount": "Supprimer mon compte",
+    "language": "Langage",
+    "theme": {
+      "title": "Thème",
+      "dark": "Sombre",
+      "light": "Clair"
+    }
+  },
+  "tasks": {
+    "title": { "tasks": "Tâches" }
+  },
+  "groceries": {
+    "title": { "groceries": "Épicerie" }
+  },
+  "calendar": {
+    "title": { "calendar": "Calendrier" }
+  },
+  "finances": {
+    "title": { "finances": "Finances" }
+  },
   "notif": {
     "title": {
       "request": {

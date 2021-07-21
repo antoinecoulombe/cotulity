@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { PrivateRoute, PublicRoute } from '../components/utils/routes';
 import { useNotifications } from '../contexts/NotificationsContext';
-import { getNotifications, isAuthenticated } from '../utils/global';
+import { isAuthenticated } from '../utils/global';
 
 // CSS
 import '../assets/css/theme.css';
@@ -53,7 +52,12 @@ import {
   faUserCircle,
   faUserMinus,
   faCrown,
+  faUpload,
+  faDoorClosed,
+  faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTranslation } from 'react-i18next';
 
 library.add(
   faArrowAltCircleRight,
@@ -80,33 +84,26 @@ library.add(
   faTrash,
   faUserCircle,
   faUserMinus,
-  faCrown
+  faCrown,
+  faUpload,
+  faDoorClosed,
+  faDoorOpen
 );
 
 export default function App() {
   const history = useHistory();
-  const { clearAllNotifications, setNotificationArray } = useNotifications();
-  const [theme, setTheme] = useState('light');
+  const { clearAllNotifications } = useNotifications();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [t, i18n] = useTranslation('common');
 
-  function ToggleLanguage() {
-    const [t, i18n] = useTranslation('common');
-    return (
-      <div className="toggleToTrash">
-        <button onClick={() => i18n.changeLanguage('fr')}>Francais</button>
-        <button onClick={() => i18n.changeLanguage('en')}>English</button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem('lang') || 'en');
+  }, []);
 
   function logout() {
     localStorage.clear();
     clearAllNotifications();
     history.push('/');
-  }
-
-  async function handleNotifications() {
-    const notifications = await getNotifications();
-    setNotificationArray(notifications);
   }
 
   return (
@@ -118,7 +115,19 @@ export default function App() {
         <PrivateRoute exact path="/apps/finances" component={AppFinances} />
         <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
         <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />
-        <PrivateRoute exact path="/apps/settings" component={AppSettings} />
+        <Route
+          exact
+          path="/apps/settings"
+          render={(props) =>
+            isAuthenticated() === true ? (
+              <AppSettings {...props} setTheme={setTheme} theme={theme} />
+            ) : (
+              <Redirect
+                to={{ pathname: '/', state: { from: props.location } }}
+              />
+            )
+          }
+        />
         <PrivateRoute exact path="/apps/:token?" component={AppsPage} />
         <PublicRoute exact path="/" component={LoginPage} />
         <Route
@@ -150,14 +159,13 @@ export default function App() {
         to="/"
       ></Link>
 
-      <div className="trashDiv">
-        <button onClick={() => setTheme(theme == 'light' ? 'dark' : 'light')}>
-          {theme == 'light' ? 'Lights out' : 'Brighten the mood'}
-        </button>
-        <button onClick={logout}>Logout</button>
-        <button onClick={handleNotifications}>Get Notifications</button>
-        <ToggleLanguage />
-      </div>
+      <div className="trashDiv"></div>
+      {isAuthenticated() && (
+        <div className="logout" onClick={logout}>
+          <FontAwesomeIcon icon="door-closed" className="icon close" />
+          <FontAwesomeIcon icon="door-open" className="icon open" />
+        </div>
+      )}
     </div>
   );
 }

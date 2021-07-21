@@ -87,6 +87,7 @@ export default function SingleInputForm(props: SingleInputFormProps) {
             onClick={() => {
               props.onSubmit?.(value);
             }}
+            className="submit"
           >
             nav.submit
           </IconToolTip>

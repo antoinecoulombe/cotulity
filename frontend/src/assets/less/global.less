@@ -89,6 +89,43 @@ input:-webkit-autofill {
 
 // #endregion
 
+// #region Logout
+
+.logout {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 20px;
+  padding: 5px;
+  cursor: pointer;
+
+  &:hover {
+    > .icon {
+      opacity: 1;
+
+      &.open {
+        display: block;
+      }
+      &.close {
+        display: none;
+      }
+    }
+  }
+
+  > .icon {
+    opacity: 0.6;
+    width: 24px;
+    height: 24px;
+    color: white;
+
+    &.open {
+      display: none;
+    }
+  }
+}
+
+// #endregion
+
 // #region List
 
 .list {
@@ -106,16 +143,24 @@ input:-webkit-autofill {
     float: left;
     width: calc(100% - @paddingSide * 2);
     border-radius: 10px;
-    border: solid 1px #d8d8d800;
+    border: var(--border-1-inv);
     padding: @paddingTop @paddingSide;
 
     &:hover {
       box-shadow: 0px 3px 5px 0 rgba(0, 0, 0, 0.07);
-      border: solid 1px #d8d8d8;
+      border: var(--list-hover-border);
+      background-color: var(--list-hover-bg-color);
 
       .icon-tooltip,
       button {
         display: block !important;
+      }
+
+      > .list-item-left,
+      > .list-item-right {
+        > h2.onHover {
+          display: block;
+        }
       }
     }
 
@@ -137,11 +182,21 @@ input:-webkit-autofill {
       font-size: 15px;
     }
 
+    > .list-item-center {
+      .centered();
+
+      width: calc(100% - @paddingSide * 2);
+      height: calc(100% - @paddingTop * 2);
+      position: absolute;
+      margin: 0;
+    }
+
     > .list-item-left,
     > .list-item-right {
       position: relative;
 
       > h3,
+      > h2,
       > p,
       > .img-text > h3 {
         .font-default();
@@ -152,6 +207,17 @@ input:-webkit-autofill {
         width: auto;
         float: left;
         vertical-align: middle;
+      }
+
+      > h2 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-right: 10px;
+        color: var(--darkestGray);
+
+        &.onHover {
+          display: none;
+        }
       }
 
       > h3,
@@ -248,12 +314,17 @@ button {
   }
 
   &.yes {
-    background-color: var(--error-color);
+    opacity: var(--itp-opacity);
+    background-color: var(--itp-error-bg-color);
     color: white;
+
+    &:hover {
+      background-color: var(--itp-error-hover-bg-color);
+    }
   }
 
   &.no {
-    background-color: white;
+    background-color: transparent;
     color: var(--darkestGray);
     border: 2px solid var(--darkestGray);
     opacity: 0.6;
@@ -288,7 +359,7 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: var(--popup-c-bg-color);
   border-radius: @appBR;
   z-index: 10;
 
@@ -324,6 +395,10 @@ button {
       }
     }
 
+    .form-input > input {
+      background-color: var(--popup-input-bg-color);
+    }
+
     &.si {
       > .si-form {
         width: 100%;
@@ -355,7 +430,7 @@ button {
           margin: 0;
           margin-top: 24px;
           font-size: 20px;
-          color: #000000;
+          color: var(--black);
         }
 
         > h3 {
@@ -363,15 +438,13 @@ button {
 
           margin: 0;
           margin-bottom: 24px;
-          opacity: 0.6;
+          color: var(--gray);
           font-size: 16px;
         }
       }
 
       .buttons {
         @margin: 6px;
-
-        // justify-content: space-between;
 
         > button {
           padding: 15px 20px;
@@ -398,13 +471,14 @@ button {
           font-size: 36px;
           margin: 0;
           margin-bottom: 60px;
+          color: var(--black);
         }
 
         > .si-form {
           width: 100%;
 
           > .title > h2 {
-            color: black;
+            color: var(--black);
             font-size: 22px;
           }
 
@@ -429,7 +503,7 @@ button {
               margin: 0;
               margin-left: 25px;
               padding: 0;
-              color: #a9b2ba;
+              color: var(--lightGray);
               cursor: pointer;
               font-size: 22px;
               font-weight: normal;
@@ -440,7 +514,7 @@ button {
 
               &.active,
               &:hover {
-                color: black;
+                color: var(--black);
               }
             }
           }
@@ -460,13 +534,15 @@ button {
           }
 
           .no-requests {
+            .centered();
+
             @margin: 60px;
             position: relative;
             width: 100%;
             margin-top: @margin;
             margin-bottom: @margin - 30px;
             font-size: 20px;
-            .centered();
+            color: var(--black);
           }
         }
       }
@@ -500,6 +576,34 @@ button {
             font-size: 15px;
             padding: 4px 23px;
           }
+        }
+      }
+    }
+
+    .icon-tooltip.submit {
+      &:not(.circled) {
+        > .icon {
+          opacity: var(--itp-opacity);
+        }
+
+        color: var(--itp-submit-bg-color);
+
+        &:hover {
+          opacity: 1;
+          color: var(--itp-submit-hover-bg-color);
+        }
+      }
+
+      &.circled {
+        > .icon {
+          opacity: var(--itp-opacity);
+        }
+
+        background-color: var(--itp-submit-bg-color);
+
+        &:hover {
+          opacity: 1;
+          background-color: var(--itp-submit-hover-bg-color);
         }
       }
     }
@@ -547,7 +651,7 @@ button {
       display: block;
       float: left;
       font-size: 16px;
-      color: var(--white);
+      color: white;
       margin: 0;
     }
 
@@ -582,7 +686,7 @@ button {
         margin-right: @iconMargin;
 
         > .icon {
-          opacity: 0.25;
+          opacity: var(--sif-back-opacity);
         }
       }
 
@@ -591,7 +695,7 @@ button {
         margin-left: @iconMargin;
 
         > .icon {
-          opacity: 0.6;
+          opacity: 0.5;
         }
       }
     }
@@ -613,10 +717,6 @@ button {
   &.in-popup {
     > .title > h2 {
       color: var(--black);
-    }
-
-    > .input-container .icon-tooltip {
-      color: var(--info-color);
     }
 
     .form-input > input {
@@ -1069,6 +1169,7 @@ button {
     width: auto;
     max-width: 500px;
     text-align: center;
+    z-index: 999;
 
     &.over {
       bottom: -16px;
@@ -1077,12 +1178,13 @@ button {
     > p {
       .font-default();
       font-size: 16px;
-      color: white;
+      color: var(--tooltip-color);
       margin: 0;
       padding: 8.5px 17px;
-      background-color: rgba(49, 24, 24, 0.7);
+      background-color: var(--tooltip-bg-color);
       border-radius: 24px;
       min-width: 80px;
+      opacity: var(--tooltip-opacity);
     }
 
     > .triangle {
@@ -1091,7 +1193,7 @@ button {
       border-left: 22px solid transparent;
       border-right: 22px solid transparent;
 
-      border-top: 16px solid rgba(49, 24, 24, 0.7);
+      border-top: 16px solid var(--tooltip-bg-color);
     }
   }
 }
@@ -1111,21 +1213,25 @@ button {
     }
 
     &.error {
-      opacity: 0.7;
-      background-color: var(--error-color);
+      opacity: var(--itp-error-opacity);
+      background-color: var(--itp-error-bg-color);
 
       &:hover {
         opacity: 1;
+        background-color: var(--itp-error-hover-bg-color);
       }
     }
   }
 
-  &.error:not(.circled) {
-    opacity: 0.7;
-    color: var(--error-color);
+  &:not(.circled) {
+    &.error {
+      opacity: var(--itp-opacity);
+      color: var(--itp-error-bg-color);
 
-    &:hover {
-      opacity: 1;
+      &:hover {
+        opacity: 1;
+        color: var(--itp-error-hover-bg-color);
+      }
     }
   }
 }

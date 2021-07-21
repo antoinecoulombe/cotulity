@@ -15,6 +15,7 @@ import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
 import EditPopup from '../../components/homes/editPopup';
 import _ from 'lodash';
+import ListItemCenter from '../../components/utils/lists/listItemCenter';
 
 export interface Home {
   id: number;
@@ -238,6 +239,7 @@ export default function AppHomes() {
         {homes.map((home) => (
           <ListItem key={home.id} uid={home.refNumber}>
             <ListItemLeft style={{ height: iconStyle.iconWidth }}>
+              <h2 className="onHover">#{home.refNumber}</h2>
               <h3>{home.UserHome.nickname ?? home.name}</h3>
               <p>
                 - {home.memberCount}{' '}

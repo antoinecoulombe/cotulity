@@ -142,6 +142,29 @@
     "title": "It seems like you lost your way.",
     "link": "Help us get you back to safety"
   },
+  "settings": {
+    "title": { "settings": "Settings" },
+    "changePicture": "Change Picture",
+    "deleteAccount": "Delete Account",
+    "language": "Language",
+    "theme": {
+      "title": "Theme",
+      "dark": "Dark",
+      "light": "Light"
+    }
+  },
+  "tasks": {
+    "title": { "tasks": "Tasks" }
+  },
+  "groceries": {
+    "title": { "groceries": "Groceries" }
+  },
+  "calendar": {
+    "title": { "calendar": "Calendar" }
+  },
+  "finances": {
+    "title": { "finances": "Finances" }
+  },
   "notif": {
     "title": {
       "request": {
