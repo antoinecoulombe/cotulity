@@ -16,13 +16,7 @@
         id="emailContainer"
       >
         <tr>
-          <td
-            align="center"
-            valign="top"
-            style="
-              background-image: linear-gradient(to right, #0041ad, #008aff);
-            "
-          >
+          <td align="center" valign="top" style="background-color: #005aca">
             <table border="0" cellpadding="20" cellspacing="0" width="100%">
               <tr>
                 <td
@@ -62,6 +56,7 @@
                     padding: 0;
                     position: relative;
                     height: 600px;
+                    overflow: hidden;
                   "
                 >
                   <h1
@@ -79,11 +74,7 @@
                     style="
                       padding: 22px 32px;
                       border-radius: 200px;
-                      background-image: linear-gradient(
-                        to top,
-                        #0041ad,
-                        #008aff
-                      );
+                      background-color: #005aca;
                       color: white;
                       font-size: 23px;
                       cursor: pointer;
@@ -110,20 +101,13 @@
                       >Decline Invitation</a
                     >
                   </h2>
-                  <div
-                    style="
-                      position: absolute;
-                      top: 0;
-                      left: 0;
-                      background-image: url(https://i.ibb.co/Vvs1w0g/houses.png);
-                      background-size: contain;
-                      background-repeat: no-repeat;
-                      background-position: bottom;
-                      width: 100%;
-                      height: 100%;
-                      opacity: 0.1;
-                    "
-                  ></div>
+                  <div style="max-height: 0; opacity: 0.999">
+                    <div style="margin-top: 0em; display: inline-block"></div>
+                    <img
+                      style="width: 400px; opacity: 0.15; pointer-events: none"
+                      src="https://i.ibb.co/Vvs1w0g/houses.png"
+                    />
+                  </div>
                 </td>
               </tr>
             </table>

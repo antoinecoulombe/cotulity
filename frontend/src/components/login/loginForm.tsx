@@ -75,6 +75,8 @@ export default function LoginForm() {
           return axios
             .post(`/homes/${token}/members/invite/accept`)
             .then(async (res) => {
+              history.push('/apps');
+
               const notifications = await getNotifications();
               setNotificationArray(
                 [
