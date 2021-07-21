@@ -27,6 +27,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 // CORS
 var cors = require('cors');
+var nodemailer = require('nodemailer');
 // Express
 const app = express_1.default();
 // Express Settings

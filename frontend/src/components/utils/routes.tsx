@@ -21,12 +21,15 @@ export function PublicRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
-      render={(props) =>
+      render={(props: any) =>
         !isAuthenticated() === true ? (
           <Component {...props} />
         ) : (
           <Redirect
-            to={{ pathname: '/apps', state: { from: props.location } }}
+            to={{
+              pathname: '/apps/',
+              state: { from: props.location },
+            }}
           />
         )
       }

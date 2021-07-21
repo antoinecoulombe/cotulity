@@ -4,7 +4,7 @@ import '../../assets/css/apps.css';
 import App from '../../components/apps/app';
 import axios from '../../utils/fetchClient';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import HomesDropdown from '../../components/apps/homesDropdown';
 import { Home } from './homes';
 
@@ -16,11 +16,13 @@ interface OnlineApp {
 }
 
 export default function AppsPage() {
-  const { setNotification } = useNotifications();
+  const { setNotification, setSuccessNotification } = useNotifications();
   const [apps, setApps] = useState<OnlineApp[]>([]);
   const [homes, setHomes] = useState<Home[]>([]);
   const [currentHome, setCurrentHome] = useState<Home>();
   const history = useHistory();
+
+  let { token } = useParams<{ token: string }>();
 
   function handleHomeChange(home: Home[]) {
     setHomes(home);
@@ -40,6 +42,21 @@ export default function AppsPage() {
     });
   }
 
+  async function getHomes() {
+    axios
+      .get(`/homes/accepted`)
+      .then((res: any) => {
+        if (!res.data.homes || res.data.homes.length === 0)
+          history.push('/apps/homes/new');
+
+        setHomes(res.data.homes);
+        setCurrentHome(res.data.homes[0]);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
+  }
+
   useEffect(() => {
     window.addEventListener('resize', handleResize);
 
@@ -49,18 +66,17 @@ export default function AppsPage() {
         setApps(res.data.apps);
         handleResize();
 
-        axios
-          .get(`/homes/accepted`)
-          .then((res: any) => {
-            if (!res.data.homes || res.data.homes.length === 0)
-              history.push('/apps/homes/new');
-
-            setHomes(res.data.homes);
-            setCurrentHome(res.data.homes[0]);
-          })
-          .catch((err) => {
-            setNotification(err.response.data);
-          });
+        if (token) {
+          return axios
+            .post(`/homes/${token}/members/invite/accept`)
+            .then((res) => {
+              setSuccessNotification(res.data);
+              history.push('/apps');
+            })
+            .catch((err) => {
+              setNotification(err.response.data);
+            });
+        } else getHomes();
       })
       .catch((err) => {
         setNotification(err.response.data);

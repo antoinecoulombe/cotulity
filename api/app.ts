@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 
 // CORS
 var cors = require('cors');
+var nodemailer = require('nodemailer');
 
 // Express
 const app = express();

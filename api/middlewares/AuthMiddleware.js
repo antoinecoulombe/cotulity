@@ -18,7 +18,9 @@ require('../config/passport');
 const AuthMiddleware = express_1.default.Router();
 AuthMiddleware.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const publicPaths = ['/auth/login', '/users/register'];
-    if (publicPaths.includes(req.path) || req.path.startsWith('/public'))
+    const publicPathStarts = ['/homes/public'];
+    if (publicPaths.includes(req.path) ||
+        publicPathStarts.filter((p) => req.path.startsWith(p)).length > 0)
         return next();
     passport.authenticate('jwt', {
         session: false,

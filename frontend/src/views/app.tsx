@@ -3,7 +3,7 @@ import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PrivateRoute, PublicRoute } from '../components/utils/routes';
 import { useNotifications } from '../contexts/NotificationsContext';
-import { getNotifications } from '../utils/global';
+import { getNotifications, isAuthenticated } from '../utils/global';
 
 // CSS
 import '../assets/css/theme.css';
@@ -54,7 +54,6 @@ import {
   faUserMinus,
   faCrown,
 } from '@fortawesome/free-solid-svg-icons';
-import EditPopup from '../components/homes/editPopup';
 
 library.add(
   faArrowAltCircleRight,
@@ -114,16 +113,30 @@ export default function App() {
     <div className={`App ${theme}`}>
       <Notifications />
       <Switch>
-        <PublicRoute exact path="/" component={LoginPage} />
-        <PrivateRoute exact path="/apps" component={AppsPage} />
-
         <PrivateRoute exact path="/apps/homes/new" component={AppNewHome} />
-        <PrivateRoute path="/apps/homes" component={AppHomes} />
+        <PrivateRoute exact path="/apps/homes" component={AppHomes} />
         <PrivateRoute exact path="/apps/finances" component={AppFinances} />
         <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
         <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />
         <PrivateRoute exact path="/apps/settings" component={AppSettings} />
-
+        <PrivateRoute exact path="/apps/:token?" component={AppsPage} />
+        <PublicRoute exact path="/" component={LoginPage} />
+        <Route
+          exact
+          path="/login/:token?"
+          render={(props) =>
+            !isAuthenticated() === true ? (
+              <LoginPage />
+            ) : (
+              <Redirect
+                to={{
+                  pathname: `/apps/${props.match.params.token ?? ''}`,
+                  state: { from: props.location },
+                }}
+              />
+            )
+          }
+        />
         <Route exact path="/404" component={NotFoundPage} />
         <Redirect to="/404" />
       </Switch>

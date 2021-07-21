@@ -7,7 +7,11 @@ const AuthMiddleware = express.Router();
 
 AuthMiddleware.use(async (req: any, res, next) => {
   const publicPaths = ['/auth/login', '/users/register'];
-  if (publicPaths.includes(req.path) || req.path.startsWith('/public'))
+  const publicPathStarts = ['/homes/public'];
+  if (
+    publicPaths.includes(req.path) ||
+    publicPathStarts.filter((p: string) => req.path.startsWith(p)).length > 0
+  )
     return next();
 
   passport.authenticate(

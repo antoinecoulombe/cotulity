@@ -32,13 +32,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Translate = __importStar(require("../Translate"));
+const Translate = __importStar(require("../_utils/Translate"));
+const Global = __importStar(require("../_utils/Global"));
+const Email = __importStar(require("../_utils/Email"));
 const Apps_1 = require("../Apps");
-const Notifications_1 = require("../Notifications");
 const Homes = express_1.default.Router();
 const db = require('../../db/models');
 // Middlewares
 Homes.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.path.startsWith('/public')) {
+        console.log(req.path);
+        return next();
+    }
     req.params.appname = 'homes';
     Apps_1.validateApp(req, res, next);
 }));
@@ -255,7 +260,7 @@ Homes.delete('/:refnumber/members/remove/:id', Apps_1.validateHome, (req, res) =
                 return res
                     .status(404)
                     .json({ title: 'request.notFound', msg: 'request.notFound' });
-            yield Notifications_1.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
+            yield Global.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
                 typeId: 2,
                 title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),
                 description: Translate.getJSON('homes.memberExcluded', [
@@ -302,7 +307,7 @@ Homes.post('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) =>
             if (action == 'accept') {
                 userHome.accepted = true;
                 yield userHome.save({ transaction: t });
-                yield Notifications_1.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
+                yield Global.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
                     typeId: 2,
                     title: Translate.getJSON('homes.memberAdded', [
                         userHome.Home.name,
@@ -335,7 +340,7 @@ Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(
         if (yield denyIfNotOwner(req, res))
             return;
         return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            yield Notifications_1.sendNotifications(yield getMembersExceptOwner(res), {
+            yield Global.sendNotifications(yield getMembersExceptOwner(res), {
                 typeId: 3,
                 title: Translate.getJSON('homes.excludedByOwner', [
                     res.locals.home.name,
@@ -359,7 +364,7 @@ Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(
 Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            yield Notifications_1.sendNotifications(yield getMembersExceptRequester(req, res), {
+            yield Global.sendNotifications(yield getMembersExceptRequester(req, res), {
                 typeId: 2,
                 title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
                 description: Translate.getJSON('homes.memberQuit', [
@@ -392,7 +397,7 @@ Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(vo
                         title: 'homes.couldNotRename',
                         msg: 'homes.nameUndefined',
                     });
-                yield Notifications_1.sendNotifications(yield getMembersExceptOwner(res), {
+                yield Global.sendNotifications(yield getMembersExceptOwner(res), {
                     typeId: 2,
                     title: Translate.getJSON('homes.homeRenamedByOwner', [home.name]),
                     description: Translate.getJSON('homes.homeRenamedByOwner', [
@@ -442,22 +447,37 @@ Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __aw
                 title: 'homes.couldNotSendInvite',
                 msg: 'homes.emailAlreadyInHome',
             });
-        const token = createToken(10);
+        const token = createToken(4);
         const invite = yield db.HomeInvitation.create({
             homeId: res.locals.home.id,
             email: req.body.email,
             token: token,
         });
-        // send email
-        let emailFailedToSend = true;
-        if (emailFailedToSend) {
-            invite.destroy({ force: true });
-            return res.status(500).json({
-                title: 'homes.emailDidNotSend',
-                msg: 'request.error',
+        try {
+            const emailHtml = Global.format(yield Global.readHtml('../_html/emailInvite.html'), [res.locals.home.name, token]);
+            return yield Email.transporter.sendMail({
+                from: Email.FROM,
+                to: req.body.email,
+                subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
+                html: emailHtml,
+            }, (error, info) => {
+                if (error != null) {
+                    invite.destroy({ force: true });
+                    return res.status(500).json({
+                        title: 'homes.emailDidNotSend',
+                        msg: 'request.error',
+                    });
+                }
+                res.json({
+                    title: 'homes.invitationSent',
+                    msg: 'homes.invitationSent',
+                });
             });
         }
-        res.json({ title: 'homes.invitationSent', msg: 'homes.invitationSent' });
+        catch (e) {
+            invite.destroy({ force: true });
+            throw e;
+        }
     }
     catch (e) {
         console.log(e);
@@ -465,6 +485,44 @@ Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __aw
             title: ((_g = e.errors) === null || _g === void 0 ? void 0 : _g[0]) ? 'homes.inviteError' : 'request.error',
             msg: (_k = (_j = (_h = e.errors) === null || _h === void 0 ? void 0 : _h[0]) === null || _j === void 0 ? void 0 : _j.message) !== null && _k !== void 0 ? _k : 'request.error',
         });
+    }
+}));
+Homes.get('/public/:token/members/invite/decline', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Decline');
+    try {
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            const invite = yield db.HomeInvitation.findOne({
+                where: { token: req.params.token },
+                include: db.Home,
+            });
+            const html = yield Global.readHtml('../_html/responsePage.html');
+            if (!invite) {
+                return Global.respondHtml(res, Global.format(html, [
+                    'Invitation not found',
+                    'No invitation is linked to that token.',
+                ]), 404);
+            }
+            yield invite.destroy({ transaction: t });
+            yield db.Notification.create({
+                typeId: 2,
+                toId: invite.Home.ownerId,
+                title: Translate.getJSON('homes.inviteDeclined', [
+                    invite.Home.name,
+                ]),
+                description: Translate.getJSON('homes.inviteDeclined', [
+                    invite.email,
+                    invite.Home.name,
+                ]),
+            }, { transaction: t });
+            return Global.respondHtml(res, Global.format(html, [
+                'Invitation declined',
+                'You can close this page.',
+            ]), 200);
+        }));
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
 Homes.post('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -480,6 +538,16 @@ Homes.post('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void
                     msg: 'homes.inviteNotFound',
                 });
             }
+            const userInHome = yield db.UserHome.findOne({
+                where: { homeId: invite.Home.id, userId: req.user.id, accepted: true },
+            });
+            if (userInHome) {
+                yield invite.destroy();
+                return res.status(500).json({
+                    title: 'homes.couldNotJoin',
+                    msg: 'homes.alreadyInHome',
+                });
+            }
             const expiration = new Date(Date.parse(invite.createdAt) +
                 invite.expirationDays * 24 * 60 * 60 * 1000);
             if (new Date(Date.now()) > expiration)
@@ -487,58 +555,39 @@ Homes.post('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void
                     title: 'homes.inviteExpired',
                     msg: 'homes.inviteExpired',
                 });
-            yield Notifications_1.sendNotifications(yield getMembersExceptRequester(req, res), {
+            yield Global.sendNotifications((yield invite.Home.getMembers())
+                .filter((m) => m.id !== req.user.id)
+                .map((m) => m.id), {
                 typeId: 2,
-                title: Translate.getJSON('homes.memberAdded', [invite.home.name]),
+                title: Translate.getJSON('homes.memberAdded', [invite.Home.name]),
                 description: Translate.getJSON('homes.memberAcceptedInvite', [
                     req.user.firstname,
-                    invite.home.name,
+                    invite.Home.name,
                 ]),
             }, t);
-            yield db.UserHome.create({
-                homeId: invite.home.id,
-                userId: req.user.id,
-                accepted: true,
-            }, { transaction: t });
-            return res.json({
-                title: Translate.getJSON('homes.homeJoined', [invite.home.name]),
-                msg: 'newHome.created',
+            const userHome = yield db.UserHome.findOne({
+                where: { homeId: invite.Home.id, userId: req.user.id },
+                paranoid: false,
             });
-        }));
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.post('/public/:token/members/invite/decline', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            const invite = yield db.HomeInvitation.findOne({
-                where: { token: req.params.token },
-                include: db.Home,
-            });
-            if (!invite) {
-                return res.status(404).json({
-                    title: 'homes.inviteNotFound',
-                    msg: 'homes.inviteNotFound',
-                });
+            if (userHome) {
+                if (!userHome.accepted) {
+                    userHome.accepted = true;
+                    yield userHome.save({ transaction: t });
+                }
+                if (userHome.deletedAt != null)
+                    yield userHome.restore({ transaction: t });
+            }
+            else {
+                yield db.UserHome.create({
+                    homeId: invite.Home.id,
+                    userId: req.user.id,
+                    accepted: true,
+                }, { transaction: t });
             }
             yield invite.destroy({ transaction: t });
-            yield db.Notification.create({
-                typeId: 2,
-                toId: invite.home.ownerId,
-                title: Translate.getJSON('homes.inviteDeclined', [
-                    invite.home.name,
-                ]),
-                description: Translate.getJSON('homes.inviteDeclined', [
-                    invite.email,
-                    invite.home.name,
-                ]),
-            }, { transaction: t });
             return res.json({
-                title: 'request.success',
-                msg: 'request.success',
+                title: Translate.getJSON('homes.homeJoined', [invite.Home.name]),
+                msg: 'newHome.created',
             });
         }));
     }

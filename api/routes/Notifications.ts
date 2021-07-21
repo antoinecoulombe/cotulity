@@ -1,7 +1,6 @@
 import express from 'express';
 
 const Notifications = express.Router();
-
 const db = require('../db/models');
 
 Notifications.get('/', async (req: any, res: any) => {
@@ -36,30 +35,12 @@ Notifications.delete('/delete/:id', async (req: any, res: any) => {
         .status(404)
         .json({ title: 'request.notFound', msg: 'request.notFound' });
 
-    notification.destroy({ force: true });
+    notification.destroy();
     return res.json({ title: 'request.success', msg: 'request.success' });
   } catch (error) {
     console.log(error);
     res.json({ title: 'request.error', msg: 'request.error' });
   }
 });
-
-export async function sendNotifications(
-  userIds: number[],
-  notification: any,
-  transaction?: any
-) {
-  function getNotification(toId: number, notification: any) {
-    notification.toId = toId;
-    return notification;
-  }
-
-  let notifications: any[] = [];
-  userIds.forEach((id: number) =>
-    notifications.push(getNotification(id, notification))
-  );
-
-  await db.Notification.bulkCreate(notifications, { transaction: transaction });
-}
 
 export default Notifications;

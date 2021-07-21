@@ -18,7 +18,6 @@ const db = require('../db/models');
 const bcrypt = require('bcryptjs');
 Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
-    let pwdHash = null;
     try {
         const { email, firstname, lastname, phone } = req.body;
         const salt = bcrypt.genSaltSync(10);

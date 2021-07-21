@@ -6,9 +6,11 @@ import axios from '../../utils/fetchClient';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getNotifications, isAuthenticated } from '../../utils/global';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 
 export default function LoginForm() {
+  let { token } = useParams<{ token: string }>();
+
   const {
     setNotification,
     setSuccessNotification,
@@ -69,15 +71,32 @@ export default function LoginForm() {
         );
         localStorage.setItem('userId', res.data.userId);
 
-        history.push('/apps');
+        if (token) {
+          return axios
+            .post(`/homes/${token}/members/invite/accept`)
+            .then(async (res) => {
+              const notifications = await getNotifications();
+              setNotificationArray(
+                [
+                  {
+                    type: { name: 'success' },
+                    title: res.data.title,
+                    msg: res.data.msg,
+                  },
+                ].concat(notifications)
+              );
+            })
+            .catch((err) => {
+              setNotification(err.response.data);
+            });
+        } else {
+          history.push('/apps');
 
-        const notifications = await getNotifications();
-        setNotificationArray(notifications);
-
-        return res.data;
+          const notifications = await getNotifications();
+          setNotificationArray(notifications);
+        }
       })
       .catch((err) => {
-        console.log(err);
         setNotification(err.response.data);
       });
   }
@@ -91,9 +110,6 @@ export default function LoginForm() {
       title: 'register.error',
       msg: errorMsg,
     });
-
-    console.log('ERRORS:');
-    console.log(errors);
   }
 
   function resetForm() {

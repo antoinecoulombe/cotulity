@@ -6,7 +6,6 @@ const db = require('../db/models');
 const bcrypt = require('bcryptjs');
 
 Users.post('/register', async (req, res) => {
-  let pwdHash = null;
   try {
     const { email, firstname, lastname, phone } = req.body;
     const salt = bcrypt.genSaltSync(10);
