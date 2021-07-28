@@ -33,6 +33,11 @@
       "desc": "Créez une nouvelle maison."
     }
   },
+  "popup": {
+    "warning": {
+      "desc": "Cette action est irréversible."
+    }
+  },
   "subHeader": {
     "all": "Tout",
     "important": "Important",
@@ -144,13 +149,23 @@
   },
   "settings": {
     "title": { "settings": "Paramètres" },
-    "changePicture": "Image profil",
+    "changePicture": "Changer ma photo",
     "deleteAccount": "Supprimer mon compte",
     "language": "Langage",
     "theme": {
       "title": "Thème",
       "dark": "Sombre",
       "light": "Clair"
+    },
+    "account": {
+      "delete": {
+        "btn": "Supprimer mon compte",
+        "title": "Êtes-vous sûr de vouloir supprimer votre compte?",
+        "buttons": {
+          "yes": "Oui, le supprimer",
+          "no": "Non, conserver mon compte"
+        }
+      }
     }
   },
   "tasks": {

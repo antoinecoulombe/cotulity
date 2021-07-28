@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Children, useState } from 'react';
 import Tooltip from './tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
@@ -25,19 +25,37 @@ export default function IconToolTip(props: IconTooltipProps) {
 
   let padding = props.circled ? (props.style.iconWidth - iconSize) / 2 : 0;
 
+  const containerStyle: any = {
+    position: 'absolute',
+    right: 0,
+    width: props.style.iconWidth,
+    height: props.style.iconWidth,
+    marginRight: props.style.marginRight,
+  };
+
+  const iconStyle: any = {
+    width: iconSize,
+    height: iconSize,
+    paddingTop: padding,
+    paddingBottom: padding,
+    paddingLeft: padding + (props.circled?.offset ?? 0),
+    paddingRight: padding - (props.circled?.offset ?? 0),
+    cursor: props.onClick ? 'pointer' : 'default',
+  };
+
+  if (!props.children) {
+    iconStyle.color = 'var(--itp-error-hover-bg-color)';
+    iconStyle.opacity = 1;
+    containerStyle.opacity = 1;
+  }
+
   return (
     <>
       <div
         className={`icon-tooltip ${props.className ?? ''}${
           props.circled ? ' circled' : ''
         }${props.error ? ' error' : ''}`}
-        style={{
-          position: 'absolute',
-          right: 0,
-          width: props.style.iconWidth,
-          height: props.style.iconWidth,
-          marginRight: props.style.marginRight,
-        }}
+        style={containerStyle}
       >
         {props.children && (
           <Tooltip
@@ -60,15 +78,7 @@ export default function IconToolTip(props: IconTooltipProps) {
           icon={['fas', props.icon as IconName]}
           className="icon"
           onClick={props.onClick}
-          style={{
-            width: iconSize,
-            height: iconSize,
-            paddingTop: padding,
-            paddingBottom: padding,
-            paddingLeft: padding + (props.circled?.offset ?? 0),
-            paddingRight: padding - (props.circled?.offset ?? 0),
-            cursor: props.onClick ? 'pointer' : 'default',
-          }}
+          style={iconStyle}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         />

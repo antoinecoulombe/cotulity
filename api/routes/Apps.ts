@@ -3,6 +3,15 @@ import express from 'express';
 const Apps = express.Router();
 const db = require('../db/models');
 
+// ########################################################
+// ##################### Middlewares ######################
+// ########################################################
+
+// ########################################################
+// ################### Getters / Globals ##################
+// ########################################################
+
+// Verifies that the requested home is valid and accessible by the user.
 export const validateHome = async (req: any, res: any, next: any) => {
   try {
     if (!req.params.refnumber)
@@ -23,6 +32,7 @@ export const validateHome = async (req: any, res: any, next: any) => {
   }
 };
 
+// Verifies that the requested application is valid and online.
 export const validateApp = async (req: any, res: any, next: any) => {
   try {
     if (!req.params.appname)
@@ -42,14 +52,21 @@ export const validateApp = async (req: any, res: any, next: any) => {
   }
 };
 
+// ########################################################
+// ######################### GET ##########################
+// ########################################################
+
+// Validates application.
 Apps.get('/:appname/', validateApp, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 
+// Validates application and home.
 Apps.get('/:appname/:refnumber/', validateApp, validateHome, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 
+// Get all online apps.
 Apps.get('/', async (req, res) => {
   try {
     const apps = await db.App.findAll({
@@ -62,6 +79,16 @@ Apps.get('/', async (req, res) => {
   }
 });
 
-// Routes
+// ########################################################
+// ######################### PUT ##########################
+// ########################################################
+
+// ########################################################
+// ######################### POST #########################
+// ########################################################
+
+// ########################################################
+// ######################## DELETE ########################
+// ########################################################
 
 export default Apps;

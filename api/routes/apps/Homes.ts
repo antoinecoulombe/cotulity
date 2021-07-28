@@ -7,7 +7,11 @@ import { validateHome, validateApp } from '../Apps';
 const Homes = express.Router();
 const db = require('../../db/models');
 
-// Middlewares
+// ########################################################
+// ##################### Middlewares ######################
+// ########################################################
+
+// Validates application and paths.
 Homes.use(async (req: any, res, next) => {
   if (req.path.startsWith('/public')) {
     console.log(req.path);
@@ -18,8 +22,11 @@ Homes.use(async (req: any, res, next) => {
   validateApp(req, res, next);
 });
 
-// ######################## Getters / Globals ########################
+// ########################################################
+// ################### Getters / Globals ##################
+// ########################################################
 
+// Get home list.
 async function getHomes(req: any, res: any, all: boolean) {
   try {
     const dbHomes = await req.user.getHomes({
@@ -70,6 +77,7 @@ async function getHomes(req: any, res: any, all: boolean) {
   }
 }
 
+// Returns false if the connected user is not the home owner.
 async function denyIfNotOwner(req: any, res: any) {
   if (res.locals.home.ownerId !== req.user.id) {
     res
@@ -80,12 +88,14 @@ async function denyIfNotOwner(req: any, res: any) {
   return false;
 }
 
+// Retrieves the members from the current home, excluding the owner.
 async function getMembersExceptOwner(res: any): Promise<number[]> {
   return (await res.locals.home.getMembers())
     .filter((m: any) => m.id !== res.locals.home.ownerId)
     .map((m: any) => m.id);
 }
 
+// Retrieves the members from the current home, excluding the connected user.
 async function getMembersExceptRequester(
   req: any,
   res: any
@@ -95,14 +105,29 @@ async function getMembersExceptRequester(
     .map((m: any) => m.id);
 }
 
+// Generates a random token.
+function createToken(loopTimes: number) {
+  let token = Math.random().toString(36).substring(2, 15);
+  for (let i = 0; i < loopTimes - 1; ++i)
+    token += Math.random().toString(36).substring(2, 15);
+  return token;
+}
+
+// ########################################################
+// ######################### GET ##########################
+// ########################################################
+
+// [ANY] Get all homes.
 Homes.get('/', async (req: any, res) => {
   getHomes(req, res, true);
 });
 
+// [ANY] Get all accepted homes.
 Homes.get('/accepted', async (req: any, res) => {
   getHomes(req, res, false);
 });
 
+// [ANY] Get home associated to specified reference number.
 Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
   try {
     if (await denyIfNotOwner(req, res)) return;
@@ -126,55 +151,70 @@ Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
   }
 });
 
-// ######################## Join/Create (homes/new) ########################
+// [PUBLIC] Decline the invitation linked to the specified token.
+Homes.get(
+  '/public/:token/members/invite/decline',
+  async (req: any, res: any) => {
+    console.log('Decline');
+    try {
+      return await db.sequelize.transaction(async (t: any) => {
+        const invite = await db.HomeInvitation.findOne({
+          where: { token: req.params.token },
+          include: db.Home,
+        });
 
-Homes.post('/create/:homeName', async (req: any, res) => {
-  try {
-    const home = await db.sequelize.transaction(async (t: any) => {
-      const refNumberDigits = 6;
-      let refNumber;
+        const html = await Global.readHtml('../_html/responsePage.html');
 
-      do {
-        refNumber = Math.random()
-          .toString()
-          .slice(2, 2 + refNumberDigits);
-      } while (
-        (await db.Home.findOne({ where: { refNumber: refNumber } })) != null
-      );
+        if (!invite) {
+          return Global.respondHtml(
+            res,
+            Global.format(html, [
+              'Invitation not found',
+              'No invitation is linked to that token.',
+            ]),
+            404
+          );
+        }
 
-      const home = await db.Home.create(
-        {
-          refNumber: refNumber,
-          name: req.params.homeName,
-          ownerId: req.user.id,
-        },
-        { transaction: t }
-      );
+        await invite.destroy({ transaction: t });
 
-      await db.UserHome.create(
-        {
-          userId: req.user.id,
-          homeId: home.id,
-          accepted: 1,
-        },
-        { transaction: t }
-      );
+        await db.Notification.create(
+          {
+            typeId: 2,
+            toId: invite.Home.ownerId,
+            title: Translate.getJSON('homes.inviteDeclined', [
+              invite.Home.name,
+            ]),
+            description: Translate.getJSON('homes.inviteDeclined', [
+              invite.email,
+              invite.Home.name,
+            ]),
+          },
+          { transaction: t }
+        );
 
-      return home;
-    });
-
-    res.json({
-      title: 'newHome.created',
-      msg: 'newHome.created',
-      refNumber: home.refNumber,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+        return Global.respondHtml(
+          res,
+          Global.format(html, [
+            'Invitation declined',
+            'You can close this page.',
+          ]),
+          200
+        );
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
   }
-});
+);
 
-Homes.post('/join/:refNumber', async (req: any, res) => {
+// ########################################################
+// ######################### PUT ##########################
+// ########################################################
+
+// [ANY] Create a request to join the specified home.
+Homes.put('/join/:refNumber', async (req: any, res) => {
   try {
     console.log(req.params.refNumber);
     const userHome = await req.user.getHomes({
@@ -241,69 +281,8 @@ Homes.post('/join/:refNumber', async (req: any, res) => {
   }
 });
 
-// ######################## Edit ########################
-
-Homes.delete(
-  '/:refnumber/members/remove/:id',
-  validateHome,
-  async (req: any, res: any) => {
-    try {
-      if (await denyIfNotOwner(req, res)) return;
-      if (req.params.id == res.locals.home.ownerId)
-        return res
-          .status(403)
-          .json({ title: 'request.denied', msg: 'request.unauthorized' });
-
-      return await db.sequelize.transaction(async (t: any) => {
-        let userHome = await db.UserHome.findOne({
-          where: { userId: req.params.id, homeId: res.locals.home.id },
-          include: [db.Home, db.User],
-        });
-
-        if (!userHome)
-          return res
-            .status(404)
-            .json({ title: 'request.notFound', msg: 'request.notFound' });
-
-        await Global.sendNotifications(
-          (
-            await getMembersExceptOwner(res)
-          ).filter((id) => id != req.params.id),
-          {
-            typeId: 2,
-            title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),
-            description: Translate.getJSON('homes.memberExcluded', [
-              userHome.User.firstname,
-              userHome.Home.name,
-            ]),
-          },
-          t
-        );
-
-        await db.Notification.create(
-          {
-            typeId: 3,
-            toId: req.params.id,
-            title: Translate.getJSON('homes.excludedByOwner', [
-              userHome.Home.name,
-            ]),
-            description: 'homes.excludedByOwner',
-          },
-          { transaction: t }
-        );
-
-        await userHome.destroy({ force: true }, { transaction: t });
-
-        return res.json({ title: 'request.success', msg: 'request.success' });
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-  }
-);
-
-Homes.post(
+// [OWNER] Accept or decline a request to join the specified home.
+Homes.put(
   '/:refnumber/request/:action/:id',
   validateHome,
   async (req: any, res: any) => {
@@ -374,71 +353,8 @@ Homes.post(
   }
 );
 
-// ######################## Home management ########################
-
-Homes.delete('/:refnumber/delete', validateHome, async (req: any, res: any) => {
-  try {
-    if (await denyIfNotOwner(req, res)) return;
-
-    return await db.sequelize.transaction(async (t: any) => {
-      await Global.sendNotifications(
-        await getMembersExceptOwner(res),
-        {
-          typeId: 3,
-          title: Translate.getJSON('homes.excludedByOwner', [
-            res.locals.home.name,
-          ]),
-          description: Translate.getJSON('homes.homeDeletedByOwner', [
-            res.locals.home.name,
-          ]),
-        },
-        t
-      );
-
-      await res.locals.home.destroy({ transaction: t });
-      return res.json({
-        title: Translate.getJSON('homes.homeDeleted', [res.locals.home.name]),
-        msg: 'homes.homeDeleted',
-      });
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
-
-Homes.delete('/:refnumber/quit', validateHome, async (req: any, res: any) => {
-  try {
-    return await db.sequelize.transaction(async (t: any) => {
-      await Global.sendNotifications(
-        await getMembersExceptRequester(req, res),
-        {
-          typeId: 2,
-          title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
-          description: Translate.getJSON('homes.memberQuit', [
-            req.user.firstname,
-            res.locals.home.name,
-          ]),
-        },
-        t
-      );
-      await res.locals.home.UserHome.destroy(
-        { force: true },
-        { transaction: t }
-      );
-
-      return res.json({
-        title: Translate.getJSON('homes.homeLeft', [res.locals.home.name]),
-        msg: 'homes.homeLeft',
-      });
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
-
-Homes.post('/:refnumber/rename', validateHome, async (req: any, res: any) => {
+// [OWNER/MEMBER] Rename specified home.
+Homes.put('/:refnumber/rename', validateHome, async (req: any, res: any) => {
   try {
     const nickname = req.body.nickname;
     let home = res.locals.home;
@@ -487,140 +403,8 @@ Homes.post('/:refnumber/rename', validateHome, async (req: any, res: any) => {
   }
 });
 
-// ######################## Members ########################
-
-function createToken(loopTimes: number) {
-  let token = Math.random().toString(36).substring(2, 15);
-  for (let i = 0; i < loopTimes - 1; ++i)
-    token += Math.random().toString(36).substring(2, 15);
-  return token;
-}
-
-Homes.post(
-  '/:refnumber/members/invite',
-  validateHome,
-  async (req: any, res: any) => {
-    try {
-      if (await denyIfNotOwner(req, res)) return;
-
-      const member = await res.locals.home.getMembers({
-        where: { email: req.body.email },
-      });
-
-      if (member.length > 0)
-        return res.status(500).json({
-          title: 'homes.couldNotSendInvite',
-          msg: 'homes.emailAlreadyInHome',
-        });
-
-      const token = createToken(4);
-
-      const invite = await db.HomeInvitation.create({
-        homeId: res.locals.home.id,
-        email: req.body.email,
-        token: token,
-      });
-
-      try {
-        const emailHtml = Global.format(
-          await Global.readHtml('../_html/emailInvite.html'),
-          [res.locals.home.name, token]
-        );
-
-        return await Email.transporter.sendMail(
-          {
-            from: Email.FROM,
-            to: req.body.email,
-            subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
-            html: emailHtml,
-          },
-          (error: any, info: any) => {
-            if (error != null) {
-              invite.destroy({ force: true });
-              return res.status(500).json({
-                title: 'homes.emailDidNotSend',
-                msg: 'request.error',
-              });
-            }
-
-            res.json({
-              title: 'homes.invitationSent',
-              msg: 'homes.invitationSent',
-            });
-          }
-        );
-      } catch (e) {
-        invite.destroy({ force: true });
-        throw e;
-      }
-    } catch (e) {
-      console.log(e);
-      res.status(500).json({
-        title: e.errors?.[0] ? 'homes.inviteError' : 'request.error',
-        msg: e.errors?.[0]?.message ?? 'request.error',
-      });
-    }
-  }
-);
-
-Homes.get(
-  '/public/:token/members/invite/decline',
-  async (req: any, res: any) => {
-    console.log('Decline');
-    try {
-      return await db.sequelize.transaction(async (t: any) => {
-        const invite = await db.HomeInvitation.findOne({
-          where: { token: req.params.token },
-          include: db.Home,
-        });
-
-        const html = await Global.readHtml('../_html/responsePage.html');
-
-        if (!invite) {
-          return Global.respondHtml(
-            res,
-            Global.format(html, [
-              'Invitation not found',
-              'No invitation is linked to that token.',
-            ]),
-            404
-          );
-        }
-
-        await invite.destroy({ transaction: t });
-
-        await db.Notification.create(
-          {
-            typeId: 2,
-            toId: invite.Home.ownerId,
-            title: Translate.getJSON('homes.inviteDeclined', [
-              invite.Home.name,
-            ]),
-            description: Translate.getJSON('homes.inviteDeclined', [
-              invite.email,
-              invite.Home.name,
-            ]),
-          },
-          { transaction: t }
-        );
-
-        return Global.respondHtml(
-          res,
-          Global.format(html, [
-            'Invitation declined',
-            'You can close this page.',
-          ]),
-          200
-        );
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-  }
-);
-
-Homes.post('/:token/members/invite/accept', async (req: any, res: any) => {
+// [ANY] Accept the invitation linked to the specified token.
+Homes.put('/:token/members/invite/accept', async (req: any, res: any) => {
   try {
     return await db.sequelize.transaction(async (t: any) => {
       const invite = await db.HomeInvitation.findOne({
@@ -706,8 +490,255 @@ Homes.post('/:token/members/invite/accept', async (req: any, res: any) => {
   }
 });
 
-// ######################## Requests ########################
+// ########################################################
+// ######################### POST #########################
+// ########################################################
 
+// [ANY] Create a new home.
+Homes.post('/create/:homeName', async (req: any, res) => {
+  try {
+    const home = await db.sequelize.transaction(async (t: any) => {
+      const refNumberDigits = 6;
+      let refNumber;
+
+      do {
+        refNumber = Math.random()
+          .toString()
+          .slice(2, 2 + refNumberDigits);
+      } while (
+        (await db.Home.findOne({ where: { refNumber: refNumber } })) != null
+      );
+
+      const home = await db.Home.create(
+        {
+          refNumber: refNumber,
+          name: req.params.homeName,
+          ownerId: req.user.id,
+        },
+        { transaction: t }
+      );
+
+      await db.UserHome.create(
+        {
+          userId: req.user.id,
+          homeId: home.id,
+          accepted: 1,
+        },
+        { transaction: t }
+      );
+
+      return home;
+    });
+
+    res.json({
+      title: 'newHome.created',
+      msg: 'newHome.created',
+      refNumber: home.refNumber,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// [OWNER] Invite a new member into the specified home.
+Homes.post(
+  '/:refnumber/members/invite',
+  validateHome,
+  async (req: any, res: any) => {
+    try {
+      if (await denyIfNotOwner(req, res)) return;
+
+      const member = await res.locals.home.getMembers({
+        where: { email: req.body.email },
+      });
+
+      if (member.length > 0)
+        return res.status(500).json({
+          title: 'homes.couldNotSendInvite',
+          msg: 'homes.emailAlreadyInHome',
+        });
+
+      const token = createToken(4);
+
+      const invite = await db.HomeInvitation.create({
+        homeId: res.locals.home.id,
+        email: req.body.email,
+        token: token,
+      });
+
+      try {
+        const emailHtml = Global.format(
+          await Global.readHtml('../_html/emailInvite.html'),
+          [res.locals.home.name, token]
+        );
+
+        return await Email.transporter.sendMail(
+          {
+            from: Email.FROM,
+            to: req.body.email,
+            subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
+            html: emailHtml,
+          },
+          (error: any, info: any) => {
+            if (error != null) {
+              invite.destroy({ force: true });
+              return res.status(500).json({
+                title: 'homes.emailDidNotSend',
+                msg: 'request.error',
+              });
+            }
+
+            res.json({
+              title: 'homes.invitationSent',
+              msg: 'homes.invitationSent',
+            });
+          }
+        );
+      } catch (e) {
+        invite.destroy({ force: true });
+        throw e;
+      }
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({
+        title: e.errors?.[0] ? 'homes.inviteError' : 'request.error',
+        msg: e.errors?.[0]?.message ?? 'request.error',
+      });
+    }
+  }
+);
+
+// ########################################################
+// ######################## DELETE ########################
+// ########################################################
+
+// [OWNER] Remove a member from the specified home.
+Homes.delete(
+  '/:refnumber/members/remove/:id',
+  validateHome,
+  async (req: any, res: any) => {
+    try {
+      if (await denyIfNotOwner(req, res)) return;
+      if (req.params.id == res.locals.home.ownerId)
+        return res
+          .status(403)
+          .json({ title: 'request.denied', msg: 'request.unauthorized' });
+
+      return await db.sequelize.transaction(async (t: any) => {
+        let userHome = await db.UserHome.findOne({
+          where: { userId: req.params.id, homeId: res.locals.home.id },
+          include: [db.Home, db.User],
+        });
+
+        if (!userHome)
+          return res
+            .status(404)
+            .json({ title: 'request.notFound', msg: 'request.notFound' });
+
+        await Global.sendNotifications(
+          (
+            await getMembersExceptOwner(res)
+          ).filter((id) => id != req.params.id),
+          {
+            typeId: 2,
+            title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),
+            description: Translate.getJSON('homes.memberExcluded', [
+              userHome.User.firstname,
+              userHome.Home.name,
+            ]),
+          },
+          t
+        );
+
+        await db.Notification.create(
+          {
+            typeId: 3,
+            toId: req.params.id,
+            title: Translate.getJSON('homes.excludedByOwner', [
+              userHome.Home.name,
+            ]),
+            description: 'homes.excludedByOwner',
+          },
+          { transaction: t }
+        );
+
+        await userHome.destroy({ force: true }, { transaction: t });
+
+        return res.json({ title: 'request.success', msg: 'request.success' });
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+  }
+);
+
+// [OWNER] Delete the specified home.
+Homes.delete('/:refnumber/delete', validateHome, async (req: any, res: any) => {
+  try {
+    if (await denyIfNotOwner(req, res)) return;
+
+    return await db.sequelize.transaction(async (t: any) => {
+      await Global.sendNotifications(
+        await getMembersExceptOwner(res),
+        {
+          typeId: 3,
+          title: Translate.getJSON('homes.excludedByOwner', [
+            res.locals.home.name,
+          ]),
+          description: Translate.getJSON('homes.homeDeletedByOwner', [
+            res.locals.home.name,
+          ]),
+        },
+        t
+      );
+
+      await res.locals.home.destroy({ transaction: t });
+      return res.json({
+        title: Translate.getJSON('homes.homeDeleted', [res.locals.home.name]),
+        msg: 'homes.homeDeleted',
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// [MEMBER] Quit the specified home.
+Homes.delete('/:refnumber/quit', validateHome, async (req: any, res: any) => {
+  try {
+    return await db.sequelize.transaction(async (t: any) => {
+      await Global.sendNotifications(
+        await getMembersExceptRequester(req, res),
+        {
+          typeId: 2,
+          title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
+          description: Translate.getJSON('homes.memberQuit', [
+            req.user.firstname,
+            res.locals.home.name,
+          ]),
+        },
+        t
+      );
+      await res.locals.home.UserHome.destroy(
+        { force: true },
+        { transaction: t }
+      );
+
+      return res.json({
+        title: Translate.getJSON('homes.homeLeft', [res.locals.home.name]),
+        msg: 'homes.homeLeft',
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// [REQUEST] Cancel the request to the specified home.
 Homes.delete(
   '/:refnumber/request/cancel',
   validateHome,

@@ -40,7 +40,7 @@ export default function AppNewHome() {
     }
 
     axios
-      .post(`/homes/join/${value.split('#')[1]}`)
+      .put(`/homes/join/${value.split('#')[1]}`)
       .then((res) => {
         setError(false);
         setSuccessNotification(res.data);

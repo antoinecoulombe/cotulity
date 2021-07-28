@@ -33,6 +33,11 @@
       "desc": "Create a new home."
     }
   },
+  "popup": {
+    "warning": {
+      "desc": "This action is permanent."
+    }
+  },
   "subHeader": {
     "all": "All",
     "important": "Important",
@@ -151,6 +156,16 @@
       "title": "Theme",
       "dark": "Dark",
       "light": "Light"
+    },
+    "account": {
+      "delete": {
+        "btn": "Delete my account",
+        "title": "Are you sure you want to delete your account?",
+        "buttons": {
+          "yes": "Yes, Delete It",
+          "no": "No, Keep My Account"
+        }
+      }
     }
   },
   "tasks": {

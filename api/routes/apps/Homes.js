@@ -38,7 +38,10 @@ const Email = __importStar(require("../_utils/Email"));
 const Apps_1 = require("../Apps");
 const Homes = express_1.default.Router();
 const db = require('../../db/models');
-// Middlewares
+// ########################################################
+// ##################### Middlewares ######################
+// ########################################################
+// Validates application and paths.
 Homes.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.path.startsWith('/public')) {
         console.log(req.path);
@@ -47,7 +50,10 @@ Homes.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     req.params.appname = 'homes';
     Apps_1.validateApp(req, res, next);
 }));
-// ######################## Getters / Globals ########################
+// ########################################################
+// ################### Getters / Globals ##################
+// ########################################################
+// Get home list.
 function getHomes(req, res, all) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -97,6 +103,7 @@ function getHomes(req, res, all) {
         }
     });
 }
+// Returns false if the connected user is not the home owner.
 function denyIfNotOwner(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         if (res.locals.home.ownerId !== req.user.id) {
@@ -108,6 +115,7 @@ function denyIfNotOwner(req, res) {
         return false;
     });
 }
+// Retrieves the members from the current home, excluding the owner.
 function getMembersExceptOwner(res) {
     return __awaiter(this, void 0, void 0, function* () {
         return (yield res.locals.home.getMembers())
@@ -115,6 +123,7 @@ function getMembersExceptOwner(res) {
             .map((m) => m.id);
     });
 }
+// Retrieves the members from the current home, excluding the connected user.
 function getMembersExceptRequester(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         return (yield res.locals.home.getMembers())
@@ -122,12 +131,25 @@ function getMembersExceptRequester(req, res) {
             .map((m) => m.id);
     });
 }
+// Generates a random token.
+function createToken(loopTimes) {
+    let token = Math.random().toString(36).substring(2, 15);
+    for (let i = 0; i < loopTimes - 1; ++i)
+        token += Math.random().toString(36).substring(2, 15);
+    return token;
+}
+// ########################################################
+// ######################### GET ##########################
+// ########################################################
+// [ANY] Get all homes.
 Homes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     getHomes(req, res, true);
 }));
+// [ANY] Get all accepted homes.
 Homes.get('/accepted', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     getHomes(req, res, false);
 }));
+// [ANY] Get home associated to specified reference number.
 Homes.get('/:refnumber', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (yield denyIfNotOwner(req, res))
@@ -150,41 +172,50 @@ Homes.get('/:refnumber', Apps_1.validateHome, (req, res) => __awaiter(void 0, vo
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-// ######################## Join/Create (homes/new) ########################
-Homes.post('/create/:homeName', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// [PUBLIC] Decline the invitation linked to the specified token.
+Homes.get('/public/:token/members/invite/decline', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Decline');
     try {
-        const home = yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            const refNumberDigits = 6;
-            let refNumber;
-            do {
-                refNumber = Math.random()
-                    .toString()
-                    .slice(2, 2 + refNumberDigits);
-            } while ((yield db.Home.findOne({ where: { refNumber: refNumber } })) != null);
-            const home = yield db.Home.create({
-                refNumber: refNumber,
-                name: req.params.homeName,
-                ownerId: req.user.id,
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            const invite = yield db.HomeInvitation.findOne({
+                where: { token: req.params.token },
+                include: db.Home,
+            });
+            const html = yield Global.readHtml('../_html/responsePage.html');
+            if (!invite) {
+                return Global.respondHtml(res, Global.format(html, [
+                    'Invitation not found',
+                    'No invitation is linked to that token.',
+                ]), 404);
+            }
+            yield invite.destroy({ transaction: t });
+            yield db.Notification.create({
+                typeId: 2,
+                toId: invite.Home.ownerId,
+                title: Translate.getJSON('homes.inviteDeclined', [
+                    invite.Home.name,
+                ]),
+                description: Translate.getJSON('homes.inviteDeclined', [
+                    invite.email,
+                    invite.Home.name,
+                ]),
             }, { transaction: t });
-            yield db.UserHome.create({
-                userId: req.user.id,
-                homeId: home.id,
-                accepted: 1,
-            }, { transaction: t });
-            return home;
+            return Global.respondHtml(res, Global.format(html, [
+                'Invitation declined',
+                'You can close this page.',
+            ]), 200);
         }));
-        res.json({
-            title: 'newHome.created',
-            msg: 'newHome.created',
-            refNumber: home.refNumber,
-        });
     }
     catch (error) {
         console.log(error);
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// ########################################################
+// ######################### PUT ##########################
+// ########################################################
+// [ANY] Create a request to join the specified home.
+Homes.put('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.params.refNumber);
         const userHome = yield req.user.getHomes({
@@ -242,50 +273,8 @@ Homes.post('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-// ######################## Edit ########################
-Homes.delete('/:refnumber/members/remove/:id', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if (yield denyIfNotOwner(req, res))
-            return;
-        if (req.params.id == res.locals.home.ownerId)
-            return res
-                .status(403)
-                .json({ title: 'request.denied', msg: 'request.unauthorized' });
-        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            let userHome = yield db.UserHome.findOne({
-                where: { userId: req.params.id, homeId: res.locals.home.id },
-                include: [db.Home, db.User],
-            });
-            if (!userHome)
-                return res
-                    .status(404)
-                    .json({ title: 'request.notFound', msg: 'request.notFound' });
-            yield Global.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
-                typeId: 2,
-                title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),
-                description: Translate.getJSON('homes.memberExcluded', [
-                    userHome.User.firstname,
-                    userHome.Home.name,
-                ]),
-            }, t);
-            yield db.Notification.create({
-                typeId: 3,
-                toId: req.params.id,
-                title: Translate.getJSON('homes.excludedByOwner', [
-                    userHome.Home.name,
-                ]),
-                description: 'homes.excludedByOwner',
-            }, { transaction: t });
-            yield userHome.destroy({ force: true }, { transaction: t });
-            return res.json({ title: 'request.success', msg: 'request.success' });
-        }));
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.post('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// [OWNER] Accept or decline a request to join the specified home.
+Homes.put('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const actions = ['accept', 'reject'];
         const action = req.params.action;
@@ -334,57 +323,8 @@ Homes.post('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) =>
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-// ######################## Home management ########################
-Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if (yield denyIfNotOwner(req, res))
-            return;
-        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            yield Global.sendNotifications(yield getMembersExceptOwner(res), {
-                typeId: 3,
-                title: Translate.getJSON('homes.excludedByOwner', [
-                    res.locals.home.name,
-                ]),
-                description: Translate.getJSON('homes.homeDeletedByOwner', [
-                    res.locals.home.name,
-                ]),
-            }, t);
-            yield res.locals.home.destroy({ transaction: t });
-            return res.json({
-                title: Translate.getJSON('homes.homeDeleted', [res.locals.home.name]),
-                msg: 'homes.homeDeleted',
-            });
-        }));
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            yield Global.sendNotifications(yield getMembersExceptRequester(req, res), {
-                typeId: 2,
-                title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
-                description: Translate.getJSON('homes.memberQuit', [
-                    req.user.firstname,
-                    res.locals.home.name,
-                ]),
-            }, t);
-            yield res.locals.home.UserHome.destroy({ force: true }, { transaction: t });
-            return res.json({
-                title: Translate.getJSON('homes.homeLeft', [res.locals.home.name]),
-                msg: 'homes.homeLeft',
-            });
-        }));
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// [OWNER/MEMBER] Rename specified home.
+Homes.put('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c, _d, _e, _f;
     try {
         const nickname = req.body.nickname;
@@ -427,105 +367,8 @@ Homes.post('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(vo
         });
     }
 }));
-// ######################## Members ########################
-function createToken(loopTimes) {
-    let token = Math.random().toString(36).substring(2, 15);
-    for (let i = 0; i < loopTimes - 1; ++i)
-        token += Math.random().toString(36).substring(2, 15);
-    return token;
-}
-Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _g, _h, _j, _k;
-    try {
-        if (yield denyIfNotOwner(req, res))
-            return;
-        const member = yield res.locals.home.getMembers({
-            where: { email: req.body.email },
-        });
-        if (member.length > 0)
-            return res.status(500).json({
-                title: 'homes.couldNotSendInvite',
-                msg: 'homes.emailAlreadyInHome',
-            });
-        const token = createToken(4);
-        const invite = yield db.HomeInvitation.create({
-            homeId: res.locals.home.id,
-            email: req.body.email,
-            token: token,
-        });
-        try {
-            const emailHtml = Global.format(yield Global.readHtml('../_html/emailInvite.html'), [res.locals.home.name, token]);
-            return yield Email.transporter.sendMail({
-                from: Email.FROM,
-                to: req.body.email,
-                subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
-                html: emailHtml,
-            }, (error, info) => {
-                if (error != null) {
-                    invite.destroy({ force: true });
-                    return res.status(500).json({
-                        title: 'homes.emailDidNotSend',
-                        msg: 'request.error',
-                    });
-                }
-                res.json({
-                    title: 'homes.invitationSent',
-                    msg: 'homes.invitationSent',
-                });
-            });
-        }
-        catch (e) {
-            invite.destroy({ force: true });
-            throw e;
-        }
-    }
-    catch (e) {
-        console.log(e);
-        res.status(500).json({
-            title: ((_g = e.errors) === null || _g === void 0 ? void 0 : _g[0]) ? 'homes.inviteError' : 'request.error',
-            msg: (_k = (_j = (_h = e.errors) === null || _h === void 0 ? void 0 : _h[0]) === null || _j === void 0 ? void 0 : _j.message) !== null && _k !== void 0 ? _k : 'request.error',
-        });
-    }
-}));
-Homes.get('/public/:token/members/invite/decline', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Decline');
-    try {
-        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            const invite = yield db.HomeInvitation.findOne({
-                where: { token: req.params.token },
-                include: db.Home,
-            });
-            const html = yield Global.readHtml('../_html/responsePage.html');
-            if (!invite) {
-                return Global.respondHtml(res, Global.format(html, [
-                    'Invitation not found',
-                    'No invitation is linked to that token.',
-                ]), 404);
-            }
-            yield invite.destroy({ transaction: t });
-            yield db.Notification.create({
-                typeId: 2,
-                toId: invite.Home.ownerId,
-                title: Translate.getJSON('homes.inviteDeclined', [
-                    invite.Home.name,
-                ]),
-                description: Translate.getJSON('homes.inviteDeclined', [
-                    invite.email,
-                    invite.Home.name,
-                ]),
-            }, { transaction: t });
-            return Global.respondHtml(res, Global.format(html, [
-                'Invitation declined',
-                'You can close this page.',
-            ]), 200);
-        }));
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
-Homes.post('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// [ANY] Accept the invitation linked to the specified token.
+Homes.put('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             const invite = yield db.HomeInvitation.findOne({
@@ -596,7 +439,195 @@ Homes.post('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
-// ######################## Requests ########################
+// ########################################################
+// ######################### POST #########################
+// ########################################################
+// [ANY] Create a new home.
+Homes.post('/create/:homeName', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const home = yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            const refNumberDigits = 6;
+            let refNumber;
+            do {
+                refNumber = Math.random()
+                    .toString()
+                    .slice(2, 2 + refNumberDigits);
+            } while ((yield db.Home.findOne({ where: { refNumber: refNumber } })) != null);
+            const home = yield db.Home.create({
+                refNumber: refNumber,
+                name: req.params.homeName,
+                ownerId: req.user.id,
+            }, { transaction: t });
+            yield db.UserHome.create({
+                userId: req.user.id,
+                homeId: home.id,
+                accepted: 1,
+            }, { transaction: t });
+            return home;
+        }));
+        res.json({
+            title: 'newHome.created',
+            msg: 'newHome.created',
+            refNumber: home.refNumber,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// [OWNER] Invite a new member into the specified home.
+Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _g, _h, _j, _k;
+    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        const member = yield res.locals.home.getMembers({
+            where: { email: req.body.email },
+        });
+        if (member.length > 0)
+            return res.status(500).json({
+                title: 'homes.couldNotSendInvite',
+                msg: 'homes.emailAlreadyInHome',
+            });
+        const token = createToken(4);
+        const invite = yield db.HomeInvitation.create({
+            homeId: res.locals.home.id,
+            email: req.body.email,
+            token: token,
+        });
+        try {
+            const emailHtml = Global.format(yield Global.readHtml('../_html/emailInvite.html'), [res.locals.home.name, token]);
+            return yield Email.transporter.sendMail({
+                from: Email.FROM,
+                to: req.body.email,
+                subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
+                html: emailHtml,
+            }, (error, info) => {
+                if (error != null) {
+                    invite.destroy({ force: true });
+                    return res.status(500).json({
+                        title: 'homes.emailDidNotSend',
+                        msg: 'request.error',
+                    });
+                }
+                res.json({
+                    title: 'homes.invitationSent',
+                    msg: 'homes.invitationSent',
+                });
+            });
+        }
+        catch (e) {
+            invite.destroy({ force: true });
+            throw e;
+        }
+    }
+    catch (e) {
+        console.log(e);
+        res.status(500).json({
+            title: ((_g = e.errors) === null || _g === void 0 ? void 0 : _g[0]) ? 'homes.inviteError' : 'request.error',
+            msg: (_k = (_j = (_h = e.errors) === null || _h === void 0 ? void 0 : _h[0]) === null || _j === void 0 ? void 0 : _j.message) !== null && _k !== void 0 ? _k : 'request.error',
+        });
+    }
+}));
+// ########################################################
+// ######################## DELETE ########################
+// ########################################################
+// [OWNER] Remove a member from the specified home.
+Homes.delete('/:refnumber/members/remove/:id', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        if (req.params.id == res.locals.home.ownerId)
+            return res
+                .status(403)
+                .json({ title: 'request.denied', msg: 'request.unauthorized' });
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            let userHome = yield db.UserHome.findOne({
+                where: { userId: req.params.id, homeId: res.locals.home.id },
+                include: [db.Home, db.User],
+            });
+            if (!userHome)
+                return res
+                    .status(404)
+                    .json({ title: 'request.notFound', msg: 'request.notFound' });
+            yield Global.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
+                typeId: 2,
+                title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),
+                description: Translate.getJSON('homes.memberExcluded', [
+                    userHome.User.firstname,
+                    userHome.Home.name,
+                ]),
+            }, t);
+            yield db.Notification.create({
+                typeId: 3,
+                toId: req.params.id,
+                title: Translate.getJSON('homes.excludedByOwner', [
+                    userHome.Home.name,
+                ]),
+                description: 'homes.excludedByOwner',
+            }, { transaction: t });
+            yield userHome.destroy({ force: true }, { transaction: t });
+            return res.json({ title: 'request.success', msg: 'request.success' });
+        }));
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// [OWNER] Delete the specified home.
+Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (yield denyIfNotOwner(req, res))
+            return;
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            yield Global.sendNotifications(yield getMembersExceptOwner(res), {
+                typeId: 3,
+                title: Translate.getJSON('homes.excludedByOwner', [
+                    res.locals.home.name,
+                ]),
+                description: Translate.getJSON('homes.homeDeletedByOwner', [
+                    res.locals.home.name,
+                ]),
+            }, t);
+            yield res.locals.home.destroy({ transaction: t });
+            return res.json({
+                title: Translate.getJSON('homes.homeDeleted', [res.locals.home.name]),
+                msg: 'homes.homeDeleted',
+            });
+        }));
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// [MEMBER] Quit the specified home.
+Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+            yield Global.sendNotifications(yield getMembersExceptRequester(req, res), {
+                typeId: 2,
+                title: Translate.getJSON('homes.memberLost', [res.locals.home.name]),
+                description: Translate.getJSON('homes.memberQuit', [
+                    req.user.firstname,
+                    res.locals.home.name,
+                ]),
+            }, t);
+            yield res.locals.home.UserHome.destroy({ force: true }, { transaction: t });
+            return res.json({
+                title: Translate.getJSON('homes.homeLeft', [res.locals.home.name]),
+                msg: 'homes.homeLeft',
+            });
+        }));
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// [REQUEST] Cancel the request to the specified home.
 Homes.delete('/:refnumber/request/cancel', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let home = res.locals.home;

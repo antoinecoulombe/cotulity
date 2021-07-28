@@ -215,7 +215,7 @@ export default function EditPopup(props: EditPopupProps) {
 
   function acceptRequest(event: any, accept: boolean, memberId: number) {
     axios
-      .post(
+      .put(
         `/homes/${props.home.refNumber}/request/${
           accept ? 'accept' : 'reject'
         }/${memberId}`

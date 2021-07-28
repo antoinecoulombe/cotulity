@@ -16,6 +16,13 @@ exports.validateApp = exports.validateHome = void 0;
 const express_1 = __importDefault(require("express"));
 const Apps = express_1.default.Router();
 const db = require('../db/models');
+// ########################################################
+// ##################### Middlewares ######################
+// ########################################################
+// ########################################################
+// ################### Getters / Globals ##################
+// ########################################################
+// Verifies that the requested home is valid and accessible by the user.
 exports.validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.params.refnumber)
@@ -33,6 +40,7 @@ exports.validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
+// Verifies that the requested application is valid and online.
 exports.validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.params.appname)
@@ -49,12 +57,18 @@ exports.validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
+// ########################################################
+// ######################### GET ##########################
+// ########################################################
+// Validates application.
 Apps.get('/:appname/', exports.validateApp, (req, res) => {
     res.json({ title: 'request.authorized' });
 });
+// Validates application and home.
 Apps.get('/:appname/:refnumber/', exports.validateApp, exports.validateHome, (req, res) => {
     res.json({ title: 'request.authorized' });
 });
+// Get all online apps.
 Apps.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const apps = yield db.App.findAll({
@@ -67,5 +81,13 @@ Apps.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ title: 'apps.error', msg: 'request.reload' });
     }
 }));
-// Routes
+// ########################################################
+// ######################### PUT ##########################
+// ########################################################
+// ########################################################
+// ######################### POST #########################
+// ########################################################
+// ########################################################
+// ######################## DELETE ########################
+// ########################################################
 exports.default = Apps;

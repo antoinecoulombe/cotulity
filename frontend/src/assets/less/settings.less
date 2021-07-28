@@ -2,6 +2,124 @@
 
 .open-app-container.settings {
   max-width: 300px;
+  @marginLeft: 12px;
+
+  .popup {
+    h3 {
+      cursor: default !important;
+    }
+
+    max-width: 200%;
+    width: 100%;
+    background-color: var(--gradient-input-bg-dark);
+  }
+
+  .setting {
+    width: 100%;
+    margin-bottom: 25px;
+
+    > div {
+      margin: 0;
+
+      &.left {
+        float: left;
+      }
+
+      &.right {
+        float: right;
+
+        > * {
+          display: block;
+          float: right;
+          position: relative;
+        }
+
+        .input-toggle {
+          margin-left: @marginLeft;
+        }
+      }
+    }
+
+    @imgSize: 40px;
+    > button {
+      height: @imgSize;
+
+      > svg {
+        margin-right: 18px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+      }
+    }
+
+    &.picture {
+      margin-top: 10px;
+
+      > button {
+        width: calc(100% - @imgSize * 2);
+        background-color: var(--lighteGray);
+      }
+
+      > img,
+      > svg {
+        position: relative;
+        display: block;
+        width: @imgSize;
+        height: @imgSize;
+        border-radius: 50%;
+        border: 0;
+        float: right;
+        color: var(--lightGray);
+      }
+    }
+
+    &.delete {
+      > button {
+        opacity: 0.5;
+        margin-top: 20px;
+        height: @imgSize;
+
+        > svg {
+          font-size: 14px;
+          position: relative;
+          top: -2px;
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  h2,
+  h3 {
+    .noselect();
+    .font-default();
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 22px;
+    color: var(--black);
+  }
+
+  h3 {
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--gray);
+    margin-left: @marginLeft;
+    line-height: 29px;
+
+    &.active,
+    &:hover {
+      color: var(--black);
+    }
+
+    &.active {
+      font-weight: bold;
+    }
+  }
 }
 
 .settings-container {
@@ -21,7 +139,7 @@
     --disabled-inner: #e1e6f9;
     -webkit-appearance: none;
     -moz-appearance: none;
-    height: 21px;
+    height: 29px;
     outline: none;
     display: inline-block;
     vertical-align: top;
@@ -70,7 +188,7 @@
       box-shadow: 0 0 0 var(--focus);
     }
     &:not(.switch) {
-      width: 21px;
+      width: 29px;
       &:after {
         opacity: var(--o, 0);
       }
@@ -80,7 +198,7 @@
     }
     & + label {
       font-size: 14px;
-      line-height: 21px;
+      line-height: 29px;
       display: inline-block;
       vertical-align: top;
       cursor: pointer;
@@ -105,20 +223,20 @@
       }
     }
     &.switch {
-      width: 38px;
-      border-radius: 11px;
+      width: 50px;
+      border-radius: 50px;
       &:after {
         left: 2px;
         top: 2px;
         border-radius: 50%;
-        width: 15px;
-        height: 15px;
+        width: 23px;
+        height: 23px;
         background: var(--ab, var(--border));
         transform: translateX(var(--x, 0));
       }
       &:checked {
         --ab: var(--active-inner);
-        --x: 17px;
+        --x: 21px;
       }
       &:disabled {
         &:not(:checked) {
@@ -132,8 +250,8 @@
   input[type='radio'] {
     border-radius: 50%;
     &:after {
-      width: 19px;
-      height: 19px;
+      width: 29px;
+      height: 29px;
       border-radius: 50%;
       background: var(--active-inner);
       opacity: 0;
@@ -142,31 +260,5 @@
     &:checked {
       --s: 0.5;
     }
-  }
-}
-
-// Demo
-
-ul {
-  margin: 12px;
-  padding: 0;
-  list-style: none;
-  width: 100%;
-  max-width: 320px;
-  li {
-    margin: 16px 0;
-    position: relative;
-  }
-}
-
-.input-toggle {
-  box-sizing: border-box;
-}
-
-* {
-  box-sizing: inherit;
-  &:before,
-  &:after {
-    box-sizing: inherit;
   }
 }

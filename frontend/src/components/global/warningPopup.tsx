@@ -1,12 +1,11 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconToolTip from './iconTooltip';
 import Translate from '../utils/translate';
 import Popup from '../utils/popup';
 
 interface WarningPopupProps {
   title: string;
-  desc: string;
+  desc?: string;
   yesText: string;
   noText: string;
   children?: string;
@@ -31,7 +30,7 @@ export default function WarningPopup(props: WarningPopupProps) {
           <Translate name={props.title} />
         </h2>
         <h3>
-          <Translate name={props.desc} />
+          <Translate name={props.desc ?? 'popup.warning.desc'} />
         </h3>
       </div>
       <div className="buttons">

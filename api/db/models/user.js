@@ -38,6 +38,11 @@ module.exports = (sequelize, DataTypes) => {
         sourceId: 'id',
         as: 'OwnedGroceries',
       });
+      User.hasOne(models.Image, {
+        foreignKey: 'imageId',
+        sourceId: 'id',
+        as: 'ProfilePicture',
+      });
       User.belongsToMany(models.Expense, {
         through: models.ExpenseSplit,
         as: 'InvolvedExpense',

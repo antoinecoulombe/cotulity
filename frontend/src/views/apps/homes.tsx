@@ -15,7 +15,6 @@ import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
 import EditPopup from '../../components/homes/editPopup';
 import _ from 'lodash';
-import ListItemCenter from '../../components/utils/lists/listItemCenter';
 
 export interface Home {
   id: number;
@@ -153,7 +152,7 @@ export default function AppHomes() {
 
   function renameHome(value: string, refNumber: number) {
     axios
-      .post(`/homes/${refNumber}/rename`, { nickname: value })
+      .put(`/homes/${refNumber}/rename`, { nickname: value })
       .then((res: any) => {
         let homecp = getCopyIndex(homes, (h: Home) => h.refNumber == refNumber);
         if (homecp) {
