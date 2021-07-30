@@ -19,7 +19,7 @@ Images.get('/profile', async (req: any, res: any) => {
   try {
     const img = await req.user.getImage();
     if (!img)
-      res
+      return res
         .status(404)
         .json({ title: 'image.notFound', msg: 'picture.notFound' });
 

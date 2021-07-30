@@ -30,7 +30,7 @@ Finances.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
 function deleteFinancesFromHome(home) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // await db.finance.destroy({ where: { homeId: home.id }, force: true });
+            // await db.Finance.destroy({ where: { homeId: home.id }, force: true });
             return { title: '', msg: '' };
         }
         catch (error) {

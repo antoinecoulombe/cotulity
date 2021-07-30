@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'id',
         allowNull: false,
       });
+      Task.hasMany(models.UserTask, {
+        foreignKey: 'taskId',
+        sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
+      });
       Task.belongsToMany(models.User, {
         through: models.UserTask,
         as: 'Users',

@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       NotificationType.hasMany(models.Notification, {
         foreignKey: 'typeId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
     }
   }

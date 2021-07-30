@@ -31,14 +31,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteHome = void 0;
+exports.deleteHome = exports.notifyMembersExceptOwner = void 0;
 const express_1 = __importDefault(require("express"));
 const Translate = __importStar(require("../_utils/Translate"));
 const Global = __importStar(require("../_utils/Global"));
 const Email = __importStar(require("../_utils/Email"));
 const Apps_1 = require("../Apps");
-const Tasks_1 = require("./Tasks");
-const Users_1 = require("../Users");
 const Homes = express_1.default.Router();
 const db = require('../../db/models');
 // ########################################################
@@ -47,7 +45,6 @@ const db = require('../../db/models');
 // Validates application and paths.
 Homes.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.path.startsWith('/public')) {
-        console.log(req.path);
         return next();
     }
     req.params.appname = 'homes';
@@ -126,23 +123,29 @@ function getMembersExceptOwner(res) {
             .map((m) => m.id);
     });
 }
+function notifyMembersExceptOwner(home, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const members = yield home.getMembers();
+        // Send notifications to deleted users
+        Global.sendNotifications(members.filter((m) => m.id !== home.ownerId).map((m) => m.id), {
+            typeId: 3,
+            title: Translate.getJSON('homes.excludedByOwner', [home.name]),
+            description: Translate.getJSON('homes.homeDeletedByOwner', [home.name]),
+        }, transaction);
+    });
+}
+exports.notifyMembersExceptOwner = notifyMembersExceptOwner;
 // deletes a home
 function deleteHome(home, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const members = yield home.getMembers();
             // Send notifications to deleted users
-            yield Global.sendNotifications(members.filter((m) => m.id !== home.ownerId).map((m) => m.id), {
+            Global.sendNotifications(members.filter((m) => m.id !== home.ownerId).map((m) => m.id), {
                 typeId: 3,
                 title: Translate.getJSON('homes.excludedByOwner', [home.name]),
                 description: Translate.getJSON('homes.homeDeletedByOwner', [home.name]),
             }, transaction);
-            // Delete home's tasks
-            yield Tasks_1.deleteTasksFromHome(home, transaction);
-            // Delete home's groceries
-            // await deleteGroceriesFromHome(home, transaction);
-            // Delete users in home
-            yield Users_1.deleteUsersFromHome(home, transaction);
             // Delete home
             yield home.destroy({ force: true }, { transaction: transaction });
             return {

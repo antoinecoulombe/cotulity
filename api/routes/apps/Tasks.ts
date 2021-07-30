@@ -22,7 +22,7 @@ export async function deleteTasksFromHome(
   transaction: any
 ): Promise<{ success: boolean; title: string; msg: string }> {
   try {
-    await db.task.destroy(
+    await db.Task.destroy(
       { where: { homeId: home.id }, force: true },
       { transaction: transaction }
     );

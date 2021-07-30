@@ -9,34 +9,48 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'ownerId',
         sourceId: 'id',
         as: 'OwnedHomes',
+        onDelete: 'cascade',
+        hooks: true,
       });
       User.hasMany(models.Task, {
         foreignKey: 'ownerId',
         sourceId: 'id',
         as: 'OwnedTasks',
+        onDelete: 'cascade',
+        hooks: true,
       });
       User.hasMany(models.Notification, {
         foreignKey: 'toId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
       User.hasMany(models.Expense, {
         foreignKey: 'paidByUserId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
       User.hasMany(models.Transfer, {
         foreignKey: 'fromId',
         sourceId: 'id',
         as: 'TransferSent',
+        onDelete: 'cascade',
+        hooks: true,
       });
       User.hasMany(models.Transfer, {
         foreignKey: 'toId',
         sourceId: 'id',
         as: 'TransferReceived',
+        onDelete: 'cascade',
+        hooks: true,
       });
       User.hasMany(models.Grocery, {
         foreignKey: 'ownerId',
         sourceId: 'id',
         as: 'OwnedGroceries',
+        onDelete: 'cascade',
+        hooks: true,
       });
       User.belongsTo(models.Image);
       User.belongsToMany(models.Expense, {

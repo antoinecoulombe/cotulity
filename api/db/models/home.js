@@ -14,22 +14,38 @@ module.exports = (sequelize, DataTypes) => {
       Home.hasMany(models.HomeInvitation, {
         foreignKey: 'homeId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
       Home.hasMany(models.Task, {
         foreignKey: 'homeId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
       Home.hasMany(models.Expense, {
         foreignKey: 'homeId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
       Home.hasMany(models.Transfer, {
         foreignKey: 'homeId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
       Home.hasMany(models.Grocery, {
         foreignKey: 'homeId',
         sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
+      });
+      Home.hasMany(models.UserHome, {
+        foreignKey: 'homeId',
+        sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
       });
       Home.belongsToMany(models.User, {
         through: models.UserHome,

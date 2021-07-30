@@ -30,7 +30,7 @@ Groceries.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 function deleteGroceriesFromHome(home, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield db.grocery.destroy({ where: { homeId: home.id }, force: true }, { transaction: transaction });
+            yield db.Grocery.destroy({ where: { homeId: home.id }, force: true }, { transaction: transaction });
             return { success: true, title: 'request.success', msg: 'request.success' };
         }
         catch (error) {

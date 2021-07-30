@@ -17,7 +17,6 @@ const db = require('../../db/models');
 // Validates application and paths.
 Homes.use(async (req: any, res, next) => {
   if (req.path.startsWith('/public')) {
-    console.log(req.path);
     return next();
   }
 
@@ -98,13 +97,28 @@ async function getMembersExceptOwner(res: any): Promise<number[]> {
     .map((m: any) => m.id);
 }
 
+export async function notifyMembersExceptOwner(home: any, transaction: any) {
+  const members = await home.getMembers();
+
+  // Send notifications to deleted users
+  Global.sendNotifications(
+    members.filter((m: any) => m.id !== home.ownerId).map((m: any) => m.id),
+    {
+      typeId: 3,
+      title: Translate.getJSON('homes.excludedByOwner', [home.name]),
+      description: Translate.getJSON('homes.homeDeletedByOwner', [home.name]),
+    },
+    transaction
+  );
+}
+
 // deletes a home
 export async function deleteHome(home: any, transaction: any) {
   try {
     const members = await home.getMembers();
 
     // Send notifications to deleted users
-    await Global.sendNotifications(
+    Global.sendNotifications(
       members.filter((m: any) => m.id !== home.ownerId).map((m: any) => m.id),
       {
         typeId: 3,
@@ -113,15 +127,6 @@ export async function deleteHome(home: any, transaction: any) {
       },
       transaction
     );
-
-    // Delete home's tasks
-    await deleteTasksFromHome(home, transaction);
-
-    // Delete home's groceries
-    // await deleteGroceriesFromHome(home, transaction);
-
-    // Delete users in home
-    await deleteUsersFromHome(home, transaction);
 
     // Delete home
     await home.destroy({ force: true }, { transaction: transaction });

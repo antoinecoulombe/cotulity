@@ -1,6 +1,6 @@
 import express from 'express';
 import * as Image from './_utils/Image';
-import { deleteHome } from './apps/Homes';
+import { deleteHome, notifyMembersExceptOwner } from './apps/Homes';
 import { deleteNotificationsToUser } from './Notifications';
 
 const Users = express.Router();
@@ -21,10 +21,11 @@ export async function deleteUsersFromHome(
   transaction: any
 ): Promise<{ success: boolean; title: string; msg: string }> {
   try {
-    await db.user.destroy(
+    await db.UserHome.destroy(
       { where: { homeId: home.id }, force: true },
       { transaction: transaction }
     );
+
     return { success: true, title: 'request.success', msg: 'request.success' };
   } catch (error) {
     console.log(error);
@@ -134,18 +135,21 @@ Users.delete('/delete', async (req: any, res: any) => {
     await db.sequelize.transaction(async (t: any) => {
       // Delete all owned homes and send notifications
       const homes = await req.user.getOwnedHomes();
-      homes.forEach(async (h: any) => {
-        await deleteHome(h, t);
+      await homes.forEach(async (h: any) => {
+        await notifyMembersExceptOwner(h, t);
       });
+
+      // Delete notifications associated to user
+      // await deleteNotificationsToUser(req.user, t);
+
+      // Delete user
+      await req.user.destroy(
+        { force: true },
+        { transaction: t, individualHooks: true }
+      );
 
       // Delete user image
       Image.remove(req.user.ImageId);
-
-      // Delete notifications associated to user
-      await deleteNotificationsToUser(req.user, t);
-
-      // Delete user
-      await req.user.destroy({ force: true }, { transaction: t });
 
       res.json({ title: 'user.deleted', msg: 'user.deleted' });
     });

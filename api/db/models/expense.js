@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'id',
         allowNull: false,
       });
+      Expense.hasMany(models.ExpenseSplit, {
+        foreignKey: 'expenseId',
+        sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
+      });
       Expense.belongsToMany(models.User, {
         through: models.ExpenseSplit,
         as: 'SplittedWith',

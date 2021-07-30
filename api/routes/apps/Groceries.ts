@@ -22,7 +22,7 @@ export async function deleteGroceriesFromHome(
   transaction: any
 ): Promise<{ success: boolean; title: string; msg: string }> {
   try {
-    await db.grocery.destroy(
+    await db.Grocery.destroy(
       { where: { homeId: home.id }, force: true },
       { transaction: transaction }
     );

@@ -35,7 +35,6 @@ exports.deleteUsersFromHome = void 0;
 const express_1 = __importDefault(require("express"));
 const Image = __importStar(require("./_utils/Image"));
 const Homes_1 = require("./apps/Homes");
-const Notifications_1 = require("./Notifications");
 const Users = express_1.default.Router();
 const db = require('../db/models');
 const bcrypt = require('bcryptjs');
@@ -48,7 +47,7 @@ const bcrypt = require('bcryptjs');
 function deleteUsersFromHome(home, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield db.user.destroy({ where: { homeId: home.id }, force: true }, { transaction: transaction });
+            yield db.UserHome.destroy({ where: { homeId: home.id }, force: true }, { transaction: transaction });
             return { success: true, title: 'request.success', msg: 'request.success' };
         }
         catch (error) {
@@ -151,15 +150,15 @@ Users.delete('/delete', (req, res) => __awaiter(void 0, void 0, void 0, function
         yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             // Delete all owned homes and send notifications
             const homes = yield req.user.getOwnedHomes();
-            homes.forEach((h) => __awaiter(void 0, void 0, void 0, function* () {
-                yield Homes_1.deleteHome(h, t);
+            yield homes.forEach((h) => __awaiter(void 0, void 0, void 0, function* () {
+                yield Homes_1.notifyMembersExceptOwner(h, t);
             }));
+            // Delete notifications associated to user
+            // await deleteNotificationsToUser(req.user, t);
+            // Delete user
+            yield req.user.destroy({ force: true }, { transaction: t, individualHooks: true });
             // Delete user image
             Image.remove(req.user.ImageId);
-            // Delete notifications associated to user
-            yield Notifications_1.deleteNotificationsToUser(req.user, t);
-            // Delete user
-            yield req.user.destroy({ force: true }, { transaction: t });
             res.json({ title: 'user.deleted', msg: 'user.deleted' });
         }));
     }

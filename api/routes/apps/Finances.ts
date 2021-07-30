@@ -19,7 +19,7 @@ Finances.use(async (req: any, res, next) => {
 
 export async function deleteFinancesFromHome(home: any) {
   try {
-    // await db.finance.destroy({ where: { homeId: home.id }, force: true });
+    // await db.Finance.destroy({ where: { homeId: home.id }, force: true });
     return { title: '', msg: '' };
   } catch (error) {
     console.log(error);
