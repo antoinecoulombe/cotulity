@@ -232,6 +232,19 @@
         "missingId": "Identifier missing",
         "missingName": "Name missing",
         "created": "Home created"
+      },
+      "picture": {
+        "updated": "Picture Updated",
+        "deleted": "Picture Deleted",
+        "couldNotDelete": "Couldn't delete picture",
+        "couldNotUpload": "Couldn't upload picture",
+        "notFound": "Picture not found"
+      },
+      "image": {
+        "notFound": "Image not found"
+      },
+      "user": {
+        "deleted": "Account Deleted"
       }
     },
     "msg": {
@@ -333,6 +346,17 @@
         "missingId": "Please enter the house identifier.",
         "missingName": "Please enter the house name.",
         "created": "Welcome to your new home!"
+      },
+      "user": {
+        "imageUpdated": "The profile picture has been updated.",
+        "imageDeleted": "The profile picture has been deleted.",
+        "imageNotFound": "You have no profile picture.",
+        "loggedOut": "You have been logged out.",
+        "deleted": "Your account and data has been deleted."
+      },
+      "picture": {
+        "unsupportedExtension": "The image's extension is unsupported. Supported extensions are: jpg, jpeg, png and gif.",
+        "notFound": "We couldn't find the image."
       }
     }
   }

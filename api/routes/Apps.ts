@@ -75,7 +75,7 @@ Apps.get('/', async (req, res) => {
     });
     res.json({ apps });
   } catch (e) {
-    res.json({ title: 'apps.error', msg: 'request.reload' });
+    res.status(500).json({ title: 'apps.error', msg: 'request.reload' });
   }
 });
 

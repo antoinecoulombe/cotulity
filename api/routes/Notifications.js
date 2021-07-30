@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteNotificationsToUser = void 0;
 const express_1 = __importDefault(require("express"));
 const Notifications = express_1.default.Router();
 const db = require('../db/models');
@@ -21,6 +22,19 @@ const db = require('../db/models');
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
+function deleteNotificationsToUser(user, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield db.Notification.destroy({ where: { toId: user.id } }, { transaction: transaction });
+            return { success: true, title: 'request.success', msg: 'request.success' };
+        }
+        catch (error) {
+            console.log(error);
+            return { success: false, title: 'request.error', msg: 'request.error' };
+        }
+    });
+}
+exports.deleteNotificationsToUser = deleteNotificationsToUser;
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
@@ -43,7 +57,7 @@ Notifications.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
     catch (error) {
         console.log(error);
-        res.json({ title: 'request.error', msg: 'request.error' });
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
 // ########################################################
@@ -70,7 +84,7 @@ Notifications.delete('/delete/:id', (req, res) => __awaiter(void 0, void 0, void
     }
     catch (error) {
         console.log(error);
-        res.json({ title: 'request.error', msg: 'request.error' });
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
 exports.default = Notifications;

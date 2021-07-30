@@ -38,11 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         sourceId: 'id',
         as: 'OwnedGroceries',
       });
-      User.hasOne(models.Image, {
-        foreignKey: 'imageId',
-        sourceId: 'id',
-        as: 'ProfilePicture',
-      });
+      User.belongsTo(models.Image);
       User.belongsToMany(models.Expense, {
         through: models.ExpenseSplit,
         as: 'InvolvedExpense',
@@ -162,9 +158,6 @@ module.exports = (sequelize, DataTypes) => {
         //     return 'INVALID-' + value;
         //   });
         // },
-      },
-      image: {
-        type: DataTypes.STRING,
       },
       admin: {
         type: DataTypes.BOOLEAN,

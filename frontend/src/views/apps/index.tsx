@@ -24,6 +24,9 @@ export default function AppsPage() {
 
   let { token } = useParams<{ token: string }>();
 
+  if (!localStorage.getItem('lang')) localStorage.setItem('lang', 'en');
+  if (!localStorage.getItem('theme')) localStorage.setItem('theme', 'light');
+
   function handleHomeChange(home: Home[]) {
     setHomes(home);
     setCurrentHome(home[0]);

@@ -3,6 +3,9 @@ import * as Translate from '../_utils/Translate';
 import * as Global from '../_utils/Global';
 import * as Email from '../_utils/Email';
 import { validateHome, validateApp } from '../Apps';
+import { deleteGroceriesFromHome } from './Groceries';
+import { deleteTasksFromHome } from './Tasks';
+import { deleteUsersFromHome } from '../Users';
 
 const Homes = express.Router();
 const db = require('../../db/models');
@@ -95,6 +98,43 @@ async function getMembersExceptOwner(res: any): Promise<number[]> {
     .map((m: any) => m.id);
 }
 
+// deletes a home
+export async function deleteHome(home: any, transaction: any) {
+  try {
+    const members = await home.getMembers();
+
+    // Send notifications to deleted users
+    await Global.sendNotifications(
+      members.filter((m: any) => m.id !== home.ownerId).map((m: any) => m.id),
+      {
+        typeId: 3,
+        title: Translate.getJSON('homes.excludedByOwner', [home.name]),
+        description: Translate.getJSON('homes.homeDeletedByOwner', [home.name]),
+      },
+      transaction
+    );
+
+    // Delete home's tasks
+    await deleteTasksFromHome(home, transaction);
+
+    // Delete home's groceries
+    // await deleteGroceriesFromHome(home, transaction);
+
+    // Delete users in home
+    await deleteUsersFromHome(home, transaction);
+
+    // Delete home
+    await home.destroy({ force: true }, { transaction: transaction });
+    return {
+      title: Translate.getJSON('homes.homeDeleted', [home.name]),
+      msg: 'homes.homeDeleted',
+    };
+  } catch (error) {
+    console.log(error);
+    return { title: 'request.error', msg: 'request.error' };
+  }
+}
+
 // Retrieves the members from the current home, excluding the connected user.
 async function getMembersExceptRequester(
   req: any,
@@ -103,14 +143,6 @@ async function getMembersExceptRequester(
   return (await res.locals.home.getMembers())
     .filter((m: any) => m.id !== req.user.id)
     .map((m: any) => m.id);
-}
-
-// Generates a random token.
-function createToken(loopTimes: number) {
-  let token = Math.random().toString(36).substring(2, 15);
-  for (let i = 0; i < loopTimes - 1; ++i)
-    token += Math.random().toString(36).substring(2, 15);
-  return token;
 }
 
 // ########################################################
@@ -139,7 +171,8 @@ Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
         {
           model: db.User,
           as: 'Members',
-          attributes: ['id', 'firstname', 'lastname', 'image'],
+          attributes: ['id', 'firstname', 'lastname'],
+          include: db.Image,
         },
       ],
     });
@@ -559,7 +592,7 @@ Homes.post(
           msg: 'homes.emailAlreadyInHome',
         });
 
-      const token = createToken(4);
+      const token = Global.createToken(4);
 
       const invite = await db.HomeInvitation.create({
         homeId: res.locals.home.id,
@@ -678,27 +711,8 @@ Homes.delete(
 Homes.delete('/:refnumber/delete', validateHome, async (req: any, res: any) => {
   try {
     if (await denyIfNotOwner(req, res)) return;
-
     return await db.sequelize.transaction(async (t: any) => {
-      await Global.sendNotifications(
-        await getMembersExceptOwner(res),
-        {
-          typeId: 3,
-          title: Translate.getJSON('homes.excludedByOwner', [
-            res.locals.home.name,
-          ]),
-          description: Translate.getJSON('homes.homeDeletedByOwner', [
-            res.locals.home.name,
-          ]),
-        },
-        t
-      );
-
-      await res.locals.home.destroy({ transaction: t });
-      return res.json({
-        title: Translate.getJSON('homes.homeDeleted', [res.locals.home.name]),
-        msg: 'homes.homeDeleted',
-      });
+      return await deleteHome(res.locals.home, t);
     });
   } catch (error) {
     console.log(error);

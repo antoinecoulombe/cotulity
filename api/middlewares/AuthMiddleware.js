@@ -18,7 +18,7 @@ require('../config/passport');
 const AuthMiddleware = express_1.default.Router();
 AuthMiddleware.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const publicPaths = ['/auth/login', '/users/register'];
-    const publicPathStarts = ['/homes/public'];
+    const publicPathStarts = ['/homes/public', '/images/public'];
     if (publicPaths.includes(req.path) ||
         publicPathStarts.filter((p) => req.path.startsWith(p)).length > 0)
         return next();

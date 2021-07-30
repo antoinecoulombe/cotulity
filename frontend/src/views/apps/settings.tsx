@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '../../components/app/appContainer';
@@ -9,6 +9,8 @@ import axios from '../../utils/fetchClient';
 
 import '../../assets/css/settings.css';
 import { useNotifications } from '../../contexts/NotificationsContext';
+import IconToolTip from '../../components/global/iconTooltip';
+import { useHistory } from 'react-router';
 
 interface AppSettingsProps {
   setTheme(theme: string): void;
@@ -18,10 +20,25 @@ interface AppSettingsProps {
 const nullJSX: JSX.Element = <></>;
 
 export default function AppSettings(props: AppSettingsProps) {
+  const {
+    setErrorNotification,
+    setSuccessNotification,
+    clearAllNotifications,
+  } = useNotifications();
+  const history = useHistory();
   const [t, i18n] = useTranslation('common');
-  const { setErrorNotification, setSuccessNotification } = useNotifications();
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [file, setFile] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`/images/profile`)
+      .then((res) => {
+        setProfilePicture(res.data.url);
+      })
+      .catch((err) => {});
+  }, []);
 
   function setLang(lang: string) {
     i18n.changeLanguage(lang);
@@ -54,12 +71,42 @@ export default function AppSettings(props: AppSettingsProps) {
   }
 
   function deleteAccount() {
-    console.log('deleted');
+    axios
+      .delete('/users/delete')
+      .then((res) => {
+        localStorage.clear();
+        clearAllNotifications();
+        history.push('/');
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setErrorNotification(err.response.data);
+      });
+  }
+
+  function deleteProfilePicture() {
+    axios
+      .delete('users/image/delete')
+      .then((res) => {
+        setFile(null);
+        setProfilePicture(null);
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setErrorNotification(err.response.data);
+      });
   }
 
   function onFileChange(event: any, action: string) {
+    let formData = new FormData();
+    formData.append('file', event.target.files[0]);
+
     axios
-      .post(`/images`, { file: event.target.files[0] })
+      .put(`/users/image`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then((res) => {
         setFile(event.target.files[0]);
         $('#img-profile').attr(
@@ -147,8 +194,27 @@ export default function AppSettings(props: AppSettingsProps) {
             <FontAwesomeIcon icon="upload" />
             <Translate name="changePicture" prefix="settings." />
           </button>
-          {file ? (
-            <img id="img-profile" />
+          {file || profilePicture ? (
+            <div className="img-profile-container">
+              <IconToolTip
+                icon="trash"
+                circled={{ value: true, multiplier: 0.45 }}
+                style={{ iconWidth: 40, tooltipMultiplier: 5 }}
+                error={true}
+                className="overlay-delete"
+                onClick={deleteProfilePicture}
+              >
+                nav.delete
+              </IconToolTip>
+              {file ? (
+                <img id="img-profile" />
+              ) : (
+                <img
+                  id="img-profile"
+                  src={`http://localhost:3000/images/public/${profilePicture}`}
+                />
+              )}
+            </div>
           ) : (
             <FontAwesomeIcon icon="user-circle" />
           )}

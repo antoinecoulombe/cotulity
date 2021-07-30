@@ -27,7 +27,6 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 // CORS
 var cors = require('cors');
-var nodemailer = require('nodemailer');
 // Express
 const app = express_1.default();
 // Express Settings
@@ -45,6 +44,8 @@ const Users_1 = __importDefault(require("./routes/Users"));
 app.use('/users', Users_1.default);
 const Notifications_1 = __importDefault(require("./routes/Notifications"));
 app.use('/notifications', Notifications_1.default);
+const Images_1 = __importDefault(require("./routes/Images"));
+app.use('/images', Images_1.default);
 const Apps_1 = __importStar(require("./routes/Apps"));
 app.use('/apps', Apps_1.default);
 const Homes_1 = __importDefault(require("./routes/apps/Homes"));

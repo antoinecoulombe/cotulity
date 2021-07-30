@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.respondHtml = exports.readHtml = exports.format = exports.sendNotifications = void 0;
+exports.createTokenAsync = exports.createToken = exports.respondHtml = exports.readHtml = exports.format = exports.sendNotifications = void 0;
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
@@ -51,3 +51,21 @@ function respondHtml(res, html, code) {
     res.end();
 }
 exports.respondHtml = respondHtml;
+// Generates a random token.
+function createToken(relativeLength) {
+    let token = Math.random().toString(36).substring(2, 15);
+    for (let i = 0; i < relativeLength - 1; ++i)
+        token += Math.random().toString(36).substring(2, 15);
+    return token;
+}
+exports.createToken = createToken;
+// Generates a random token asynchronously.
+function createTokenAsync(relativeLength) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let token = Math.random().toString(36).substring(2, 15);
+        for (let i = 0; i < relativeLength - 1; ++i)
+            token += Math.random().toString(36).substring(2, 15);
+        return token;
+    });
+}
+exports.createTokenAsync = createTokenAsync;

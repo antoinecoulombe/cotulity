@@ -45,3 +45,19 @@ export function respondHtml(res: any, html: string, code?: number) {
   res.write(html);
   res.end();
 }
+
+// Generates a random token.
+export function createToken(relativeLength: number) {
+  let token = Math.random().toString(36).substring(2, 15);
+  for (let i = 0; i < relativeLength - 1; ++i)
+    token += Math.random().toString(36).substring(2, 15);
+  return token;
+}
+
+// Generates a random token asynchronously.
+export async function createTokenAsync(relativeLength: number) {
+  let token = Math.random().toString(36).substring(2, 15);
+  for (let i = 0; i < relativeLength - 1; ++i)
+    token += Math.random().toString(36).substring(2, 15);
+  return token;
+}

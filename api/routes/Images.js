@@ -12,37 +12,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteFinancesFromHome = void 0;
 const express_1 = __importDefault(require("express"));
-const Apps_1 = require("../Apps");
-const Finances = express_1.default.Router();
-const db = require('../../db/models');
+const Images = express_1.default.Router();
+const db = require('../db/models');
 // ########################################################
 // ##################### Middlewares ######################
 // ########################################################
-Finances.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    req.params.appname = 'finances';
-    Apps_1.validateApp(req, res, next);
-}));
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
-function deleteFinancesFromHome(home) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            // await db.finance.destroy({ where: { homeId: home.id }, force: true });
-            return { title: '', msg: '' };
-        }
-        catch (error) {
-            console.log(error);
-            return { title: 'request.error', msg: 'request.error' };
-        }
-    });
-}
-exports.deleteFinancesFromHome = deleteFinancesFromHome;
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
+Images.get('/profile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const img = yield req.user.getImage();
+        if (!img)
+            res
+                .status(404)
+                .json({ title: 'image.notFound', msg: 'picture.notFound' });
+        res.json({ url: img.url });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// Get all notifications linked to the connected user.
+Images.get('/public/:url', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const img = yield db.Image.findOne({ where: { url: req.params.url } });
+        if (!img)
+            res
+                .status(404)
+                .json({ title: 'image.notFound', msg: 'picture.notFound' });
+        res.sendFile(img.filePath);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
 // ########################################################
 // ######################### PUT ##########################
 // ########################################################
@@ -52,4 +62,4 @@ exports.deleteFinancesFromHome = deleteFinancesFromHome;
 // ########################################################
 // ######################## DELETE ########################
 // ########################################################
-exports.default = Finances;
+exports.default = Images;

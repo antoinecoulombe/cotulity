@@ -78,7 +78,7 @@ Apps.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ apps });
     }
     catch (e) {
-        res.json({ title: 'apps.error', msg: 'request.reload' });
+        res.status(500).json({ title: 'apps.error', msg: 'request.reload' });
     }
 }));
 // ########################################################

@@ -151,7 +151,7 @@ export default function LoginForm() {
   }
 
   async function handleSubmit(event: any) {
-    const res = isLogin ? await login() : await register();
+    isLogin ? await login() : await register();
   }
 
   function handleKeyPress(event: any) {

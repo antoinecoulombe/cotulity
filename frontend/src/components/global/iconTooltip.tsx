@@ -43,7 +43,7 @@ export default function IconToolTip(props: IconTooltipProps) {
     cursor: props.onClick ? 'pointer' : 'default',
   };
 
-  if (!props.children) {
+  if (!props.children && props.error) {
     iconStyle.color = 'var(--itp-error-hover-bg-color)';
     iconStyle.opacity = 1;
     containerStyle.opacity = 1;

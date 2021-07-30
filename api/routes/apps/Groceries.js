@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteGroceriesFromHome = void 0;
 const express_1 = __importDefault(require("express"));
 const Apps_1 = require("../Apps");
 const Groceries = express_1.default.Router();
@@ -26,6 +27,19 @@ Groceries.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
+function deleteGroceriesFromHome(home, transaction) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield db.grocery.destroy({ where: { homeId: home.id }, force: true }, { transaction: transaction });
+            return { success: true, title: 'request.success', msg: 'request.success' };
+        }
+        catch (error) {
+            console.log(error);
+            return { success: false, title: 'request.error', msg: 'request.error' };
+        }
+    });
+}
+exports.deleteGroceriesFromHome = deleteGroceriesFromHome;
 // ########################################################
 // ######################### GET ##########################
 // ########################################################

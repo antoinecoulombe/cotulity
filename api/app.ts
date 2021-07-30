@@ -4,7 +4,6 @@ import bodyParser from 'body-parser';
 
 // CORS
 var cors = require('cors');
-var nodemailer = require('nodemailer');
 
 // Express
 const app = express();
@@ -29,6 +28,9 @@ app.use('/users', Users);
 
 import Notifications from './routes/Notifications';
 app.use('/notifications', Notifications);
+
+import Images from './routes/Images';
+app.use('/images', Images);
 
 import Apps, { validateHome } from './routes/Apps';
 app.use('/apps', Apps);

@@ -232,6 +232,19 @@
         "missingId": "Identifiant manquant",
         "missingName": "Nom manquant",
         "created": "Maison créée"
+      },
+      "picture": {
+        "updated": "Photo mise-à-jour",
+        "deleted": "Photo supprimée",
+        "couldNotDelete": "Impossible de supprimer la photo",
+        "couldNotUpload": "Erreur lors du téléversement de la photo",
+        "notFound": "Photo introuvable"
+      },
+      "image": {
+        "notFound": "Image introuvable"
+      },
+      "user": {
+        "deleted": "Compte supprimé"
       }
     },
     "msg": {
@@ -333,6 +346,17 @@
         "missingId": "Veuillez entrer l'identifiant de la maison.",
         "missingName": "Veuillez entrer le nom de la maison.",
         "created": "Bienvenue dans votre nouvelle maison"
+      },
+      "user": {
+        "imageUpdated": "La photo de profil a été mise-à-jour.",
+        "imageDeleted": "La photo de profil a été supprimée.",
+        "imageNotFound": "Vous n'avez pas de photo de profil.",
+        "loggedOut": "Vous avez été déconnecté.",
+        "deleted": "Votre compte, ainsi que toutes vos données, a été supprimé."
+      },
+      "picture": {
+        "unsupportedExtension": "L'extension de l'image n'est pas supportée. Les extensions supportées sont les suivantes: jpg, jpeg, png et gif.",
+        "notFound": "L'image est introuvable."
       }
     }
   }
