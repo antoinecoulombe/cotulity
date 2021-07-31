@@ -139,9 +139,6 @@ Users.delete('/delete', async (req: any, res: any) => {
         await notifyMembersExceptOwner(h, t);
       });
 
-      // Delete notifications associated to user
-      // await deleteNotificationsToUser(req.user, t);
-
       // Delete user
       await req.user.destroy(
         { force: true },

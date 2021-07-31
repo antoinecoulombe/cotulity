@@ -9,15 +9,9 @@ export async function sendNotifications(
   notification: any,
   transaction?: any
 ) {
-  function getNotification(toId: number, notification: any) {
-    notification.toId = toId;
-    return notification;
-  }
-
-  let notifications: any[] = [];
-  userIds.forEach((id: number) =>
-    notifications.push(getNotification(id, notification))
-  );
+  const notifications = userIds.map((id: number) => {
+    return { ...notification, toId: id };
+  });
 
   await db.Notification.bulkCreate(notifications, { transaction: transaction });
 }

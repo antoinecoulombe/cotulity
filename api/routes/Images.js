@@ -28,9 +28,7 @@ Images.get('/profile', (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const img = yield req.user.getImage();
         if (!img)
-            return res
-                .status(404)
-                .json({ title: 'image.notFound', msg: 'picture.notFound' });
+            return res.json({ title: 'image.notFound', msg: 'picture.notFound' });
         res.json({ url: img.url });
     }
     catch (error) {

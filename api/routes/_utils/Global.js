@@ -17,12 +17,9 @@ const readFile = promisify(fs.readFile);
 const db = require('../../db/models');
 function sendNotifications(userIds, notification, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
-        function getNotification(toId, notification) {
-            notification.toId = toId;
-            return notification;
-        }
-        let notifications = [];
-        userIds.forEach((id) => notifications.push(getNotification(id, notification)));
+        const notifications = userIds.map((id) => {
+            return Object.assign(Object.assign({}, notification), { toId: id });
+        });
         yield db.Notification.bulkCreate(notifications, { transaction: transaction });
     });
 }

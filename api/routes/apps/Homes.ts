@@ -91,18 +91,16 @@ async function denyIfNotOwner(req: any, res: any) {
 }
 
 // Retrieves the members from the current home, excluding the owner.
-async function getMembersExceptOwner(res: any): Promise<number[]> {
-  return (await res.locals.home.getMembers())
-    .filter((m: any) => m.id !== res.locals.home.ownerId)
+async function getMembersExceptOwner(home: any): Promise<number[]> {
+  return (await home.getMembers())
+    .filter((m: any) => m.id !== home.ownerId)
     .map((m: any) => m.id);
 }
 
 export async function notifyMembersExceptOwner(home: any, transaction: any) {
-  const members = await home.getMembers();
-
   // Send notifications to deleted users
-  Global.sendNotifications(
-    members.filter((m: any) => m.id !== home.ownerId).map((m: any) => m.id),
+  await Global.sendNotifications(
+    await getMembersExceptOwner(home),
     {
       typeId: 3,
       title: Translate.getJSON('homes.excludedByOwner', [home.name]),
@@ -115,21 +113,11 @@ export async function notifyMembersExceptOwner(home: any, transaction: any) {
 // deletes a home
 export async function deleteHome(home: any, transaction: any) {
   try {
-    const members = await home.getMembers();
-
     // Send notifications to deleted users
-    Global.sendNotifications(
-      members.filter((m: any) => m.id !== home.ownerId).map((m: any) => m.id),
-      {
-        typeId: 3,
-        title: Translate.getJSON('homes.excludedByOwner', [home.name]),
-        description: Translate.getJSON('homes.homeDeletedByOwner', [home.name]),
-      },
-      transaction
-    );
+    await notifyMembersExceptOwner(home, transaction);
 
     // Delete home
-    await home.destroy({ force: true }, { transaction: transaction });
+    // await home.destroy({ force: true }, { transaction: transaction });
     return {
       title: Translate.getJSON('homes.homeDeleted', [home.name]),
       msg: 'homes.homeDeleted',
@@ -351,7 +339,7 @@ Homes.put(
 
           await Global.sendNotifications(
             (
-              await getMembersExceptOwner(res)
+              await getMembersExceptOwner(res.locals.home)
             ).filter((id) => id != req.params.id),
             {
               typeId: 2,
@@ -407,7 +395,7 @@ Homes.put('/:refnumber/rename', validateHome, async (req: any, res: any) => {
           });
 
         await Global.sendNotifications(
-          await getMembersExceptOwner(res),
+          await getMembersExceptOwner(res.locals.home),
           {
             typeId: 2,
             title: Translate.getJSON('homes.homeRenamedByOwner', [home.name]),
@@ -676,7 +664,7 @@ Homes.delete(
 
         await Global.sendNotifications(
           (
-            await getMembersExceptOwner(res)
+            await getMembersExceptOwner(res.locals.home)
           ).filter((id) => id != req.params.id),
           {
             typeId: 2,
@@ -717,7 +705,7 @@ Homes.delete('/:refnumber/delete', validateHome, async (req: any, res: any) => {
   try {
     if (await denyIfNotOwner(req, res)) return;
     return await db.sequelize.transaction(async (t: any) => {
-      return await deleteHome(res.locals.home, t);
+      return res.json(await deleteHome(res.locals.home, t));
     });
   } catch (error) {
     console.log(error);

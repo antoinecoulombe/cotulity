@@ -116,18 +116,17 @@ function denyIfNotOwner(req, res) {
     });
 }
 // Retrieves the members from the current home, excluding the owner.
-function getMembersExceptOwner(res) {
+function getMembersExceptOwner(home) {
     return __awaiter(this, void 0, void 0, function* () {
-        return (yield res.locals.home.getMembers())
-            .filter((m) => m.id !== res.locals.home.ownerId)
+        return (yield home.getMembers())
+            .filter((m) => m.id !== home.ownerId)
             .map((m) => m.id);
     });
 }
 function notifyMembersExceptOwner(home, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
-        const members = yield home.getMembers();
         // Send notifications to deleted users
-        Global.sendNotifications(members.filter((m) => m.id !== home.ownerId).map((m) => m.id), {
+        yield Global.sendNotifications(yield getMembersExceptOwner(home), {
             typeId: 3,
             title: Translate.getJSON('homes.excludedByOwner', [home.name]),
             description: Translate.getJSON('homes.homeDeletedByOwner', [home.name]),
@@ -139,15 +138,10 @@ exports.notifyMembersExceptOwner = notifyMembersExceptOwner;
 function deleteHome(home, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const members = yield home.getMembers();
             // Send notifications to deleted users
-            Global.sendNotifications(members.filter((m) => m.id !== home.ownerId).map((m) => m.id), {
-                typeId: 3,
-                title: Translate.getJSON('homes.excludedByOwner', [home.name]),
-                description: Translate.getJSON('homes.homeDeletedByOwner', [home.name]),
-            }, transaction);
+            yield notifyMembersExceptOwner(home, transaction);
             // Delete home
-            yield home.destroy({ force: true }, { transaction: transaction });
+            // await home.destroy({ force: true }, { transaction: transaction });
             return {
                 title: Translate.getJSON('homes.homeDeleted', [home.name]),
                 msg: 'homes.homeDeleted',
@@ -327,7 +321,7 @@ Homes.put('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) => 
             if (action == 'accept') {
                 userHome.accepted = true;
                 yield userHome.save({ transaction: t });
-                yield Global.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
+                yield Global.sendNotifications((yield getMembersExceptOwner(res.locals.home)).filter((id) => id != req.params.id), {
                     typeId: 2,
                     title: Translate.getJSON('homes.memberAdded', [
                         userHome.Home.name,
@@ -368,7 +362,7 @@ Homes.put('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(voi
                         title: 'homes.couldNotRename',
                         msg: 'homes.nameUndefined',
                     });
-                yield Global.sendNotifications(yield getMembersExceptOwner(res), {
+                yield Global.sendNotifications(yield getMembersExceptOwner(res.locals.home), {
                     typeId: 2,
                     title: Translate.getJSON('homes.homeRenamedByOwner', [home.name]),
                     description: Translate.getJSON('homes.homeRenamedByOwner', [
@@ -582,7 +576,7 @@ Homes.delete('/:refnumber/members/remove/:id', Apps_1.validateHome, (req, res) =
                 return res
                     .status(404)
                     .json({ title: 'request.notFound', msg: 'request.notFound' });
-            yield Global.sendNotifications((yield getMembersExceptOwner(res)).filter((id) => id != req.params.id), {
+            yield Global.sendNotifications((yield getMembersExceptOwner(res.locals.home)).filter((id) => id != req.params.id), {
                 typeId: 2,
                 title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),
                 description: Translate.getJSON('homes.memberExcluded', [
@@ -613,7 +607,7 @@ Homes.delete('/:refnumber/delete', Apps_1.validateHome, (req, res) => __awaiter(
         if (yield denyIfNotOwner(req, res))
             return;
         return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            return yield deleteHome(res.locals.home, t);
+            return res.json(yield deleteHome(res.locals.home, t));
         }));
     }
     catch (error) {

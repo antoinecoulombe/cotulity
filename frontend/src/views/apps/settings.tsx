@@ -173,8 +173,9 @@ export default function AppSettings(props: AppSettingsProps) {
             </h2>
           </div>
           <div className="right">
-            {['fr', 'en'].map((lang) => (
+            {['fr', 'en'].map((lang, i) => (
               <h3
+                key={i}
                 onClick={() => setLang(lang)}
                 className={localStorage.getItem('lang') == lang ? 'active' : ''}
               >

@@ -153,8 +153,6 @@ Users.delete('/delete', (req, res) => __awaiter(void 0, void 0, void 0, function
             yield homes.forEach((h) => __awaiter(void 0, void 0, void 0, function* () {
                 yield Homes_1.notifyMembersExceptOwner(h, t);
             }));
-            // Delete notifications associated to user
-            // await deleteNotificationsToUser(req.user, t);
             // Delete user
             yield req.user.destroy({ force: true }, { transaction: t, individualHooks: true });
             // Delete user image
