@@ -40,7 +40,7 @@ export default function AppNewHome() {
     }
 
     axios
-      .put(`/homes/join/${value.split('#')[1]}`)
+      .put(`/homes/${value.split('#')[1]}/join`)
       .then((res) => {
         setError(false);
         setSuccessNotification(res.data);
@@ -62,11 +62,11 @@ export default function AppNewHome() {
     }
 
     axios
-      .post(`/homes/create/${value}`)
+      .post(`/homes/${value}`)
       .then((res) => {
         setError(false);
         setSuccessNotification(res.data);
-        // TODO: set context to home ref number (res.data.refNumber)
+        localStorage.setItem('homeRef', res.data.refNumber);
         history.push('/apps');
       })
       .catch((err) => {

@@ -169,7 +169,7 @@ export default function AppHomes() {
 
   function addMember(value: string, refNumber: number) {
     axios
-      .post(`/homes/${refNumber}/members/invite`, { email: value })
+      .post(`/homes/${refNumber}/invitations`, { email: value })
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -212,7 +212,7 @@ export default function AppHomes() {
     const ref = await getRefNumber(event);
 
     axios
-      .delete(`/homes/${ref}/request/cancel`)
+      .delete(`/homes/${ref}/requests/cancel`)
       .then((res: any) => {
         deleteHomeState(ref);
         setSuccessNotification(res.data);

@@ -71,7 +71,7 @@ export default function AppsPage() {
 
         if (token) {
           return axios
-            .put(`/homes/${token}/members/invite/accept`)
+            .put(`/homes/invitations/${token}/accept`)
             .then((res) => {
               setSuccessNotification(res.data);
               history.push('/apps');

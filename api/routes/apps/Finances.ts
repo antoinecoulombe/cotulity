@@ -17,16 +17,6 @@ Finances.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
-export async function deleteFinancesFromHome(home: any) {
-  try {
-    // await db.Finance.destroy({ where: { homeId: home.id }, force: true });
-    return { title: '', msg: '' };
-  } catch (error) {
-    console.log(error);
-    return { title: 'request.error', msg: 'request.error' };
-  }
-}
-
 // ########################################################
 // ######################### GET ##########################
 // ########################################################

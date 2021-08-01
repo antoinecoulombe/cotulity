@@ -28,10 +28,9 @@ Images.get('/profile', async (req: any, res: any) => {
   }
 });
 
-// Get all notifications linked to the connected user.
-Images.get('/public/:url', async (req: any, res: any) => {
+async function respondImage(res: any, url: string) {
   try {
-    const img = await db.Image.findOne({ where: { url: req.params.url } });
+    const img = await db.Image.findOne({ where: { url: url } });
     if (!img)
       res
         .status(404)
@@ -42,6 +41,16 @@ Images.get('/public/:url', async (req: any, res: any) => {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
+}
+
+// Get all notifications linked to the connected user.
+Images.get('/public/:url', async (req: any, res: any) => {
+  respondImage(res, req.params.url);
+});
+
+// Get all notifications linked to the connected user.
+Images.get('/:url', async (req: any, res: any) => {
+  respondImage(res, req.params.url);
 });
 
 // ########################################################

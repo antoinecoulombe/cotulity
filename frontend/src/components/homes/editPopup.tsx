@@ -204,7 +204,7 @@ export default function EditPopup(props: EditPopupProps) {
 
   function deleteMember(event: any, memberId: number) {
     axios
-      .delete(`/homes/${props.home?.refNumber}/members/remove/${memberId}`)
+      .delete(`/homes/${props.home?.refNumber}/members/${memberId}/remove`)
       .then((res: any) => {
         deleteMemberState(memberId);
       })
@@ -216,9 +216,9 @@ export default function EditPopup(props: EditPopupProps) {
   function acceptRequest(event: any, accept: boolean, memberId: number) {
     axios
       .put(
-        `/homes/${props.home.refNumber}/request/${
+        `/homes/${props.home.refNumber}/requests/${memberId}/${
           accept ? 'accept' : 'reject'
-        }/${memberId}`
+        }`
       )
       .then(async (res: any) => {
         if (accept) acceptMemberState(memberId);

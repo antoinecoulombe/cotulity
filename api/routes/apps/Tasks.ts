@@ -17,22 +17,6 @@ Tasks.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
-export async function deleteTasksFromHome(
-  home: any,
-  transaction: any
-): Promise<{ success: boolean; title: string; msg: string }> {
-  try {
-    await db.Task.destroy(
-      { where: { homeId: home.id }, force: true },
-      { transaction: transaction }
-    );
-    return { success: true, title: 'request.success', msg: 'request.success' };
-  } catch (error) {
-    console.log(error);
-    return { success: false, title: 'request.error', msg: 'request.error' };
-  }
-}
-
 // ########################################################
 // ######################### GET ##########################
 // ########################################################

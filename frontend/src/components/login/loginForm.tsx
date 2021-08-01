@@ -73,7 +73,7 @@ export default function LoginForm() {
 
         if (token) {
           return axios
-            .put(`/homes/${token}/members/invite/accept`)
+            .put(`/homes/invitations/${token}/accept`)
             .then(async (res) => {
               history.push('/apps');
 

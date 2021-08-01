@@ -3,9 +3,6 @@ import * as Translate from '../_utils/Translate';
 import * as Global from '../_utils/Global';
 import * as Email from '../_utils/Email';
 import { validateHome, validateApp } from '../Apps';
-import { deleteGroceriesFromHome } from './Groceries';
-import { deleteTasksFromHome } from './Tasks';
-import { deleteUsersFromHome } from '../Users';
 
 const Homes = express.Router();
 const db = require('../../db/models');
@@ -178,73 +175,67 @@ Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
 });
 
 // [PUBLIC] Decline the invitation linked to the specified token.
-Homes.get(
-  '/public/:token/members/invite/decline',
-  async (req: any, res: any) => {
-    console.log('Decline');
-    try {
-      return await db.sequelize.transaction(async (t: any) => {
-        const invite = await db.HomeInvitation.findOne({
-          where: { token: req.params.token },
-          include: db.Home,
-        });
+Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
+  console.log('Decline');
+  try {
+    return await db.sequelize.transaction(async (t: any) => {
+      const invite = await db.HomeInvitation.findOne({
+        where: { token: req.params.token },
+        include: db.Home,
+      });
 
-        const html = await Global.readHtml('../_html/responsePage.html');
+      const html = await Global.readHtml('../_html/responsePage.html');
 
-        if (!invite) {
-          return Global.respondHtml(
-            res,
-            Global.format(html, [
-              'Invitation not found',
-              'No invitation is linked to that token.',
-            ]),
-            404
-          );
-        }
-
-        await invite.destroy({ transaction: t });
-
-        await db.Notification.create(
-          {
-            typeId: 2,
-            toId: invite.Home.ownerId,
-            title: Translate.getJSON('homes.inviteDeclined', [
-              invite.Home.name,
-            ]),
-            description: Translate.getJSON('homes.inviteDeclined', [
-              invite.email,
-              invite.Home.name,
-            ]),
-          },
-          { transaction: t }
-        );
-
+      if (!invite) {
         return Global.respondHtml(
           res,
           Global.format(html, [
-            'Invitation declined',
-            'You can close this page.',
+            'Invitation not found',
+            'No invitation is linked to that token.',
           ]),
-          200
+          404
         );
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
+      }
+
+      await invite.destroy({ transaction: t });
+
+      await db.Notification.create(
+        {
+          typeId: 2,
+          toId: invite.Home.ownerId,
+          title: Translate.getJSON('homes.inviteDeclined', [invite.Home.name]),
+          description: Translate.getJSON('homes.inviteDeclined', [
+            invite.email,
+            invite.Home.name,
+          ]),
+        },
+        { transaction: t }
+      );
+
+      return Global.respondHtml(
+        res,
+        Global.format(html, [
+          'Invitation declined',
+          'You can close this page.',
+        ]),
+        200
+      );
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
-);
+});
 
 // ########################################################
 // ######################### PUT ##########################
 // ########################################################
 
 // [ANY] Create a request to join the specified home.
-Homes.put('/join/:refNumber', async (req: any, res) => {
+Homes.put('/:refnumber/join', async (req: any, res) => {
   try {
-    console.log(req.params.refNumber);
     const userHome = await req.user.getHomes({
-      where: { refNumber: req.params.refNumber },
+      where: { refNumber: req.params.refnumber },
       through: { paranoid: false },
     });
 
@@ -273,7 +264,7 @@ Homes.put('/join/:refNumber', async (req: any, res) => {
     }
 
     const home = await db.Home.findOne({
-      where: { refNumber: req.params.refNumber },
+      where: { refNumber: req.params.refnumber },
     });
 
     if (!home)
@@ -309,7 +300,7 @@ Homes.put('/join/:refNumber', async (req: any, res) => {
 
 // [OWNER] Accept or decline a request to join the specified home.
 Homes.put(
-  '/:refnumber/request/:action/:id',
+  '/:refnumber/requests/:id/:action',
   validateHome,
   async (req: any, res: any) => {
     try {
@@ -430,7 +421,7 @@ Homes.put('/:refnumber/rename', validateHome, async (req: any, res: any) => {
 });
 
 // [ANY] Accept the invitation linked to the specified token.
-Homes.put('/:token/members/invite/accept', async (req: any, res: any) => {
+Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
   try {
     return await db.sequelize.transaction(async (t: any) => {
       const invite = await db.HomeInvitation.findOne({
@@ -521,7 +512,7 @@ Homes.put('/:token/members/invite/accept', async (req: any, res: any) => {
 // ########################################################
 
 // [ANY] Create a new home.
-Homes.post('/create/:homeName', async (req: any, res) => {
+Homes.post('/:homename', async (req: any, res) => {
   try {
     const home = await db.sequelize.transaction(async (t: any) => {
       const refNumberDigits = 6;
@@ -538,7 +529,7 @@ Homes.post('/create/:homeName', async (req: any, res) => {
       const home = await db.Home.create(
         {
           refNumber: refNumber,
-          name: req.params.homeName,
+          name: req.params.homename,
           ownerId: req.user.id,
         },
         { transaction: t }
@@ -569,7 +560,7 @@ Homes.post('/create/:homeName', async (req: any, res) => {
 
 // [OWNER] Invite a new member into the specified home.
 Homes.post(
-  '/:refnumber/members/invite',
+  '/:refnumber/invitations',
   validateHome,
   async (req: any, res: any) => {
     try {
@@ -641,7 +632,7 @@ Homes.post(
 
 // [OWNER] Remove a member from the specified home.
 Homes.delete(
-  '/:refnumber/members/remove/:id',
+  '/:refnumber/members/:id/remove',
   validateHome,
   async (req: any, res: any) => {
     try {
@@ -747,7 +738,7 @@ Homes.delete('/:refnumber/quit', validateHome, async (req: any, res: any) => {
 
 // [REQUEST] Cancel the request to the specified home.
 Homes.delete(
-  '/:refnumber/request/cancel',
+  '/:refnumber/requests/cancel',
   validateHome,
   async (req: any, res: any) => {
     try {
