@@ -25,10 +25,6 @@ export default {
           key: 'id',
         },
       },
-      purchaseDate: {
-        // TODO: if not null: https://stackoverflow.com/questions/44253746/how-do-i-delete-rows-of-data-from-mysql-table-automatically-with-24-hours-after/44254400#44254400
-        type: Sequelize.DATE,
-      },
       description: {
         allowNull: false,
         type: Sequelize.STRING,

@@ -30,6 +30,7 @@ export default function AppsPage() {
   function handleHomeChange(home: Home[]) {
     setHomes(home);
     setCurrentHome(home[0]);
+    localStorage.setItem('currentHome', home[0].refNumber.toString());
   }
 
   function handleResize() {
@@ -54,6 +55,10 @@ export default function AppsPage() {
 
         setHomes(res.data.homes);
         setCurrentHome(res.data.homes[0]);
+        localStorage.setItem(
+          'currentHome',
+          res.data.homes[0].refNumber.toString()
+        );
       })
       .catch((err) => {
         setNotification(err.response.data);

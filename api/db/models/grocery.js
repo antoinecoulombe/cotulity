@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Grocery.init(
     {
-      purchaseDate: DataTypes.DATE,
       description: {
         type: DataTypes.STRING,
         allowNull: {

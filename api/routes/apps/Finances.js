@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteFinancesFromHome = void 0;
 const express_1 = __importDefault(require("express"));
 const Apps_1 = require("../Apps");
 const Finances = express_1.default.Router();
@@ -27,19 +26,6 @@ Finances.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
-function deleteFinancesFromHome(home) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            // await db.Finance.destroy({ where: { homeId: home.id }, force: true });
-            return { title: '', msg: '' };
-        }
-        catch (error) {
-            console.log(error);
-            return { title: 'request.error', msg: 'request.error' };
-        }
-    });
-}
-exports.deleteFinancesFromHome = deleteFinancesFromHome;
 // ########################################################
 // ######################### GET ##########################
 // ########################################################

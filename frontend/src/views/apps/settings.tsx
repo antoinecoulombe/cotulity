@@ -139,22 +139,24 @@ export default function AppSettings(props: AppSettingsProps) {
               <Translate name="light" prefix="settings.theme." />
             </h3>
             <div className="input-toggle">
-              {props.theme == 'light' ? (
-                <input
-                  id="theme-switch"
-                  type="checkbox"
-                  className="switch"
-                  defaultChecked
-                  onClick={toggleTheme}
-                />
-              ) : (
-                <input
-                  id="theme-switch"
-                  type="checkbox"
-                  className="switch"
-                  onClick={toggleTheme}
-                />
-              )}
+              <div className="generic-input">
+                {props.theme == 'light' ? (
+                  <input
+                    id="theme-switch"
+                    type="checkbox"
+                    className="switch"
+                    defaultChecked
+                    onClick={toggleTheme}
+                  />
+                ) : (
+                  <input
+                    id="theme-switch"
+                    type="checkbox"
+                    className="switch"
+                    onClick={toggleTheme}
+                  />
+                )}
+              </div>
             </div>
             <h3
               onClick={() => setTheme('dark')}

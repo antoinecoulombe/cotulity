@@ -172,7 +172,9 @@
     "title": { "tasks": "Tâches" }
   },
   "groceries": {
-    "title": { "groceries": "Épicerie" }
+    "title": { "groceries": "Liste d'épicerie" },
+    "new": "Ajouter un article",
+    "empty": "Votre liste d'épicerie est vide."
   },
   "calendar": {
     "title": { "calendar": "Calendrier" }
@@ -245,6 +247,15 @@
       },
       "user": {
         "deleted": "Compte supprimé"
+      },
+      "groceries": {
+        "notFound": "Article introuvable",
+        "error": {
+          "delete": "Impossible de supprimer l'article",
+          "restore": "Impossible de restaurer l'article",
+          "add": "Impossible d'ajouter l'article"
+        },
+        "deleted": "Article supprimé"
       }
     },
     "msg": {
@@ -357,6 +368,11 @@
       "picture": {
         "unsupportedExtension": "L'extension de l'image n'est pas supportée. Les extensions supportées sont les suivantes: jpg, jpeg, png et gif.",
         "notFound": "L'image est introuvable."
+      },
+      "groceries": {
+        "notFound": "L'article est introuvable.",
+        "descInvalid": "L'article devrait contenir au moins un caractère.",
+        "deleted": "L'article a été supprimé."
       }
     }
   }

@@ -1,8 +1,9 @@
 // Imports
 import express from 'express';
 import bodyParser from 'body-parser';
+import './routes/_utils/CronJobs';
 
-// CORS
+// Requires
 var cors = require('cors');
 
 // Express
@@ -13,7 +14,9 @@ app.set('port', process.env.PORT || 3000);
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  bodyParser.urlencoded({ extended: true, parameterLimit: 100, limit: '100mb' })
+);
 
 // Middlewares
 import AuthMiddleware from './middlewares/AuthMiddleware';

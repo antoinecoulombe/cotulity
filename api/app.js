@@ -25,7 +25,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
-// CORS
+require("./routes/_utils/CronJobs");
+// Requires
 var cors = require('cors');
 // Express
 const app = express_1.default();
@@ -33,7 +34,7 @@ const app = express_1.default();
 app.set('port', process.env.PORT || 3000);
 app.use(cors());
 app.use(body_parser_1.default.json());
-app.use(body_parser_1.default.urlencoded({ extended: true }));
+app.use(body_parser_1.default.urlencoded({ extended: true, parameterLimit: 100, limit: '100mb' }));
 // Middlewares
 const AuthMiddleware_1 = __importDefault(require("./middlewares/AuthMiddleware"));
 app.use(AuthMiddleware_1.default);

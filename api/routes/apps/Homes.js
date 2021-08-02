@@ -198,7 +198,7 @@ Homes.get('/:refnumber', Apps_1.validateHome, (req, res) => __awaiter(void 0, vo
     }
 }));
 // [PUBLIC] Decline the invitation linked to the specified token.
-Homes.get('/public/:token/members/invite/decline', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.get('/public/invitations/:token/decline', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Decline');
     try {
         return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
@@ -217,9 +217,7 @@ Homes.get('/public/:token/members/invite/decline', (req, res) => __awaiter(void 
             yield db.Notification.create({
                 typeId: 2,
                 toId: invite.Home.ownerId,
-                title: Translate.getJSON('homes.inviteDeclined', [
-                    invite.Home.name,
-                ]),
+                title: Translate.getJSON('homes.inviteDeclined', [invite.Home.name]),
                 description: Translate.getJSON('homes.inviteDeclined', [
                     invite.email,
                     invite.Home.name,
@@ -240,11 +238,10 @@ Homes.get('/public/:token/members/invite/decline', (req, res) => __awaiter(void 
 // ######################### PUT ##########################
 // ########################################################
 // [ANY] Create a request to join the specified home.
-Homes.put('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.put('/:refnumber/join', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.params.refNumber);
         const userHome = yield req.user.getHomes({
-            where: { refNumber: req.params.refNumber },
+            where: { refNumber: req.params.refnumber },
             through: { paranoid: false },
         });
         if (userHome.length !== 0) {
@@ -269,7 +266,7 @@ Homes.put('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, fu
             }
         }
         const home = yield db.Home.findOne({
-            where: { refNumber: req.params.refNumber },
+            where: { refNumber: req.params.refnumber },
         });
         if (!home)
             return res
@@ -299,7 +296,7 @@ Homes.put('/join/:refNumber', (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 }));
 // [OWNER] Accept or decline a request to join the specified home.
-Homes.put('/:refnumber/request/:action/:id', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.put('/:refnumber/requests/:id/:action', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const actions = ['accept', 'reject'];
         const action = req.params.action;
@@ -393,7 +390,7 @@ Homes.put('/:refnumber/rename', Apps_1.validateHome, (req, res) => __awaiter(voi
     }
 }));
 // [ANY] Accept the invitation linked to the specified token.
-Homes.put('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.put('/invitations/:token/accept', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             const invite = yield db.HomeInvitation.findOne({
@@ -468,7 +465,7 @@ Homes.put('/:token/members/invite/accept', (req, res) => __awaiter(void 0, void 
 // ######################### POST #########################
 // ########################################################
 // [ANY] Create a new home.
-Homes.post('/create/:homeName', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.post('/:homename', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const home = yield db.sequelize.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             const refNumberDigits = 6;
@@ -480,7 +477,7 @@ Homes.post('/create/:homeName', (req, res) => __awaiter(void 0, void 0, void 0, 
             } while ((yield db.Home.findOne({ where: { refNumber: refNumber } })) != null);
             const home = yield db.Home.create({
                 refNumber: refNumber,
-                name: req.params.homeName,
+                name: req.params.homename,
                 ownerId: req.user.id,
             }, { transaction: t });
             yield db.UserHome.create({
@@ -502,7 +499,7 @@ Homes.post('/create/:homeName', (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 }));
 // [OWNER] Invite a new member into the specified home.
-Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.post('/:refnumber/invitations', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _g, _h, _j, _k;
     try {
         if (yield denyIfNotOwner(req, res))
@@ -559,7 +556,7 @@ Homes.post('/:refnumber/members/invite', Apps_1.validateHome, (req, res) => __aw
 // ######################## DELETE ########################
 // ########################################################
 // [OWNER] Remove a member from the specified home.
-Homes.delete('/:refnumber/members/remove/:id', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.delete('/:refnumber/members/:id/remove', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (yield denyIfNotOwner(req, res))
             return;
@@ -640,7 +637,7 @@ Homes.delete('/:refnumber/quit', Apps_1.validateHome, (req, res) => __awaiter(vo
     }
 }));
 // [REQUEST] Cancel the request to the specified home.
-Homes.delete('/:refnumber/request/cancel', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Homes.delete('/:refnumber/requests/cancel', Apps_1.validateHome, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let home = res.locals.home;
         if (home.UserHome.accepted)

@@ -36,20 +36,29 @@ Images.get('/profile', (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
+function respondImage(res, url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const img = yield db.Image.findOne({ where: { url: url } });
+            if (!img)
+                res
+                    .status(404)
+                    .json({ title: 'image.notFound', msg: 'picture.notFound' });
+            res.sendFile(img.filePath);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json({ title: 'request.error', msg: 'request.error' });
+        }
+    });
+}
 // Get all notifications linked to the connected user.
 Images.get('/public/:url', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const img = yield db.Image.findOne({ where: { url: req.params.url } });
-        if (!img)
-            res
-                .status(404)
-                .json({ title: 'image.notFound', msg: 'picture.notFound' });
-        res.sendFile(img.filePath);
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
+    respondImage(res, req.params.url);
+}));
+// Get all notifications linked to the connected user.
+Images.get('/:url', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    respondImage(res, req.params.url);
 }));
 // ########################################################
 // ######################### PUT ##########################

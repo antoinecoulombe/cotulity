@@ -172,7 +172,9 @@
     "title": { "tasks": "Tasks" }
   },
   "groceries": {
-    "title": { "groceries": "Groceries" }
+    "title": { "groceries": "Grocery List" },
+    "new": "Add Article",
+    "empty": "Your grocery list is empty."
   },
   "calendar": {
     "title": { "calendar": "Calendar" }
@@ -245,6 +247,15 @@
       },
       "user": {
         "deleted": "Account Deleted"
+      },
+      "groceries": {
+        "notFound": "Grocery not found",
+        "error": {
+          "delete": "Couldn't delete grocery item",
+          "restore": "Couldn't restore grocery item",
+          "add": "Couldn't add grocery item."
+        },
+        "deleted": "Grocery item deleted"
       }
     },
     "msg": {
@@ -357,6 +368,11 @@
       "picture": {
         "unsupportedExtension": "The image's extension is unsupported. Supported extensions are: jpg, jpeg, png and gif.",
         "notFound": "We couldn't find the image."
+      },
+      "groceries": {
+        "notFound": "We couldn't find the grocery item.",
+        "descInvalid": "The article should have at least one character.",
+        "deleted": "The article was deleted."
       }
     }
   }

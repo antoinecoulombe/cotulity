@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { PrivateRoute, PublicRoute } from '../components/utils/routes';
 import { useNotifications } from '../contexts/NotificationsContext';
-import { isAuthenticated } from '../utils/global';
+import { getNotifications, isAuthenticated } from '../utils/global';
 
 // CSS
 import '../assets/css/theme.css';
@@ -98,6 +98,12 @@ export default function App() {
 
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem('lang') || 'en');
+
+    const notifInterval = setInterval(() => {
+      getNotifications();
+    }, 10 * 60 * 1000); // Every 10 minutes
+
+    return () => clearInterval(notifInterval);
   }, []);
 
   function logout() {
