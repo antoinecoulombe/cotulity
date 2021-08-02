@@ -19,7 +19,6 @@ export default function AppsPage() {
   const { setNotification, setSuccessNotification } = useNotifications();
   const [apps, setApps] = useState<OnlineApp[]>([]);
   const [homes, setHomes] = useState<Home[]>([]);
-  const [currentHome, setCurrentHome] = useState<Home>();
   const history = useHistory();
 
   let { token } = useParams<{ token: string }>();
@@ -27,10 +26,20 @@ export default function AppsPage() {
   if (!localStorage.getItem('lang')) localStorage.setItem('lang', 'en');
   if (!localStorage.getItem('theme')) localStorage.setItem('theme', 'light');
 
-  function handleHomeChange(home: Home[]) {
-    setHomes(home);
-    setCurrentHome(home[0]);
-    localStorage.setItem('currentHome', home[0].refNumber.toString());
+  function setHome(home: Home | undefined, homes: Home[], reorder?: boolean) {
+    if (!home) return;
+    localStorage.setItem('currentHome', home.refNumber.toString());
+
+    const newHomes = [...homes];
+    if (reorder) {
+      const i = homes.findIndex((h) => h.refNumber == home.refNumber);
+      newHomes.unshift(newHomes.splice(i, 1)[0]);
+    }
+    setHomes(newHomes);
+  }
+
+  function handleHomeChange(homes: Home[]) {
+    setHome(homes[0], homes);
   }
 
   function handleResize() {
@@ -53,12 +62,17 @@ export default function AppsPage() {
         if (!res.data.homes || res.data.homes.length === 0)
           history.push('/apps/homes/new');
 
-        setHomes(res.data.homes);
-        setCurrentHome(res.data.homes[0]);
-        localStorage.setItem(
-          'currentHome',
-          res.data.homes[0].refNumber.toString()
-        );
+        if (!localStorage.getItem('currentHome'))
+          setHome(res.data.homes[0], res.data.homes);
+        else
+          setHome(
+            res.data.homes.find(
+              (h: Home) =>
+                h.refNumber.toString() == localStorage.getItem('currentHome')
+            ),
+            res.data.homes,
+            true
+          );
       })
       .catch((err) => {
         setNotification(err.response.data);
