@@ -13,7 +13,7 @@ export default {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'Home',
+          model: 'Homes',
           key: 'id',
         },
       },

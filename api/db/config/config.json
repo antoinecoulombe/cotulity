@@ -1,24 +1,26 @@
 {
   "development": {
-    "username": "cotulity_user",
-    "password": "cotulity_password",
-    "database": "cotulity",
+    "username": "cot_dev",
+    "password": "dev_pwd",
+    "database": "cotulity_dev",
     "host": "127.0.0.1",
     "dialect": "mariadb",
     "dialectOptions": { "autoJsonmap": false }
   },
   "test": {
-    "username": "cotulity_user",
-    "password": "cotulity_password",
+    "username": "cot_test",
+    "password": "test_pwd",
     "database": "cotulity_test",
     "host": "127.0.0.1",
-    "dialect": "mariadb"
+    "dialect": "mariadb",
+    "dialectOptions": { "autoJsonmap": false }
   },
   "production": {
-    "username": "cotulity_user",
-    "password": "cotulity_password",
-    "database": "cotulity_prod",
+    "username": "cot_prod",
+    "password": "prod_pwd",
+    "database": "cotulity",
     "host": "127.0.0.1",
-    "dialect": "mariadb"
+    "dialect": "mariadb",
+    "dialectOptions": { "autoJsonmap": false }
   }
 }

@@ -8,7 +8,7 @@ export default {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: 'User',
+            model: 'Users',
             key: 'id',
           },
         },
@@ -16,7 +16,7 @@ export default {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: 'Home',
+            model: 'Homes',
             key: 'id',
           },
         },
