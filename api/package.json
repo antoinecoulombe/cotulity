@@ -11,7 +11,8 @@
     "seed": "npx sequelize-cli db:seed:all",
     "migrate:reset": "npm run migrate:undo && npm run migrate && npm run seed",
     "test": "cross-env NODE_ENV=test jest --testTimeout=15000 --detectOpenHandles",
-    "pretest": "cross-env NODE_ENV=test npm run migrate:reset"
+    "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
+    "coverage": "cross-env NODE_ENV=test npm run migrate:reset && jest --collectCoverage --"
   },
   "author": "coulombe.antoine@hotmail.com",
   "license": "ISC",
