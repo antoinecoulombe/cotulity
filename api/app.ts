@@ -1,7 +1,6 @@
 // Imports
 import express from 'express';
 import bodyParser from 'body-parser';
-import './routes/_utils/CronJobs';
 
 // Requires
 var cors = require('cors');
@@ -70,7 +69,4 @@ app.use((req, res) => {
   });
 });
 
-// Express Start
-app.listen(app.get('port'), () => {
-  return console.log(`server is listening on ${app.get('port')}`);
-});
+module.exports = app;

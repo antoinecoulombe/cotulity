@@ -36,7 +36,7 @@ Router.post('/login', async (req, res) => {
       let user = await db.User.findOne({ where: { email: email } });
 
       if (!user) {
-        res.status(401).json({
+        return res.status(401).json({
           title: 'login.error',
           msg: 'login.error',
         });
@@ -61,11 +61,12 @@ Router.post('/login', async (req, res) => {
           msg: 'login.error',
         });
       }
-    } else
+    } else {
       res.status(401).json({
         title: 'login.error',
         msg: 'login.error',
       });
+    }
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }

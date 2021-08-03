@@ -264,7 +264,8 @@
         "error": "Please try again.",
         "notFound": "Our robots can't find what you are looking for.",
         "reload": "Please reload the page.",
-        "unauthorized": "You are not authorized to access this resource."
+        "unauthorized": "You are not authorized to access this resource.",
+        "noResponse": "Couldn't get a response from the server."
       },
       "apps": {
         "offline": "This app is currently offline."

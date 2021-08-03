@@ -6,6 +6,7 @@
 
 @appBR: 10px;
 @appBS: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+@app-padding: 60px;
 
 #global() {
   .bg() {
@@ -102,6 +103,39 @@ input:-webkit-autofill {
 
   &::placeholder {
     color: @color;
+  }
+}
+
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-color) transparent;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
+  border-radius: 20px;
+}
+
+.custom-scrollbar() {
+  &::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #a8bbbf;
   }
 }
 
@@ -392,6 +426,8 @@ button {
     padding: @padding;
     width: 50%;
     height: auto;
+    max-height: 100%;
+    overflow-y: auto;
     border-radius: @appBR;
     box-shadow: @appBS;
 

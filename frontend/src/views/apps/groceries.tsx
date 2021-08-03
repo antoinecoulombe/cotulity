@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
-import AppContainer from '../../components/app/appContainer';
+import AppContainer, {
+  handleOpenAppResize,
+} from '../../components/app/appContainer';
 import IconToolTip from '../../components/global/iconTooltip';
 import axios from '../../utils/fetchClient';
 import Translate from '../../components/utils/translate';
@@ -37,6 +39,10 @@ export default function AppGroceries() {
     getArticles();
   }, []);
 
+  useEffect(() => {
+    handleOpenAppResize(140);
+  }, [articles]);
+
   function forceDeleteArticle(e: any, id: number) {
     axios
       .delete(`/groceries/${localStorage.getItem('currentHome')}/${id}`)
@@ -65,7 +71,6 @@ export default function AppGroceries() {
         const i = articles.findIndex((x) => x.id == id);
         let newArticles = [...articles];
         newArticles[i] = res.data.article;
-        console.log(res.data.article);
         setArticles(newArticles);
       })
       .catch((err) => {
@@ -81,6 +86,10 @@ export default function AppGroceries() {
       .then((res: any) => {
         setArticles(articles.concat([res.data.article]));
         setNewArticle('');
+        $('.fill-height').animate(
+          { scrollTop: $('.fill-height').prop('scrollHeight') },
+          200
+        );
       })
       .catch((err) => {
         setNotification(err.response.data);
@@ -88,9 +97,9 @@ export default function AppGroceries() {
   }
 
   return (
-    <AppContainer title="groceries" appName="groceries">
+    <AppContainer title="groceries" appName="groceries" bodyMinHeight={140}>
       {articles.length > 0 ? (
-        <div className="grocery-list">
+        <div className="grocery-list fill-height over-hidden">
           {articles.map((article) => (
             <div key={`a-${article.id}`} className="article">
               {article.deletedAt == null ? (

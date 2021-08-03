@@ -99,7 +99,12 @@ export default function LoginForm() {
         }
       })
       .catch((err) => {
-        setNotification(err.response.data);
+        if (err.response?.data) setNotification(err.response.data);
+        else
+          setErrorNotification({
+            title: 'login.error',
+            msg: 'request.noResponse',
+          });
       });
   }
 
@@ -145,7 +150,7 @@ export default function LoginForm() {
       .catch((err) => {
         setValidationNotification(
           err.response?.data?.input ? [err.response.data.input] : [],
-          err.response?.data?.msg ?? 'request.error'
+          err.response?.data?.msg ?? 'request.noResponse'
         );
       });
   }

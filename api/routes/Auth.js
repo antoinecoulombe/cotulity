@@ -40,7 +40,7 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (email && password) {
             let user = yield db.User.findOne({ where: { email: email } });
             if (!user) {
-                res.status(401).json({
+                return res.status(401).json({
                     title: 'login.error',
                     msg: 'login.error',
                 });
@@ -64,11 +64,12 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 });
             }
         }
-        else
+        else {
             res.status(401).json({
                 title: 'login.error',
                 msg: 'login.error',
             });
+        }
     }
     catch (error) {
         res.status(500).json({ msg: error.message });

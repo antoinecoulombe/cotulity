@@ -3,7 +3,9 @@ import { useHistory } from 'react-router';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { getCopyIndex, getTranslateJSON } from '../../utils/global';
 import ReactDOMServer from 'react-dom/server';
-import AppContainer from '../../components/app/appContainer';
+import AppContainer, {
+  handleOpenAppResize,
+} from '../../components/app/appContainer';
 import IconToolTip from '../../components/global/iconTooltip';
 import List from '../../components/utils/lists/list';
 import ListItem from '../../components/utils/lists/listItem';
@@ -15,6 +17,7 @@ import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
 import EditPopup from '../../components/homes/editPopup';
 import _ from 'lodash';
+import '../../assets/css/homes.css';
 
 export interface Home {
   id: number;
@@ -34,6 +37,10 @@ export default function AppHomes() {
 
   const [homes, setHomes] = useState<Home[]>([]);
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
+
+  useEffect(() => {
+    handleOpenAppResize();
+  }, [homes]);
 
   useEffect(() => {
     axios
@@ -234,7 +241,7 @@ export default function AppHomes() {
       onAddClick={() => history.push('/apps/homes/new')}
       popup={popup}
     >
-      <List>
+      <List className="fill-height">
         {homes.map((home) => (
           <ListItem key={home.id} uid={home.refNumber}>
             <ListItemLeft style={{ height: iconStyle.iconWidth }}>

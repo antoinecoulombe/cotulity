@@ -24,14 +24,16 @@ export default function SubHeader(props: SubHeaderProps) {
       </div>
 
       <div className="options">
-        <h2>
-          <Translate name="orderBy" prefix="subHeader."></Translate>
-        </h2>
-        {/* TODO: ORDER BY DROPDOWN */}
-        <h2>
-          <Translate name="filters" prefix="subHeader."></Translate>
-        </h2>
-        {/* TODO: FILTERS DROPDOWN */}
+        {props.orderBy && (
+          <h2>
+            <Translate name="orderBy" prefix="subHeader."></Translate>
+          </h2>
+        )}
+        {props.filters && (
+          <h2>
+            <Translate name="filters" prefix="subHeader."></Translate>
+          </h2>
+        )}
       </div>
     </div>
   );

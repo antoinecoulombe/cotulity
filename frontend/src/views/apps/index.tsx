@@ -105,7 +105,7 @@ export default function AppsPage() {
       });
   }, []);
 
-  return (
+  return homes.length > 0 ? (
     <>
       <div id="apps-container">
         <HomesDropdown
@@ -124,5 +124,7 @@ export default function AppsPage() {
         </div>
       </div>
     </>
+  ) : (
+    <></>
   );
 }

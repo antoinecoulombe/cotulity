@@ -25,7 +25,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Imports
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
-require("./routes/_utils/CronJobs");
 // Requires
 var cors = require('cors');
 // Express
@@ -74,7 +73,4 @@ app.use((req, res) => {
         msg: 'request.notFound',
     });
 });
-// Express Start
-app.listen(app.get('port'), () => {
-    return console.log(`server is listening on ${app.get('port')}`);
-});
+module.exports = app;
