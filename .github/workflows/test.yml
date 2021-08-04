@@ -13,8 +13,6 @@ jobs:
         image: mariadb:10.2
         ports:
           - 3306:3306
-        expose:
-          - 3306
         env:
           MYSQL_USER: cot_test
           MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
