@@ -33,18 +33,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      # - name: Shutdown Ubuntu MySQL
-      #   run: sudo service mysql stop
-      # - name: Start MariaDB
-      #   uses: getong/mariadb-action@v1.1
-      #   with:
-      #     character set server: 'utf8'
-      #     collation server: 'utf8_general_ci'
-      #     mariadb version: '10.2'
-      #     mysql database: 'cotulity_test'
-      #     mysql root password: ${{ secrets.DB_ROOT_PWD }}
-      #     mysql user: 'cot_test'
-      #     mysql password: ${{ secrets.DB_TEST_PWD }}
+      - name: Verify MariaDB connection
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+            sleep 1
+          done
       - name: Install packages
         working-directory: ./api
         run: npm install
