@@ -27,4 +27,4 @@ jobs:
       #   run: npm install
       - name: Run tests
         working-directory: ./api
-        run: docker-compose run test
+        run: npm run test
