@@ -32,14 +32,15 @@ describe('authentication', () => {
     }));
     it('should register the user', () => __awaiter(void 0, void 0, void 0, function* () {
         let phone = yield faker.phone.phoneNumber();
+        phone = phone.substring(0, phone.indexOf('x')).trimEnd();
         const res = yield request.post('/users/register').send({
             email: 'z.skyline@hotmail.com',
             password: '123123',
             firstname: yield faker.name.firstName(),
             lastname: yield faker.name.lastName(),
-            phone: phone.substring(0, phone.indexOf('x')).trimEnd(),
+            phone: phone,
         });
-        console.log(res.body);
+        console.log(yield res.body);
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({
             title: 'register.success',
@@ -50,7 +51,7 @@ describe('authentication', () => {
         const res = yield request
             .post('/auth/login')
             .send({ email: 'z.skyline@hotmail.com', password: '123123' });
-        console.log(res.body);
+        console.log(yield res.body);
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({
             title: 'login.success',

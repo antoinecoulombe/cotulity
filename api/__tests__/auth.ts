@@ -20,15 +20,16 @@ describe('authentication', () => {
 
   it('should register the user', async () => {
     let phone: string = await faker.phone.phoneNumber();
+    phone = phone.substring(0, phone.indexOf('x')).trimEnd();
     const res = await request.post('/users/register').send({
       email: 'z.skyline@hotmail.com',
       password: '123123',
       firstname: await faker.name.firstName(),
       lastname: await faker.name.lastName(),
-      phone: phone.substring(0, phone.indexOf('x')).trimEnd(),
+      phone: phone,
     });
 
-    console.log(res.body);
+    console.log(await res.body);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
@@ -42,7 +43,7 @@ describe('authentication', () => {
       .post('/auth/login')
       .send({ email: 'z.skyline@hotmail.com', password: '123123' });
 
-    console.log(res.body);
+    console.log(await res.body);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
