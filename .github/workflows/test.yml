@@ -8,6 +8,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:10.2
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: cot_test
+          MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
+          MYSQL_DATABASE: cotulity_test
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x]
@@ -20,17 +32,18 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Shutdown Ubuntu MySQL
-        run: sudo service mysql stop
-      - name: Start MariaDB
-        uses: getong/mariadb-action@v1.1
-        with:
-          character set server: 'utf8'
-          collation server: 'utf8_general_ci'
-          mysql database: 'cotulity_test'
-          mysql root password: ${{ secrets.DB_ROOT_PWD }}
-          mysql user: 'cot_test'
-          mysql password: ${{ secrets.DB_TEST_PWD }}
+      # - name: Shutdown Ubuntu MySQL
+      #   run: sudo service mysql stop
+      # - name: Start MariaDB
+      #   uses: getong/mariadb-action@v1.1
+      #   with:
+      #     character set server: 'utf8'
+      #     collation server: 'utf8_general_ci'
+      #     mariadb version: '10.2'
+      #     mysql database: 'cotulity_test'
+      #     mysql root password: ${{ secrets.DB_ROOT_PWD }}
+      #     mysql user: 'cot_test'
+      #     mysql password: ${{ secrets.DB_TEST_PWD }}
       - name: Install packages
         working-directory: ./api
         run: npm install
