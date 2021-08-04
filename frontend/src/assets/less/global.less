@@ -427,7 +427,6 @@ button {
     width: 50%;
     height: auto;
     max-height: 100%;
-    overflow-y: auto;
     border-radius: @appBR;
     box-shadow: @appBS;
 
@@ -516,6 +515,7 @@ button {
 
     &.edit {
       max-width: calc(540px - @padding * 2);
+      overflow-y: auto;
 
       > .form {
         width: 100%;
