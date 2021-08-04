@@ -1,5 +1,5 @@
 const app = require('./app.js');
-import './routes/_utils/CronJobs';
+require('./routes/_utils/CronJobs');
 
 // Express Start
 app.listen(app.get('port'), () => {

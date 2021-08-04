@@ -1,9 +1,9 @@
 "use strict";
 var CronJob = require('cron').CronJob;
 var db = require('../../db/models');
-const { Op } = require('sequelize');
+var { Op } = require('sequelize');
 // Every hour (0 0 * * * *), deletes groceries older than one day.
-const cronJob = new CronJob('0 0 * * * *', function () {
+var cronJob = new CronJob('0 0 * * * *', function () {
     const groceries = db.Grocery.destroy({
         where: {
             deletedAt: {
