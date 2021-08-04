@@ -16,7 +16,7 @@ jobs:
         env:
           MYSQL_USER: ${{ secrets.DB_TEST_USER }}
           MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
-          MYSQL_DATABASE: cotulity_test
+          MYSQL_DATABASE: ${{ secrets.DB_TEST }}
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
           DB_HOST: db
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
@@ -46,6 +46,7 @@ jobs:
         working-directory: ./api
         run: npm run test
         env:
-          DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
+          DB_TEST: ${{ secrets.DB_TEST }}
           DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
+          DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
