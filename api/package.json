@@ -10,7 +10,7 @@
     "migrate:undo": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",
     "migrate:reset": "npm run migrate:undo && npm run migrate && npm run seed",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=15000 --detectOpenHandles",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=30000 --detectOpenHandles",
     "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
     "coverage": "cross-env NODE_ENV=test npm run migrate:reset && jest --collectCoverage --"
   },

@@ -39,6 +39,7 @@ describe('authentication', () => {
             lastname: yield faker.name.lastName(),
             phone: phone.substring(0, phone.indexOf('x')).trimEnd(),
         });
+        console.log(res);
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({
             title: 'register.success',
@@ -49,6 +50,7 @@ describe('authentication', () => {
         const res = yield request
             .post('/auth/login')
             .send({ email: 'z.skyline@hotmail.com', password: '123123' });
+        console.log(res);
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({
             title: 'login.success',

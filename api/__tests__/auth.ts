@@ -28,6 +28,8 @@ describe('authentication', () => {
       phone: phone.substring(0, phone.indexOf('x')).trimEnd(),
     });
 
+    console.log(res);
+
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
       title: 'register.success',
@@ -39,6 +41,8 @@ describe('authentication', () => {
     const res = await request
       .post('/auth/login')
       .send({ email: 'z.skyline@hotmail.com', password: '123123' });
+
+    console.log(res);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
