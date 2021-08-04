@@ -47,7 +47,8 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             }
             if (bcrypt.compareSync(password, user.password)) {
                 let payload = { id: user.id };
-                let token = jwt.sign(payload, process.env.JWT_SECRET, {
+                let token = jwt.sign(payload, 'pIIVjCO6ba4wgihLVAVt7ZLs0XcgLFOsxIzIJifJgTYn3xBGMONuDZ8yyMs3Uqs', //process.env.JWT_SECRET,
+                {
                     expiresIn: '24h',
                 });
                 res.json({
