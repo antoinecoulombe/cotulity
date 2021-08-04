@@ -45,13 +45,9 @@ Router.post('/login', async (req, res) => {
       if (bcrypt.compareSync(password, user.password)) {
         let payload = { id: user.id };
 
-        let token = jwt.sign(
-          payload,
-          'pIIVjCO6ba4wgihLVAVt7ZLs0XcgLFOsxIzIJifJgTYn3xBGMONuDZ8yyMs3Uqs', //process.env.JWT_SECRET,
-          {
-            expiresIn: '24h',
-          }
-        );
+        let token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: '24h',
+        });
 
         res.json({
           title: 'login.success',

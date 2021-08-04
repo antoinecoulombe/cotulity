@@ -14,7 +14,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_USER: cot_test
+          MYSQL_USER: ${{ secrets.DB_TEST_USER }}
           MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
           MYSQL_DATABASE: cotulity_test
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
@@ -45,3 +45,7 @@ jobs:
       - name: Run tests
         working-directory: ./api
         run: npm run test
+        env:
+          DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
+          DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
