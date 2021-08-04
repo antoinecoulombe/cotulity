@@ -19,14 +19,12 @@ describe('authentication', () => {
   });
 
   it('should register the user', async () => {
-    let phone: string = await faker.phone.phoneNumber();
-    phone = phone.substring(0, phone.indexOf('x')).trimEnd();
     const res = await request.post('/users/register').send({
       email: 'z.skyline@hotmail.com',
       password: '123123',
       firstname: await faker.name.firstName(),
       lastname: await faker.name.lastName(),
-      phone: phone,
+      phone: await faker.phone.phoneNumber(),
     });
 
     console.log(await res.body);
