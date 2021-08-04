@@ -20,17 +20,17 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      # - name: Build Docker images
-      #   run: docker-compose build
-      - name: Start MariaDB database
+      - name: Shutdown Ubuntu MySQL
+        run: sudo service mysql stop
+      - name: Start MariaDB
         uses: getong/mariadb-action@v1.1
         with:
           character set server: 'utf8'
           collation server: 'utf8_general_ci'
           mysql database: 'cotulity_test'
-          mysql root password: 'root_pwd'
+          mysql root password: ${{ secrets.DB_ROOT_PWD }}
           mysql user: 'cot_test'
-          mysql password: 'test_pwd'
+          mysql password: ${{ secrets.DB_TEST_PWD }}
       - name: Install packages
         working-directory: ./api
         run: npm install
