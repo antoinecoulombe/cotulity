@@ -2,6 +2,59 @@
 
 .open-app-container.tasks {
   max-width: 1200px;
-  min-width: 750px;
+  min-width: 900px;
   min-height: 480px;
+
+  .list-item {
+    .list-item-left {
+      .icon-tooltip {
+        display: block;
+      }
+    }
+
+    .list-item-right {
+      > .involved-users {
+        @iconSize: 40px;
+        @marginLeft: 5px;
+        @iconsVisible: 5;
+        @offset: 0;
+        @width: (@iconSize + @marginLeft) * @iconsVisible + @offset;
+
+        width: @width;
+        height: @iconSize;
+        position: relative;
+        display: block;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
+
+        .hide-scrollbar();
+
+        img,
+        .user-initials {
+          display: inline-block;
+          width: @iconSize;
+          height: @iconSize;
+          margin-left: @marginLeft;
+          border-radius: 50%;
+
+          pointer-events: none;
+        }
+
+        .user-initials {
+          .font-default();
+
+          font-size: 17px;
+          font-weight: bold;
+          text-align: center;
+          line-height: @iconSize;
+          color: var(--darkGray);
+          background-color: var(--lighterGray);
+
+          position: relative;
+          bottom: 14px;
+        }
+      }
+    }
+  }
 }

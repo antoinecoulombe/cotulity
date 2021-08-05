@@ -139,6 +139,15 @@ input:-webkit-autofill {
   }
 }
 
+.hide-scrollbar() {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 // #endregion
 
 // #region Logout
@@ -219,19 +228,38 @@ input:-webkit-autofill {
     .tag,
     button {
       .font-default();
+      .noselect();
 
       position: relative;
-      float: right;
       font-weight: 500;
       border-radius: 200px;
       white-space: nowrap;
+      margin-left: 10px;
     }
 
     .tag {
-      color: #e77e89;
-      background-color: #fde6e9;
       padding: 7px 14px;
       font-size: 15px;
+
+      &.red {
+        color: #e77e89;
+        background-color: #fde6e9;
+      }
+
+      &.orange {
+        color: #e79c7f;
+        background-color: #fdefe6;
+      }
+
+      &.yellow {
+        color: #d1ba38;
+        background-color: #fff6c4;
+      }
+
+      &.green {
+        color: #64c7af;
+        background-color: #e0fbf6;
+      }
     }
 
     > .list-item-center {
@@ -245,7 +273,9 @@ input:-webkit-autofill {
 
     > .list-item-left,
     > .list-item-right {
+      display: flex;
       position: relative;
+      align-items: center;
 
       > h3,
       > h2,
@@ -429,6 +459,8 @@ button {
     max-height: 100%;
     border-radius: @appBR;
     box-shadow: @appBS;
+
+    .hide-scrollbar();
 
     > .close {
       position: absolute;

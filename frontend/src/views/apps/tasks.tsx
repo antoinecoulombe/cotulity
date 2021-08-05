@@ -91,6 +91,15 @@ export default function AppTasks() {
         },
         action: () => handleSidebarUser(3),
       },
+      {
+        user: {
+          id: 4,
+          firstname: 'Charles-andré',
+          lastname: 'Doe',
+          taskCount: 1,
+        },
+        action: () => handleSidebarUser(3),
+      },
     ],
   });
   const [subHeader, setSubHeader] = useState<SubHeaderProps>({
@@ -144,6 +153,48 @@ export default function AppTasks() {
 
   function showPopup() {}
 
+  function isSameDay(d1: Date, d2: Date) {
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+    );
+  }
+
+  function isTomorrow(d1: Date, d2: Date) {
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() + 1 === d2.getDate()
+    );
+  }
+
+  function getDaysDiff(base: Date, toSubstract: Date) {
+    let diffTime = Math.abs((base as any) - (toSubstract as any));
+    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return base < toSubstract ? -diffDays : diffDays;
+  }
+
+  function getMonthAndDay(date: string) {
+    let d = new Date(date);
+    let dNow = new Date(Date.now());
+    let dString = d.toDateString().split(' ');
+    if (isSameDay(dNow, d)) return 'Today';
+    if (isTomorrow(dNow, d)) return 'Tomorrow';
+    return `${dString[1]} ${dString[2]}`;
+  }
+
+  function getTagColor(dueDate: string) {
+    let d = new Date(dueDate);
+    let dNow = new Date(Date.now());
+    let daysDiff = getDaysDiff(d, dNow);
+
+    if (isSameDay(dNow, d) || isTomorrow(dNow, d)) return 'red';
+    if (daysDiff < 4) return 'orange';
+    if (daysDiff < 7) return 'yellow';
+    return 'green';
+  }
+
   return (
     <AppContainer
       title="tasks"
@@ -170,7 +221,10 @@ export default function AppTasks() {
                   </IconToolTip>
                 </ListItemLeft>
                 <ListItemRight>
-                  <div className="involved-users">
+                  <div
+                    className="involved-users"
+                    style={t.Users.length < 5 ? { width: 'auto' } : {}}
+                  >
                     {t.Users.map((u) =>
                       u.Image?.url ? (
                         <img
@@ -178,14 +232,16 @@ export default function AppTasks() {
                           src={`http://localhost:3000/images/public/${u.Image.url}`}
                         />
                       ) : (
-                        <FontAwesomeIcon
+                        <div
+                          className="user-initials"
                           key={`involved-${t.id}-${u.id}`}
-                          icon="user-circle"
-                        />
+                        >{`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}</div>
                       )
                     )}
                   </div>
-                  {/* <div className="tag">Today</div> */}
+                  <div className={`tag ${getTagColor(t.dueDateTime)}`}>
+                    {getMonthAndDay(t.dueDateTime)}
+                  </div>
                 </ListItemRight>
               </ListItem>
             ))

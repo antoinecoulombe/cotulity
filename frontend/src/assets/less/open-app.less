@@ -151,12 +151,8 @@
         max-height: @tabSize * 4;
         margin-top: auto;
         overflow-y: scroll;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
 
-        &::-webkit-scrollbar {
-          display: none;
-        }
+        .hide-scrollbar();
 
         > .tab {
           svg {
