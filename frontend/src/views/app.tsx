@@ -55,7 +55,14 @@ import {
   faUpload,
   faDoorClosed,
   faDoorOpen,
+  faCalendar,
+  faHashtag,
+  faCheck,
+  faPlusSquare,
+  faLock,
+  faHistory,
 } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 
@@ -87,7 +94,14 @@ library.add(
   faCrown,
   faUpload,
   faDoorClosed,
-  faDoorOpen
+  faDoorOpen,
+  faCalendar,
+  faHashtag,
+  faCheck,
+  faPlusSquare,
+  faLock,
+  faStar,
+  faHistory
 );
 
 export default function App() {

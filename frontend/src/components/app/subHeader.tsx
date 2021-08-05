@@ -1,11 +1,21 @@
 import React from 'react';
-import '../../assets/css/open-app.css';
 import Translate from '../utils/translate';
+import '../../assets/css/open-app.css';
 
-interface SubHeaderProps {
+export interface SubHeaderProps {
   tabs: Array<{ name: string; action: () => void; selected?: boolean }>;
   orderBy?: Array<{ name: string; action: () => void }>;
   filters?: Array<{ name: string; action: () => void }>;
+}
+
+export function switchSubHeaderTab(
+  subHeader: SubHeaderProps,
+  selected: string
+) {
+  let newTabs = [...subHeader.tabs];
+  newTabs[subHeader.tabs.findIndex((t) => t.selected == true)].selected = false;
+  newTabs[subHeader.tabs.findIndex((t) => t.name == selected)].selected = true;
+  return newTabs;
 }
 
 export default function SubHeader(props: SubHeaderProps) {

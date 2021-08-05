@@ -169,7 +169,16 @@
     }
   },
   "tasks": {
-    "title": { "tasks": "Tâches" }
+    "title": { "tasks": "Tâches" },
+    "tooltip": { "add": "Ajouter une tâche" },
+    "sidebar": {
+      "myTasks": "Mes tâches",
+      "upcoming": "À venir",
+      "important": "Important",
+      "private": "Privé",
+      "history": "Historique",
+      "trash": "Corbeille"
+    }
   },
   "groceries": {
     "title": { "groceries": "Liste d'épicerie" },
