@@ -32,19 +32,29 @@ export interface Task {
   shared: boolean;
   completedOn: string | null;
   deletedAt: string | null;
-  Owner: {
+  Owner?: {
     id: number;
     firstname: string;
     lastname: string;
     Image: { url: string } | null;
   };
-  Users: Array<{
+  Users?: Array<{
     id: number;
     firstname: string;
     lastname: string;
     Image: { url: string } | null;
   }>;
 }
+
+export const initTask: Task = {
+  id: -1,
+  name: '',
+  dueDateTime: '/@:',
+  important: false,
+  shared: true,
+  completedOn: null,
+  deletedAt: null,
+};
 
 const nullJSX: JSX.Element = <></>;
 
@@ -174,14 +184,15 @@ export default function AppTasks() {
     setPopup(nullJSX);
   }
 
+  function handleEditSubmit(task: Task) {}
+
   function showPopup(task?: Task) {
     setPopup(
       <EditPopup
         onCancel={closePopup}
         task={task}
-        onSubmit={(value: string, refNumber: number) => {}}
-        onDelete={(refNumber: number) => {}}
-        updateMemberCount={(refNumber: number, change: number) => {}}
+        onSubmit={(task: Task) => handleEditSubmit(task)}
+        onDelete={task ? (id: number) => deleteTask(id) : undefined}
       />
     );
   }
@@ -231,41 +242,48 @@ export default function AppTasks() {
                     />
                   </div>
                   <h3>{t.name}</h3>
-                  <IconToolTip
-                    className="icon"
-                    icon="exclamation-circle"
-                    error={true}
-                    style={{ iconWidth: 22, tooltipMultiplier: 5 }}
-                  >
-                    subHeader.important
-                  </IconToolTip>
+                  {t.important && (
+                    <IconToolTip
+                      className="icon"
+                      icon="exclamation-circle"
+                      error={true}
+                      style={{ iconWidth: 22, tooltipMultiplier: 5 }}
+                    >
+                      subHeader.important
+                    </IconToolTip>
+                  )}
                 </ListItemLeft>
                 <ListItemRight>
-                  <div
-                    className="involved-users"
-                    style={t.Users.length < 5 ? { width: 'auto' } : {}}
-                  >
-                    {t.Users.map((u) =>
-                      u.Image?.url ? (
-                        <img
-                          key={`involved-${t.id}-${u.id}`}
-                          src={`http://localhost:3000/images/public/${u.Image.url}`}
-                        />
-                      ) : (
-                        <>
-                          <div
-                            className="user-initials"
-                            key={`involved-${t.id}-${u.id}`}
-                          >
-                            {`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}
-                          </div>
-                        </>
-                      )
-                    )}
-                  </div>
-                  <div className={`tag ${getTagColor(t.dueDateTime)}`}>
-                    {DateExt.getMonthAndDay(t.dueDateTime)}
-                  </div>
+                  {t.Users && (
+                    <>
+                      <div
+                        className="involved-users"
+                        style={t.Users.length < 5 ? { width: 'auto' } : {}}
+                      >
+                        {t.Users.map((u) =>
+                          u.Image?.url ? (
+                            <img
+                              key={`involved-${t.id}-${u.id}`}
+                              src={`http://localhost:3000/images/public/${u.Image.url}`}
+                            />
+                          ) : (
+                            <>
+                              <div
+                                className="user-initials"
+                                key={`involved-${t.id}-${u.id}`}
+                              >
+                                {`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}
+                              </div>
+                            </>
+                          )
+                        )}
+                      </div>
+                      <div className={`tag ${getTagColor(t.dueDateTime)}`}>
+                        {DateExt.getMonthAndDay(t.dueDateTime)}
+                      </div>
+                    </>
+                  )}
+
                   <IconToolTip
                     icon="pen"
                     style={iconStyle}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import { Task } from '../../views/apps/tasks';
+import { initTask, Task } from '../../views/apps/tasks';
 import Popup from '../utils/popup';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputForm from '../forms/doubleInputForm';
@@ -13,50 +13,135 @@ interface EditPopupProps {
   task?: Task;
   onCancel(...attr: any): any;
   onSubmit(...attr: any): any;
-  updateMemberCount(...attr: any): any;
   onDelete?(...attr: any): any;
 }
-
 export default function EditPopup(props: EditPopupProps) {
   const { setNotification, setErrorNotification } = useNotifications();
-  const [name, setName] = useState<string>();
   const [error, setError] = useState<boolean>(false);
+  const [task, setTask] = useState<Task>(
+    props.task
+      ? { ...props.task, dueDateTime: handleDate(props.task.dueDateTime) }
+      : initTask
+  );
+
+  // Input format: 2021-08-18T08:26:21.000Z
+  function handleDate(date: string): string {
+    let split = date.split('T');
+    let handledDate = '';
+    handledDate += split[0].substring(split[0].lastIndexOf('-') + 1) + '/';
+    handledDate +=
+      split[0].substring(split[0].indexOf('-') + 1, split[0].lastIndexOf('-')) +
+      '@';
+    handledDate += split[1].substring(0, split[1].indexOf(':')) + ':';
+    handledDate += split[1].substring(
+      split[1].indexOf(':') + 1,
+      split[1].lastIndexOf(':')
+    );
+    return handledDate;
+  }
 
   useEffect(() => {}, []);
 
   function onChange(event: any) {
-    setName(event.target.value);
+    // setName(event.target.value);
+  }
+
+  function toggleSwitch(field: string) {
+    if (field == 'important') setTask({ ...task, important: !task.important });
+    else if (field == 'shared') setTask({ ...task, shared: !task.shared });
   }
 
   function onSubmit() {
-    if (!name || name.length === 0) {
-      setError(true);
-      setErrorNotification({
-        title: 'newHome.missingName',
-        msg: 'newHome.missingName',
-      });
-      return;
+    setError(false);
+    props.onSubmit(task);
+  }
+
+  function getDateTime() {
+    let split = task.dueDateTime.split('@');
+    var day: string, month: string, hour: string, minute: string;
+    if (split[0].length > 1) {
+      day = split[0].substring(0, split[0].indexOf('/'));
+      month = split[0].substring(split[0].indexOf('/') + 1);
+    } else {
+      day = '';
+      month = '';
     }
 
-    setError(false);
-    // props.onSubmit(name, props.home.refNumber);
+    if (split[1].length > 1) {
+      hour = split[1].substring(0, split[1].indexOf(':'));
+      minute = split[1].substring(split[1].indexOf(':') + 1);
+    } else {
+      hour = '';
+      minute = '';
+    }
+    return { day: day, month: month, hour: hour, minute: minute };
+  }
+
+  function setDateTime(e: any, field: string) {
+    if (e.target.value.length > 2) return;
+
+    var newDate: string = '';
+    switch (field) {
+      case 'day':
+        if (e.target.value > 31) return;
+        newDate =
+          e.target.value +
+          task.dueDateTime.substring(task.dueDateTime.indexOf('/'));
+        break;
+      case 'month':
+        if (e.target.value > 12) return;
+        newDate = task.dueDateTime.substring(
+          0,
+          task.dueDateTime.indexOf('/') + 1
+        );
+        newDate += e.target.value;
+        newDate += task.dueDateTime.substring(task.dueDateTime.indexOf('@'));
+        break;
+      case 'hour':
+        if (e.target.value > 23) return;
+        newDate = task.dueDateTime.substring(
+          0,
+          task.dueDateTime.indexOf('@') + 1
+        );
+        newDate += e.target.value;
+        newDate += task.dueDateTime.substring(task.dueDateTime.indexOf(':'));
+        break;
+      case 'minute':
+        if (e.target.value > 59) return;
+        newDate = task.dueDateTime.substring(
+          0,
+          task.dueDateTime.indexOf(':') + 1
+        );
+        newDate += e.target.value;
+        break;
+    }
+    setTask({ ...task, dueDateTime: newDate });
   }
 
   return (
     <Popup
       onCancel={() => props.onCancel?.()}
       onSubmit={onSubmit}
-      onDelete={() => props.onDelete?.()}
+      onDelete={props.task ? () => props.onDelete?.(props.task?.id) : undefined}
       type="edit"
+      new={props.task == undefined}
     >
       <div className="form">
-        <h1>Manage Task</h1>
+        <h1>
+          <Translate
+            name={props.task ? 'manage' : 'create'}
+            prefix="tasks.title."
+          />
+        </h1>
         <SingleInputForm
           name="tasks.name.taskDesc"
           title="form.name"
           type="text"
           required={true}
-          parent={{ onChange: onChange }}
+          value={task.name}
+          parent={{
+            onChange: (e: any) => setTask({ ...task, name: e.target.value }),
+          }}
           style={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup"
           error={error}
@@ -64,6 +149,8 @@ export default function EditPopup(props: EditPopupProps) {
         <SingleInputForm
           name="tasks.name.participants"
           title="tasks.title.participants"
+          // TODO: This type should be 'select' and handled differently
+          // TODO: value = tasks.Users
           type="text"
           parent={{ onChange: onChange }}
           style={{ iconWidth: 36, tooltipMultiplier: 8 }}
@@ -75,7 +162,12 @@ export default function EditPopup(props: EditPopupProps) {
           title="tasks.title.dueDate"
           required={true}
           type="text"
-          parent={{ onChange: onChange }}
+          firstValue={getDateTime().day}
+          secondValue={getDateTime().month}
+          parent={{
+            onChange: (e: any, input: number) =>
+              setDateTime(e, input == 1 ? 'day' : 'month'),
+          }}
           style={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup half"
           error={error}
@@ -85,7 +177,12 @@ export default function EditPopup(props: EditPopupProps) {
           name={['tasks.name.date.hh', 'tasks.name.date.mm']}
           title="tasks.title.dueTime"
           type="text"
-          parent={{ onChange: onChange }}
+          firstValue={getDateTime().hour}
+          secondValue={getDateTime().minute}
+          parent={{
+            onChange: (e: any, input: number) =>
+              setDateTime(e, input == 1 ? 'hour' : 'minute'),
+          }}
           style={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup half"
           error={error}
@@ -97,20 +194,20 @@ export default function EditPopup(props: EditPopupProps) {
           </h2>
           <div className="input-toggle">
             <div className="generic-input">
-              {props.task?.important ? (
+              {task.important ? (
                 <input
                   id="theme-switch"
                   type="checkbox"
                   className="switch"
                   defaultChecked
-                  onClick={() => {}}
+                  onClick={() => toggleSwitch('important')}
                 />
               ) : (
                 <input
                   id="theme-switch"
                   type="checkbox"
                   className="switch"
-                  onClick={() => {}}
+                  onClick={() => toggleSwitch('important')}
                 />
               )}
             </div>
@@ -130,20 +227,20 @@ export default function EditPopup(props: EditPopupProps) {
           </h2>
           <div className="input-toggle">
             <div className="generic-input">
-              {props.task?.shared ? (
+              {task.shared ? (
                 <input
                   id="theme-switch"
                   type="checkbox"
                   className="switch"
                   defaultChecked
-                  onClick={() => {}}
+                  onClick={() => toggleSwitch('shared')}
                 />
               ) : (
                 <input
                   id="theme-switch"
                   type="checkbox"
                   className="switch"
-                  onClick={() => {}}
+                  onClick={() => toggleSwitch('shared')}
                 />
               )}
             </div>

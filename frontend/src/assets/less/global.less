@@ -464,7 +464,7 @@ button {
     .centered();
 
     position: relative;
-    background-color: var(--gradient-input-bg);
+    background-color: var(--gradient-input-bg-dark);
     border: solid 1px var(--popup-border-color);
     padding: @padding;
     width: 50%;
@@ -560,7 +560,7 @@ button {
 
     &.edit {
       max-width: calc(540px - @padding * 2);
-      overflow-y: auto;
+      overflow-y: visible;
 
       > .form {
         width: 100%;
@@ -1514,8 +1514,10 @@ button {
     }
 
     input[type='checkbox'] {
+      opacity: var(--checkbox-opacity);
       &:not(.switch) {
         border-radius: 7px;
+
         &:after {
           width: 5px;
           height: 9px;

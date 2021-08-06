@@ -15,13 +15,13 @@ export interface DoubleInputFormProps {
   label?: string;
   children?: string;
   error?: boolean;
+  firstValue?: string;
+  secondValue?: string;
   squaredInputs?: boolean;
   required?: boolean;
   className?: string;
   parent?: {
-    firstValue?: string;
-    secondValue?: string;
-    onChange: (e: any) => void;
+    onChange: (e: any, input: number) => void;
   };
   onSubmit?: (firstValue: string, secondValue: string) => void;
   onHelpClick?: (e: any) => void;
@@ -29,25 +29,24 @@ export interface DoubleInputFormProps {
 }
 
 export default function DoubleInputForm(props: DoubleInputFormProps) {
-  const [firstValue, setFirstValue] = useState<string>('');
-  const [secondValue, setSecondValue] = useState<string>('');
+  const [firstValue, setFirstValue] = useState<string>(props.firstValue ?? '');
+  const [secondValue, setSecondValue] = useState<string>(
+    props.secondValue ?? ''
+  );
 
   useEffect(() => {
-    setFirstValue(
-      firstValue == '' ? props.parent?.firstValue ?? '' : firstValue
-    );
-    setSecondValue(
-      secondValue == '' ? props.parent?.secondValue ?? '' : secondValue
-    );
+    setFirstValue(firstValue == '' ? props.firstValue ?? '' : firstValue);
+    setSecondValue(secondValue == '' ? props.secondValue ?? '' : secondValue);
   });
 
   function handleKeyPress(event: any) {
     // if (event.key === 'Enter') props.onSubmit?.(value);
   }
 
-  function onChange(event: any) {
-    // setValue(event.target.value);
-    // if (props.parent?.onChange) props.parent.onChange(event);
+  function onChange(event: any, input: number) {
+    if (input == 1) setFirstValue(event.target.value);
+    if (input == 2) setSecondValue(event.target.value);
+    if (props.parent?.onChange) props.parent.onChange(event, input);
   }
 
   return (
@@ -85,22 +84,22 @@ export default function DoubleInputForm(props: DoubleInputFormProps) {
           name={props.name[0]}
           label={props.label}
           type={props.type ?? 'text'}
-          value={props.parent?.firstValue ?? firstValue}
+          value={props.firstValue ?? firstValue}
           error={props.error}
-          onChange={onChange}
+          onChange={(e: any) => onChange(e, 1)}
           onKeyPress={handleKeyPress}
-          filled={props.parent?.firstValue != undefined}
+          filled={(props.firstValue?.length ?? 0) > 0}
           className={props.squaredInputs ? ' squared' : ''}
         ></Input>
         <Input
           name={props.name[1]}
           label={props.label}
           type={props.type ?? 'text'}
-          value={props.parent?.secondValue ?? secondValue}
+          value={props.secondValue ?? secondValue}
           error={props.error}
-          onChange={onChange}
+          onChange={(e: any) => onChange(e, 2)}
           onKeyPress={handleKeyPress}
-          filled={props.parent?.secondValue != undefined}
+          filled={(props.secondValue?.length ?? 0) > 0}
           className={props.squaredInputs ? ' squared' : ''}
         ></Input>
         {props.onSubmit && (

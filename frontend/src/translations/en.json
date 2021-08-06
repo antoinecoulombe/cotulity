@@ -53,7 +53,8 @@
     "save": "Save",
     "delete": "Delete",
     "accept": "Accept",
-    "decline": "Decline"
+    "decline": "Decline",
+    "send": "Send"
   },
   "form": {
     "email": "Email",
@@ -175,7 +176,9 @@
       "dueDate": "Due Date",
       "dueTime": "Due Time",
       "important": "Important",
-      "shared": "Shared"
+      "shared": "Shared",
+      "manage": "Manage Task",
+      "create": "Create Task"
     },
     "name": {
       "taskDesc": "Brief description of the task",

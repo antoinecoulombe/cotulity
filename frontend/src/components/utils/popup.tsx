@@ -7,6 +7,7 @@ import Translate from './translate';
 interface PopupProps {
   children: any;
   type: 'edit' | 'si' | 'warning';
+  new?: boolean;
   onCancel(...attr: any): any;
   onSubmit?(...attr: any): any;
   onDelete?(...attr: any): any;
@@ -49,7 +50,7 @@ export default function Popup(props: PopupProps) {
               onClick={(...attr) => props.onSubmit?.(attr)}
             >
               <p>
-                <Translate name="save" prefix="nav." />
+                <Translate name={props.new ? 'send' : 'save'} prefix="nav." />
               </p>
             </button>
           </div>

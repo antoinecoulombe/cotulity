@@ -53,7 +53,8 @@
     "save": "Sauvegarder",
     "delete": "Supprimer",
     "accept": "Accepter",
-    "decline": "Refuser"
+    "decline": "Refuser",
+    "send": "Envoyer"
   },
   "form": {
     "email": "Courriel",
@@ -175,7 +176,9 @@
       "dueDate": "Date",
       "dueTime": "Heure",
       "important": "Important",
-      "shared": "Partagé"
+      "shared": "Partagé",
+      "manage": "Modifier la tâche",
+      "create": "Créer une nouvelle tâche"
     },
     "name": {
       "taskDesc": "Brève description de la tâche",

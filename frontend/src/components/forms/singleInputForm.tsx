@@ -14,21 +14,18 @@ export interface SingleInputFormProps {
   type?: 'text' | 'password' | 'phone' | 'email';
   label?: string;
   children?: string;
+  value?: string;
   error?: boolean;
   required?: boolean;
   className?: string;
-  parent?: { value?: string; onChange: (e: any) => void };
+  parent?: { onChange: (e: any) => void };
   onSubmit?: (value: string) => void;
   onHelpClick?: (e: any) => void;
   onBack?: (e: any) => void;
 }
 
 export default function SingleInputForm(props: SingleInputFormProps) {
-  const [value, setValue] = useState<string>('');
-
-  useEffect(() => {
-    setValue(value == '' ? props.parent?.value ?? '' : value);
-  });
+  const [value, setValue] = useState<string>(props.value ?? '');
 
   function handleKeyPress(event: any) {
     if (event.key === 'Enter') props.onSubmit?.(value);
@@ -74,11 +71,11 @@ export default function SingleInputForm(props: SingleInputFormProps) {
           name={props.name}
           label={props.label}
           type={props.type ?? 'text'}
-          value={props.parent?.value ?? value}
+          value={props.value ?? value}
           error={props.error}
           onChange={onChange}
           onKeyPress={handleKeyPress}
-          filled={props.parent?.value != undefined}
+          filled={(props.value?.length ?? 0) > 0}
         ></Input>
         {props.onSubmit && (
           <IconToolTip
