@@ -1,20 +1,35 @@
 @import (reference) 'global.less';
 
 .open-app-container.tasks {
-  max-width: 1200px;
-  min-width: 900px;
+  max-width: 1400px;
+  min-width: 1000px;
   min-height: 480px;
 
   .list-item {
+    @iconSize: 40px;
+
     .list-item-left {
+      height: @iconSize;
       .icon-tooltip {
         display: block;
+      }
+
+      .generic-input {
+        margin-right: 10px;
+
+        > input {
+          height: 22px;
+          width: 22px;
+
+          &::after {
+            top: 3px;
+          }
+        }
       }
     }
 
     .list-item-right {
       > .involved-users {
-        @iconSize: 40px;
         @marginLeft: 5px;
         @iconsVisible: 5;
         @offset: 0;

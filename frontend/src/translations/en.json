@@ -169,8 +169,27 @@
     }
   },
   "tasks": {
-    "title": { "tasks": "Tasks" },
-    "tooltip": { "add": "Add task" },
+    "title": {
+      "tasks": "Tasks",
+      "participants": "Participants",
+      "dueDate": "Due Date",
+      "dueTime": "Due Time",
+      "important": "Important",
+      "shared": "Shared"
+    },
+    "name": {
+      "taskDesc": "Brief description of the task",
+      "participants": "Attribute this task to house members",
+      "date": {
+        "dd": "DD",
+        "mm": "MM",
+        "hh": "HH"
+      }
+    },
+    "tooltip": {
+      "add": "Add task",
+      "shared": "A private task will not be shown to other people in the house."
+    },
     "sidebar": {
       "myTasks": "My Tasks",
       "upcoming": "Upcoming",

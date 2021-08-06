@@ -256,6 +256,12 @@ export default function AppHomes() {
             <ListItemRight>
               {!home.UserHome.accepted && (
                 <>
+                  <div className="tag red">
+                    <Translate
+                      name="requestPending"
+                      prefix="homes.tag."
+                    ></Translate>
+                  </div>
                   <IconToolTip
                     icon="times-circle"
                     style={iconStyle}
@@ -269,26 +275,20 @@ export default function AppHomes() {
                       ></Translate>
                     )}
                   </IconToolTip>
-                  <div className="tag">
-                    <Translate
-                      name="requestPending"
-                      prefix="homes.tag."
-                    ></Translate>
-                  </div>
                 </>
               )}
               {localStorage.getItem('userId') == home.ownerId.toString() &&
                 home.UserHome.accepted && (
                   <>
                     <IconToolTip
-                      icon="times-circle"
+                      icon="user-plus"
                       style={iconStyle}
-                      error={true}
-                      onClick={(e) => showWarningPopup(e, 'delete')}
+                      circled={{ value: true, multiplier: 0.55, offsetX: 1 }}
+                      onClick={(e) => showPopup(e, 'inviteMember')}
                     >
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate
-                          name="deleteHome"
+                          name="addMember"
                           prefix="homes.action."
                         ></Translate>
                       )}
@@ -307,14 +307,14 @@ export default function AppHomes() {
                       )}
                     </IconToolTip>
                     <IconToolTip
-                      icon="user-plus"
+                      icon="times-circle"
                       style={iconStyle}
-                      circled={{ value: true, multiplier: 0.55, offset: 1 }}
-                      onClick={(e) => showPopup(e, 'inviteMember')}
+                      error={true}
+                      onClick={(e) => showWarningPopup(e, 'delete')}
                     >
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate
-                          name="addMember"
+                          name="deleteHome"
                           prefix="homes.action."
                         ></Translate>
                       )}
@@ -325,20 +325,6 @@ export default function AppHomes() {
                 home.UserHome.accepted && (
                   <>
                     <IconToolTip
-                      icon="sign-out-alt"
-                      style={iconStyle}
-                      circled={{ value: true, multiplier: 0.58, offset: 1 }}
-                      error={true}
-                      onClick={(e) => showWarningPopup(e, 'quit')}
-                    >
-                      {ReactDOMServer.renderToStaticMarkup(
-                        <Translate
-                          name="quitHome"
-                          prefix="homes.action."
-                        ></Translate>
-                      )}
-                    </IconToolTip>
-                    <IconToolTip
                       icon="pen"
                       style={iconStyle}
                       circled={{ value: true, multiplier: 0.45 }}
@@ -347,6 +333,25 @@ export default function AppHomes() {
                       {ReactDOMServer.renderToStaticMarkup(
                         <Translate
                           name="renameHome"
+                          prefix="homes.action."
+                        ></Translate>
+                      )}
+                    </IconToolTip>
+                    <IconToolTip
+                      icon="sign-out-alt"
+                      style={iconStyle}
+                      circled={{
+                        value: true,
+                        multiplier: 0.58,
+                        offsetX: 1,
+                        offsetY: 1,
+                      }}
+                      error={true}
+                      onClick={(e) => showWarningPopup(e, 'quit')}
+                    >
+                      {ReactDOMServer.renderToStaticMarkup(
+                        <Translate
+                          name="quitHome"
                           prefix="homes.action."
                         ></Translate>
                       )}

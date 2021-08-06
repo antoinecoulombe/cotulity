@@ -18,8 +18,13 @@ import ListItemRight from '../../components/utils/lists/listRight';
 import IconToolTip from '../../components/global/iconTooltip';
 import axios from '../../utils/fetchClient';
 import '../../assets/css/tasks.css';
+import Tooltip from '../../components/global/tooltip';
+import ReactDOMServer from 'react-dom/server';
+import Translate from '../../components/utils/translate';
+import EditPopup from '../../components/tasks/editPopup';
+import * as DateExt from '../../components/utils/date';
 
-interface Task {
+export interface Task {
   id: number;
   name: string;
   dueDateTime: string;
@@ -41,9 +46,12 @@ interface Task {
   }>;
 }
 
+const nullJSX: JSX.Element = <></>;
+
 export default function AppTasks() {
   const { setNotification, setErrorNotification, setSuccessNotification } =
     useNotifications();
+  const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const tabs: any = [
     { icon: 'star', name: 'myTasks' },
     { icon: 'calendar', name: 'upcoming' },
@@ -151,49 +159,54 @@ export default function AppTasks() {
     setSidebar({ ...sidebar, userTabs: switchSidebarUserTab(sidebar, id) });
   }
 
-  function showPopup() {}
-
-  function isSameDay(d1: Date, d2: Date) {
-    return (
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() === d2.getDate()
-    );
-  }
-
-  function isTomorrow(d1: Date, d2: Date) {
-    return (
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() + 1 === d2.getDate()
-    );
-  }
-
-  function getDaysDiff(base: Date, toSubstract: Date) {
-    let diffTime = Math.abs((base as any) - (toSubstract as any));
-    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return base < toSubstract ? -diffDays : diffDays;
-  }
-
-  function getMonthAndDay(date: string) {
-    let d = new Date(date);
-    let dNow = new Date(Date.now());
-    let dString = d.toDateString().split(' ');
-    if (isSameDay(dNow, d)) return 'Today';
-    if (isTomorrow(dNow, d)) return 'Tomorrow';
-    return `${dString[1]} ${dString[2]}`;
-  }
-
   function getTagColor(dueDate: string) {
     let d = new Date(dueDate);
     let dNow = new Date(Date.now());
-    let daysDiff = getDaysDiff(d, dNow);
+    let daysDiff = DateExt.getDaysDiff(d, dNow);
 
-    if (isSameDay(dNow, d) || isTomorrow(dNow, d)) return 'red';
+    if (DateExt.isSameDay(dNow, d) || DateExt.isTomorrow(dNow, d)) return 'red';
     if (daysDiff < 4) return 'orange';
     if (daysDiff < 7) return 'yellow';
     return 'green';
   }
+
+  function closePopup() {
+    setPopup(nullJSX);
+  }
+
+  function showPopup(task?: Task) {
+    setPopup(
+      <EditPopup
+        onCancel={closePopup}
+        task={task}
+        onSubmit={(value: string, refNumber: number) => {}}
+        onDelete={(refNumber: number) => {}}
+        updateMemberCount={(refNumber: number, change: number) => {}}
+      />
+    );
+  }
+
+  function deleteTask(id: number) {
+    axios
+      .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+        // remove task with id from upcoming tasks
+        // remove task with id from shown tasks
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
+  }
+
+  function completeTask(id: number) {
+    console.log('complete');
+  }
+
+  const iconStyle = {
+    iconWidth: 34,
+    tooltipMultiplier: 10,
+  };
 
   return (
     <AppContainer
@@ -201,7 +214,8 @@ export default function AppTasks() {
       appName="tasks"
       subHeader={subHeader}
       sidebar={sidebar}
-      onAddClick={showPopup}
+      popup={popup}
+      onAddClick={() => showPopup()}
     >
       <div className="content">
         <List>
@@ -209,7 +223,13 @@ export default function AppTasks() {
             shownTasks.map((t) => (
               <ListItem key={`task-${t.id}`} uid={t.id}>
                 <ListItemLeft>
-                  <div className="generic-input">{/* Checkbox */}</div>
+                  <div className="generic-input">
+                    <input
+                      id="c2"
+                      type="checkbox"
+                      onClick={() => completeTask(t.id)}
+                    />
+                  </div>
                   <h3>{t.name}</h3>
                   <IconToolTip
                     className="icon"
@@ -232,16 +252,46 @@ export default function AppTasks() {
                           src={`http://localhost:3000/images/public/${u.Image.url}`}
                         />
                       ) : (
-                        <div
-                          className="user-initials"
-                          key={`involved-${t.id}-${u.id}`}
-                        >{`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}</div>
+                        <>
+                          <div
+                            className="user-initials"
+                            key={`involved-${t.id}-${u.id}`}
+                          >
+                            {`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}
+                          </div>
+                        </>
                       )
                     )}
                   </div>
                   <div className={`tag ${getTagColor(t.dueDateTime)}`}>
-                    {getMonthAndDay(t.dueDateTime)}
+                    {DateExt.getMonthAndDay(t.dueDateTime)}
                   </div>
+                  <IconToolTip
+                    icon="pen"
+                    style={iconStyle}
+                    circled={{ value: true, multiplier: 0.45 }}
+                    onClick={() => showPopup(t)}
+                  >
+                    {ReactDOMServer.renderToStaticMarkup(
+                      <Translate
+                        name="editHome"
+                        prefix="homes.action."
+                      ></Translate>
+                    )}
+                  </IconToolTip>
+                  <IconToolTip
+                    icon="times-circle"
+                    style={iconStyle}
+                    error={true}
+                    onClick={(e) => deleteTask(t.id)}
+                  >
+                    {ReactDOMServer.renderToStaticMarkup(
+                      <Translate
+                        name="deleteHome"
+                        prefix="homes.action."
+                      ></Translate>
+                    )}
+                  </IconToolTip>
                 </ListItemRight>
               </ListItem>
             ))

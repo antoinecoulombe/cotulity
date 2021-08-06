@@ -347,11 +347,24 @@ input:-webkit-autofill {
         margin-left: 10px;
         display: none;
       }
+
+      .icon-tooltip.circled.error {
+        opacity: var(--itp-opacity);
+
+        > svg {
+          color: var(--itp-circled-error-color);
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
 
     > .list-item-left {
       float: left;
       .centered();
+      flex-direction: row;
 
       .icon-tooltip {
         float: left;
@@ -631,6 +644,56 @@ button {
             color: var(--black);
           }
         }
+
+        > .switch {
+          float: left;
+          position: relative;
+          clear: both;
+          width: 100%;
+
+          &:not(.last) {
+            margin-bottom: 30px;
+          }
+
+          &.last {
+            margin-bottom: 7px;
+          }
+
+          > h2 {
+            .font-default();
+
+            float: left;
+            color: var(--black);
+            font-size: 22px;
+            margin: 0;
+            width: 40%;
+          }
+
+          > .input-toggle {
+            float: left;
+          }
+
+          &.help {
+            > h2 {
+              > b {
+                float: left;
+                font-weight: 300;
+              }
+              > .icon-tooltip {
+                position: relative !important;
+                float: left;
+                margin-left: 12px;
+                top: 2px;
+
+                opacity: var(--itp-opacity);
+
+                &:hover {
+                  opacity: 1;
+                }
+              }
+            }
+          }
+        }
       }
 
       .buttons {
@@ -810,6 +873,41 @@ button {
       border-radius: 7.5px;
     }
   }
+
+  &.double {
+    @margin: 20px;
+    @marginInputs: 15px;
+
+    &.half {
+      width: calc(50% - @margin) !important;
+      float: left;
+    }
+
+    &.squaredInputs {
+      width: calc(50px * 2 + @margin) !important;
+    }
+
+    &:nth-of-type(2n - 1) {
+      margin-right: @margin;
+    }
+
+    &:nth-of-type(2n) {
+      margin-left: @margin;
+    }
+
+    .form-input {
+      width: 50% !important;
+
+      &:first-of-type {
+        width: calc(50% - @marginInputs) !important;
+        margin-right: @marginInputs;
+      }
+
+      &.squared {
+        width: 50px !important;
+      }
+    }
+  }
 }
 
 // #endregion
@@ -825,6 +923,7 @@ button {
   left: 0;
   width: 210px;
   height: @height;
+  overflow: hidden;
 
   .font {
     .font-default();

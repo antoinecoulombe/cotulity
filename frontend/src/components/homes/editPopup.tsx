@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import Toggle, { Tab } from '../global/toggle';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Home } from '../../views/apps/homes';
+import { useNotifications } from '../../contexts/NotificationsContext';
+import { getCopyIndex } from '../../utils/global';
 import List from '../utils/lists/list';
 import ListItem from '../utils/lists/listItem';
 import ListItemLeft from '../utils/lists/listLeft';
@@ -8,13 +13,8 @@ import IconToolTip from '../global/iconTooltip';
 import ReactDOMServer from 'react-dom/server';
 import Translate from '../utils/translate';
 import SingleInputForm from '../forms/singleInputForm';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Toggle, { Tab } from '../global/toggle';
-import { Home } from '../../views/apps/homes';
-import { useNotifications } from '../../contexts/NotificationsContext';
 import axios from '../../utils/fetchClient';
 import _ from 'lodash';
-import { getCopyIndex } from '../../utils/global';
 
 interface HomeMember {
   id: number;
@@ -81,7 +81,7 @@ export default function EditPopup(props: EditPopupProps) {
                           circled={{
                             value: true,
                             multiplier: 0.45,
-                            offset: 1,
+                            offsetX: 1,
                           }}
                           error={true}
                           onClick={(e) => deleteMember(e, m.id)}

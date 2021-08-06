@@ -169,8 +169,27 @@
     }
   },
   "tasks": {
-    "title": { "tasks": "Tâches" },
-    "tooltip": { "add": "Ajouter une tâche" },
+    "title": {
+      "tasks": "Tâches",
+      "participants": "Participants",
+      "dueDate": "Date",
+      "dueTime": "Heure",
+      "important": "Important",
+      "shared": "Partagé"
+    },
+    "name": {
+      "taskDesc": "Brève description de la tâche",
+      "participants": "Attribuez cette tâche aux membres de la maison",
+      "date": {
+        "dd": "DD",
+        "mm": "MM",
+        "hh": "HH"
+      }
+    },
+    "tooltip": {
+      "add": "Ajouter une tâche",
+      "shared": "Une tâche privée ne sera pas affichée aux autres membres de la maison."
+    },
     "sidebar": {
       "myTasks": "Mes tâches",
       "upcoming": "À venir",

@@ -11,7 +11,12 @@ interface IconTooltipProps {
     marginRight?: number;
   };
   children?: string;
-  circled?: { value: boolean; multiplier: number; offset?: number };
+  circled?: {
+    value: boolean;
+    multiplier: number;
+    offsetX?: number;
+    offsetY?: number;
+  };
   error?: boolean;
   onClick?: (e: any) => void;
   className?: string;
@@ -36,10 +41,10 @@ export default function IconToolTip(props: IconTooltipProps) {
   const iconStyle: any = {
     width: iconSize,
     height: iconSize,
-    paddingTop: padding,
-    paddingBottom: padding,
-    paddingLeft: padding + (props.circled?.offset ?? 0),
-    paddingRight: padding - (props.circled?.offset ?? 0),
+    paddingTop: padding + (props.circled?.offsetY ?? 0),
+    paddingBottom: padding + (props.circled?.offsetY ?? 0),
+    paddingLeft: padding + (props.circled?.offsetX ?? 0),
+    paddingRight: padding + (props.circled?.offsetX ?? 0),
     cursor: props.onClick ? 'pointer' : 'default',
   };
 

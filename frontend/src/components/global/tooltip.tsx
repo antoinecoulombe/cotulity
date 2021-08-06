@@ -7,6 +7,7 @@ interface TooltipProps {
   over?: boolean;
   parentCentered?: boolean;
   style?: object;
+  noTranslate?: boolean;
 }
 
 export default function Tooltip(props: TooltipProps) {
@@ -23,7 +24,11 @@ export default function Tooltip(props: TooltipProps) {
         >
           <div className={`tooltip ${props.over ? 'over' : ''}`}>
             <p>
-              <Translate name={props.children}></Translate>
+              {props.noTranslate ? (
+                props.children
+              ) : (
+                <Translate name={props.children}></Translate>
+              )}
             </p>
             <div className="triangle"></div>
           </div>
