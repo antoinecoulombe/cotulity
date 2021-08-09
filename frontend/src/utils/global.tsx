@@ -23,7 +23,7 @@ export function useForceUpdate() {
 }
 
 export function getTranslateJSON(translate: string, format: Array<string>) {
-  return `{"translate":"${translate}", "format": ["${format.join('","')}"]}`;
+  return `{"translate":"${translate}","format":["${format.join('","')}"]}`;
 }
 
 export function getCopyIndex(array: any, where?: (...attr: any) => any) {

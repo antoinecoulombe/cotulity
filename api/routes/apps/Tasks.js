@@ -27,41 +27,58 @@ Tasks.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
+function getTasks(req, res, when, id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield res.locals.home.getTasks({
+                where: when == 'all'
+                    ? {
+                        id: id == undefined ? { [Op.ne]: 0 } : id,
+                        [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
+                    }
+                    : {
+                        id: id == undefined ? { [Op.ne]: 0 } : id,
+                        completedOn: when == 'completed' ? { [Op.ne]: null } : null,
+                        [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
+                    },
+                attributes: [
+                    'id',
+                    'name',
+                    'dueDateTime',
+                    'important',
+                    'shared',
+                    'completedOn',
+                    'deletedAt',
+                ],
+                include: [
+                    {
+                        model: db.User,
+                        as: 'Users',
+                        attributes: ['id', 'firstname', 'lastname'],
+                        include: { model: db.Image, attributes: ['url'] },
+                    },
+                    {
+                        model: db.User,
+                        as: 'Owner',
+                        attributes: ['id', 'firstname', 'lastname'],
+                        include: { model: db.Image, attributes: ['url'] },
+                    },
+                ],
+                paranoid: false,
+            });
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+}
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
 // Get all upcoming tasks
 Tasks.get('/upcoming', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const tasks = yield res.locals.home.getTasks({
-            where: {
-                completedOn: null,
-                [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
-            },
-            attributes: [
-                'id',
-                'name',
-                'dueDateTime',
-                'important',
-                'shared',
-                'completedOn',
-                'deletedAt',
-            ],
-            include: [
-                {
-                    model: db.User,
-                    as: 'Users',
-                    attributes: ['id', 'firstname', 'lastname'],
-                    include: { model: db.Image, attributes: ['url'] },
-                },
-                {
-                    model: db.User,
-                    as: 'Owner',
-                    attributes: ['id', 'firstname', 'lastname'],
-                    include: { model: db.Image, attributes: ['url'] },
-                },
-            ],
-        });
+        let tasks = yield getTasks(req, res, 'upcoming');
         res.json({
             title: 'request.success',
             msg: 'request.success',
@@ -76,6 +93,12 @@ Tasks.get('/upcoming', (req, res) => __awaiter(void 0, void 0, void 0, function*
 // Get all completed tasks.
 Tasks.get('/completed', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let tasks = yield getTasks(req, res, 'completed');
+        res.json({
+            title: 'request.success',
+            msg: 'request.success',
+            tasks: tasks,
+        });
     }
     catch (error) {
         console.log(error);
@@ -85,12 +108,56 @@ Tasks.get('/completed', (req, res) => __awaiter(void 0, void 0, void 0, function
 // ########################################################
 // ######################### PUT ##########################
 // ########################################################
-// Creates a new task.
+// Modifies a task.
 Tasks.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let task = getTasks(req, res, 'all', req.params.id);
         // if not shared
         //    remove all userTasks with :id
         //    add ownerId to userTasks with :id
+        res.json({ title: 'request.success', msg: 'request.success' });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// Completes a task.
+Tasks.put('/:id/do', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let tasks = yield getTasks(req, res, 'upcoming', req.params.id);
+        if (tasks.length == 0)
+            return res
+                .status(404)
+                .json({ title: 'request.notFound', msg: 'request.notFound' });
+        tasks[0].completedOn = new Date();
+        yield tasks[0].save();
+        res.json({
+            title: 'request.success',
+            msg: 'request.success',
+            completedOn: tasks[0].completedOn,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+// Uncompletes a task.
+Tasks.put('/:id/undo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let tasks = yield getTasks(req, res, 'completed', req.params.id);
+        if (tasks.length == 0)
+            return res
+                .status(404)
+                .json({ title: 'request.notFound', msg: 'request.notFound' });
+        tasks[0].completedOn = null;
+        yield tasks[0].save();
+        res.json({
+            title: 'request.success',
+            msg: 'request.success',
+            completedOn: tasks[0].completedOn,
+        });
     }
     catch (error) {
         console.log(error);
@@ -105,6 +172,7 @@ Tasks.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // if not shared
         //    add ownerId to userTasks with :id
+        res.json({ title: 'request.success', msg: 'request.success' });
     }
     catch (error) {
         console.log(error);
@@ -114,9 +182,26 @@ Tasks.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 // ########################################################
 // ######################## DELETE ########################
 // ########################################################
-// Delets the task with the specified id.
+// Deletes the task with the specified id.
 Tasks.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let tasks = yield getTasks(req, res, 'all', req.params.id);
+        if (tasks.length == 0)
+            return res
+                .status(404)
+                .json({ title: 'request.notFound', msg: 'request.notFound' });
+        var deletedAt = null;
+        if (tasks[0].deletedAt == null) {
+            yield tasks[0].destroy();
+            deletedAt = tasks[0].deletedAt;
+        }
+        else
+            yield tasks[0].destroy({ force: true });
+        res.json({
+            title: 'request.success',
+            msg: 'request.success',
+            deletedAt: deletedAt,
+        });
     }
     catch (error) {
         console.log(error);

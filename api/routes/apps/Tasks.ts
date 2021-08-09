@@ -18,18 +18,20 @@ Tasks.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
-// ########################################################
-// ######################### GET ##########################
-// ########################################################
-
-// Get all upcoming tasks
-Tasks.get('/upcoming', async (req: any, res: any) => {
+async function getTasks(req: any, res: any, when: string, id?: boolean) {
   try {
-    const tasks = await res.locals.home.getTasks({
-      where: {
-        completedOn: null,
-        [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
-      },
+    return await res.locals.home.getTasks({
+      where:
+        when == 'all'
+          ? {
+              id: id == undefined ? { [Op.ne]: 0 } : id,
+              [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
+            }
+          : {
+              id: id == undefined ? { [Op.ne]: 0 } : id,
+              completedOn: when == 'completed' ? { [Op.ne]: null } : null,
+              [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
+            },
       attributes: [
         'id',
         'name',
@@ -53,7 +55,21 @@ Tasks.get('/upcoming', async (req: any, res: any) => {
           include: { model: db.Image, attributes: ['url'] },
         },
       ],
+      paranoid: false,
     });
+  } catch (error) {
+    throw error;
+  }
+}
+
+// ########################################################
+// ######################### GET ##########################
+// ########################################################
+
+// Get all upcoming tasks
+Tasks.get('/upcoming', async (req: any, res: any) => {
+  try {
+    let tasks = await getTasks(req, res, 'upcoming');
     res.json({
       title: 'request.success',
       msg: 'request.success',
@@ -68,6 +84,12 @@ Tasks.get('/upcoming', async (req: any, res: any) => {
 // Get all completed tasks.
 Tasks.get('/completed', async (req: any, res: any) => {
   try {
+    let tasks = await getTasks(req, res, 'completed');
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      tasks: tasks,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -78,12 +100,60 @@ Tasks.get('/completed', async (req: any, res: any) => {
 // ######################### PUT ##########################
 // ########################################################
 
-// Creates a new task.
+// Modifies a task.
 Tasks.put('/:id', async (req: any, res: any) => {
   try {
+    let task = getTasks(req, res, 'all', req.params.id);
     // if not shared
     //    remove all userTasks with :id
     //    add ownerId to userTasks with :id
+    res.json({ title: 'request.success', msg: 'request.success' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// Completes a task.
+Tasks.put('/:id/do', async (req: any, res: any) => {
+  try {
+    let tasks = await getTasks(req, res, 'upcoming', req.params.id);
+    if (tasks.length == 0)
+      return res
+        .status(404)
+        .json({ title: 'request.notFound', msg: 'request.notFound' });
+
+    tasks[0].completedOn = new Date();
+    await tasks[0].save();
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      completedOn: tasks[0].completedOn,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// Uncompletes a task.
+Tasks.put('/:id/undo', async (req: any, res: any) => {
+  try {
+    let tasks = await getTasks(req, res, 'completed', req.params.id);
+    if (tasks.length == 0)
+      return res
+        .status(404)
+        .json({ title: 'request.notFound', msg: 'request.notFound' });
+
+    tasks[0].completedOn = null;
+    await tasks[0].save();
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      completedOn: tasks[0].completedOn,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -99,6 +169,7 @@ Tasks.post('/', async (req: any, res: any) => {
   try {
     // if not shared
     //    add ownerId to userTasks with :id
+    res.json({ title: 'request.success', msg: 'request.success' });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -109,9 +180,26 @@ Tasks.post('/', async (req: any, res: any) => {
 // ######################## DELETE ########################
 // ########################################################
 
-// Delets the task with the specified id.
+// Deletes the task with the specified id.
 Tasks.delete('/:id', async (req: any, res: any) => {
   try {
+    let tasks = await getTasks(req, res, 'all', req.params.id);
+    if (tasks.length == 0)
+      return res
+        .status(404)
+        .json({ title: 'request.notFound', msg: 'request.notFound' });
+
+    var deletedAt = null;
+    if (tasks[0].deletedAt == null) {
+      await tasks[0].destroy();
+      deletedAt = tasks[0].deletedAt;
+    } else await tasks[0].destroy({ force: true });
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      deletedAt: deletedAt,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });

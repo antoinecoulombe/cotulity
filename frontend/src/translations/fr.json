@@ -56,6 +56,25 @@
     "decline": "Refuser",
     "send": "Envoyer"
   },
+  "date": {
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "month": {
+      "jan": "Jan.",
+      "feb": "Févr.",
+      "mar": "Mars",
+      "apr": "Avr.",
+      "may": "Mai",
+      "jun": "Juin",
+      "jul": "Juil.",
+      "aug": "Août",
+      "sep": "Sept.",
+      "oct": "Oct.",
+      "nov": "Nov.",
+      "dec": "Déc."
+    },
+    "format": "{0} {1}"
+  },
   "form": {
     "email": "Courriel",
     "password": "Mot de passe",
@@ -178,7 +197,17 @@
       "important": "Important",
       "shared": "Partagé",
       "manage": "Modifier la tâche",
-      "create": "Créer une nouvelle tâche"
+      "create": "Créer une nouvelle tâche",
+      "sidebar": {
+        "tasks": { "value": "Tâches", "title": "Tâches" },
+        "myTasks": { "value": "Mes tâches", "title": "Mes tâches" },
+        "upcoming": { "value": "À venir", "title": "Tâches à venir" },
+        "important": { "value": "Important", "title": "Tâches importantes" },
+        "private": { "value": "Privé", "title": "Tâches privées" },
+        "history": { "value": "Historique", "title": "Historique" },
+        "trash": { "value": "Corbeille", "title": "Corbeille" },
+        "user": { "value": "Tâches", "title": "Tâches de {0}" }
+      }
     },
     "name": {
       "taskDesc": "Brève description de la tâche",
@@ -193,14 +222,7 @@
       "add": "Ajouter une tâche",
       "shared": "Une tâche privée ne sera pas affichée aux autres membres de la maison."
     },
-    "sidebar": {
-      "myTasks": "Mes tâches",
-      "upcoming": "À venir",
-      "important": "Important",
-      "private": "Privé",
-      "history": "Historique",
-      "trash": "Corbeille"
-    }
+    "noTasks": "Aucune tâches."
   },
   "groceries": {
     "title": { "groceries": "Liste d'épicerie" },

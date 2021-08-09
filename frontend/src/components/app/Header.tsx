@@ -10,13 +10,18 @@ interface HeaderProps {
 }
 
 export default function Header(props: HeaderProps) {
+  let title = '';
+  const translateStart = '{"translate":"';
+  if (props.title.startsWith(translateStart)) {
+    title = `${props.title.substring(0, translateStart.length)}${
+      props.appName
+    }.title.${props.title.substring(translateStart.length)}`;
+  } else title = `${props.appName}.title.${props.title}`;
+
   return (
     <div className="header">
       <h1>
-        <Translate
-          name={props.title}
-          prefix={`${props.appName}.title.`}
-        ></Translate>
+        <Translate name={title}></Translate>
       </h1>
       {props.onAddClick && (
         <IconToolTip

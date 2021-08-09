@@ -227,6 +227,34 @@ Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
   }
 });
 
+Homes.get('/:refnumber/users', validateHome, async (req: any, res: any) => {
+  try {
+    const users = await res.locals.home.getMembers({
+      attributes: ['id', 'firstname', 'lastname'],
+      include: [
+        { model: db.Image, attributes: ['url'] },
+        {
+          model: db.Task,
+          as: 'Tasks',
+          attributes: ['id'],
+        },
+      ],
+      through: {
+        where: { accepted: true },
+      },
+    });
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      users: users,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
 // ########################################################
 // ######################### PUT ##########################
 // ########################################################

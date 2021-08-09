@@ -10,65 +10,48 @@ interface InputProps {
   error?: boolean;
   label?: string;
   className?: string;
+  before?: JSX.Element;
+  after?: JSX.Element;
   filled?: boolean;
   onChange: (e: any) => void;
   onKeyPress?: (e: any) => void;
+  onClick?: (e: any) => void;
 }
 
-function handleBlur(event: any) {
-  if (event.target.value.length == 0) {
-    $(event.target).removeClass('filled');
-    $(event.target).next().removeClass('filled');
-  } else {
-    $(event.target).addClass('filled');
-    $(event.target).next().addClass('filled');
+export default function Input(props: InputProps) {
+  function handleBlur(event: any) {
+    if (!props.filled && event.target.value.length == 0) {
+      $(event.target).removeClass('filled');
+      $(event.target).next().removeClass('filled');
+    } else {
+      $(event.target).addClass('filled');
+      $(event.target).next().addClass('filled');
+    }
   }
+
+  return (
+    <div
+      className={`form-input ${props.className ?? ''} ${
+        props.error ? 'error' : ''
+      }`}
+    >
+      {props.before}
+      <input
+        id={props.name}
+        name={props.name}
+        type={props.type}
+        value={props.value}
+        onBlur={handleBlur}
+        onChange={props.onChange}
+        onKeyPress={props.onKeyPress}
+        onClick={props.onClick}
+        className={props.filled ? 'filled' : ''}
+      ></input>
+      <label htmlFor={props.name} className={props.filled ? 'filled' : ''}>
+        <Translate name={`${props.label ?? props.name}`} />{' '}
+        {props.error && <FontAwesomeIcon icon="times-circle" />}
+      </label>
+      {props.after}
+    </div>
+  );
 }
-
-export function resetClass(event: any) {
-  handleBlur(event);
-}
-
-class Input extends React.Component<InputProps> {
-  constructor(props: InputProps) {
-    super(props);
-  }
-
-  handleChange(event: any) {
-    this.props.onChange(event);
-  }
-
-  handleKeyPress(event: any) {
-    this.props.onKeyPress?.(event);
-  }
-
-  render() {
-    return (
-      <div
-        className={`form-input ${this.props.className ?? ''} ${
-          this.props.error ? 'error' : ''
-        }`}
-      >
-        <input
-          id={this.props.name}
-          name={this.props.name}
-          type={this.props.type}
-          value={this.props.value}
-          onBlur={handleBlur}
-          onChange={this.props.onChange}
-          onKeyPress={this.props.onKeyPress}
-          className={this.props.filled ? 'filled' : ''}
-        ></input>
-        <label
-          htmlFor={this.props.name}
-          className={this.props.filled ? 'filled' : ''}
-        >
-          <Translate name={`${this.props.label ?? this.props.name}`} />{' '}
-          {this.props.error && <FontAwesomeIcon icon="times-circle" />}
-        </label>
-      </div>
-    );
-  }
-}
-
-export default Input;

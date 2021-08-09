@@ -61,6 +61,7 @@ import {
   faPlusSquare,
   faLock,
   faHistory,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -101,7 +102,8 @@ library.add(
   faPlusSquare,
   faLock,
   faStar,
-  faHistory
+  faHistory,
+  faPlus
 );
 
 export default function App() {

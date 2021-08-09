@@ -4,94 +4,95 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import '../../assets/css/open-app.css';
 
-export interface SidebarProps {
-  tabs: Array<{
-    icon: string;
-    name: string;
-    action: () => void;
-    prefix?: string;
-    selected?: boolean;
-  }>;
-  userTabs: Array<{
-    user: {
-      id: number;
-      firstname: string;
-      lastname: string;
-      Image?: { url: string };
-      taskCount: number;
-    };
-    action: () => void;
-    selected?: boolean;
-  }>;
+export interface SidebarTab {
+  id: number;
+  value: string;
+  img?: string;
+  prefix?: string;
+  suffix?: string;
+  isUser?: boolean;
+  count?: number;
+  selected?: boolean;
+  action: (tabs: SidebarTab[]) => void;
 }
 
-export function switchSidebarTab(sidebar: SidebarProps, selected: string) {
-  let newTabs = [...sidebar.tabs];
-  newTabs[sidebar.tabs.findIndex((t) => t.selected == true)].selected = false;
-  newTabs[sidebar.tabs.findIndex((t) => t.name == selected)].selected = true;
-  return newTabs;
-}
-
-export function switchSidebarUserTab(sidebar: SidebarProps, id: number) {
-  let newTabs = [...sidebar.userTabs];
-  newTabs[sidebar.userTabs.findIndex((t) => t.selected == true)].selected =
-    false;
-  newTabs[sidebar.userTabs.findIndex((t) => t.user.id == id)].selected = true;
-  return newTabs;
+interface SidebarProps {
+  tabs: Array<SidebarTab>;
 }
 
 export default function Sidebar(props: SidebarProps) {
+  async function switchSidebarTab(id: number) {
+    if (!props.tabs || props.tabs.length == 0) return [];
+    let newTabs = [...props.tabs];
+    newTabs[props.tabs.findIndex((t) => t.selected == true)].selected = false;
+    newTabs[props.tabs.findIndex((t) => t.id == id)].selected = true;
+    return newTabs;
+  }
+
+  async function handleClick(id: number) {
+    let tabs = await switchSidebarTab(id);
+    props.tabs.find((t) => t.id == id)?.action(tabs);
+  }
+
   return (
     <div className="sidebar">
       <div className="tabs top">
-        {props.tabs.map((t) => (
-          <div
-            key={`tab-${t.name}`}
-            className={`tab${t.selected ? ' selected' : ''}`}
-            onClick={t.action}
-          >
-            <div className="left">
-              <FontAwesomeIcon
-                icon={[t.icon == 'star' ? 'far' : 'fas', t.icon as IconName]}
-                className="icon"
-              />
-              <h3>
-                <Translate name={`${t.prefix ?? ''}${t.name}`} />
-              </h3>
-            </div>
-          </div>
-        ))}
-      </div>
-      {props.userTabs.length > 0 && (
-        <div className="tabs bottom">
-          {props.userTabs.map((ut) => (
+        {props.tabs
+          .filter((t) => !t.isUser)
+          .map((t) => (
             <div
-              key={ut.user.id}
-              className={`tab user${ut.selected ? ' selected' : ''}`}
+              key={`tab-${t.id}`}
+              className={`tab${t.selected ? ' selected' : ''}`}
+              onClick={() => handleClick(t.id)}
             >
               <div className="left">
-                {ut.user.Image?.url ? (
-                  <img
-                    src={`http://localhost:3000/images/public/${ut.user.Image.url}`}
+                <FontAwesomeIcon
+                  icon={[
+                    t.img == 'star' ? 'far' : 'fas',
+                    (t.img ?? 'plus') as IconName,
+                  ]}
+                  className="icon"
+                />
+                <h3>
+                  <Translate
+                    name={t.value}
+                    prefix={t.prefix}
+                    suffix={t.suffix}
                   />
-                ) : (
-                  <FontAwesomeIcon icon="user-circle" />
-                )}
-                <h3>{`${
-                  ut.user.firstname.length > 9
-                    ? ut.user.firstname.substring(0, 9) + '...'
-                    : ut.user.firstname
-                } ${ut.user.lastname[0].toUpperCase()}.`}</h3>
+                </h3>
               </div>
-              {ut.user.taskCount > 0 && (
-                <div className="right">
-                  <div className="counter">
-                    <p>{ut.user.taskCount > 9 ? '9+' : ut.user.taskCount}</p>
-                  </div>
-                </div>
-              )}
             </div>
           ))}
+      </div>
+      {props.tabs.filter((t) => t.isUser).length > 0 && (
+        <div className="tabs bottom">
+          {props.tabs
+            .filter((t) => t.isUser)
+            .map((ut) => (
+              <div
+                key={`utab-${ut.id}`}
+                className={`tab user${ut.selected ? ' selected' : ''}`}
+                onClick={() => handleClick(ut.id)}
+              >
+                <div className="left">
+                  {ut.img ? (
+                    <img
+                      src={`http://localhost:3000/images/public/${ut.img}`}
+                    />
+                  ) : (
+                    <FontAwesomeIcon icon="user-circle" />
+                  )}
+                  <h3>{ut.value}</h3>
+                </div>
+                {(ut.count ?? 0) > 0 && (
+                  <div className="right">
+                    <div className="counter">
+                      <p>{(ut.count ?? 0) > 9 ? '9+' : ut.count}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
       )}
     </div>

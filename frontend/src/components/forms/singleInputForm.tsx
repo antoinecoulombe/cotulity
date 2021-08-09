@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Input from './input';
 import IconToolTip from '../global/iconTooltip';
 import Translate from '../utils/translate';
+import Title from './title';
 
 export interface SingleInputFormProps {
   name: string;
@@ -42,21 +43,9 @@ export default function SingleInputForm(props: SingleInputFormProps) {
         !props.onBack && props.onSubmit != undefined ? ' offset' : ''
       } ${props.className ?? ''}${!props.onSubmit ? ' r-offset' : ''}`}
     >
-      <div className="title">
-        <h2>
-          <Translate name={props.title}></Translate>
-          {props.required ? <b className="input-required">*</b> : ''}
-        </h2>
-        {props.children && (
-          <IconToolTip
-            icon="question-circle"
-            style={{ iconWidth: 23, tooltipMultiplier: 20 }}
-            onClick={props.onHelpClick}
-          >
-            {props.children}
-          </IconToolTip>
-        )}
-      </div>
+      <Title help={props.children} required={props.required}>
+        {props.title}
+      </Title>
       <div className="input-container">
         {props.onBack && (
           <IconToolTip

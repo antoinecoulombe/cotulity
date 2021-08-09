@@ -31,7 +31,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUsersFromHome = void 0;
 const express_1 = __importDefault(require("express"));
 const Image = __importStar(require("./_utils/Image"));
 const Homes_1 = require("./apps/Homes");
@@ -44,19 +43,6 @@ const bcrypt = require('bcryptjs');
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
-function deleteUsersFromHome(home, transaction) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield db.UserHome.destroy({ where: { homeId: home.id }, force: true }, { transaction: transaction });
-            return { success: true, title: 'request.success', msg: 'request.success' };
-        }
-        catch (error) {
-            console.log(error);
-            return { success: false, title: 'request.error', msg: 'request.error' };
-        }
-    });
-}
-exports.deleteUsersFromHome = deleteUsersFromHome;
 // ########################################################
 // ######################### GET ##########################
 // ########################################################

@@ -24,7 +24,10 @@ export function getMonthAndDay(date: string) {
   let d = new Date(date);
   let dNow = new Date(Date.now());
   let dString = d.toDateString().split(' ');
-  if (isSameDay(dNow, d)) return 'Today';
-  if (isTomorrow(dNow, d)) return 'Tomorrow';
-  return `${dString[1]} ${dString[2]}`;
+  if (isSameDay(dNow, d)) return 'date.today';
+  if (isTomorrow(dNow, d)) return 'date.tomorrow';
+  return {
+    month: `date.month.${dString[1].toLowerCase()}`,
+    day: dString[2].toString(),
+  };
 }

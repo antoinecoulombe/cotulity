@@ -56,6 +56,25 @@
     "decline": "Decline",
     "send": "Send"
   },
+  "date": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "month": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "June",
+      "jul": "July",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+    "format": "{1} {0}"
+  },
   "form": {
     "email": "Email",
     "password": "Password",
@@ -178,7 +197,17 @@
       "important": "Important",
       "shared": "Shared",
       "manage": "Manage Task",
-      "create": "Create Task"
+      "create": "Create Task",
+      "sidebar": {
+        "tasks": { "value": "Tasks", "title": "Tasks" },
+        "myTasks": { "value": "My Tasks", "title": "My Tasks" },
+        "upcoming": { "value": "Upcoming", "title": "Upcoming Tasks" },
+        "important": { "value": "Important", "title": "Important Tasks" },
+        "private": { "value": "Private", "title": "Private Tasks" },
+        "history": { "value": "History", "title": "History" },
+        "trash": { "value": "Trash", "title": "Trash" },
+        "user": { "value": "Tasks", "title": "{0}'s Tasks" }
+      }
     },
     "name": {
       "taskDesc": "Brief description of the task",
@@ -193,14 +222,7 @@
       "add": "Add task",
       "shared": "A private task will not be shown to other people in the house."
     },
-    "sidebar": {
-      "myTasks": "My Tasks",
-      "upcoming": "Upcoming",
-      "important": "Important",
-      "private": "Private",
-      "history": "History",
-      "trash": "Trash"
-    }
+    "noTasks": "No Tasks."
   },
   "groceries": {
     "title": { "groceries": "Grocery List" },

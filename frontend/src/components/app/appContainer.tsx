@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import $ from 'jquery';
-import Header from './Header';
+import Header from './header';
 import SubHeader, { SubHeaderProps } from './subHeader';
 import '../../assets/css/open-app.css';
-import Sidebar, { SidebarProps } from './sidebar';
+import Sidebar, { SidebarTab } from './sidebar';
 
 interface AppContainerProps {
   children: object;
   appName: string;
   title: string;
   subHeader?: SubHeaderProps;
-  sidebar?: SidebarProps;
+  sidebar?: SidebarTab[];
   popup?: JSX.Element;
   bodyMinHeight?: number;
   onAddClick?: (e: any) => void;
@@ -51,9 +51,7 @@ export default function AppContainer(props: AppContainerProps) {
   return (
     <div className={`open-app-container ${props.appName}`}>
       {props.popup}
-      {props.sidebar && (
-        <Sidebar tabs={props.sidebar.tabs} userTabs={props.sidebar.userTabs} />
-      )}
+      {props.sidebar && <Sidebar tabs={props.sidebar} />}
       <div className="headers">
         <Header
           appName={props.appName}

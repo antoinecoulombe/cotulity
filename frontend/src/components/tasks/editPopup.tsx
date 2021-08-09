@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import { initTask, Task } from '../../views/apps/tasks';
+import { HomeMember, initTask, Task } from '../../views/apps/tasks';
 import Popup from '../utils/popup';
 import SingleInputForm from '../forms/singleInputForm';
-import DoubleInputForm from '../forms/doubleInputForm';
+import DoubleInputTitle from '../forms/doubleInputTitle';
 import axios from '../../utils/fetchClient';
 import _ from 'lodash';
 import Translate from '../utils/translate';
 import IconToolTip from '../global/iconTooltip';
+import Dropdown, { DropdownOption } from '../forms/dropdown';
 
 interface EditPopupProps {
   task?: Task;
+  users: Array<DropdownOption>;
   onCancel(...attr: any): any;
   onSubmit(...attr: any): any;
   onDelete?(...attr: any): any;
 }
 export default function EditPopup(props: EditPopupProps) {
   const { setNotification, setErrorNotification } = useNotifications();
-  const [error, setError] = useState<boolean>(false);
   const [task, setTask] = useState<Task>(
     props.task
       ? { ...props.task, dueDateTime: handleDate(props.task.dueDateTime) }
@@ -48,11 +49,12 @@ export default function EditPopup(props: EditPopupProps) {
 
   function toggleSwitch(field: string) {
     if (field == 'important') setTask({ ...task, important: !task.important });
-    else if (field == 'shared') setTask({ ...task, shared: !task.shared });
+    else if (field == 'shared') {
+      setTask({ ...task, shared: !task.shared });
+    }
   }
 
   function onSubmit() {
-    setError(false);
     props.onSubmit(task);
   }
 
@@ -78,18 +80,18 @@ export default function EditPopup(props: EditPopupProps) {
   }
 
   function setDateTime(e: any, field: string) {
-    if (e.target.value.length > 2) return;
+    if (e.target.value.length > 2) return false;
 
     var newDate: string = '';
     switch (field) {
       case 'day':
-        if (e.target.value > 31) return;
+        if (e.target.value > 31) return false;
         newDate =
           e.target.value +
           task.dueDateTime.substring(task.dueDateTime.indexOf('/'));
         break;
       case 'month':
-        if (e.target.value > 12) return;
+        if (e.target.value > 12) return false;
         newDate = task.dueDateTime.substring(
           0,
           task.dueDateTime.indexOf('/') + 1
@@ -98,7 +100,7 @@ export default function EditPopup(props: EditPopupProps) {
         newDate += task.dueDateTime.substring(task.dueDateTime.indexOf('@'));
         break;
       case 'hour':
-        if (e.target.value > 23) return;
+        if (e.target.value > 23) return false;
         newDate = task.dueDateTime.substring(
           0,
           task.dueDateTime.indexOf('@') + 1
@@ -107,7 +109,7 @@ export default function EditPopup(props: EditPopupProps) {
         newDate += task.dueDateTime.substring(task.dueDateTime.indexOf(':'));
         break;
       case 'minute':
-        if (e.target.value > 59) return;
+        if (e.target.value > 59) return false;
         newDate = task.dueDateTime.substring(
           0,
           task.dueDateTime.indexOf(':') + 1
@@ -116,6 +118,7 @@ export default function EditPopup(props: EditPopupProps) {
         break;
     }
     setTask({ ...task, dueDateTime: newDate });
+    return true;
   }
 
   return (
@@ -144,50 +147,41 @@ export default function EditPopup(props: EditPopupProps) {
           }}
           style={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup"
-          error={error}
         ></SingleInputForm>
-        <SingleInputForm
+        <Dropdown
           name="tasks.name.participants"
           title="tasks.title.participants"
-          // TODO: This type should be 'select' and handled differently
-          // TODO: value = tasks.Users
-          type="text"
-          parent={{ onChange: onChange }}
-          style={{ iconWidth: 36, tooltipMultiplier: 8 }}
+          options={props.users}
+          onSelect={() => {}}
+          onSelectTransform={(value: string) => {
+            let split = value.split(' ');
+            return `${split[0]} ${split[1][0].toUpperCase()}.`;
+          }}
           className="in-popup"
-          error={error}
-        ></SingleInputForm>
-        <DoubleInputForm
+          required={task.shared}
+          disabled={!task.shared}
+        ></Dropdown>
+        <DoubleInputTitle
           name={['tasks.name.date.dd', 'tasks.name.date.mm']}
           title="tasks.title.dueDate"
           required={true}
           type="text"
-          firstValue={getDateTime().day}
-          secondValue={getDateTime().month}
-          parent={{
-            onChange: (e: any, input: number) =>
-              setDateTime(e, input == 1 ? 'day' : 'month'),
-          }}
-          style={{ iconWidth: 36, tooltipMultiplier: 8 }}
-          className="in-popup half"
-          error={error}
-          squaredInputs={true}
-        ></DoubleInputForm>
-        <DoubleInputForm
+          values={{ first: getDateTime().day, second: getDateTime().month }}
+          onChange={(e: any, input: number) =>
+            setDateTime(e, input == 1 ? 'day' : 'month')
+          }
+          className="in-popup half squared-inputs"
+        ></DoubleInputTitle>
+        <DoubleInputTitle
           name={['tasks.name.date.hh', 'tasks.name.date.mm']}
           title="tasks.title.dueTime"
           type="text"
-          firstValue={getDateTime().hour}
-          secondValue={getDateTime().minute}
-          parent={{
-            onChange: (e: any, input: number) =>
-              setDateTime(e, input == 1 ? 'hour' : 'minute'),
-          }}
-          style={{ iconWidth: 36, tooltipMultiplier: 8 }}
-          className="in-popup half"
-          error={error}
-          squaredInputs={true}
-        ></DoubleInputForm>
+          values={{ first: getDateTime().hour, second: getDateTime().minute }}
+          onChange={(e: any, input: number) =>
+            setDateTime(e, input == 1 ? 'hour' : 'minute')
+          }
+          className="in-popup half squared-inputs"
+        ></DoubleInputTitle>
         <div className="switch">
           <h2>
             <Translate name="important" prefix="tasks.title." />
@@ -195,13 +189,21 @@ export default function EditPopup(props: EditPopupProps) {
           <div className="input-toggle">
             <div className="generic-input">
               {task.important ? (
-                <input
-                  id="theme-switch"
-                  type="checkbox"
-                  className="switch"
-                  defaultChecked
-                  onClick={() => toggleSwitch('important')}
-                />
+                <>
+                  <input
+                    id="theme-switch"
+                    type="checkbox"
+                    className="switch"
+                    defaultChecked
+                    onClick={() => toggleSwitch('important')}
+                  />
+                  <IconToolTip
+                    icon="exclamation-circle"
+                    style={{ iconWidth: 23, tooltipMultiplier: 10 }}
+                    error={true}
+                    className="after-switch"
+                  />
+                </>
               ) : (
                 <input
                   id="theme-switch"
