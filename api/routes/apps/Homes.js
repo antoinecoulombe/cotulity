@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteHome = exports.notifyMembersExceptOwner = void 0;
+exports.deleteHome = exports.notifyMembersExceptOwner = exports.getMembersExceptOwner = void 0;
 const express_1 = __importDefault(require("express"));
 const Translate = __importStar(require("../_utils/Translate"));
 const Global = __importStar(require("../_utils/Global"));
@@ -123,6 +123,7 @@ function getMembersExceptOwner(home) {
             .map((m) => m.id);
     });
 }
+exports.getMembersExceptOwner = getMembersExceptOwner;
 function notifyMembersExceptOwner(home, transaction) {
     return __awaiter(this, void 0, void 0, function* () {
         // Send notifications to deleted users

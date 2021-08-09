@@ -309,7 +309,8 @@
           "add": "Impossible d'ajouter l'article"
         },
         "deleted": "Article supprimé"
-      }
+      },
+      "tasks": { "created": "Tâche créée", "modified": "Tâche modifiée" }
     },
     "msg": {
       "request": {
@@ -426,6 +427,10 @@
         "notFound": "L'article est introuvable.",
         "descInvalid": "L'article devrait contenir au moins un caractère.",
         "deleted": "L'article a été supprimé."
+      },
+      "tasks": {
+        "created": "Vous la retrouverez dans la section 'À venir'.",
+        "modified": "La tâche a été modifiée."
       }
     }
   }

@@ -309,7 +309,8 @@
           "add": "Couldn't add grocery item."
         },
         "deleted": "Grocery item deleted"
-      }
+      },
+      "tasks": { "created": "Task Created", "modified": "Task Updated" }
     },
     "msg": {
       "request": {
@@ -427,6 +428,10 @@
         "notFound": "We couldn't find the grocery item.",
         "descInvalid": "The article should have at least one character.",
         "deleted": "The article was deleted."
+      },
+      "tasks": {
+        "created": "You can find it under the 'Upcoming' tab.",
+        "modified": "The task has been updated."
       }
     }
   }

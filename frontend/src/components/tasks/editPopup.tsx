@@ -121,6 +121,19 @@ export default function EditPopup(props: EditPopupProps) {
     return true;
   }
 
+  function handleSelect(selected: DropdownOption[]) {
+    let newTask = { ...task };
+    newTask.Users = selected.map((us) => {
+      return {
+        id: us.id,
+        firstname: us.value.split(' ')[0],
+        lastname: us.value.split(' ')[1],
+        Image: !us.img ? null : { url: us.img },
+      };
+    });
+    setTask(newTask);
+  }
+
   return (
     <Popup
       onCancel={() => props.onCancel?.()}
@@ -152,7 +165,7 @@ export default function EditPopup(props: EditPopupProps) {
           name="tasks.name.participants"
           title="tasks.title.participants"
           options={props.users}
-          onSelect={() => {}}
+          onSelect={(selected) => handleSelect(selected)}
           onSelectTransform={(value: string) => {
             let split = value.split(' ');
             return `${split[0]} ${split[1][0].toUpperCase()}.`;

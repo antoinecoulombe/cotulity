@@ -1,5 +1,6 @@
 import express from 'express';
 import { validateHome, validateApp } from '../Apps';
+import { getMembersExceptOwner } from './Homes';
 
 const Tasks = express.Router();
 const db = require('../../db/models');
@@ -167,9 +168,53 @@ Tasks.put('/:id/undo', async (req: any, res: any) => {
 // Creates a new task.
 Tasks.post('/', async (req: any, res: any) => {
   try {
-    // if not shared
-    //    add ownerId to userTasks with :id
-    res.json({ title: 'request.success', msg: 'request.success' });
+    // 09/08@20:42
+    let dateSplit = req.body.task.dueDateTime.split('@');
+    let dayMonth = dateSplit[0].split('/');
+    let hourMinute = dateSplit[1].split(':');
+
+    let now = new Date();
+    let month = parseInt(dayMonth[1]) - 1;
+    let date = new Date(
+      month < now.getMonth() ||
+      (month == now.getMonth() && dayMonth[0] < now.getDay())
+        ? now.getFullYear() + 1
+        : now.getFullYear(),
+      month,
+      dayMonth[0],
+      hourMinute[0],
+      hourMinute[1]
+    );
+
+    let task = await db.Task.create({
+      homeId: res.locals.home.id,
+      ownerId: req.user.id,
+      name: req.body.task.name,
+      dueDateTime: date.toUTCString(),
+      shared: req.body.task.shared,
+      important: req.body.task.important,
+    });
+
+    if (req.body.task.shared == false || req.body.task.Users.length == 0) {
+      await db.UserTask.create({ userId: req.user.id, taskId: task.id });
+    } else {
+      await req.body.task.Users.forEach(async (u: any) => {
+        let members = (await res.locals.home.getMembers()).map(
+          (m: any) => m.id
+        );
+        let toAdd: { userId: number; taskId: number }[] = [];
+        if (members.includes(u.id))
+          toAdd.push({ userId: u.id, taskId: task.id });
+
+        if (toAdd.length > 0) await db.UserTask.bulkCreate(toAdd);
+      });
+    }
+
+    res.json({
+      title: 'tasks.created',
+      msg: 'tasks.created',
+      task: await getTasks(req, res, 'upcoming', task.id),
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -193,7 +238,9 @@ Tasks.delete('/:id', async (req: any, res: any) => {
     if (tasks[0].deletedAt == null) {
       await tasks[0].destroy();
       deletedAt = tasks[0].deletedAt;
-    } else await tasks[0].destroy({ force: true });
+    } else {
+      await tasks[0].destroy({ force: true });
+    }
 
     res.json({
       title: 'request.success',

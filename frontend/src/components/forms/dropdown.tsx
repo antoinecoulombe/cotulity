@@ -68,7 +68,7 @@ export default function Dropdown(props: DropdownProps) {
     us.sort((a, b) => a.value.localeCompare(b.value));
     setSelected(s);
     setUnselected(us);
-    props.onSelect?.(s.concat(us));
+    props.onSelect?.(s);
   }
 
   function select(id: number) {
@@ -80,7 +80,7 @@ export default function Dropdown(props: DropdownProps) {
     s[s.length - 1].selected = true;
     setSelected(s);
     setUnselected(us);
-    props.onSelect?.(s.concat(us));
+    props.onSelect?.(s);
 
     if (us.length == 0) setOpened(false);
   }

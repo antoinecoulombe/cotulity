@@ -88,7 +88,7 @@ async function denyIfNotOwner(req: any, res: any) {
 }
 
 // Retrieves the members from the current home, excluding the owner.
-async function getMembersExceptOwner(home: any): Promise<number[]> {
+export async function getMembersExceptOwner(home: any): Promise<number[]> {
   return (await home.getMembers())
     .filter((m: any) => m.id !== home.ownerId)
     .map((m: any) => m.id);

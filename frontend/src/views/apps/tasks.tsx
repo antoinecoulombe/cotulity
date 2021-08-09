@@ -6,7 +6,9 @@ import {
 import { SidebarTab } from '../../components/app/sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import AppContainer from '../../components/app/appContainer';
+import AppContainer, {
+  handleOpenAppResize,
+} from '../../components/app/appContainer';
 import List from '../../components/utils/lists/list';
 import ListItem from '../../components/utils/lists/listItem';
 import ListItemLeft from '../../components/utils/lists/listLeft';
@@ -156,6 +158,7 @@ export default function AppTasks() {
       .catch((err) => {
         setNotification(err.response.data);
       });
+    // handleOpenAppResize(250); // use with .fill-height on content
   }, []);
 
   function handleSubHeader(tab: string) {
@@ -237,7 +240,27 @@ export default function AppTasks() {
     return 'green';
   }
 
-  function handleEditSubmit(task: Task) {}
+  function handleSubmit(task: Task) {
+    axios({
+      method: task.id == -1 ? 'post' : 'put',
+      url: `/tasks/${localStorage.getItem('currentHome')}/${
+        task.id == -1 ? '' : task.id
+      }`,
+      data: {
+        task,
+      },
+    })
+      .then((res: any) => {
+        let newUpcoming = [...upcomingTasks];
+        newUpcoming.push(res.data.task);
+        setUpcomingTasks(newUpcoming);
+        setPopup(nullJSX);
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
+  }
 
   function showPopup(task?: Task) {
     setPopup(
@@ -258,7 +281,7 @@ export default function AppTasks() {
               : (task.Users?.find((tu) => tu.id == u.id) ?? null) != null,
           } as DropdownOption;
         })}
-        onSubmit={(task: Task) => handleEditSubmit(task)}
+        onSubmit={(task: Task) => handleSubmit(task)}
         onDelete={task ? (id: number) => deleteTask(id, true) : undefined}
       />
     );

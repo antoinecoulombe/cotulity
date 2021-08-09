@@ -170,9 +170,42 @@ Tasks.put('/:id/undo', (req, res) => __awaiter(void 0, void 0, void 0, function*
 // Creates a new task.
 Tasks.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // if not shared
-        //    add ownerId to userTasks with :id
-        res.json({ title: 'request.success', msg: 'request.success' });
+        // 09/08@20:42
+        let dateSplit = req.body.task.dueDateTime.split('@');
+        let dayMonth = dateSplit[0].split('/');
+        let hourMinute = dateSplit[1].split(':');
+        let now = new Date();
+        let month = parseInt(dayMonth[1]) - 1;
+        let date = new Date(month < now.getMonth() ||
+            (month == now.getMonth() && dayMonth[0] < now.getDay())
+            ? now.getFullYear() + 1
+            : now.getFullYear(), month, dayMonth[0], hourMinute[0], hourMinute[1]);
+        let task = yield db.Task.create({
+            homeId: res.locals.home.id,
+            ownerId: req.user.id,
+            name: req.body.task.name,
+            dueDateTime: date.toUTCString(),
+            shared: req.body.task.shared,
+            important: req.body.task.important,
+        });
+        if (req.body.task.shared == false || req.body.task.Users.length == 0) {
+            yield db.UserTask.create({ userId: req.user.id, taskId: task.id });
+        }
+        else {
+            yield req.body.task.Users.forEach((u) => __awaiter(void 0, void 0, void 0, function* () {
+                let members = (yield res.locals.home.getMembers()).map((m) => m.id);
+                let toAdd = [];
+                if (members.includes(u.id))
+                    toAdd.push({ userId: u.id, taskId: task.id });
+                if (toAdd.length > 0)
+                    yield db.UserTask.bulkCreate(toAdd);
+            }));
+        }
+        res.json({
+            title: 'tasks.created',
+            msg: 'tasks.created',
+            task: yield getTasks(req, res, 'upcoming', task.id),
+        });
     }
     catch (error) {
         console.log(error);
@@ -195,8 +228,9 @@ Tasks.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* (
             yield tasks[0].destroy();
             deletedAt = tasks[0].deletedAt;
         }
-        else
+        else {
             yield tasks[0].destroy({ force: true });
+        }
         res.json({
             title: 'request.success',
             msg: 'request.success',
