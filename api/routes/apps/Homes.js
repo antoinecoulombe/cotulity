@@ -187,7 +187,8 @@ Homes.get('/:refnumber', Apps_1.validateHome, (req, res) => __awaiter(void 0, vo
                     model: db.User,
                     as: 'Members',
                     attributes: ['id', 'firstname', 'lastname'],
-                    include: db.Image,
+                    include: { model: db.Image, attributes: ['url'] },
+                    through: { attributes: ['nickname', 'accepted', 'deletedAt'] },
                 },
             ],
         });

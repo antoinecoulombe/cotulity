@@ -13,7 +13,7 @@ Before starting with the project, make sure to follow these steps to have the la
    `npm install npm@latest -g`
 1. Install sequelize globally:
    `npm install -g sequelize-cli`
-1. Install all dependencies for the project, including Sequelize and MySql2, locally:
+1. Install all dependencies for the project:
    `npm install`
 
 ## Run with Docker
@@ -24,7 +24,7 @@ To start the service using docker, run the following command:
 $ docker-compose up --build
 ```
 
-To migrate the database, run the following command in a new terminal window:
+To migrate or update the database, run the following command in a new terminal window:
 
 ```bash
 $ docker-compose exec api npm run migrate
@@ -36,16 +36,31 @@ To seed the database, run the following command in a new terminal window:
 $ docker-compose exec api npm run seed
 ```
 
-Migrations and seeds can be run with the following commands:
+To rebuild the database and clear all data, run the following command in a new terminal window:
 
-1. `sequelize db:migrate`
-1. `sequelize db:seed:all`
+```bash
+$ docker-compose exec api npm run migrate:reset
+```
 
-If the migration script fails to execute completely, make sure to drop all tables previously created before running it again, using the following command: `sequelize db:migrate:undo:all`.
+To run tests, run the following command in a new terminal window:
 
-If the seed script fails to execute completely, there might be a problem with the auto-incrementing primary keys. This problem can be solved by undoing the migration (dropping the tables) and running the migration and seed scripts again (first two commands of the "Database Setup" section).
+```bash
+$ docker-compose exec api npm run test
+```
+
+\*This will create a new seeded database and run the tests present in the '\_\_tests\_\_' folder.
+
+If the migration script fails to execute completely, make sure to drop all tables previously created before running it again, using the following command: `docker-compose exec api npm run migrate:reset`.
+
+If the seed script fails to execute completely, there might be a problem with the auto-incrementing primary keys. This problem can be solved by undoing the migration (dropping the tables) and running the migration and seed scripts again (first two commands of the "Database Setup" section after the initial Docker setup).
 
 If you get an `Execution_Policy` error while running the migration or seed scripts, open Powershell as an Administrator and type in `Set-ExecutionPolicy RemoteSigned`, then confirm by pressing `Y`.
+
+## DEV environment
+
+When developping, running the API locally might be less time-consuming than rebuilding Docker everytime a change is made. To do so, stop the execution of the Docker container named `api`, and run the following command in a terminal window, in the api folder: `npm run dev`. This will start a nodemon session, restarting the server after every change.
+
+\* Changes will not be detected for TypeScript files. Pressing on `Cmd+Shift+b` and selecting `tsc:watch - api/tsconfig.json` will solve this issue.
 
 ## Compiling Less
 
@@ -55,28 +70,23 @@ All `.css` files should be in the `public\css` folder and all `.less` files in t
 
 If you are using Visual Studio Code, here are the instructions on how to compile `.less` into `.css`:
 
-1. Install the `Easy Compile` extension from the marketplace
-1. Click on the gear(setting) icon in the bottom left corner of the Visual Studio Code window and then click on `Settings`
-1. Navigate to Extensions > Easy Compile configuration
-1. Under `Easy Compile: Compile`, click `Edit in settings.json`
-1. In the right window, copy the following after the existing options:
+1. Install the `Easy LESS` extension
+1. Click on the gear (settings) icon located at the bottom left of Visual Studio Code and then click on `Settings`
+1. Search for `Easy LESS`, select `Easy LESS configuration` and click `Edit in settings.json`
+1. And make sure your `less.compile` section looks like this:
 
 ```javascript
-"easycompile.compile": {
-    "ignore" : [
-        "**/_*.less"
-    ],
-    "minifyCssOnSave": true
-},
-"easycompile.less": {
+  "less.compile": {
+    "ignore": ["_*.less"],
     "out": "../css/",
     "compress": true
-}
+  },
 ```
 
 6. Save and you're all set! When you save a `.less` file, a `.css` file will be created in the `public/css` folder.
 
 \* Please note that files starting with `_` are considered partial files and will not be compiled in `.css` when saving.
+\*\* This might not work anymore, files to exclude might now be required to start with `// out: false`.
 
 ## You're good to go!
 

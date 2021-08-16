@@ -162,7 +162,8 @@ Homes.get('/:refnumber', validateHome, async (req: any, res: any) => {
           model: db.User,
           as: 'Members',
           attributes: ['id', 'firstname', 'lastname'],
-          include: db.Image,
+          include: { model: db.Image, attributes: ['url'] },
+          through: { attributes: ['nickname', 'accepted', 'deletedAt'] },
         },
       ],
     });
