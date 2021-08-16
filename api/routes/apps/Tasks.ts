@@ -104,11 +104,55 @@ Tasks.get('/completed', async (req: any, res: any) => {
 // Modifies a task.
 Tasks.put('/:id', async (req: any, res: any) => {
   try {
-    let task = getTasks(req, res, 'all', req.params.id);
-    // if not shared
-    //    remove all userTasks with :id
-    //    add ownerId to userTasks with :id
-    res.json({ title: 'request.success', msg: 'request.success' });
+    let task = await getTasks(req, res, 'all', req.params.id);
+
+    // 09/08@20:42
+    let dateSplit = req.body.task.dueDateTime.split('@');
+    let dayMonth = dateSplit[0].split('/');
+    let hourMinute = dateSplit[1].split(':');
+
+    let now = new Date();
+    let month = parseInt(dayMonth[1]) - 1;
+    let date = new Date(
+      month < now.getMonth() ||
+      (month == now.getMonth() && dayMonth[0] < now.getDay())
+        ? now.getFullYear() + 1
+        : now.getFullYear(),
+      month,
+      dayMonth[0],
+      hourMinute[0],
+      hourMinute[1]
+    );
+
+    // let task = await db.Task.create({
+    //   homeId: res.locals.home.id,
+    //   ownerId: req.user.id,
+    //   name: req.body.task.name,
+    //   dueDateTime: date.toUTCString(),
+    //   shared: req.body.task.shared,
+    //   important: req.body.task.important,
+    // });
+
+    // if (req.body.task.shared == false || req.body.task.Users.length == 0) {
+    //   await db.UserTask.create({ userId: req.user.id, taskId: task.id });
+    // } else {
+    //   await req.body.task.Users.forEach(async (u: any) => {
+    //     let members = (await res.locals.home.getMembers()).map(
+    //       (m: any) => m.id
+    //     );
+    //     let toAdd: { userId: number; taskId: number }[] = [];
+    //     if (members.includes(u.id))
+    //       toAdd.push({ userId: u.id, taskId: task.id });
+
+    //     if (toAdd.length > 0) await db.UserTask.bulkCreate(toAdd);
+    //   });
+    // }
+
+    res.json({
+      title: 'tasks.modified',
+      msg: 'tasks.modified',
+      task: await getTasks(req, res, 'upcoming', task.id),
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
