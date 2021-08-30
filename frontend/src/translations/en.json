@@ -186,6 +186,10 @@
           "no": "No, Keep My Account"
         }
       }
+    },
+    "safeDelete": {
+      "title": "Safe Deletion",
+      "tooltip": "When enabled, you will be prompted before removing anything in the app."
     }
   },
   "tasks": {

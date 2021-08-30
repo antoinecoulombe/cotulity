@@ -186,6 +186,10 @@
           "no": "Non, conserver mon compte"
         }
       }
+    },
+    "safeDelete": {
+      "title": "Seconde chance",
+      "tooltip": "Lorsque cette option est activée, une notification vous sera présentée avant toute suppression."
     }
   },
   "tasks": {

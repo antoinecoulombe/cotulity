@@ -11,7 +11,7 @@ export interface TitleProps {
 
 export default function Title(props: TitleProps) {
   return (
-    <div className="title">
+    <div className={`title ${props.className ?? ''}`}>
       <h2>
         <Translate name={props.children}></Translate>
         {props.required ? <b className="input-required">*</b> : ''}

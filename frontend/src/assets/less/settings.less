@@ -18,10 +18,23 @@
     width: 100%;
     margin-bottom: 25px;
 
+    .icon-tooltip {
+      position: relative !important;
+      top: 3px !important;
+      margin-left: 10px;
+      color: var(--lightGray);
+
+      &:hover {
+        color: var(--black);
+      }
+    }
+
     > div {
       margin: 0;
 
       &.left {
+        display: flex;
+        flex-direction: row;
         float: left;
       }
 
