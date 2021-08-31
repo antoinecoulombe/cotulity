@@ -6,6 +6,7 @@ module.exports = {
       'Apps',
       [
         {
+          priority: 5,
           name: 'homes',
           online: true,
           image: 'home',
@@ -13,6 +14,7 @@ module.exports = {
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
+          priority: 10,
           name: 'calendar',
           online: false,
           image: 'calendar-alt',
@@ -20,6 +22,7 @@ module.exports = {
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
+          priority: 15,
           name: 'tasks',
           online: true,
           image: 'tasks',
@@ -27,6 +30,7 @@ module.exports = {
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
+          priority: 20,
           name: 'groceries',
           online: true,
           image: 'utensils',
@@ -34,6 +38,7 @@ module.exports = {
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
+          priority: 25,
           name: 'finance',
           online: false,
           image: 'file-invoice-dollar',
@@ -41,6 +46,24 @@ module.exports = {
           updatedAt: Sequelize.literal('NOW()'),
         },
         {
+          priority: 90,
+          name: 'console',
+          online: true,
+          image: 'terminal',
+          imageMultiplier: 0.8,
+          createdAt: Sequelize.literal('NOW()'),
+          updatedAt: Sequelize.literal('NOW()'),
+        },
+        {
+          priority: 95,
+          name: 'profile',
+          online: false,
+          image: 'user-circle',
+          createdAt: Sequelize.literal('NOW()'),
+          updatedAt: Sequelize.literal('NOW()'),
+        },
+        {
+          priority: 100,
           name: 'settings',
           online: true,
           image: 'cogs',

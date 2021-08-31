@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import $ from 'jquery';
-import Header from './header';
+import { useEffect } from 'react';
 import SubHeader, { SubHeaderProps } from './subHeader';
-import '../../assets/css/open-app.css';
 import Sidebar, { SidebarTab } from './sidebar';
+import Header from './header';
+import $ from 'jquery';
+import '../../assets/css/open-app.css';
 
 interface AppContainerProps {
   children: object;

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import $ from 'jquery';
+import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Notification from './notification';
 import { useNotifications } from '../../contexts/NotificationsContext';
+import Notification from './notification';
+import $ from 'jquery';
 
 export default function Notifications() {
   const {

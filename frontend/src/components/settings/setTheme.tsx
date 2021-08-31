@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import Translate from '../../components/utils/translate';
 import $ from 'jquery';
 

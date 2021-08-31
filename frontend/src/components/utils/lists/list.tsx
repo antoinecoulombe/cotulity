@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface ListProps {
   children: object;
   className?: string;

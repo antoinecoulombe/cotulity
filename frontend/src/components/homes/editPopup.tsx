@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Toggle, { Tab } from '../global/toggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Home } from '../../views/apps/homes';

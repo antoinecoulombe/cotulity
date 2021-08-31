@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Input from './input';
-import IconToolTip from '../global/iconTooltip';
-import Translate from '../utils/translate';
 import Title from './title';
 
 export interface DoubleInputFormProps {

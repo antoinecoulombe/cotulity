@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import { HomeMember, initTask, Task } from '../../views/apps/tasks';
+import { initTask, Task } from '../../views/apps/tasks';
+import Dropdown, { DropdownOption } from '../forms/dropdown';
 import Popup from '../utils/popup';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
-import axios from '../../utils/fetchClient';
-import _ from 'lodash';
 import Translate from '../utils/translate';
 import IconToolTip from '../global/iconTooltip';
-import Dropdown, { DropdownOption } from '../forms/dropdown';
+import _ from 'lodash';
 
 interface EditPopupProps {
   task?: Task;

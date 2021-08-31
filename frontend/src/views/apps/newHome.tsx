@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import $ from 'jquery';
-import '../../assets/css/apps.css';
+import { useState, useEffect } from 'react';
+import { useNotifications } from '../../contexts/NotificationsContext';
+import { useHistory } from 'react-router';
 import App from '../../components/apps/app';
 import SingleInputForm from '../../components/forms/singleInputForm';
 import axios from '../../utils/fetchClient';
-import { useNotifications } from '../../contexts/NotificationsContext';
-import { useHistory } from 'react-router';
+import $ from 'jquery';
+import '../../assets/css/apps.css';
 
 export default function AppNewHome() {
   const { setSuccessNotification, setErrorNotification } = useNotifications();

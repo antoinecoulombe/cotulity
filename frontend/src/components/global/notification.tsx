@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import $ from 'jquery';
+import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Translate from '../utils/translate';
 import {
   strictJsonNotification,
   useNotifications,
 } from '../../contexts/NotificationsContext';
+import $ from 'jquery';
+import Translate from '../utils/translate';
 
 interface NotificationProps {
   json: strictJsonNotification;

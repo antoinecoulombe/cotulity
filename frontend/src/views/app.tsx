@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { PrivateRoute, PublicRoute } from '../components/utils/routes';
 import { useNotifications } from '../contexts/NotificationsContext';
@@ -62,6 +62,7 @@ import {
   faLock,
   faHistory,
   faPlus,
+  faTerminal,
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -103,7 +104,8 @@ library.add(
   faLock,
   faStar,
   faHistory,
-  faPlus
+  faPlus,
+  faTerminal
 );
 
 export default function App() {
@@ -134,7 +136,7 @@ export default function App() {
       <Switch>
         <PrivateRoute exact path="/apps/homes/new" component={AppNewHome} />
         <PrivateRoute exact path="/apps/homes" component={AppHomes} />
-        <PrivateRoute exact path="/apps/finances" component={AppFinances} />
+        {/* <PrivateRoute exact path="/apps/finances" component={AppFinances} /> */}
         <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
         <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />
         <Route

@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
-import '../assets/css/login.css';
 import LoginForm from '../components/login/loginForm';
+import '../assets/css/login.css';
 
 export default function LoginPage() {
   return (

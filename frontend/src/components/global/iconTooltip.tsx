@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import Tooltip from './tooltip';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
+import Tooltip from './tooltip';
 
 interface IconTooltipProps {
   icon: string;

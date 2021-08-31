@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Input from './input';
-import IconToolTip from '../global/iconTooltip';
-import Translate from '../utils/translate';
-import $ from 'jquery';
-import Title from './title';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
+import Input from './input';
+import Title from './title';
+import $ from 'jquery';
 
 export interface DropdownProps {
   name: string;

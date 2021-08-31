@@ -1,4 +1,3 @@
-import React from 'react';
 import IconToolTip from './iconTooltip';
 import Translate from '../utils/translate';
 import Popup from '../utils/popup';

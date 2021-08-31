@@ -1,4 +1,3 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';

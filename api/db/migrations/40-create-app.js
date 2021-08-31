@@ -9,6 +9,10 @@ export default {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      priority: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
       name: {
         allowNull: false,
         type: Sequelize.STRING,
@@ -22,6 +26,9 @@ export default {
       image: {
         allowNull: false,
         type: Sequelize.STRING,
+      },
+      imageMultiplier: {
+        type: Sequelize.DECIMAL,
       },
       createdAt: {
         allowNull: false,

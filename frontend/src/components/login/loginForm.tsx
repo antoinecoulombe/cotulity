@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import $ from 'jquery';
-import Input from '../forms/input';
-import FormToggle from './formToggle';
-import axios from '../../utils/fetchClient';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getNotifications, isAuthenticated } from '../../utils/global';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory, useParams } from 'react-router';
+import Input from '../forms/input';
+import FormToggle from './formToggle';
+import axios from '../../utils/fetchClient';
+import $ from 'jquery';
 
 export default function LoginForm() {
   let { token } = useParams<{ token: string }>();

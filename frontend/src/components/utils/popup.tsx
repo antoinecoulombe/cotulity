@@ -1,4 +1,3 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconToolTip from '../global/iconTooltip';
 import ReactDOMServer from 'react-dom/server';

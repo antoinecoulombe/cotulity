@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { getCopyIndex, getTranslateJSON } from '../../utils/global';
-import ReactDOMServer from 'react-dom/server';
 import AppContainer, {
   handleOpenAppResize,
 } from '../../components/app/appContainer';
+import ReactDOMServer from 'react-dom/server';
 import IconToolTip from '../../components/global/iconTooltip';
 import List from '../../components/utils/lists/list';
 import ListItem from '../../components/utils/lists/listItem';

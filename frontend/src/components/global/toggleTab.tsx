@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface ToggleTabProps {
   children: JSX.Element;
   id: string;

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import $ from 'jquery';
+import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNotifications } from '../../contexts/NotificationsContext';
+import { useTranslation } from 'react-i18next';
 import AppContainer, {
   handleOpenAppResize,
 } from '../../components/app/appContainer';
 import IconToolTip from '../../components/global/iconTooltip';
 import axios from '../../utils/fetchClient';
 import Translate from '../../components/utils/translate';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNotifications } from '../../contexts/NotificationsContext';
-import { useTranslation } from 'react-i18next';
+import $ from 'jquery';
 import '../../assets/css/groceries.css';
 
 interface article {

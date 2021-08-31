@@ -1,20 +1,13 @@
-import React from 'react';
-import $ from 'jquery';
 import Translate from '../utils/translate';
+import $ from 'jquery';
 
 interface FormToggleProps {
   login: boolean;
   onClick: () => void;
 }
 
-interface FormToggleState {
-  text: string;
-  clickableText: string;
-  class: string;
-}
-
-class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
-  p = {
+export default function FormToggle(props: FormToggleProps) {
+  var p = {
     signup: {
       static: 'login.signup-p.static',
       link: 'login.signup-p.link',
@@ -25,11 +18,7 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
     },
   };
 
-  constructor(props: any) {
-    super(props);
-  }
-
-  toggleForm(signup: boolean) {
+  function toggleForm(signup: boolean) {
     $('.toggle').css('opacity', 0);
     $('.toggle').hide();
 
@@ -49,30 +38,22 @@ class FormToggle extends React.Component<FormToggleProps, FormToggleState> {
     }
   }
 
-  handleClick() {
-    this.toggleForm(this.props.login);
-    this.props.onClick();
+  function handleClick() {
+    toggleForm(props.login);
+    props.onClick();
   }
 
-  render() {
-    return (
-      <p className="toggle" style={{ paddingRight: 50 }}>
-        <i>
-          <Translate
-            name={
-              !this.props.login ? this.p.login.static : this.p.signup.static
-            }
-            spaceAfter={true}
-          />
-        </i>
-        <i onClick={this.handleClick.bind(this)}>
-          <Translate
-            name={!this.props.login ? this.p.login.link : this.p.signup.link}
-          />
-        </i>
-      </p>
-    );
-  }
+  return (
+    <p className="toggle" style={{ paddingRight: 50 }}>
+      <i>
+        <Translate
+          name={!props.login ? p.login.static : p.signup.static}
+          spaceAfter={true}
+        />
+      </i>
+      <i onClick={handleClick}>
+        <Translate name={!props.login ? p.login.link : p.signup.link} />
+      </i>
+    </p>
+  );
 }
-
-export default FormToggle;

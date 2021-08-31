@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router';
-import IconToolTip from '../global/iconTooltip';
 import { Home } from '../../views/apps/homes';
+import IconToolTip from '../global/iconTooltip';
 
 interface HomesDropdownProps {
   homes: Home[];

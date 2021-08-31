@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import Translate from '../utils/translate';
 import ToggleTab from './toggleTab';
 

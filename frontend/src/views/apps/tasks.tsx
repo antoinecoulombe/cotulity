@@ -1,29 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { SidebarTab } from '../../components/app/sidebar';
+import { useNotifications } from '../../contexts/NotificationsContext';
+import { useTranslation } from 'react-i18next';
+import { getTranslateJSON } from '../../utils/global';
+import { DropdownOption } from '../../components/forms/dropdown';
 import {
   SubHeaderProps,
   switchSubHeaderTab,
 } from '../../components/app/subHeader';
-import { SidebarTab } from '../../components/app/sidebar';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNotifications } from '../../contexts/NotificationsContext';
-import AppContainer, {
-  handleOpenAppResize,
-} from '../../components/app/appContainer';
+import AppContainer from '../../components/app/appContainer';
 import List from '../../components/utils/lists/list';
 import ListItem from '../../components/utils/lists/listItem';
 import ListItemLeft from '../../components/utils/lists/listLeft';
 import ListItemRight from '../../components/utils/lists/listRight';
 import IconToolTip from '../../components/global/iconTooltip';
 import axios from '../../utils/fetchClient';
-import '../../assets/css/tasks.css';
-import Tooltip from '../../components/global/tooltip';
 import ReactDOMServer from 'react-dom/server';
 import Translate from '../../components/utils/translate';
 import EditPopup from '../../components/tasks/editPopup';
 import * as DateExt from '../../components/utils/date';
-import { useTranslation } from 'react-i18next';
-import { getTranslateJSON } from '../../utils/global';
-import { DropdownOption } from '../../components/forms/dropdown';
+import '../../assets/css/tasks.css';
 
 export interface Task {
   id: number;

@@ -1,7 +1,6 @@
-import React from 'react';
-import Translate from '../utils/translate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
+import Translate from '../utils/translate';
 import '../../assets/css/open-app.css';
 
 export interface SidebarTab {

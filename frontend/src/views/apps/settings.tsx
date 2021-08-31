@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AppContainer from '../../components/app/appContainer';
 import SetLanguage from '../../components/settings/setLanguage';
 import SetTheme from '../../components/settings/setTheme';

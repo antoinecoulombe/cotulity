@@ -1,7 +1,6 @@
-import React from 'react';
-import $ from 'jquery';
-import Translate from '../utils/translate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Translate from '../utils/translate';
+import $ from 'jquery';
 
 interface InputProps {
   name: string;

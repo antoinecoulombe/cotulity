@@ -71,7 +71,8 @@ Apps.get('/', async (req, res) => {
   try {
     const apps = await db.App.findAll({
       where: { online: true },
-      attributes: ['id', 'name', 'image'],
+      attributes: ['id', 'priority', 'name', 'image', 'imageMultiplier'],
+      order: db.sequelize.col('priority'),
     });
     res.json({ apps });
   } catch (e) {
