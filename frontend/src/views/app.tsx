@@ -23,6 +23,7 @@ import AppGroceries from './apps/groceries';
 import AppSettings from './apps/settings';
 import AppHomes from './apps/homes';
 import AppFinances from './apps/finances';
+import AppConsole from './apps/console';
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -139,6 +140,7 @@ export default function App() {
         {/* <PrivateRoute exact path="/apps/finances" component={AppFinances} /> */}
         <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
         <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />
+        <PrivateRoute exact path="/apps/console" component={AppConsole} />
         <Route
           exact
           path="/apps/settings"

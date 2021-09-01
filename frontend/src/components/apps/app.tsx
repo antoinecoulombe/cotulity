@@ -42,7 +42,7 @@ export default function App(props: AppProps) {
         hovered={hovered}
         over={true}
       >{`apps.${props.name}.name`}</Tooltip>
-      <div className="app">
+      <div className={`app ${props.name}`}>
         <FontAwesomeIcon icon={['fas', props.icon as IconName]} />
       </div>
     </div>

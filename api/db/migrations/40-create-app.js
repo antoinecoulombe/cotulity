@@ -27,9 +27,6 @@ export default {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      imageMultiplier: {
-        type: Sequelize.DECIMAL,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

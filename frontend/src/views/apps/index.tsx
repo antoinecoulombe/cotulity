@@ -10,8 +10,10 @@ import '../../assets/css/apps.css';
 
 interface OnlineApp {
   id: number;
+  priority: number;
   name: string;
   image: string;
+  imageMultiplier: number;
   description?: string;
 }
 
@@ -86,7 +88,6 @@ export default function AppsPage() {
       .get(`/apps`)
       .then(async (res: any) => {
         setApps(res.data.apps);
-        handleResize();
 
         if (token) {
           return axios
@@ -104,6 +105,10 @@ export default function AppsPage() {
         setNotification(err.response.data);
       });
   }, []);
+
+  useEffect(() => {
+    handleResize();
+  }, [apps, homes]);
 
   return homes.length > 0 ? (
     <>

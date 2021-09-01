@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       online: DataTypes.BOOLEAN,
       image: DataTypes.STRING,
-      imageMultiplier: DataTypes.DECIMAL,
     },
     {
       timestamps: true,

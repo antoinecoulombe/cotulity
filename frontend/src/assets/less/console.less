@@ -1,0 +1,38 @@
+@import (reference) 'global.less';
+
+.open-app-container.console {
+  max-width: 1000px;
+  min-height: 50%;
+
+  .app-body {
+    height: 100%;
+
+    .windows {
+      display: flex;
+      height: calc(100% - 107px);
+
+      > .window {
+        @paddingX: 20px;
+        @paddingY: 20px;
+
+        resize: none;
+        border: 0;
+        border-radius: 10px;
+        width: calc(100% - @paddingX * 2);
+        height: calc(100% - @paddingY * 2);
+        padding: @paddingY @paddingX;
+        outline: none;
+        color: var(--darkestGray);
+
+        .font-default();
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 22px;
+
+        background-color: var(--console-bg);
+
+        .hide-scrollbar();
+      }
+    }
+  }
+}

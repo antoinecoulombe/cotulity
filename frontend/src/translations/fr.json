@@ -20,6 +20,10 @@
       "name": "Calendrier",
       "desc": "Voyez ce que font vos colocataires!"
     },
+    "console": {
+      "name": "Console",
+      "desc": "Devenez hackerman et opérez une console!"
+    },
     "settings": {
       "name": "Paramètres",
       "desc": "Modifiez Cotulity comme vous le souhaitez avec ces paramètres."
@@ -238,6 +242,9 @@
   },
   "finances": {
     "title": { "finances": "Finances" }
+  },
+  "console": {
+    "title": { "console": "Console" }
   },
   "notif": {
     "title": {
