@@ -122,6 +122,14 @@ export default function App() {
       getNotifications();
     }, 10 * 60 * 1000); // Every 10 minutes
 
+    if (!localStorage.getItem('autoTheme'))
+      localStorage.setItem('autoTheme', 'true');
+
+    if (localStorage.getItem('autoTheme') === 'true') {
+      const darkThemeMq = window.matchMedia('(prefers-color-scheme: dark)');
+      setTheme(darkThemeMq.matches ? 'dark' : 'light');
+    }
+
     return () => clearInterval(notifInterval);
   }, []);
 

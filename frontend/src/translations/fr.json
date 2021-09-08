@@ -177,6 +177,7 @@
     "deleteAccount": "Supprimer mon compte",
     "language": "Langage",
     "theme": {
+      "auto": "Thème automatique",
       "title": "Thème",
       "dark": "Sombre",
       "light": "Clair"

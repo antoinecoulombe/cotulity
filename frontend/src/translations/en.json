@@ -177,6 +177,7 @@
     "deleteAccount": "Delete Account",
     "language": "Language",
     "theme": {
+      "auto": "Automatic Theme",
       "title": "Theme",
       "dark": "Dark",
       "light": "Light"
@@ -192,7 +193,7 @@
       }
     },
     "safeDelete": {
-      "title": "Safe Deletion",
+      "title": "Second Chance",
       "tooltip": "When enabled, you will be prompted before removing anything in the app."
     }
   },

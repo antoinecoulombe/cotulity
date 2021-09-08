@@ -32,7 +32,3 @@
 // TODO: Fix tasks refresh
 // TODO: Add field validations in front end (tasks)
 // TODO: Skeleton loading
-// TODO: Detect theme and apply that instead of choosing
-// Change settings:
-// Header: Automatic theme (true/false -> switch)
-// SubHeader: Theme (light/dark -> switch, hide when automatic)
