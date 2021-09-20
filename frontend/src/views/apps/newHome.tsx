@@ -99,7 +99,7 @@ export default function AppNewHome() {
           title={`newHome.${action}.title`}
           label={`newHome.${action}.label`}
           error={error}
-          style={{ iconWidth: 36, tooltipMultiplier: 10 }}
+          style={{ iconWidth: 36, tooltipMultiplier: 5 }}
           onSubmit={handleSubmit}
           onBack={handleBack}
         >{`newHome.${action}.tooltip`}</SingleInputForm>
