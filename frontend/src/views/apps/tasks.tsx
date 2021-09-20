@@ -91,9 +91,11 @@ export default function AppTasks() {
   }, [sidebarTabs, subHeader, completedTasks, upcomingTasks]);
 
   useEffect(() => {
+    // get home users for sidebar
     axios
       .get(`/homes/${localStorage.getItem('currentHome')}/users`)
       .then(async (res: any) => {
+        // get upcoming tasks (non-completed tasks)
         await axios
           .get(`/tasks/${localStorage.getItem('currentHome')}/upcoming`)
           .then((res: any) => {
@@ -104,6 +106,7 @@ export default function AppTasks() {
             setNotification(err.response.data);
           });
 
+        // get completed tasks
         await axios
           .get(`/tasks/${localStorage.getItem('currentHome')}/completed`)
           .then((res: any) => {
@@ -113,6 +116,7 @@ export default function AppTasks() {
             setNotification(err.response.data);
           });
 
+        // sidebar tabs (upper - categories)
         let tabs = [
           { icon: 'star', name: 'myTasks' },
           { icon: 'calendar', name: 'upcoming' },
@@ -132,6 +136,7 @@ export default function AppTasks() {
           };
         });
 
+        // sidebar tabs (lower - user)
         tabs = tabs.concat(
           res.data.users.map((m) => {
             return {

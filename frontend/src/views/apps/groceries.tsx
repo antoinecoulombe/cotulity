@@ -22,6 +22,7 @@ export default function AppGroceries() {
   const [articles, setArticles] = useState<article[]>([]);
   const { setNotification, setErrorNotification } = useNotifications();
   const { t, i18n } = useTranslation('common');
+  const [loaded, setLoaded] = useState<boolean>(false);
 
   function getArticles() {
     axios
@@ -29,6 +30,7 @@ export default function AppGroceries() {
       .then((res: any) => {
         if (res.data.articles) setArticles(res.data.articles);
         else setErrorNotification(res.data);
+        setLoaded(true);
       })
       .catch((err) => {
         setNotification(err.response.data);
@@ -132,10 +134,12 @@ export default function AppGroceries() {
             </div>
           ))}
         </div>
-      ) : (
+      ) : loaded ? (
         <h2>
           <Translate name="groceries.empty" />
         </h2>
+      ) : (
+        <></>
       )}
       <div
         className="article-new"

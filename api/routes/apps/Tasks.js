@@ -212,6 +212,17 @@ Tasks.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             (month == now.getMonth() && dayMonth[0] < now.getDay())
             ? now.getFullYear() + 1
             : now.getFullYear(), month, dayMonth[0], hourMinute[0], hourMinute[1]);
+        let taskUsers = [];
+        if (req.body.task.shared == false || req.body.task.Users.length == 0)
+            taskUsers.push({ id: req.user.id });
+        else {
+            let members = (yield res.locals.home.getMembers()).map((m) => m.id);
+            taskUsers = members.filter((u) => __awaiter(void 0, void 0, void 0, function* () { return req.body.task.Users.some((m) => __awaiter(void 0, void 0, void 0, function* () { return u.id === m.id; })); }));
+        }
+        if (taskUsers.length === 0)
+            return res
+                .status(500)
+                .json({ title: 'request.error', msg: 'request.error' });
         let task = yield db.Task.create({
             homeId: res.locals.home.id,
             ownerId: req.user.id,
@@ -220,19 +231,7 @@ Tasks.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             shared: req.body.task.shared,
             important: req.body.task.important,
         });
-        if (req.body.task.shared == false || req.body.task.Users.length == 0) {
-            yield db.UserTask.create({ userId: req.user.id, taskId: task.id });
-        }
-        else {
-            yield req.body.task.Users.forEach((u) => __awaiter(void 0, void 0, void 0, function* () {
-                let members = (yield res.locals.home.getMembers()).map((m) => m.id);
-                let toAdd = [];
-                if (members.includes(u.id))
-                    toAdd.push({ userId: u.id, taskId: task.id });
-                if (toAdd.length > 0)
-                    yield db.UserTask.bulkCreate(toAdd);
-            }));
-        }
+        yield task.setUsers(taskUsers);
         res.json({
             title: 'tasks.created',
             msg: 'tasks.created',

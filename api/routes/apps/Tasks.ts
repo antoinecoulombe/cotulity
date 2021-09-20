@@ -230,6 +230,22 @@ Tasks.post('/', async (req: any, res: any) => {
       hourMinute[1]
     );
 
+    let taskUsers: Array<{ id: number }> = [];
+
+    if (req.body.task.shared == false || req.body.task.Users.length == 0)
+      taskUsers.push({ id: req.user.id });
+    else {
+      let members = (await res.locals.home.getMembers()).map((m: any) => m.id);
+      taskUsers = members.filter(async (u: any) =>
+        req.body.task.Users.some(async (m: any) => u.id === m.id)
+      );
+    }
+
+    if (taskUsers.length === 0)
+      return res
+        .status(500)
+        .json({ title: 'request.error', msg: 'request.error' });
+
     let task = await db.Task.create({
       homeId: res.locals.home.id,
       ownerId: req.user.id,
@@ -239,20 +255,7 @@ Tasks.post('/', async (req: any, res: any) => {
       important: req.body.task.important,
     });
 
-    if (req.body.task.shared == false || req.body.task.Users.length == 0) {
-      await db.UserTask.create({ userId: req.user.id, taskId: task.id });
-    } else {
-      await req.body.task.Users.forEach(async (u: any) => {
-        let members = (await res.locals.home.getMembers()).map(
-          (m: any) => m.id
-        );
-        let toAdd: { userId: number; taskId: number }[] = [];
-        if (members.includes(u.id))
-          toAdd.push({ userId: u.id, taskId: task.id });
-
-        if (toAdd.length > 0) await db.UserTask.bulkCreate(toAdd);
-      });
-    }
+    await task.setUsers(taskUsers);
 
     res.json({
       title: 'tasks.created',

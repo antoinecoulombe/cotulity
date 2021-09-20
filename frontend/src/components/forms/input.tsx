@@ -15,6 +15,8 @@ interface InputProps {
   onChange: (e: any) => void;
   onKeyPress?: (e: any) => void;
   onClick?: (e: any) => void;
+  onFocus?: (e: any) => void;
+  onBlur?: (e: any) => void;
 }
 
 export default function Input(props: InputProps) {
@@ -26,6 +28,8 @@ export default function Input(props: InputProps) {
       $(event.target).addClass('filled');
       $(event.target).next().addClass('filled');
     }
+
+    props.onBlur?.(event);
   }
 
   return (
@@ -44,6 +48,7 @@ export default function Input(props: InputProps) {
         onChange={props.onChange}
         onKeyPress={props.onKeyPress}
         onClick={props.onClick}
+        onFocus={props.onFocus}
         className={props.filled ? 'filled' : ''}
       ></input>
       <label htmlFor={props.name} className={props.filled ? 'filled' : ''}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import Input from './input';
@@ -40,6 +40,24 @@ export default function Dropdown(props: DropdownProps) {
   );
   const [selectedCount, setSelectedCount] = useState<number>(selected.length);
   const [opened, setOpened] = useState<boolean>(false);
+
+  function useOutsideAlerter(ref) {
+    useEffect(() => {
+      function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setOpened(false);
+        }
+      }
+
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [ref]);
+  }
+
+  const wrapperRef = useRef(null);
+  useOutsideAlerter(wrapperRef);
 
   useEffect(() => {
     if (selectedCount < selected.length)
@@ -89,6 +107,7 @@ export default function Dropdown(props: DropdownProps) {
         {props.title}
       </Title>
       <div
+        ref={wrapperRef}
         id={`${props.name.substring(
           props.name.lastIndexOf('.') + 1
         )}-dropdown-selected`}
@@ -103,7 +122,8 @@ export default function Dropdown(props: DropdownProps) {
           value={''}
           error={props.error}
           onChange={() => {}}
-          onClick={openOrClose}
+          // onClick={openOrClose}
+          onFocus={() => setOpened(true)} //{openOrClose}
           className={opened ? 'active' : ''}
           filled={selected.length > 0}
           before={
