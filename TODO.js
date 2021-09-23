@@ -32,3 +32,4 @@
 // TODO: Fix tasks refresh
 // TODO: Add field validations in front end (tasks)
 // TODO: Skeleton loading
+// TODO: Implement second chance

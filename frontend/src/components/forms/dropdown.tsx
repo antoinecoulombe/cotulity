@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
+import { useOutsideAlerter } from '../utils/outsideClick';
 import Input from './input';
 import Title from './title';
 import $ from 'jquery';
@@ -41,23 +42,8 @@ export default function Dropdown(props: DropdownProps) {
   const [selectedCount, setSelectedCount] = useState<number>(selected.length);
   const [opened, setOpened] = useState<boolean>(false);
 
-  function useOutsideAlerter(ref) {
-    useEffect(() => {
-      function handleClickOutside(event) {
-        if (ref.current && !ref.current.contains(event.target)) {
-          setOpened(false);
-        }
-      }
-
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, [ref]);
-  }
-
   const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef);
+  useOutsideAlerter(wrapperRef, () => setOpened(false));
 
   useEffect(() => {
     if (selectedCount < selected.length)

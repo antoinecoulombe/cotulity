@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import SubHeader, { SubHeaderProps } from './subHeader';
 import Sidebar, { SidebarTab } from './sidebar';
+import { useOutsideAlerter } from '../utils/outsideClick';
+import { useHistory } from 'react-router';
 import Header from './header';
 import $ from 'jquery';
 import '../../assets/css/open-app.css';
@@ -38,6 +40,8 @@ export function handleOpenAppResize(bodyMinHeight?: number) {
 }
 
 export default function AppContainer(props: AppContainerProps) {
+  const history = useHistory();
+
   useEffect(() => {
     window.addEventListener('resize', () =>
       handleOpenAppResize(props.bodyMinHeight)
@@ -48,8 +52,11 @@ export default function AppContainer(props: AppContainerProps) {
       );
   }, []);
 
+  const wrapperRef = useRef(null);
+  useOutsideAlerter(wrapperRef, () => history.push('/apps'));
+
   return (
-    <div className={`open-app-container ${props.appName}`}>
+    <div ref={wrapperRef} className={`open-app-container ${props.appName}`}>
       {props.popup}
       {props.sidebar && <Sidebar tabs={props.sidebar} />}
       <div className="headers">

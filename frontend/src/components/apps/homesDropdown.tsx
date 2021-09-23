@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router';
 import { Home } from '../../views/apps/homes';
+import { useOutsideAlerter } from '../utils/outsideClick';
 import IconToolTip from '../global/iconTooltip';
 
 interface HomesDropdownProps {
@@ -31,61 +32,67 @@ export default function HomesDropdown(props: HomesDropdownProps) {
 
   const iconWidth = 32;
 
-  if (!props.homes || props.homes.length === 0) return <></>;
-  else
-    return (
-      <>
-        <div className={`homes-dropdown-container ${active ? 'active' : ''}`}>
-          <div className="homes selected">
-            <div className={`home ${props.homes.length <= 1 ? 'alone' : ''}`}>
-              <h1 onClick={handleClick}>
-                {props.homes[0].UserHome.nickname ?? props.homes[0].name}
-              </h1>
-              {props.homes.length > 1 && (
-                <>
-                  <FontAwesomeIcon
-                    icon={active ? 'chevron-up' : 'chevron-down'}
-                    className="chevron"
-                    onClick={handleClick}
-                  />
-                  {active && (
-                    <IconToolTip
-                      icon="plus-circle"
-                      onClick={() => history.push('/apps/homes/new')}
-                      style={{
-                        iconWidth: iconWidth,
-                        tooltipMultiplier: 8,
-                        marginRight: iconWidth,
-                      }}
-                    >
-                      homes.tooltip.add
-                    </IconToolTip>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-          {active && (
-            <div className="homes list">
-              {props.homes.length > 1 &&
-                props.homes.slice(1).map((home) => (
-                  <div
-                    className="home"
-                    id={`${home.refNumber}`}
-                    key={home.id}
-                    onClick={handleChange}
+  const wrapperRef = useRef(null);
+  useOutsideAlerter(wrapperRef, () => setActive(false));
+
+  return !props.homes || props.homes.length === 0 ? (
+    <></>
+  ) : (
+    <>
+      <div
+        ref={wrapperRef}
+        className={`homes-dropdown-container ${active ? 'active' : ''}`}
+      >
+        <div className="homes selected">
+          <div className={`home ${props.homes.length <= 1 ? 'alone' : ''}`}>
+            <h1 onClick={handleClick}>
+              {props.homes[0].UserHome.nickname ?? props.homes[0].name}
+            </h1>
+            {props.homes.length > 1 && (
+              <>
+                <FontAwesomeIcon
+                  icon={active ? 'chevron-up' : 'chevron-down'}
+                  className="chevron"
+                  onClick={handleClick}
+                />
+                {active && (
+                  <IconToolTip
+                    icon="plus-circle"
+                    onClick={() => history.push('/apps/homes/new')}
+                    style={{
+                      iconWidth: iconWidth,
+                      tooltipMultiplier: 8,
+                      marginRight: iconWidth,
+                    }}
                   >
-                    <h1>{home.UserHome.nickname ?? home.name}</h1>
-                    <FontAwesomeIcon
-                      icon="arrow-alt-circle-right"
-                      className="icon"
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
+                    homes.tooltip.add
+                  </IconToolTip>
+                )}
+              </>
+            )}
+          </div>
         </div>
-        <div className="homes-dropdown-blocker"></div>
-      </>
-    );
+        {active && (
+          <div className="homes list">
+            {props.homes.length > 1 &&
+              props.homes.slice(1).map((home) => (
+                <div
+                  className="home"
+                  id={`${home.refNumber}`}
+                  key={home.id}
+                  onClick={handleChange}
+                >
+                  <h1>{home.UserHome.nickname ?? home.name}</h1>
+                  <FontAwesomeIcon
+                    icon="arrow-alt-circle-right"
+                    className="icon"
+                  />
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+      <div className="homes-dropdown-blocker"></div>
+    </>
+  );
 }
