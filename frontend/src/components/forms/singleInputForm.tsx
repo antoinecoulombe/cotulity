@@ -5,7 +5,7 @@ import Title from './title';
 
 export interface SingleInputFormProps {
   name: string;
-  title: string;
+  title?: string;
   style: {
     iconWidth: number;
     tooltipMultiplier: number;
@@ -42,9 +42,11 @@ export default function SingleInputForm(props: SingleInputFormProps) {
         !props.onBack && props.onSubmit != undefined ? ' offset' : ''
       } ${props.className ?? ''}${!props.onSubmit ? ' r-offset' : ''}`}
     >
-      <Title help={props.children} required={props.required}>
-        {props.title}
-      </Title>
+      {props.title && (
+        <Title help={props.children} required={props.required}>
+          {props.title}
+        </Title>
+      )}
       <div className="input-container">
         {props.onBack && (
           <IconToolTip

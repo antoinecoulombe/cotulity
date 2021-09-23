@@ -88,6 +88,14 @@ Users.post('/register', async (req, res) => {
   }
 });
 
+Users.post('/public/password/reset', async (req, res) => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
 // ########################################################
 // ######################## DELETE ########################
 // ########################################################

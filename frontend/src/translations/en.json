@@ -96,6 +96,11 @@
     "login-p": {
       "static": "Already a member?",
       "link": "Log in"
+    },
+    "pwd-reset": {
+      "link": "Forgot Password?",
+      "title": "Reset Password Request",
+      "placeholder": "Please enter your email address."
     }
   },
   "homes": {
@@ -258,6 +263,11 @@
       },
       "apps": {
         "error": "Applications could not be loaded"
+      },
+      "form": {
+        "email": {
+          "error": "Invalid Email"
+        }
       },
       "login": {
         "success": "Connection successfull",

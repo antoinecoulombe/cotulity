@@ -19,15 +19,14 @@ export default function FormToggle(props: FormToggleProps) {
   };
 
   function toggleForm(signup: boolean) {
-    $('.toggle').css('opacity', 0);
-    $('.toggle').hide();
+    $('.toggle, .pwd-reset').css('opacity', 0);
+    $('.toggle, .pwd-reset').hide();
 
     $('.form-input.signup').animate({ opacity: signup ? 1 : 0 }, 500, () => {
       if (!signup) $('.form-input.signup').hide();
 
-      $('.toggle').css('padding-right', signup ? 56 : 50);
-      $('.toggle').show();
-      $('.toggle').animate({ opacity: 1 }, 500);
+      $('.toggle, .pwd-reset').show();
+      $('.toggle, .pwd-reset').animate({ opacity: 1 }, 500);
     });
 
     if (signup) {
@@ -44,7 +43,7 @@ export default function FormToggle(props: FormToggleProps) {
   }
 
   return (
-    <p className="toggle" style={{ paddingRight: 50 }}>
+    <p className="toggle">
       <i>
         <Translate
           name={!props.login ? p.login.static : p.signup.static}

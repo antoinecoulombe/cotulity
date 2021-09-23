@@ -32,15 +32,24 @@ form {
   }
 }
 
-.toggle {
+.login-text() {
   .font-default();
   font-size: 12px;
-  text-align: right;
   margin: 6px 0 0 0;
+  display: inline-block;
 
   > i {
     font-style: normal;
+  }
+}
 
+.toggle {
+  .login-text();
+  float: right;
+  text-align: right;
+  padding-right: 56px;
+
+  > i {
     &:first-of-type {
       color: var(--login-p-color);
       opacity: var(--login-p-opacity);
@@ -56,6 +65,21 @@ form {
         text-decoration: underline;
       }
     }
+  }
+}
+
+.pwd-reset {
+  .login-text();
+  float: left;
+
+  color: var(--login-p-color);
+  opacity: var(--login-p-opacity);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--login-p-sub-color);
+    opacity: 1;
+    text-decoration: underline;
   }
 }
 

@@ -109,6 +109,14 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
         });
     }
 }));
+Users.post('/public/password/reset', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
 // ########################################################
 // ######################## DELETE ########################
 // ########################################################

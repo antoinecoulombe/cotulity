@@ -7,6 +7,8 @@ import Input from '../forms/input';
 import FormToggle from './formToggle';
 import axios from '../../utils/fetchClient';
 import $ from 'jquery';
+import Translate from '../utils/translate';
+import SingleInputPopup from '../forms/singleInputPopup';
 
 export default function LoginForm() {
   let { token } = useParams<{ token: string }>();
@@ -35,11 +37,50 @@ export default function LoginForm() {
     phone: false,
     firstname: false,
     lastname: false,
+    reset: false,
   };
+
+  const nullJSX: JSX.Element = <></>;
 
   const [isLogin, setLogin] = useState(true);
   const [form, setForm] = useState(initForm);
   const [errors, setError] = useState(errorForm);
+  const [popup, setPopup] = useState<JSX.Element>(nullJSX);
+
+  function handlePopupSubmit(email: string) {
+    if (!email || email.length === 0) {
+      setError({ ...errorForm, reset: true });
+      setErrorNotification({
+        title: 'form.email.error',
+        msg: 'form.error.email.valid',
+      });
+      return;
+    }
+
+    setError({ ...errorForm, reset: false });
+    axios
+      .post('/users/public/password/reset', { email: email })
+      .then(async (res) => {
+        setPopup(nullJSX);
+      })
+      .catch((err) => {
+        if (err.response?.data) setNotification(err.response.data);
+      });
+  }
+
+  function showPopup() {
+    setPopup(
+      <SingleInputPopup
+        name={`login.pwd-reset.placeholder`}
+        title="login.pwd-reset.title"
+        onCancel={() => setPopup(nullJSX)}
+        onSubmit={(email: string) => handlePopupSubmit(email)}
+        style={{ iconWidth: 32, tooltipMultiplier: 15 }}
+        error={errorForm.reset}
+        containerClassName="bg-light"
+      />
+    );
+  }
 
   useEffect(() => {
     handleLoad();
@@ -164,65 +205,71 @@ export default function LoginForm() {
   }
 
   return (
-    <form id="login" onSubmit={(event) => handleSubmit(event)}>
-      <Input
-        name={'form.email'}
-        type={'email'}
-        value={form.email}
-        onChange={(e: any) => setForm({ ...form, email: e.target.value })}
-        onKeyPress={handleKeyPress}
-        error={errors.email}
-      />
-      <Input
-        name={'form.password'}
-        type={'password'}
-        value={form.password}
-        onChange={(e: any) => setForm({ ...form, password: e.target.value })}
-        onKeyPress={handleKeyPress}
-        error={errors.password}
-      />
+    <>
+      {popup}
+      <form id="login" onSubmit={(event) => handleSubmit(event)}>
+        <Input
+          name={'form.email'}
+          type={'email'}
+          value={form.email}
+          onChange={(e: any) => setForm({ ...form, email: e.target.value })}
+          onKeyPress={handleKeyPress}
+          error={errors.email}
+        />
+        <Input
+          name={'form.password'}
+          type={'password'}
+          value={form.password}
+          onChange={(e: any) => setForm({ ...form, password: e.target.value })}
+          onKeyPress={handleKeyPress}
+          error={errors.password}
+        />
 
-      <FontAwesomeIcon
-        icon="arrow-alt-circle-right"
-        className="submit"
-        onClick={handleSubmit}
-      />
+        <FontAwesomeIcon
+          icon="arrow-alt-circle-right"
+          className="submit"
+          onClick={handleSubmit}
+        />
 
-      <Input
-        name={'form.phone'}
-        type={'phone'}
-        value={form.phone}
-        className="signup"
-        onChange={(e: any) => setForm({ ...form, phone: e.target.value })}
-        error={errors.phone}
-      />
-      <Input
-        name={'form.cpassword'}
-        type={'password'}
-        value={form.cpassword}
-        className="signup"
-        onChange={(e: any) => setForm({ ...form, cpassword: e.target.value })}
-        error={errors.cpassword}
-      />
-      <Input
-        name={'form.firstname'}
-        type={'text'}
-        value={form.firstname}
-        className="signup"
-        onChange={(e: any) => setForm({ ...form, firstname: e.target.value })}
-        error={errors.firstname}
-      />
-      <Input
-        name={'form.lastname'}
-        type={'text'}
-        value={form.lastname}
-        className="signup"
-        onChange={(e: any) => setForm({ ...form, lastname: e.target.value })}
-        onKeyPress={handleKeyPress}
-        error={errors.lastname}
-      />
+        <Input
+          name={'form.phone'}
+          type={'phone'}
+          value={form.phone}
+          className="signup"
+          onChange={(e: any) => setForm({ ...form, phone: e.target.value })}
+          error={errors.phone}
+        />
+        <Input
+          name={'form.cpassword'}
+          type={'password'}
+          value={form.cpassword}
+          className="signup"
+          onChange={(e: any) => setForm({ ...form, cpassword: e.target.value })}
+          error={errors.cpassword}
+        />
+        <Input
+          name={'form.firstname'}
+          type={'text'}
+          value={form.firstname}
+          className="signup"
+          onChange={(e: any) => setForm({ ...form, firstname: e.target.value })}
+          error={errors.firstname}
+        />
+        <Input
+          name={'form.lastname'}
+          type={'text'}
+          value={form.lastname}
+          className="signup"
+          onChange={(e: any) => setForm({ ...form, lastname: e.target.value })}
+          onKeyPress={handleKeyPress}
+          error={errors.lastname}
+        />
 
-      <FormToggle login={isLogin} onClick={() => setLogin(!isLogin)} />
-    </form>
+        <FormToggle login={isLogin} onClick={() => setLogin(!isLogin)} />
+        <p className="pwd-reset" onClick={() => showPopup()}>
+          <Translate name="link" prefix="login.pwd-reset." />
+        </p>
+      </form>
+    </>
   );
 }

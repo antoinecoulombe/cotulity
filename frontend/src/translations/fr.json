@@ -96,6 +96,11 @@
     "login-p": {
       "static": "Déjà membre?",
       "link": "Se connecter"
+    },
+    "pwd-reset": {
+      "link": "Mot de passe oublié?",
+      "title": "Demande de réinitialisation de mot de passe",
+      "placeholder": "Veuillez entrer votre adresse courriel."
     }
   },
   "homes": {
@@ -258,6 +263,11 @@
       },
       "apps": {
         "error": "Erreur lors du chargement des applications"
+      },
+      "form": {
+        "email": {
+          "error": "Courriel invalide"
+        }
       },
       "login": {
         "success": "Connexion réussie",
