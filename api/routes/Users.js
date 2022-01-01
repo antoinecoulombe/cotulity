@@ -96,6 +96,10 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
             lastname,
             phone,
         });
+        if (user) {
+            // TODO: Send verification email
+        }
+        // TODO: Change register notification to include verification email status
         res.json({
             title: 'register.success',
             msg: 'register.success',
@@ -111,6 +115,7 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
 }));
 Users.post('/public/password/reset', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // TODO: Reset password
     }
     catch (error) {
         console.log(error);

@@ -122,6 +122,9 @@ export default function App() {
       getNotifications();
     }, 10 * 60 * 1000); // Every 10 minutes
 
+    if (!localStorage.getItem('safeDelete'))
+      localStorage.setItem('safeDelete', 'true');
+
     if (!localStorage.getItem('autoTheme'))
       localStorage.setItem('autoTheme', 'true');
 

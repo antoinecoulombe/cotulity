@@ -1,22 +1,19 @@
-// TODO: Convert website to SSL/HTTPS
-// TODO: Host website
-// TODO: Warning popup handling choice (Warn on delete, default checked)
-// TODO: Do Finances app
-// Redesign
+// Micro-service each app -> Not yet, the website is not complex enough
+// Host and convert website to SSL/HTTPS -> Vercel prod environment
+// TODO: Convert to HTTPS (frontend/package.json:start, add "export HTTPS=true &&")
+// TODO: Implement second change (Warn on delete, default checked)
+// TODO: Redesign and do Finances app
 // TODO: Do Calendar app
 // TODO: Fix height of popups inside open-app
-// TODO: Convert fixed sizes to vw/vh or something more flexible (@media?)
-// More adaptable to smaller sizes
-// TODO: Correct colors in themes (grey tones, opacities…)
-// Increase uniformity across pages (font-size, color…)
+// TODO: Convert fixed sizes to em with responsive typography (media queries)
+// TODO: Correct colors in themes (grey tones, opacities, font-size, colors…) to increse uniformity
 // TODO: Add more validation
 // TODO: Delete notifications after timeout
 // TODO: Block commits on test fail (implement on merge)
 // TODO: Send verification email
 // TODO: Password reset links
-// TODO: Micro-service each app?
 // TODO: Page loading of tasks, finances and calendar
-// TODO: Sidebar shrinking if window width < x pixels
+// TODO: Sidebar shrinking ifcd  window width < x pixels
 // TODO: Implement working horizontal scroll without pressing shift
 // TODO: Add repeating options in tasks
 // TODO: Separate task completion by involved task (task is completed only if all members complete the task)
@@ -32,4 +29,3 @@
 // TODO: Fix tasks refresh
 // TODO: Add field validations in front end (tasks)
 // TODO: Skeleton loading
-// TODO: Implement second chance

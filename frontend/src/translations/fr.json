@@ -158,6 +158,22 @@
         "yes": "Oui, quitter la maison",
         "no": "Non, conserver la maison"
       }
+    },
+    "kickMember": {
+      "desc": "",
+      "title": "",
+      "buttons": {
+        "yes": "Oui, exclure '{0}'",
+        "no": "Non, conserver '{0}'"
+      }
+    },
+    "rejectRequest": {
+      "desc": "",
+      "title": "",
+      "buttons": {
+        "yes": "Oui, refuser '{0}'",
+        "no": "Non, conserver la demande"
+      }
     }
   },
   "newHome": {

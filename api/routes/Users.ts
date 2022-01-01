@@ -75,21 +75,27 @@ Users.post('/register', async (req, res) => {
       phone,
     });
 
+    if (user) {
+      // TODO: Send verification email
+    }
+
+    // TODO: Change register notification to include verification email status
     res.json({
       title: 'register.success',
       msg: 'register.success',
     });
   } catch (e) {
     res.status(500).json({
-      title: e.errors[0] ? 'register.error' : 'request.error',
-      msg: e.errors[0]?.message ?? 'request.error',
-      input: e.errors[0]?.path ?? null,
+      title: (e as any).errors[0] ? 'register.error' : 'request.error',
+      msg: (e as any).errors[0]?.message ?? 'request.error',
+      input: (e as any).errors[0]?.path ?? null,
     });
   }
 });
 
 Users.post('/public/password/reset', async (req, res) => {
   try {
+    // TODO: Reset password
   } catch (error) {
     console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });

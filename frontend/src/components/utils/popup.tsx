@@ -6,6 +6,7 @@ import Translate from './translate';
 interface PopupProps {
   children: any;
   className?: string;
+  popup?: JSX.Element;
   type: 'edit' | 'si' | 'warning';
   new?: boolean;
   onCancel(...attr: any): any;
@@ -17,6 +18,7 @@ export default function Popup(props: PopupProps) {
   return (
     <div className={`popup-container ${props.className ?? ''}`}>
       <div className={`popup ${props.type}`}>
+        {props.popup}
         <div className="close">
           <FontAwesomeIcon
             icon="times"

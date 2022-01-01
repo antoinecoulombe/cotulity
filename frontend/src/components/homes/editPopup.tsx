@@ -3,7 +3,7 @@ import Toggle, { Tab } from '../global/toggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Home } from '../../views/apps/homes';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import { getCopyIndex } from '../../utils/global';
+import { getCopyIndex, getTranslateJSON } from '../../utils/global';
 import List from '../utils/lists/list';
 import ListItem from '../utils/lists/listItem';
 import ListItemLeft from '../utils/lists/listLeft';
@@ -14,7 +14,9 @@ import ReactDOMServer from 'react-dom/server';
 import Translate from '../utils/translate';
 import SingleInputForm from '../forms/singleInputForm';
 import axios from '../../utils/fetchClient';
+import WarningPopup from '../global/warningPopup';
 import _ from 'lodash';
+import $ from 'jquery';
 
 interface HomeMember {
   id: number;
@@ -32,12 +34,15 @@ interface EditPopupProps {
   onDelete?(...attr: any): any;
 }
 
+const nullJSX = <></>;
+
 export default function EditPopup(props: EditPopupProps) {
   const { setNotification, setErrorNotification } = useNotifications();
   const [name, setName] = useState<string>();
   const [error, setError] = useState<boolean>(false);
   const [members, setMembers] = useState<HomeMember[]>([]);
   const [tabs, setTabs] = useState<Tab[]>([]);
+  const [popup, setPopup] = useState<JSX.Element>(nullJSX);
 
   useEffect(() => {
     setTabs(getTabs(members));
@@ -203,6 +208,25 @@ export default function EditPopup(props: EditPopupProps) {
   }
 
   function deleteMember(event: any, memberId: number) {
+    if (localStorage.getItem('safeDelete') === 'true') {
+      const name = event.target
+        .closest('.img-text')
+        .querySelector('h3').innerHTML;
+
+      setPopup(
+        <WarningPopup
+          title={getTranslateJSON(`homes.kickMember.text.title`, [name])}
+          desc={`homes.kickMember.text.desc`}
+          yesText={getTranslateJSON(`homes.kickMember.buttons.yes`, [name])}
+          noText={getTranslateJSON(`homes.kickMember.buttons.no`, [name])}
+          onCancel={() => setPopup(nullJSX)}
+          onSubmit={() => requestDeleteMember(memberId)}
+        />
+      );
+    } else requestDeleteMember(memberId);
+  }
+
+  function requestDeleteMember(memberId: number) {
     axios
       .delete(`/homes/${props.home?.refNumber}/members/${memberId}/remove`)
       .then((res: any) => {
@@ -214,6 +238,21 @@ export default function EditPopup(props: EditPopupProps) {
   }
 
   function acceptRequest(event: any, accept: boolean, memberId: number) {
+    if (!accept && localStorage.getItem('safeDelete') === 'true') {
+      setPopup(
+        <WarningPopup
+          title={getTranslateJSON(`homes.rejectRequest.text.title`, [''])}
+          desc={`homes.rejectRequest.text.desc`}
+          yesText={`homes.rejectRequest.buttons.yes`}
+          noText={`homes.rejectRequest.buttons.no`}
+          onCancel={() => setPopup(nullJSX)}
+          onSubmit={() => requestHandleRequest(accept, memberId)}
+        />
+      );
+    } else requestHandleRequest(accept, memberId);
+  }
+
+  function requestHandleRequest(accept: boolean, memberId: number) {
     axios
       .put(
         `/homes/${props.home.refNumber}/requests/${memberId}/${
@@ -265,6 +304,7 @@ export default function EditPopup(props: EditPopupProps) {
       onCancel={() => props.onCancel?.(props.home.refNumber)}
       onSubmit={onSubmit}
       onDelete={() => props.onDelete?.(props.home.refNumber)}
+      popup={popup}
       type="edit"
     >
       <div className="form">

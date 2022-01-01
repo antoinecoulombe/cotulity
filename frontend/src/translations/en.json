@@ -158,6 +158,22 @@
         "yes": "Yes, Quit Home",
         "no": "No, Stay in Home"
       }
+    },
+    "kickMember": {
+      "desc": "",
+      "title": "",
+      "buttons": {
+        "yes": "Yes, exclude '{0}'",
+        "no": "No, keep '{0}'"
+      }
+    },
+    "rejectRequest": {
+      "desc": "",
+      "title": "",
+      "buttons": {
+        "yes": "Yes, refuse '{0}'",
+        "no": "No, take me back"
+      }
     }
   },
   "newHome": {

@@ -266,6 +266,7 @@ export default function LoginForm() {
         />
 
         <FormToggle login={isLogin} onClick={() => setLogin(!isLogin)} />
+        {/* TODO: CHANGE FOLLOWING TO SAME STYLE AS LOGIN FORM */}
         <p className="pwd-reset" onClick={() => showPopup()}>
           <Translate name="link" prefix="login.pwd-reset." />
         </p>
