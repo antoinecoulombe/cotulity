@@ -50,7 +50,6 @@ module.exports = {
           name: 'console',
           online: true,
           image: 'terminal',
-          imageMultiplier: 0.8,
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },

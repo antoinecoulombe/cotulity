@@ -10,7 +10,7 @@
 // TODO: Add more validation
 // TODO: Delete notifications after timeout
 // TODO: Block commits on test fail (implement on merge)
-// TODO: Send verification email
+// TODO: Send verification email (not needed if invited since link is only available to sent email)
 // TODO: Password reset links
 // TODO: Page loading of tasks, finances and calendar
 // TODO: Sidebar shrinking ifcd  window width < x pixels
@@ -29,3 +29,7 @@
 // TODO: Fix tasks refresh
 // TODO: Add field validations in front end (tasks)
 // TODO: Skeleton loading
+// TODO: Micro-services per app (even if useless in this case, implement as proof of concept for larger web app)
+// TODO: Add email domain (@cotulity.com) (through icloud+?)
+// TODO: Update README (mainly .less section)
+// TODO: Add app priority/visibility for each user (Many to Many table)
