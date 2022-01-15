@@ -1,35 +1,65 @@
-// Micro-service each app -> Not yet, the website is not complex enough
-// Host and convert website to SSL/HTTPS -> Vercel prod environment
-// TODO: Convert to HTTPS (frontend/package.json:start, add "export HTTPS=true &&")
-// TODO: Implement second change (Warn on delete, default checked)
-// TODO: Redesign and do Finances app
-// TODO: Do Calendar app
-// TODO: Fix height of popups inside open-app
-// TODO: Convert fixed sizes to em with responsive typography (media queries)
-// TODO: Correct colors in themes (grey tones, opacities, font-size, colors…) to increse uniformity
-// TODO: Add more validation
-// TODO: Delete notifications after timeout
-// TODO: Block commits on test fail (implement on merge)
-// TODO: Send verification email (not needed if invited since link is only available to sent email)
-// TODO: Password reset links
-// TODO: Page loading of tasks, finances and calendar
-// TODO: Sidebar shrinking ifcd  window width < x pixels
-// TODO: Implement working horizontal scroll without pressing shift
-// TODO: Add repeating options in tasks
-// TODO: Separate task completion by involved task (task is completed only if all members complete the task)
-// TODO: Close app on outside click
-// TODO: Add filter to dropdown
+// #region Ameliorations
+
 // TODO: Refactor css
-// TODO: Refactor react elements
+//  -> Convert fixed sizes to em + responsive typography (media queries)
+//  -> Standardize classes
+//  -> Standardize colors (grey tones, opacities...)
+//  -> Standardize font sizes and hX uses between apps
 // TODO: Refactor api urls
 // TODO: Add type uniformity react
-// TODO: Add missing verifications back-end
-// TODO: Add Horizontal and Vertical sliders for hours, months, days, minutes….
-// TODO: Restore tasks from trash
-// TODO: Fix tasks refresh
-// TODO: Add field validations in front end (tasks)
-// TODO: Skeleton loading
-// TODO: Micro-services per app (even if useless in this case, implement as proof of concept for larger web app)
-// TODO: Add email domain (@cotulity.com) (through icloud+?)
+// TODO: Add missing validations (React + API)
 // TODO: Update README (mainly .less section)
+
+// #endregion
+
+// #region Tests
+
+// TODO: Implement API tests
+//  -> Groceries
+//  -> Homes
+//  -> Users
+//  -> Images
+//  -> Notifications
+
+// #endregion
+
+// #region Fixes
+
+// TODO: Implement second chance
+//  -> Warn on Delete, default checked
+// TODO: Fix height of popups inside open-app
+// TODO: Delete notifications after timeout
+// TODO: Block commits on test fail (implement on merge)
+// TODO: Sidebar shrinking if window width < x pixels
+// TODO: Implement working horizontal scroll without pressing shift
+
+// #endregion
+
+// #region Features
+
+// TODO: Micro-services per app (even if useless in this case, implement as proof of concept for larger web app)
+// TODO: Complete Tasks app
+//  -> Add repeating options
+//  -> Fix task refresh
+//  -> Restore tasks from trash
+//  -> Add field validation
+//  -> Complete task only if all members complete the task
+//  -> Add filter and sort
+//  -> Add slider for minutes, hours, days and months
+// TODO: Develop + Redesign Finances app
+// TODO: Develop Calendar app
+// TODO: Send verification email (not needed if invited since link is only available to sent email)
+// TODO: Password reset links
+// TODO: Host and convert website to SSL/HTTPS
+//  -> Vercel production environnement?
+// TODO: Host + Convert to HTTPS
+//  -> Add "export HTTPS=true &&" at the beginning of start script in "frontend/package.json"
+
+// #endregion
+
+// #region Nice to have (If time remaining)
+
+// TODO: Skeleton loading
 // TODO: Add app priority/visibility for each user (Many to Many table)
+
+// #endregion
