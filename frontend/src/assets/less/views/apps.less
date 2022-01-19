@@ -1,4 +1,4 @@
-@import (reference) 'global.less';
+@import (reference) '../globals/global.less';
 
 // #region Apps
 
@@ -29,7 +29,7 @@
         background-color: var(--gradient-input-bg);
         opacity: var(--apps-icon-opacity);
         color: var(--apps-icon-color);
-        border-radius: @appBR;
+        border-radius: @app[border-radius];
 
         > svg {
           font-size: 70px;
@@ -73,7 +73,6 @@
   .centered();
   .font-default();
 
-  @fontSize: 36px;
   @padding: 20px;
   @radius: 12px;
   @iconSize: 32px;
@@ -120,13 +119,13 @@
       > h1 {
         .noselect();
         font-family: 'Roboto';
-        font-size: @fontSize;
         font-weight: 200;
         margin: 0;
         max-width: calc(100% - (@iconSize * 5));
         text-align: center;
         overflow: hidden;
         white-space: nowrap;
+        color: white;
       }
 
       > .chevron {

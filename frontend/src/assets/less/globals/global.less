@@ -1,12 +1,10 @@
 // #region variables/maps
 
+@import 'variables.less';
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;1,100;1,200;1,300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;1,100;1,300&display=swap');
-
-@appBR: 10px;
-@appBS: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-@app-padding: 60px;
 
 #global() {
   .bg() {
@@ -35,6 +33,36 @@
 // #endregion
 
 // #region global classes/ids/tags
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  .font-default();
+  margin: 0;
+  color: var(--black);
+}
+
+h1 {
+  font-size: 36px;
+}
+h2 {
+  font-size: 22px;
+}
+h3 {
+  font-size: 18px;
+}
+h4 {
+  font-size: 16px;
+}
+h5 {
+  font-size: 14px;
+}
+
+.link {
+  cursor: pointer;
+}
 
 html,
 body,
@@ -455,7 +483,7 @@ button {
   width: 100%;
   height: 100%;
   background-color: var(--popup-c-bg-color);
-  border-radius: @appBR;
+  border-radius: @app[border-radius];
   z-index: 10;
 
   &.bg-light {
@@ -474,8 +502,8 @@ button {
     width: 50%;
     height: auto;
     max-height: 100%;
-    border-radius: @appBR;
-    box-shadow: @appBS;
+    border-radius: @app[border-radius];
+    box-shadow: @app[box-shadow];
 
     .hide-scrollbar();
 

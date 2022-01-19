@@ -52,13 +52,13 @@ export default function Sidebar(props: SidebarProps) {
                   ]}
                   className="icon"
                 />
-                <h3>
+                <h4>
                   <Translate
                     name={t.value}
                     prefix={t.prefix}
                     suffix={t.suffix}
                   />
-                </h3>
+                </h4>
               </div>
             </div>
           ))}
@@ -81,7 +81,7 @@ export default function Sidebar(props: SidebarProps) {
                   ) : (
                     <FontAwesomeIcon icon="user-circle" />
                   )}
-                  <h3>{ut.value}</h3>
+                  <h4>{ut.value}</h4>
                 </div>
                 {(ut.count ?? 0) > 0 && (
                   <div className="right">

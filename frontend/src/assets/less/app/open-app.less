@@ -1,0 +1,19 @@
+@import (reference) '../globals/global.less';
+
+.open-app-container {
+  position: relative;
+  width: 70%;
+  height: auto;
+  max-height: calc(90% - @app[padding] * 2);
+  background-color: var(--gradient-input-bg);
+  border-radius: @app[border-radius];
+  padding: @app[padding];
+  box-shadow: @app[box-shadow];
+  border: var(--oapp-border);
+
+  @import 'headers.less';
+
+  @import 'body.less';
+
+  @import 'sidebar.less';
+}

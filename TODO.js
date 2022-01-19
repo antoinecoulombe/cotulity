@@ -23,17 +23,6 @@
 
 // #endregion
 
-// #region Fixes                                                            ->  30h
-
-// TODO: Implement second chance                                            ->  8h
-// TODO: Fix height of popups inside open-app                               ->  4h
-// TODO: Delete notifications after timeout                                 ->  8h
-// TODO: Block commits on test fail (implement on merge)                    ->  2h
-// TODO: Sidebar shrinking if window width < x pixels                       ->  4h
-// TODO: Implement working horizontal scroll without pressing shift         ->  4h
-
-// #endregion
-
 // #region Features                                                         -> 170h
 
 // TODO: Micro-services per app (proof of concept for larger web app)       -> 16h
@@ -52,6 +41,17 @@
 // TODO: Host and convert website to SSL/HTTPS                              -> 24h
 //  -> Vercel production environnement?
 //  -> Add "export HTTPS=true &&" at the beginning of start script in "frontend/package.json"
+
+// #endregion
+
+// #region Fixes                                                            ->  30h
+
+// TODO: Implement second chance                                            ->  8h
+// TODO: Fix height of popups inside open-app                               ->  4h
+// TODO: Delete notifications after timeout                                 ->  8h
+// TODO: Block commits on test fail (implement on merge)                    ->  2h
+// TODO: Sidebar shrinking if window width < x pixels                       ->  4h
+// TODO: Implement working horizontal scroll without pressing shift         ->  4h
 
 // #endregion
 

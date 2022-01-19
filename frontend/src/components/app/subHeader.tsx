@@ -22,13 +22,13 @@ export default function SubHeader(props: SubHeaderProps) {
     <div className="sub-header">
       <div className="tabs">
         {props.tabs.map((t) => (
-          <h2
-            className={t.selected ? 'selected' : ''}
+          <h3
+            className={`link${t.selected ? ' selected' : ''}`}
             onClick={t.action}
             key={t.name}
           >
             <Translate name={t.name} prefix="subHeader."></Translate>
-          </h2>
+          </h3>
         ))}
       </div>
 
