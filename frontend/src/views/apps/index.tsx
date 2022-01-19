@@ -98,6 +98,7 @@ export default function AppsPage() {
             })
             .catch((err) => {
               setNotification(err.response.data);
+              getHomes();
             });
         } else getHomes();
       })

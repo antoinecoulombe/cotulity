@@ -1,58 +1,56 @@
-// #region Ameliorations
+// #region Ameliorations                                                    ->  39h
 
-// TODO: Refactor css
-//  -> Convert fixed sizes to em + responsive typography (media queries)
-//  -> Standardize classes
-//  -> Standardize colors (grey tones, opacities...)
-//  -> Standardize font sizes and hX uses between apps
-// TODO: Refactor api urls
-// TODO: Add type uniformity react
-// TODO: Add missing validations (React + API)
-// TODO: Update README (mainly .less section)
-
-// #endregion
-
-// #region Tests
-
-// TODO: Implement API tests
-//  -> Groceries
-//  -> Homes
-//  -> Users
-//  -> Images
-//  -> Notifications
+// TODO: Refactor css                                                       -> 20h
+//  -> Convert fixed sizes to em + responsive typography (media queries)    ->  8h
+//  -> Standardize classes                                                  ->  6h
+//  -> Standardize colors (grey tones, opacities...)                        ->  3h
+//  -> Standardize font sizes and hX uses between apps                      ->  3h
+// TODO: Refactor api urls                                                  ->  4h
+// TODO: Add type uniformity react                                          ->  6h
+// TODO: Add missing validations (React + API)                              ->  8h
+// TODO: Update README (mainly .less section)                               ->  1h
 
 // #endregion
 
-// #region Fixes
+// #region Tests                                                            ->  26h
 
-// TODO: Implement second chance
-//  -> Warn on Delete, default checked
-// TODO: Fix height of popups inside open-app
-// TODO: Delete notifications after timeout
-// TODO: Block commits on test fail (implement on merge)
-// TODO: Sidebar shrinking if window width < x pixels
-// TODO: Implement working horizontal scroll without pressing shift
+// TODO: Implement API tests                                                -> 26h
+//  -> Groceries                                                            ->  4h
+//  -> Homes                                                                -> 12h
+//  -> Users                                                                ->  4h
+//  -> Images                                                               ->  3h
+//  -> Notifications                                                        ->  3h
 
 // #endregion
 
-// #region Features
+// #region Fixes                                                            ->  30h
 
-// TODO: Micro-services per app (even if useless in this case, implement as proof of concept for larger web app)
-// TODO: Complete Tasks app
-//  -> Add repeating options
-//  -> Fix task refresh
-//  -> Restore tasks from trash
-//  -> Add field validation
-//  -> Complete task only if all members complete the task
-//  -> Add filter and sort
-//  -> Add slider for minutes, hours, days and months
-// TODO: Develop + Redesign Finances app
-// TODO: Develop Calendar app
-// TODO: Send verification email (not needed if invited since link is only available to sent email)
-// TODO: Password reset links
-// TODO: Host and convert website to SSL/HTTPS
+// TODO: Implement second chance                                            ->  8h
+// TODO: Fix height of popups inside open-app                               ->  4h
+// TODO: Delete notifications after timeout                                 ->  8h
+// TODO: Block commits on test fail (implement on merge)                    ->  2h
+// TODO: Sidebar shrinking if window width < x pixels                       ->  4h
+// TODO: Implement working horizontal scroll without pressing shift         ->  4h
+
+// #endregion
+
+// #region Features                                                         -> 170h
+
+// TODO: Micro-services per app (proof of concept for larger web app)       -> 16h
+// TODO: Complete Tasks app                                                 -> 32h
+//  -> Add repeating options                                                ->  6h
+//  -> Fix task refresh                                                     ->  8h
+//  -> Restore tasks from trash                                             ->  2h
+//  -> Add field validation                                                 ->  4h
+//  -> Complete task only if all members complete the task                  ->  6h
+//  -> Add slider for minutes, hours, days and months                       ->  6h
+// TODO: Redesign + Develop Finances app                                    -> 30h
+// TODO: Develop Calendar app                                               -> 50h
+// TODO: Send verification email                                            ->  8h
+//  -> not needed if invited since link is only available to sent email
+// TODO: Password reset links                                               -> 10h
+// TODO: Host and convert website to SSL/HTTPS                              -> 24h
 //  -> Vercel production environnement?
-// TODO: Host + Convert to HTTPS
 //  -> Add "export HTTPS=true &&" at the beginning of start script in "frontend/package.json"
 
 // #endregion
@@ -61,5 +59,10 @@
 
 // TODO: Skeleton loading
 // TODO: Add app priority/visibility for each user (Many to Many table)
+// TODO: Add tasks statistics with graphs
+// TODO: Add filter and sort in Tasks app
 
 // #endregion
+
+// CPS + MPS + ProjeqTor                                                    ->   5h
+// Total                                                                    -> 270h

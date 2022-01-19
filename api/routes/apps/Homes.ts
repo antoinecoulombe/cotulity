@@ -443,8 +443,8 @@ Homes.put('/:refnumber/rename', validateHome, async (req: any, res: any) => {
   } catch (e) {
     console.log(e);
     res.status(500).json({
-      title: e.errors?.[0] ? 'homes.renameError' : 'request.error',
-      msg: e.errors?.[0]?.message ?? 'request.error',
+      title: (e as any).errors?.[0] ? 'homes.renameError' : 'request.error',
+      msg: (e as any).errors?.[0]?.message ?? 'request.error',
     });
   }
 });
@@ -648,8 +648,8 @@ Homes.post(
     } catch (e) {
       console.log(e);
       res.status(500).json({
-        title: e.errors?.[0] ? 'homes.inviteError' : 'request.error',
-        msg: e.errors?.[0]?.message ?? 'request.error',
+        title: (e as any).errors?.[0] ? 'homes.inviteError' : 'request.error',
+        msg: (e as any).errors?.[0]?.message ?? 'request.error',
       });
     }
   }
