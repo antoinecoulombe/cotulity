@@ -176,7 +176,7 @@ export default function LoginForm() {
 
     setError({ ...errorForm });
 
-    if (form.cpassword != form.password)
+    if (form.cpassword !== form.password)
       return setValidationNotification(
         ['password', 'cpassword'],
         'form.error.password.mustEqual'

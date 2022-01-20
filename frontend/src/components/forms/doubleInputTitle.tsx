@@ -30,9 +30,9 @@ export default function DoubleInputForm(props: DoubleInputFormProps) {
   });
 
   function onChange(e: any, input: number) {
-    if (props.onChange == undefined || props.onChange(e, input)) {
-      if (input == 1) setValues({ ...values, first: e.target.value });
-      if (input == 2) setValues({ ...values, second: e.target.value });
+    if (props.onChange === undefined || props.onChange(e, input)) {
+      if (input === 1) setValues({ ...values, first: e.target.value });
+      if (input === 2) setValues({ ...values, second: e.target.value });
     }
   }
 

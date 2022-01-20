@@ -15,8 +15,6 @@ import Translate from '../utils/translate';
 import SingleInputForm from '../forms/singleInputForm';
 import axios from '../../utils/fetchClient';
 import WarningPopup from '../global/warningPopup';
-import _ from 'lodash';
-import $ from 'jquery';
 
 interface HomeMember {
   id: number;
@@ -46,7 +44,7 @@ export default function EditPopup(props: EditPopupProps) {
 
   useEffect(() => {
     setTabs(getTabs(members));
-    const count = members.filter((m) => m.UserHome.accepted == true).length;
+    const count = members.filter((m) => m.UserHome.accepted).length;
     if (count > 0) props.updateMemberCount(props.home.refNumber, count);
   }, [members]);
 
@@ -133,7 +131,7 @@ export default function EditPopup(props: EditPopupProps) {
         name: 'requests',
         prefix: 'homes.list.',
         body:
-          homeMembers.filter((m) => !m.UserHome.accepted).length == 0 ? (
+          homeMembers.filter((m) => !m.UserHome.accepted).length === 0 ? (
             <div className="no-requests">
               <Translate name="noRequests" prefix="homes.list." />
             </div>
@@ -192,7 +190,7 @@ export default function EditPopup(props: EditPopupProps) {
   }
 
   async function deleteMemberState(id: number) {
-    let m = getCopyIndex(members, (m: HomeMember) => m.id == id);
+    let m = getCopyIndex(members, (m: HomeMember) => m.id === id);
     if (m) {
       m.cp.splice(m.i, 1);
       setMembers(m.cp);
@@ -200,7 +198,7 @@ export default function EditPopup(props: EditPopupProps) {
   }
 
   function acceptMemberState(id: number) {
-    let m = getCopyIndex(members, (m: HomeMember) => m.id == id);
+    let m = getCopyIndex(members, (m: HomeMember) => m.id === id);
     if (m) {
       m.cp[m.i].UserHome.accepted = true;
       setMembers(m.cp);
@@ -291,7 +289,7 @@ export default function EditPopup(props: EditPopupProps) {
   // #endregion
 
   function toggleTab(name: string) {
-    let t = getCopyIndex(tabs, (t) => t.name == name);
+    let t = getCopyIndex(tabs, (t) => t.name === name);
     if (t) {
       t.cp.forEach((t: { active: boolean }) => (t.active = false));
       t.cp[t.i].active = true;

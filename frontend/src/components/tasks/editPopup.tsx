@@ -7,7 +7,6 @@ import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
 import Translate from '../utils/translate';
 import IconToolTip from '../global/iconTooltip';
-import _ from 'lodash';
 
 interface EditPopupProps {
   task?: Task;
@@ -17,7 +16,7 @@ interface EditPopupProps {
   onDelete?(...attr: any): any;
 }
 export default function EditPopup(props: EditPopupProps) {
-  const { setNotification, setErrorNotification } = useNotifications();
+  // const { setNotification, setErrorNotification } = useNotifications();
   const [task, setTask] = useState<Task>(
     props.task
       ? { ...props.task, dueDateTime: handleDate(props.task.dueDateTime) }
@@ -42,13 +41,13 @@ export default function EditPopup(props: EditPopupProps) {
 
   useEffect(() => {}, []);
 
-  function onChange(event: any) {
-    // setName(event.target.value);
-  }
+  // function onChange(event: any) {
+  //   setName(event.target.value);
+  // }
 
   function toggleSwitch(field: string) {
-    if (field == 'important') setTask({ ...task, important: !task.important });
-    else if (field == 'shared') {
+    if (field === 'important') setTask({ ...task, important: !task.important });
+    else if (field === 'shared') {
       setTask({ ...task, shared: !task.shared });
     }
   }
@@ -180,7 +179,7 @@ export default function EditPopup(props: EditPopupProps) {
           type="text"
           values={{ first: getDateTime().day, second: getDateTime().month }}
           onChange={(e: any, input: number) =>
-            setDateTime(e, input == 1 ? 'day' : 'month')
+            setDateTime(e, input === 1 ? 'day' : 'month')
           }
           className="in-popup half squared-inputs"
         ></DoubleInputTitle>
@@ -190,7 +189,7 @@ export default function EditPopup(props: EditPopupProps) {
           type="text"
           values={{ first: getDateTime().hour, second: getDateTime().minute }}
           onChange={(e: any, input: number) =>
-            setDateTime(e, input == 1 ? 'hour' : 'minute')
+            setDateTime(e, input === 1 ? 'hour' : 'minute')
           }
           className="in-popup half squared-inputs"
         ></DoubleInputTitle>

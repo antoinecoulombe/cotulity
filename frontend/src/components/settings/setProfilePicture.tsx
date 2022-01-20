@@ -83,11 +83,12 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
             nav.delete
           </IconToolTip>
           {file ? (
-            <img id="img-profile" />
+            <img id="img-profile" alt={'NA'} />
           ) : (
             <img
               id="img-profile"
               src={`http://localhost:3000/images/public/${profilePicture}`}
+              alt={'NA'}
             />
           )}
         </div>

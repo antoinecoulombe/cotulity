@@ -21,16 +21,16 @@ interface SidebarProps {
 
 export default function Sidebar(props: SidebarProps) {
   async function switchSidebarTab(id: number) {
-    if (!props.tabs || props.tabs.length == 0) return [];
+    if (!props.tabs || props.tabs.length === 0) return [];
     let newTabs = [...props.tabs];
-    newTabs[props.tabs.findIndex((t) => t.selected == true)].selected = false;
-    newTabs[props.tabs.findIndex((t) => t.id == id)].selected = true;
+    newTabs[props.tabs.findIndex((t) => t.selected)].selected = false;
+    newTabs[props.tabs.findIndex((t) => t.id === id)].selected = true;
     return newTabs;
   }
 
   async function handleClick(id: number) {
     let tabs = await switchSidebarTab(id);
-    props.tabs.find((t) => t.id == id)?.action(tabs);
+    props.tabs.find((t) => t.id === id)?.action(tabs);
   }
 
   return (
@@ -47,7 +47,7 @@ export default function Sidebar(props: SidebarProps) {
               <div className="left">
                 <FontAwesomeIcon
                   icon={[
-                    t.img == 'star' ? 'far' : 'fas',
+                    t.img === 'star' ? 'far' : 'fas',
                     (t.img ?? 'plus') as IconName,
                   ]}
                   className="icon"
@@ -77,6 +77,7 @@ export default function Sidebar(props: SidebarProps) {
                   {ut.img ? (
                     <img
                       src={`http://localhost:3000/images/public/${ut.img}`}
+                      alt={`${ut.value[0]}${ut.value[ut.value.length - 2]}`.toUpperCase()}
                     />
                   ) : (
                     <FontAwesomeIcon icon="user-circle" />

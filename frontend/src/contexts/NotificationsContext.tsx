@@ -2,10 +2,10 @@ import * as React from 'react';
 import axios from '../utils/fetchClient';
 
 export const notificationTypes = {
-  error: { name: 'error', showTime: 5 },
-  warning: { name: 'warning', showTime: 3 },
-  info: { name: 'info', showTime: 3 },
-  success: { name: 'success', showTime: 2 },
+  error: { name: 'error', timeout: 5 },
+  warning: { name: 'warning', timeout: 3 },
+  info: { name: 'info', timeout: 3 },
+  success: { name: 'success', timeout: 2 },
 };
 
 export interface jsonNotification {
@@ -15,7 +15,7 @@ export interface jsonNotification {
   msg: string;
   type?: {
     name: string;
-    showTime?: number;
+    timeout?: number;
   };
 }
 
@@ -26,9 +26,11 @@ export interface strictJsonNotification {
   msg: string;
   type: {
     name: string;
-    showTime: number;
+    timeout: number;
   };
 }
+
+const timeout = 5;
 
 const defaultApi = {
   currentNotification: 0 as number,
@@ -61,7 +63,7 @@ export function NotificationsProvider({ children }: any) {
   // Convert a jsonNotification to a strictJsonNotificaiton.
   function toStrict(
     n: jsonNotification,
-    type?: { name: string; showTime: number }
+    type?: { name: string; timeout: number }
   ): strictJsonNotification {
     return {
       id: n.id ?? new Date().getTime(),
@@ -70,14 +72,21 @@ export function NotificationsProvider({ children }: any) {
       msg: n.msg,
       type: type ?? {
         name: n.type?.name ?? notificationTypes.error.name,
-        showTime: n.type?.showTime ?? notificationTypes.info.showTime,
+        timeout: n.type?.timeout ?? notificationTypes.info.timeout,
       },
     };
   }
 
+  // #region Notification deletion
+  
+
+  // #endregion
+
   const prevNotification = React.useCallback(() => {
     if (currentNotification > 0)
-      setCurrentNotification(currentNotification - 1);
+    {
+      setCurrentNotification(currentNotification -1);
+    }
     return null;
   }, [
     notifications,
@@ -88,7 +97,9 @@ export function NotificationsProvider({ children }: any) {
 
   const nextNotification = React.useCallback(() => {
     if (currentNotification < notifications.length - 1)
+    {
       setCurrentNotification(currentNotification + 1);
+    }
     return null;
   }, [
     notifications,

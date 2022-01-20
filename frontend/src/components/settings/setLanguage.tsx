@@ -23,7 +23,7 @@ export default function SetLanguage(props: SetLanguageProps) {
           <h3
             key={i}
             onClick={() => setLang(lang)}
-            className={localStorage.getItem('lang') == lang ? 'active' : ''}
+            className={localStorage.getItem('lang') === lang ? 'active' : ''}
           >
             {lang.toUpperCase()}
           </h3>

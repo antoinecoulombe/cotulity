@@ -12,8 +12,8 @@ export function switchSubHeaderTab(
   selected: string
 ) {
   let newTabs = [...subHeader.tabs];
-  newTabs[subHeader.tabs.findIndex((t) => t.selected == true)].selected = false;
-  newTabs[subHeader.tabs.findIndex((t) => t.name == selected)].selected = true;
+  newTabs[subHeader.tabs.findIndex((t) => t.selected)].selected = false;
+  newTabs[subHeader.tabs.findIndex((t) => t.name === selected)].selected = true;
   return newTabs;
 }
 

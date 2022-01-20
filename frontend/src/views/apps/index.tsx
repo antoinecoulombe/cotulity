@@ -34,7 +34,7 @@ export default function AppsPage() {
 
     const newHomes = [...homes];
     if (reorder) {
-      const i = homes.findIndex((h) => h.refNumber == home.refNumber);
+      const i = homes.findIndex((h) => h.refNumber === home.refNumber);
       newHomes.unshift(newHomes.splice(i, 1)[0]);
     }
     setHomes(newHomes);
@@ -70,7 +70,7 @@ export default function AppsPage() {
           setHome(
             res.data.homes.find(
               (h: Home) =>
-                h.refNumber.toString() == localStorage.getItem('currentHome')
+                h.refNumber.toString() === localStorage.getItem('currentHome')
             ),
             res.data.homes,
             true

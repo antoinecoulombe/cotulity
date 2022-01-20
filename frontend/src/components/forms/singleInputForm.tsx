@@ -39,7 +39,7 @@ export default function SingleInputForm(props: SingleInputFormProps) {
   return (
     <div
       className={`si-form${
-        !props.onBack && props.onSubmit != undefined ? ' offset' : ''
+        !props.onBack && props.onSubmit !== undefined ? ' offset' : ''
       } ${props.className ?? ''}${!props.onSubmit ? ' r-offset' : ''}`}
     >
       {props.title && (

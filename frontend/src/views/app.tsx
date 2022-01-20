@@ -189,7 +189,7 @@ export default function App() {
       <Link
         className="logo small"
         style={
-          window.location.pathname == '/'
+          localStorage.getItem('userId') == undefined
             ? { display: 'none' }
             : { display: 'block' }
         }

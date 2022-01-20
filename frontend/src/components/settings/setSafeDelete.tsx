@@ -7,7 +7,7 @@ export default function SetSafeDelete(props: SetSafeDeleteProps) {
   function toggleSafeDelete() {
     localStorage.setItem(
       'safeDelete',
-      localStorage.getItem('safeDelete') == 'true' ? 'false' : 'true'
+      localStorage.getItem('safeDelete') === 'true' ? 'false' : 'true'
     );
   }
 
@@ -27,7 +27,7 @@ export default function SetSafeDelete(props: SetSafeDeleteProps) {
       <div className="right">
         <div className="input-toggle">
           <div className="generic-input">
-            {localStorage.getItem('safeDelete') == 'true' ? (
+            {localStorage.getItem('safeDelete') === 'true' ? (
               <input
                 id="theme-switch"
                 type="checkbox"

@@ -16,7 +16,6 @@ import axios from '../../utils/fetchClient';
 import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
 import EditPopup from '../../components/homes/editPopup';
-import _ from 'lodash';
 import '../../assets/css/homes.css';
 
 export interface Home {
@@ -79,7 +78,7 @@ export default function AppHomes() {
     refNumber?: number
   ) {
     const ref = refNumber ?? (await getRefNumber(event));
-    const home = homes.find((h) => h.refNumber == ref);
+    const home = homes.find((h) => h.refNumber === ref);
 
     setPopup(
       <WarningPopup
@@ -130,7 +129,7 @@ export default function AppHomes() {
     error?: boolean
   ) {
     const ref = refNumber ?? (await getRefNumber(event));
-    const home = homes.find((h) => h.refNumber == ref);
+    const home = homes.find((h) => h.refNumber === ref);
 
     setPopup(
       <SingleInputPopup
@@ -153,7 +152,7 @@ export default function AppHomes() {
   }
 
   function deleteHomeState(refNumber: number) {
-    const i = homes.findIndex((h) => h.refNumber == refNumber);
+    const i = homes.findIndex((h) => h.refNumber === refNumber);
     setHomes(homes.slice(0, i).concat(homes.slice(i + 1)));
   }
 
@@ -161,7 +160,7 @@ export default function AppHomes() {
     axios
       .put(`/homes/${refNumber}/rename`, { nickname: value })
       .then((res: any) => {
-        let homecp = getCopyIndex(homes, (h: Home) => h.refNumber == refNumber);
+        let homecp = getCopyIndex(homes, (h: Home) => h.refNumber === refNumber);
         if (homecp) {
           homecp.cp[homecp.i].UserHome.nickname = value;
           setHomes(homecp.cp);
@@ -187,7 +186,7 @@ export default function AppHomes() {
   }
 
   function updateMemberCount(refNumber: number, count: number) {
-    let h = getCopyIndex(homes, (h: Home) => h.refNumber == refNumber);
+    let h = getCopyIndex(homes, (h: Home) => h.refNumber === refNumber);
     if (h) {
       h.cp[h.i].memberCount = count;
       setHomes(h.cp);
@@ -196,7 +195,7 @@ export default function AppHomes() {
 
   async function showEditPopup(event: any, refN?: number) {
     const ref = refN ?? (await getRefNumber(event));
-    const home = homes.find((h) => h.refNumber == ref) ?? homes[0];
+    const home = homes.find((h) => h.refNumber === ref) ?? homes[0];
 
     setPopup(
       <EditPopup
@@ -277,7 +276,7 @@ export default function AppHomes() {
                   </IconToolTip>
                 </>
               )}
-              {localStorage.getItem('userId') == home.ownerId.toString() &&
+              {localStorage.getItem('userId') === home.ownerId.toString() &&
                 home.UserHome.accepted && (
                   <>
                     <IconToolTip
@@ -321,7 +320,7 @@ export default function AppHomes() {
                     </IconToolTip>
                   </>
                 )}
-              {!(localStorage.getItem('userId') == home.ownerId.toString()) &&
+              {!(localStorage.getItem('userId') === home.ownerId.toString()) &&
                 home.UserHome.accepted && (
                   <>
                     <IconToolTip

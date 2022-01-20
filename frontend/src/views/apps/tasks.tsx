@@ -61,7 +61,7 @@ const nullJSX: JSX.Element = <></>;
 
 export default function AppTasks() {
   const { t, i18n } = useTranslation('common');
-  const { setNotification, setErrorNotification, setSuccessNotification } =
+  const { setNotification, setSuccessNotification } =
     useNotifications();
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [sidebarTabs, setSidebarTabs] = useState<SidebarTab[]>([]);
@@ -83,7 +83,7 @@ export default function AppTasks() {
   const [users, setUsers] = useState<HomeMember[]>([]);
 
   useEffect(() => {
-    if (sidebarTabs.length == 0) return;
+    if (sidebarTabs.length === 0) return;
     setLoaded(true);
     let selected = sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0];
     handleTitle(selected);
@@ -132,7 +132,7 @@ export default function AppTasks() {
             suffix: '.value',
             img: t.icon,
             action: (tabs: SidebarTab[]) => handleSidebar(tabs),
-            selected: i == 0,
+            selected: i === 0,
           };
         });
 
@@ -167,7 +167,7 @@ export default function AppTasks() {
   }
 
   function handleTitle(tab: SidebarTab) {
-    if (sidebarTabs.length == 0) return;
+    if (sidebarTabs.length === 0) return;
     if (!tab.value) setTitle('tasks');
     else if (tab.id < 0) setTitle(`sidebar.${tab.value ?? 'tasks'}.title`);
     else
@@ -184,13 +184,13 @@ export default function AppTasks() {
     if (!tab) return;
 
     const important =
-      subHeader.tabs.find((t) => t.selected == true)?.name == 'important';
+      subHeader.tabs.find((t) => t.selected)?.name === 'important';
 
-    let newCompleted = [...completedTasks].filter((t) => t.deletedAt == null);
-    let newUpcoming = [...upcomingTasks].filter((t) => t.deletedAt == null);
+    let newCompleted = [...completedTasks].filter((t) => t.deletedAt === null);
+    let newUpcoming = [...upcomingTasks].filter((t) => t.deletedAt === null);
     if (important) {
-      newCompleted = newCompleted.filter((t) => t.important == true);
-      newUpcoming = newUpcoming.filter((t) => t.important == true);
+      newCompleted = newCompleted.filter((t) => t.important);
+      newUpcoming = newUpcoming.filter((t) => t.important);
     }
 
     if (tab.id < 0) {
@@ -205,18 +205,18 @@ export default function AppTasks() {
           let concats = [...completedTasks]
             .concat([...upcomingTasks])
             .filter((t) => t.deletedAt != null);
-          if (important) concats = concats.filter((t) => t.important == true);
+          if (important) concats = concats.filter((t) => t.important);
           setShownTasks(concats);
           break;
         case 'private':
-          newUpcoming = newUpcoming.filter((t) => t.shared == false);
+          newUpcoming = newUpcoming.filter((t) => !t.shared);
           setShownTasks(newUpcoming);
           break;
         case 'myTasks':
           newUpcoming = newUpcoming.filter(
             (t) =>
               t.Users?.find(
-                (u) => u.id == parseInt(localStorage.getItem('userId') ?? '-2')
+                (u) => u.id === parseInt(localStorage.getItem('userId') ?? '-2')
               ) != null
           );
           setShownTasks(newUpcoming);
@@ -224,7 +224,7 @@ export default function AppTasks() {
       }
     } else {
       newUpcoming = newUpcoming.filter(
-        (t) => t.Users?.find((u) => u.id == tab.id) != null
+        (t) => t.Users?.find((u) => u.id === tab.id) != null
       );
       setShownTasks(newUpcoming);
     }
@@ -243,9 +243,9 @@ export default function AppTasks() {
 
   function handleSubmit(task: Task) {
     axios({
-      method: task.id == -1 ? 'post' : 'put',
+      method: task.id === -1 ? 'post' : 'put',
       url: `/tasks/${localStorage.getItem('currentHome')}/${
-        task.id == -1 ? '' : task.id
+        task.id === -1 ? '' : task.id
       }`,
       data: {
         task,
@@ -274,12 +274,12 @@ export default function AppTasks() {
             value: `${u.firstname} ${u.lastname}`,
             img: u.Image?.url ?? undefined,
             icon:
-              (u.Image?.url ?? undefined) == undefined
+              (u.Image?.url ?? undefined) === undefined
                 ? 'user-circle'
                 : undefined,
             selected: !task
               ? false
-              : (task.Users?.find((tu) => tu.id == u.id) ?? null) != null,
+              : (task.Users?.find((tu) => tu.id === u.id) ?? null) != null,
           } as DropdownOption;
         })}
         onSubmit={(task: Task) => handleSubmit(task)}
@@ -290,7 +290,7 @@ export default function AppTasks() {
 
   function destroyTaskUpcoming(id: number, closePopup?: boolean) {
     let newUpcoming = [...upcomingTasks];
-    let i = newUpcoming.findIndex((t) => t.id == id);
+    let i = newUpcoming.findIndex((t) => t.id === id);
     if (i >= 0) {
       axios
         .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
@@ -312,7 +312,7 @@ export default function AppTasks() {
 
   function destroyTaskCompleted(id: number, closePopup?: boolean) {
     let newCompleted = [...completedTasks];
-    let i = newCompleted.findIndex((t) => t.id == id);
+    let i = newCompleted.findIndex((t) => t.id === id);
     if (i >= 0) {
       axios
         .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
@@ -333,7 +333,7 @@ export default function AppTasks() {
   }
 
   function deleteTask(id: number, closePopup?: boolean) {
-    if (upcomingTasks.find((t) => t.id == id))
+    if (upcomingTasks.find((t) => t.id === id))
       destroyTaskUpcoming(id, closePopup);
     else destroyTaskCompleted(id, closePopup);
   }
@@ -341,7 +341,7 @@ export default function AppTasks() {
   function completeTask(id: number) {
     let newCompleted = [...completedTasks];
     let newUpcoming = [...upcomingTasks];
-    let i = newUpcoming.findIndex((t) => t.id == id);
+    let i = newUpcoming.findIndex((t) => t.id === id);
     if (i >= 0) {
       axios
         .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/do`)
@@ -361,7 +361,7 @@ export default function AppTasks() {
   function unCompleteTask(id: number) {
     let newCompleted = [...completedTasks];
     let newUpcoming = [...upcomingTasks];
-    let i = newCompleted.findIndex((t) => t.id == id);
+    let i = newCompleted.findIndex((t) => t.id === id);
     if (i >= 0) {
       axios
         .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/undo`)
@@ -442,6 +442,7 @@ export default function AppTasks() {
                               <img
                                 key={`involved-${t.id}-${u.id}`}
                                 src={`http://localhost:3000/images/public/${u.Image.url}`}
+                                alt={`${u.firstname[0]}${u.lastname[0]}`.toUpperCase()}
                               />
                             ) : (
                               <div

@@ -55,15 +55,10 @@ export default function Dropdown(props: DropdownProps) {
     setSelectedCount(selected.length);
   }, [selected]);
 
-  function openOrClose() {
-    if (unselected.length == 0) setOpened(false);
-    else setOpened(!opened);
-  }
-
   function unSelect(id: number) {
     let s = [...selected];
     let us = [...unselected];
-    let i = selected.findIndex((x) => x.id == id);
+    let i = selected.findIndex((x) => x.id === id);
     s.splice(i, 1);
     us.push(selected[i]);
     us[us.length - 1].selected = false;
@@ -76,7 +71,7 @@ export default function Dropdown(props: DropdownProps) {
   function select(id: number) {
     let s = [...selected];
     let us = [...unselected];
-    let i = unselected.findIndex((x) => x.id == id);
+    let i = unselected.findIndex((x) => x.id === id);
     us.splice(i, 1);
     s.push(unselected[i]);
     s[s.length - 1].selected = true;
@@ -84,7 +79,7 @@ export default function Dropdown(props: DropdownProps) {
     setUnselected(us);
     props.onSelect?.(s);
 
-    if (us.length == 0) setOpened(false);
+    if (us.length === 0) setOpened(false);
   }
 
   return (
@@ -108,8 +103,7 @@ export default function Dropdown(props: DropdownProps) {
           value={''}
           error={props.error}
           onChange={() => {}}
-          // onClick={openOrClose}
-          onFocus={() => setOpened(true)} //{openOrClose}
+          onFocus={() => setOpened(true)} 
           className={opened ? 'active' : ''}
           filled={selected.length > 0}
           before={
@@ -142,6 +136,7 @@ export default function Dropdown(props: DropdownProps) {
                     {us.img && (
                       <img
                         src={`http://localhost:3000/images/public/${us.img}`}
+                        alt={`${us.value[0]}${us.value.split(' ')[1][0]}`.toUpperCase()}
                       />
                     )}
                     {us.icon && (

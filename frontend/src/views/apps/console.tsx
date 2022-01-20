@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AppContainer from '../../components/app/appContainer';
 import '../../assets/css/console.css';
 
@@ -30,13 +30,13 @@ export default function AppConsole() {
 
   function setCurrentLine(event: any) {
     event.preventDefault();
-    const change = event.keyCode == 38 ? -1 : 1;
+    const change = event.keyCode === 38 ? -1 : 1;
     console.log(change);
     const current = currentLine + change;
 
     if (current < 0) return;
     else if (current >= history.length) setCurrentLineState(-1);
-    else if (currentLine == -1) setCurrentLineState(history.length - 1);
+    else if (currentLine === -1) setCurrentLineState(history.length - 1);
     else setCurrentLineState(current);
     event.preventDefault();
   }

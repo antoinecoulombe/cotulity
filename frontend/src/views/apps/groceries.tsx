@@ -49,7 +49,7 @@ export default function AppGroceries() {
     axios
       .delete(`/groceries/${localStorage.getItem('currentHome')}/${id}`)
       .then(async (res: any) => {
-        const i = articles.findIndex((x) => x.id == id);
+        const i = articles.findIndex((x) => x.id === id);
         let newArticles = [...articles];
         newArticles.splice(i, 1);
         setArticles(newArticles);
@@ -62,7 +62,7 @@ export default function AppGroceries() {
   function handleArticle(id: number) {
     toggleArticle(
       id,
-      articles.find((x) => x.id == id)?.deletedAt == null ? 'delete' : 'restore'
+      articles.find((x) => x.id === id)?.deletedAt === null ? 'delete' : 'restore'
     );
   }
 
@@ -70,7 +70,7 @@ export default function AppGroceries() {
     axios
       .put(`/groceries/${localStorage.getItem('currentHome')}/${id}/${action}`)
       .then((res: any) => {
-        const i = articles.findIndex((x) => x.id == id);
+        const i = articles.findIndex((x) => x.id === id);
         let newArticles = [...articles];
         newArticles[i] = res.data.article;
         setArticles(newArticles);

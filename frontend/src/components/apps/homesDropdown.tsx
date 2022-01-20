@@ -20,7 +20,7 @@ export default function HomesDropdown(props: HomesDropdownProps) {
 
   function handleChange(event: any) {
     const clickedIndex = props.homes.findIndex(
-      (home) => home.refNumber == event.target.id
+      (home) => home.refNumber === event.target.id
     );
     const newHomes = [props.homes[clickedIndex]]
       .concat(props.homes.slice(0, clickedIndex))

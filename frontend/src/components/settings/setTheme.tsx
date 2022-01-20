@@ -13,7 +13,7 @@ export default function SetTheme(props: SetThemeProps) {
   );
 
   function setTheme(theme: string, click: boolean) {
-    if (theme == localStorage.getItem('theme')) return;
+    if (theme === localStorage.getItem('theme')) return;
     if (click) $('#theme-switch').trigger('click');
     localStorage.setItem('theme', theme);
     props.setTheme(theme);
@@ -30,7 +30,7 @@ export default function SetTheme(props: SetThemeProps) {
   }
 
   function toggleTheme() {
-    const theme = localStorage.getItem('theme') == 'light' ? 'dark' : 'light';
+    const theme = localStorage.getItem('theme') === 'light' ? 'dark' : 'light';
     setTheme(theme, false);
   }
 
@@ -82,14 +82,14 @@ export default function SetTheme(props: SetThemeProps) {
             <h3
               onClick={() => setTheme('light', true)}
               className={
-                localStorage.getItem('theme') == 'light' ? 'active' : ''
+                localStorage.getItem('theme') === 'light' ? 'active' : ''
               }
             >
               <Translate name="light" prefix="settings.theme." />
             </h3>
             <div className="input-toggle">
               <div className="generic-input">
-                {props.theme == 'light' ? (
+                {props.theme === 'light' ? (
                   <input
                     id="theme-switch"
                     type="checkbox"
@@ -110,7 +110,7 @@ export default function SetTheme(props: SetThemeProps) {
             <h3
               onClick={() => setTheme('dark', true)}
               className={
-                localStorage.getItem('theme') == 'dark' ? 'active' : ''
+                localStorage.getItem('theme') === 'dark' ? 'active' : ''
               }
             >
               <Translate name="dark" prefix="settings.theme." />
