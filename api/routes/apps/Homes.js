@@ -536,7 +536,7 @@ Homes.post('/:refnumber/invitations', Apps_1.validateHome, (req, res) => __await
         const member = yield res.locals.home.getMembers({
             where: { email: req.body.email },
         });
-        if (member.length > 0)
+        if (member.length)
             return res.status(500).json({
                 title: 'homes.couldNotSendInvite',
                 msg: 'homes.emailAlreadyInHome',

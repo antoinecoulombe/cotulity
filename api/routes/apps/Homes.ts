@@ -599,7 +599,7 @@ Homes.post(
         where: { email: req.body.email },
       });
 
-      if (member.length > 0)
+      if (member.length)
         return res.status(500).json({
           title: 'homes.couldNotSendInvite',
           msg: 'homes.emailAlreadyInHome',

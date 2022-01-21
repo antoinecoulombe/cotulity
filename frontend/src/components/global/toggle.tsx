@@ -17,7 +17,7 @@ export default function Toggle(props: ToggleProps) {
   return (
     <div className="toggle">
       <div className="tabs">
-        {props.tabs.map((t, i) => (
+        {props.tabs.map((t) => (
           <h2
             key={`toggletitle-${t.name}`}
             id={`h2-${t.name}`}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNotifications } from '../../contexts/NotificationsContext';
 import { initTask, Task } from '../../views/apps/tasks';
 import Dropdown, { DropdownOption } from '../forms/dropdown';
 import Popup from '../utils/popup';
@@ -16,7 +15,6 @@ interface EditPopupProps {
   onDelete?(...attr: any): any;
 }
 export default function EditPopup(props: EditPopupProps) {
-  // const { setNotification, setErrorNotification } = useNotifications();
   const [task, setTask] = useState<Task>(
     props.task
       ? { ...props.task, dueDateTime: handleDate(props.task.dueDateTime) }
@@ -138,7 +136,7 @@ export default function EditPopup(props: EditPopupProps) {
       onSubmit={onSubmit}
       onDelete={props.task ? () => props.onDelete?.(props.task?.id) : undefined}
       type="edit"
-      new={props.task == undefined}
+      new={props.task === undefined}
     >
       <div className="form">
         <h1>

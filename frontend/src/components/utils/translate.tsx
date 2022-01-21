@@ -9,7 +9,7 @@ export interface TranslateProps {
 }
 
 export default function Translate(props: TranslateProps) {
-  const { t, i18n } = useTranslation('common');
+  const { t } = useTranslation('common');
 
   function format(string: string, params: string[]) {
     var str = string;

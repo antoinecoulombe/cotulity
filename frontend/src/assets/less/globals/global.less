@@ -535,61 +535,6 @@ button {
       }
     }
 
-    &.warning {
-      position: relative;
-      @iconSize: 50px;
-
-      > .icon {
-        .centered();
-
-        position: relative;
-        width: 100%;
-        height: @iconSize;
-
-        > .icon-tooltip {
-          position: relative;
-          display: block;
-          margin-right: calc(50% - (@iconSize / 2));
-        }
-      }
-
-      > .warning-info {
-        > h2 {
-          .font-default();
-
-          margin: 0;
-          margin-top: 24px;
-          font-size: 20px;
-          color: var(--black);
-        }
-
-        > h3 {
-          .font-default();
-
-          margin: 0;
-          margin-bottom: 24px;
-          color: var(--gray);
-          font-size: 16px;
-        }
-      }
-
-      .buttons {
-        @margin: 6px;
-
-        > button {
-          padding: 15px 20px;
-
-          &.yes {
-            margin-left: @margin;
-          }
-
-          &.no {
-            margin-right: @margin;
-          }
-        }
-      }
-    }
-
     &.edit {
       max-width: calc(540px - @padding * 2);
       overflow-y: visible;
@@ -771,6 +716,62 @@ button {
           &.accept {
             font-size: 15px;
             padding: 4px 23px;
+          }
+        }
+      }
+    }
+
+    &.warning {
+      position: relative;
+      @iconSize: 50px;
+
+      > .icon {
+        .centered();
+
+        position: relative;
+        width: 100%;
+        height: @iconSize;
+
+        > .icon-tooltip {
+          position: relative;
+          display: block;
+          margin-right: calc(50% - (@iconSize / 2));
+        }
+      }
+
+      > .warning-info {
+        > h2 {
+          .font-default();
+
+          margin: 0;
+          margin-top: 24px;
+          font-size: 20px;
+          color: var(--black);
+        }
+
+        > h3 {
+          .font-default();
+
+          margin: 0;
+          margin-bottom: 24px;
+          color: var(--gray);
+          font-size: 16px;
+        }
+      }
+
+      .buttons {
+        @margin: 6px;
+        flex-wrap: wrap;
+
+        > button {
+          padding: 15px 20px;
+
+          &.yes {
+            margin-left: @margin;
+          }
+
+          &.no {
+            margin-right: @margin;
           }
         }
       }

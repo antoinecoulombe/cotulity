@@ -4,7 +4,6 @@ import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { useOutsideAlerter } from '../utils/outsideClick';
 import Input from './input';
 import Title from './title';
-import $ from 'jquery';
 
 export interface DropdownProps {
   name: string;
@@ -33,53 +32,51 @@ export interface DropdownOption {
 }
 
 export default function Dropdown(props: DropdownProps) {
+  const selectedRef = useRef<HTMLDivElement>(null);
+
   const [selected, setSelected] = useState<DropdownOption[]>(
     props.options.filter((o) => o.selected)
   );
   const [unselected, setUnselected] = useState<DropdownOption[]>(
     props.options.filter((o) => !o.selected)
   );
-  const [selectedCount, setSelectedCount] = useState<number>(selected.length);
   const [opened, setOpened] = useState<boolean>(false);
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => setOpened(false));
 
+
   useEffect(() => {
-    if (selectedCount < selected.length)
-      $(
-        `#${props.name.substring(
-          props.name.lastIndexOf('.') + 1
-        )}-dropdown-selected .dropdown-selected`
-      ).scrollLeft(15000);
-    setSelectedCount(selected.length);
+    if (selectedRef.current)
+      selectedRef.current.scrollLeft = 15000;
   }, [selected]);
 
+  function selectHandle(id:number, from: DropdownOption[], to: DropdownOption[], selected: boolean) {
+    let f = [...from];
+    let t = [...to];
+
+    let i = from.findIndex((x) => x.id === id); 
+    f.splice(i, 1);
+    t.push(from[i]);
+    t[t.length - 1].selected = selected;
+
+    if (!selected)
+      t.sort((a, b) => a.value.localeCompare(b.value));
+
+    setSelected(selected ? t : f);
+    setUnselected(selected ? f : t);
+    props.onSelect?.(selected ? t : f);
+
+    if (selected && f.length === 0)
+      setOpened(false);
+  }
+
   function unSelect(id: number) {
-    let s = [...selected];
-    let us = [...unselected];
-    let i = selected.findIndex((x) => x.id === id);
-    s.splice(i, 1);
-    us.push(selected[i]);
-    us[us.length - 1].selected = false;
-    us.sort((a, b) => a.value.localeCompare(b.value));
-    setSelected(s);
-    setUnselected(us);
-    props.onSelect?.(s);
+    selectHandle(id, selected, unselected, false);
   }
 
   function select(id: number) {
-    let s = [...selected];
-    let us = [...unselected];
-    let i = unselected.findIndex((x) => x.id === id);
-    us.splice(i, 1);
-    s.push(unselected[i]);
-    s[s.length - 1].selected = true;
-    setSelected(s);
-    setUnselected(us);
-    props.onSelect?.(s);
-
-    if (us.length === 0) setOpened(false);
+    selectHandle(id, unselected, selected, true);
   }
 
   return (
@@ -107,7 +104,7 @@ export default function Dropdown(props: DropdownProps) {
           className={opened ? 'active' : ''}
           filled={selected.length > 0}
           before={
-            <div className="dropdown-selected">
+            <div className="dropdown-selected" ref={selectedRef}>
               {selected.map((s) => (
                 <div key={`s-${s.id}`} className="option">
                   <p>

@@ -4,7 +4,7 @@ import Translate from '../utils/translate';
 interface SetLanguageProps {}
 
 export default function SetLanguage(props: SetLanguageProps) {
-  const [t, i18n] = useTranslation('common');
+  const { i18n } = useTranslation('common');
 
   function setLang(lang: string) {
     i18n.changeLanguage(lang);

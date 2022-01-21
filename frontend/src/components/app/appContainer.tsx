@@ -50,7 +50,7 @@ export default function AppContainer(props: AppContainerProps) {
       window.removeEventListener('resize', () =>
         handleOpenAppResize(props.bodyMinHeight)
       );
-  }, []);
+  });
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => history.push('/apps'));

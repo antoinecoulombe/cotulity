@@ -113,7 +113,7 @@ export default function App() {
   const history = useHistory();
   const { clearAllNotifications } = useNotifications();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-  const [t, i18n] = useTranslation('common');
+  const { i18n } = useTranslation('common');
 
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem('lang') || 'en');
