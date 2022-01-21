@@ -21,7 +21,7 @@ interface InputProps {
 
 export default function Input(props: InputProps) {
   function handleBlur(event: any) {
-    if (!props.filled && event.target.value.length === 0) {
+    if (!props.filled && !event.target.value.length) {
       $(event.target).removeClass('filled');
       $(event.target).next().removeClass('filled');
     } else {

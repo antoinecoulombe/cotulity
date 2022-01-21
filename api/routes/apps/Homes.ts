@@ -408,7 +408,7 @@ Homes.put('/:refnumber/rename', validateHome, async (req: any, res: any) => {
 
     if (home.ownerId === req.user.id) {
       await db.sequelize.transaction(async (t: any) => {
-        if (!nickname || nickname.length == 0)
+        if (!nickname || !nickname.length)
           return res.status(500).json({
             title: 'homes.couldNotRename',
             msg: 'homes.nameUndefined',
@@ -432,7 +432,7 @@ Homes.put('/:refnumber/rename', validateHome, async (req: any, res: any) => {
       });
     } else {
       home.UserHome.nickname =
-        nickname && nickname.length > 0 ? nickname : null;
+        nickname && nickname.length ? nickname : null;
       home.UserHome.save({ fields: ['nickname'] });
     }
 

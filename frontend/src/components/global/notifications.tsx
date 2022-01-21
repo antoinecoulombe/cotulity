@@ -31,7 +31,7 @@ export default function Notifications() {
         </div>
       )}
 
-      {notifications.length > 0 && (
+      {notifications.length && (
         <div className="notif-current">
           {currentNotification > 0 && (
             <FontAwesomeIcon

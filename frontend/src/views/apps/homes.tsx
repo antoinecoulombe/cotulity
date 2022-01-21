@@ -45,7 +45,7 @@ export default function AppHomes() {
     axios
       .get(`/homes`)
       .then((res: any) => {
-        if (res.data.homes && res.data.homes.length > 0)
+        if (res.data.homes && res.data.homes.length)
           setHomes(res.data.homes);
         else history.push('/apps/homes/new');
       })

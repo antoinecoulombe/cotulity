@@ -48,7 +48,7 @@ export default function LoginForm() {
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
 
   function handlePopupSubmit(email: string) {
-    if (!email || email.length === 0) {
+    if (!email || !email.length) {
       setError({ ...errorForm, reset: true });
       setErrorNotification({
         title: 'form.email.error',

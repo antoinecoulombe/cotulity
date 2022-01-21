@@ -116,7 +116,7 @@ export default function EditPopup(props: EditPopupProps) {
           name: 'requests',
           prefix: 'homes.list.',
           body:
-            homeMembers.filter((m) => !m.UserHome.accepted).length === 0 ? (
+            !homeMembers.filter((m) => !m.UserHome.accepted).length ? (
               <div className="no-requests">
                 <Translate name="noRequests" prefix="homes.list." />
               </div>
@@ -274,7 +274,7 @@ export default function EditPopup(props: EditPopupProps) {
   }
 
   function onSubmit() {
-    if (!name || name.length === 0) {
+    if (!name || !name.length) {
       setError(true);
       setErrorNotification({
         title: 'newHome.missingName',
@@ -298,7 +298,7 @@ export default function EditPopup(props: EditPopupProps) {
     }
   }
 
-  return members.length > 0 ? (
+  return members.length ? (
     <Popup
       onCancel={() => props.onCancel?.(props.home.refNumber)}
       onSubmit={onSubmit}

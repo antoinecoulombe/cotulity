@@ -35,7 +35,7 @@ export default function HomesDropdown(props: HomesDropdownProps) {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => setActive(false));
 
-  return !props.homes || props.homes.length === 0 ? (
+  return !props.homes || !props.homes.length ? (
     <></>
   ) : (
     <>

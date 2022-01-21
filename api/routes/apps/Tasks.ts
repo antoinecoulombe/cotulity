@@ -133,7 +133,7 @@ Tasks.put('/:id', async (req: any, res: any) => {
     //   important: req.body.task.important,
     // });
 
-    // if (req.body.task.shared == false || req.body.task.Users.length == 0) {
+    // if (req.body.task.shared == false || !req.body.task.Users.length) {
     //   await db.UserTask.create({ userId: req.user.id, taskId: task.id });
     // } else {
     //   await req.body.task.Users.forEach(async (u: any) => {
@@ -144,7 +144,7 @@ Tasks.put('/:id', async (req: any, res: any) => {
     //     if (members.includes(u.id))
     //       toAdd.push({ userId: u.id, taskId: task.id });
 
-    //     if (toAdd.length > 0) await db.UserTask.bulkCreate(toAdd);
+    //     if (toAdd.length) await db.UserTask.bulkCreate(toAdd);
     //   });
     // }
 
@@ -163,7 +163,7 @@ Tasks.put('/:id', async (req: any, res: any) => {
 Tasks.put('/:id/do', async (req: any, res: any) => {
   try {
     let tasks = await getTasks(req, res, 'upcoming', req.params.id);
-    if (tasks.length == 0)
+    if (!tasks.length)
       return res
         .status(404)
         .json({ title: 'request.notFound', msg: 'request.notFound' });
@@ -186,7 +186,7 @@ Tasks.put('/:id/do', async (req: any, res: any) => {
 Tasks.put('/:id/undo', async (req: any, res: any) => {
   try {
     let tasks = await getTasks(req, res, 'completed', req.params.id);
-    if (tasks.length == 0)
+    if (!tasks.length)
       return res
         .status(404)
         .json({ title: 'request.notFound', msg: 'request.notFound' });
@@ -232,7 +232,7 @@ Tasks.post('/', async (req: any, res: any) => {
 
     let taskUsers: Array<{ id: number }> = [];
 
-    if (req.body.task.shared == false || req.body.task.Users.length == 0)
+    if (req.body.task.shared == false || !req.body.task.Users.length)
       taskUsers.push({ id: req.user.id });
     else {
       let members = (await res.locals.home.getMembers()).map((m: any) => m.id);
@@ -241,7 +241,7 @@ Tasks.post('/', async (req: any, res: any) => {
       );
     }
 
-    if (taskUsers.length === 0)
+    if (!taskUsers.length)
       return res
         .status(500)
         .json({ title: 'request.error', msg: 'request.error' });

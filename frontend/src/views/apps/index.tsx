@@ -61,7 +61,7 @@ export default function AppsPage() {
     axios
       .get(`/homes/accepted`)
       .then((res: any) => {
-        if (!res.data.homes || res.data.homes.length === 0)
+        if (!res.data.homes || !res.data.homes.length)
           history.push('/apps/homes/new');
 
         if (!localStorage.getItem('currentHome'))
@@ -111,7 +111,7 @@ export default function AppsPage() {
     handleResize();
   }, [apps, homes]);
 
-  return homes.length > 0 ? (
+  return homes.length ? (
     <>
       <div id="apps-container">
         <HomesDropdown

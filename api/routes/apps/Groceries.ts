@@ -55,7 +55,7 @@ Groceries.put('/:id/:action', async (req: any, res: any) => {
       where: { id: req.params.id },
       paranoid: false,
     });
-    if (grocery.length === 0)
+    if (!grocery.length)
       return res
         .status(404)
         .json({ title: 'groceries.notFound', msg: 'groceries.notFound' });
@@ -85,7 +85,7 @@ Groceries.put('/:id/:action', async (req: any, res: any) => {
 
 Groceries.post('/', async (req: any, res: any) => {
   try {
-    if (!req.body.description || req.body.description.length == 0)
+    if (!req.body.description || !req.body.description.trim().length)
       return res
         .status(500)
         .json({ title: 'groceries.error.add', msg: 'groceries.descInvalid' });
@@ -119,7 +119,7 @@ Groceries.delete('/:id', async (req: any, res: any) => {
       where: { id: req.params.id },
       paranoid: false,
     });
-    if (grocery.length === 0)
+    if (!grocery.length)
       return res
         .status(404)
         .json({ title: 'groceries.notFound', msg: 'groceries.notFound' });

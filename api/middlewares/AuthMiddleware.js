@@ -20,7 +20,7 @@ AuthMiddleware.use((req, res, next) => __awaiter(void 0, void 0, void 0, functio
     const publicPaths = ['/auth/login', '/users/register'];
     const publicPathStarts = ['/homes/public', '/images/public', '/users/public'];
     if (publicPaths.includes(req.path) ||
-        publicPathStarts.filter((p) => req.path.startsWith(p)).length > 0)
+        publicPathStarts.filter((p) => req.path.startsWith(p)).length)
         return next();
     passport.authenticate('jwt', {
         session: false,

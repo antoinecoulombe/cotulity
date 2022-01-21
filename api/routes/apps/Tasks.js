@@ -130,7 +130,7 @@ Tasks.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //   shared: req.body.task.shared,
         //   important: req.body.task.important,
         // });
-        // if (req.body.task.shared == false || req.body.task.Users.length == 0) {
+        // if (req.body.task.shared == false || !req.body.task.Users.length) {
         //   await db.UserTask.create({ userId: req.user.id, taskId: task.id });
         // } else {
         //   await req.body.task.Users.forEach(async (u: any) => {
@@ -140,7 +140,7 @@ Tasks.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //     let toAdd: { userId: number; taskId: number }[] = [];
         //     if (members.includes(u.id))
         //       toAdd.push({ userId: u.id, taskId: task.id });
-        //     if (toAdd.length > 0) await db.UserTask.bulkCreate(toAdd);
+        //     if (toAdd.length) await db.UserTask.bulkCreate(toAdd);
         //   });
         // }
         res.json({
@@ -158,7 +158,7 @@ Tasks.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 Tasks.put('/:id/do', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let tasks = yield getTasks(req, res, 'upcoming', req.params.id);
-        if (tasks.length == 0)
+        if (!tasks.length)
             return res
                 .status(404)
                 .json({ title: 'request.notFound', msg: 'request.notFound' });
@@ -179,7 +179,7 @@ Tasks.put('/:id/do', (req, res) => __awaiter(void 0, void 0, void 0, function* (
 Tasks.put('/:id/undo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let tasks = yield getTasks(req, res, 'completed', req.params.id);
-        if (tasks.length == 0)
+        if (!tasks.length)
             return res
                 .status(404)
                 .json({ title: 'request.notFound', msg: 'request.notFound' });
@@ -213,13 +213,13 @@ Tasks.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             ? now.getFullYear() + 1
             : now.getFullYear(), month, dayMonth[0], hourMinute[0], hourMinute[1]);
         let taskUsers = [];
-        if (req.body.task.shared == false || req.body.task.Users.length == 0)
+        if (req.body.task.shared == false || !req.body.task.Users.length)
             taskUsers.push({ id: req.user.id });
         else {
             let members = (yield res.locals.home.getMembers()).map((m) => m.id);
             taskUsers = members.filter((u) => __awaiter(void 0, void 0, void 0, function* () { return req.body.task.Users.some((m) => __awaiter(void 0, void 0, void 0, function* () { return u.id === m.id; })); }));
         }
-        if (taskUsers.length === 0)
+        if (!taskUsers.length)
             return res
                 .status(500)
                 .json({ title: 'request.error', msg: 'request.error' });

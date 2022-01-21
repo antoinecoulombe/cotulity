@@ -100,7 +100,7 @@ export default function AppGroceries() {
 
   return (
     <AppContainer title="groceries" appName="groceries" bodyMinHeight={140}>
-      {articles.length > 0 ? (
+      {articles.length ? (
         <div className="grocery-list fill-height over-hidden">
           {articles.map((article) => (
             <div key={`a-${article.id}`} className="article">

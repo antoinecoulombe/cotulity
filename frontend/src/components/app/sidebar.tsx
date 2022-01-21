@@ -21,7 +21,7 @@ interface SidebarProps {
 
 export default function Sidebar(props: SidebarProps) {
   async function switchSidebarTab(id: number) {
-    if (!props.tabs || props.tabs.length === 0) return [];
+    if (!props.tabs || !props.tabs.length) return [];
     let newTabs = [...props.tabs];
     newTabs[props.tabs.findIndex((t) => t.selected)].selected = false;
     newTabs[props.tabs.findIndex((t) => t.id === id)].selected = true;
@@ -63,7 +63,7 @@ export default function Sidebar(props: SidebarProps) {
             </div>
           ))}
       </div>
-      {props.tabs.filter((t) => t.isUser).length > 0 && (
+      {props.tabs.filter((t) => t.isUser).length && (
         <div className="tabs bottom">
           {props.tabs
             .filter((t) => t.isUser)

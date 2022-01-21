@@ -10,7 +10,7 @@ AuthMiddleware.use(async (req: any, res, next) => {
   const publicPathStarts = ['/homes/public', '/images/public', '/users/public'];
   if (
     publicPaths.includes(req.path) ||
-    publicPathStarts.filter((p: string) => req.path.startsWith(p)).length > 0
+    publicPathStarts.filter((p: string) => req.path.startsWith(p)).length
   )
     return next();
 

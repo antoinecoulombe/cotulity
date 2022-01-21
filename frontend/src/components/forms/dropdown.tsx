@@ -67,7 +67,7 @@ export default function Dropdown(props: DropdownProps) {
     setUnselected(selected ? f : t);
     props.onSelect?.(selected ? t : f);
 
-    if (selected && f.length === 0)
+    if (selected && !f.length)
       setOpened(false);
   }
 

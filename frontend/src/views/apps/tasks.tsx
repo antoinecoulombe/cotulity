@@ -83,7 +83,7 @@ export default function AppTasks() {
   const [users, setUsers] = useState<HomeMember[]>([]);
 
   useEffect(() => {
-    if (sidebarTabs.length === 0) return;
+    if (!sidebarTabs.length) return;
     setLoaded(true);
     let selected = sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0];
     handleTitle(selected);
@@ -167,7 +167,7 @@ export default function AppTasks() {
   }
 
   function handleTitle(tab: SidebarTab) {
-    if (sidebarTabs.length === 0) return;
+    if (!sidebarTabs.length) return;
     if (!tab.value) setTitle('tasks');
     else if (tab.id < 0) setTitle(`sidebar.${tab.value ?? 'tasks'}.title`);
     else
@@ -403,7 +403,7 @@ export default function AppTasks() {
       <div className="content">
         <List>
           {loaded ? (
-            shownTasks.length > 0 ? (
+            shownTasks.length ? (
               shownTasks.map((t) => (
                 <ListItem key={`task-${t.id}`} uid={t.id}>
                   <ListItemLeft>

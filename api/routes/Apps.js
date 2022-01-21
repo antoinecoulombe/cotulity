@@ -30,7 +30,7 @@ exports.validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         const home = yield req.user.getHomes({
             where: { refNumber: req.params.refnumber },
         });
-        if (home.length === 0)
+        if (!home.length)
             return next({ title: 'request.notFound', msg: 'request.notFound' });
         res.locals.home = home[0];
         return next();

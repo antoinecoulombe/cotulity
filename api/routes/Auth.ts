@@ -68,7 +68,7 @@ Router.post('/login', async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json({ msg: (error as any).message });
   }
 });
 
