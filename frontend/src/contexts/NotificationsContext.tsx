@@ -1,5 +1,8 @@
 import * as React from 'react';
 import axios from '../utils/fetchClient';
+import { useInterval } from '../utils/interval';
+
+const timeoutCallbackDelay = 1; // Delay before triggering notification deletion
 
 export const notificationTypes = {
   error: { name: 'error', timeout: 5 },
@@ -17,6 +20,7 @@ export interface jsonNotification {
     name: string;
     timeout?: number;
   };
+  timestamp?: number;
 }
 
 export interface strictJsonNotification {
@@ -28,9 +32,8 @@ export interface strictJsonNotification {
     name: string;
     timeout: number;
   };
+  timestamp: number | null;
 }
-
-const timeout = 5;
 
 const defaultApi = {
   currentNotification: 0 as number,
@@ -53,7 +56,7 @@ export const NotificationsContext =
   React.createContext<NotificationsContextValue>(defaultApi);
 
 export function NotificationsProvider({ children }: any) {
-  const [currentNotification, setCurrentNotification] = React.useState(
+  const [currentNotification, setCurrentNotification] = React.useState<number>(
     defaultApi.currentNotification
   );
   const [notifications, setNotifications] = React.useState<
@@ -74,39 +77,47 @@ export function NotificationsProvider({ children }: any) {
         name: n.type?.name ?? notificationTypes.error.name,
         timeout: n.type?.timeout ?? notificationTypes.info.timeout,
       },
+      timestamp: null
     };
   }
 
-  // #region Notification deletion
-  
-
-  // #endregion
+  function setCurrent(current: number)
+  {
+    setCurrentNotification(current);
+    setNotifications(resetTimestamps(notifications, current));
+  }
 
   const prevNotification = React.useCallback(() => {
     if (currentNotification > 0)
-    {
-      setCurrentNotification(currentNotification -1);
-    }
+      setCurrent(currentNotification - 1);
     return null;
   }, [
-    notifications,
-    setNotifications,
+    setCurrent,
     currentNotification,
-    setCurrentNotification,
   ]);
 
   const nextNotification = React.useCallback(() => {
-    if (currentNotification < notifications.length - 1)
-    {
-      setCurrentNotification(currentNotification + 1);
-    }
+    if (currentNotification < notifications.length - 1) 
+      setCurrent(currentNotification + 1);
     return null;
   }, [
     notifications,
-    setNotifications,
+    setCurrent,
     currentNotification,
-    setCurrentNotification,
   ]);
+
+  function resetTimestamps(notifs: strictJsonNotification[], current?: number) : strictJsonNotification[]
+  {
+    if (notifs && notifs.length > 0)
+    {
+      notifs.forEach((x, i) => console.log(`${i}: id -> ${x.id}, t -> ${x.timestamp}`));
+      console.log(`current: ${current ?? currentNotification}`);
+
+      notifs.forEach((n) => (n.timestamp = null));
+      notifs[current ?? currentNotification].timestamp = Date.now();
+    }
+    return notifs;
+  }
 
   // Append an array of notifications at the end of the notification array.
   const setNotificationArray = React.useCallback(
@@ -115,7 +126,11 @@ export function NotificationsProvider({ children }: any) {
       newNotifications.forEach((n) =>
         newFilteredNotifications.push(toStrict(n))
       );
-      setNotifications(notifications.concat(newFilteredNotifications));
+
+      if (notifications.length)
+        setNotifications(notifications.concat(newFilteredNotifications));
+      else setNotifications(resetTimestamps(newFilteredNotifications));
+        
       return null;
     },
     [notifications, setNotifications]
@@ -168,7 +183,9 @@ export function NotificationsProvider({ children }: any) {
   // Add a new notification at the end of the notification array.
   const setNotification = React.useCallback(
     (newNotification: jsonNotification) => {
-      setNotifications(notifications.concat(toStrict(newNotification)));
+      if (notifications.length)
+        setNotifications(notifications.concat(toStrict(newNotification)));
+      else setNotifications(resetTimestamps([toStrict(newNotification)]));
       return null;
     },
     [notifications, setNotifications]
@@ -176,6 +193,9 @@ export function NotificationsProvider({ children }: any) {
 
   // Delete a notification from 'id', and delete it from database if needed.
   const clearNotification = React.useCallback(() => {
+    // console.log(notifications);
+    // console.log(currentNotification);
+    
     let notification = notifications[currentNotification];
     if (notification?.db) {
       axios
@@ -184,24 +204,29 @@ export function NotificationsProvider({ children }: any) {
         .catch();
     }
 
-    setNotifications(
-      notifications
-        .slice(0, currentNotification)
-        .concat(notifications.splice(currentNotification + 1))
-    );
-
+    let current = currentNotification;
     if (
-      currentNotification >= notifications.length - 1 &&
+      //currentNotification >= notifications.length - 2 &&
       currentNotification != 0
     )
-      setCurrentNotification(currentNotification - 1);
+      --current;
+
+    setNotifications(
+      resetTimestamps(
+        notifications
+          .slice(0, currentNotification)
+          .concat(notifications.splice(currentNotification + 1)),
+          current
+      )
+    );
+    setCurrentNotification(current);
 
     return null;
   }, [
     notifications,
     setNotifications,
     currentNotification,
-    setCurrentNotification,
+    setCurrent,
   ]);
 
   // Delete a notification from 'id', and delete it from database if needed.
@@ -210,11 +235,28 @@ export function NotificationsProvider({ children }: any) {
     setCurrentNotification(0);
     return null;
   }, [
-    notifications,
     setNotifications,
-    currentNotification,
     setCurrentNotification,
   ]);
+
+  // #region Notification deletion
+
+  const handleTimeout = React.useCallback(
+    () => {
+      if (notifications.length > 0) {
+        let notification = notifications[currentNotification];
+
+        if (notification.timestamp !== null && 
+          notification.timestamp + notification.type.timeout * 1000 < Date.now())
+          clearNotification();
+      }
+    },
+    [notifications, clearNotification]
+  );
+
+  useInterval(handleTimeout, timeoutCallbackDelay * 1000);
+
+  // #endregion
 
   return (
     <NotificationsContext.Provider

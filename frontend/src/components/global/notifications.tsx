@@ -31,7 +31,8 @@ export default function Notifications() {
         </div>
       )}
 
-      {notifications.length && (
+      {/* CURRENT NOTIFICATION */}
+      {notifications.length > 0 && (
         <div className="notif-current">
           {currentNotification > 0 && (
             <FontAwesomeIcon
@@ -41,7 +42,6 @@ export default function Notifications() {
             />
           )}
 
-          {/* CURRENT NOTIFICATION */}
           <Notification
             json={notifications[currentNotification]}
             current={true}

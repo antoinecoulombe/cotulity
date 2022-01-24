@@ -9,7 +9,7 @@
 // TODO: Add type uniformity react                                          ->  6h
 // TODO: Add missing validations (React + API)                              ->  8h
 // TODO: Update README (mainly .less section)                               ->  1h
-// TODO: Replace all array.length === 0 to !array.length in ifs
+// DONE: Replace all array.length === 0 to !array.length in ifs
 //  -> Test to be sure it works
 
 // #endregion
@@ -51,6 +51,7 @@
 // TODO: Implement second chance                                            ->  8h
 // TODO: Fix height of popups inside open-app                               ->  4h
 // TODO: Delete notifications after timeout                                 ->  8h
+//  -> Verify interval.tsx and see how it works
 // TODO: Block commits on test fail (implement on merge)                    ->  2h
 // TODO: Sidebar shrinking if window width < x pixels                       ->  4h
 // TODO: Implement working horizontal scroll without pressing shift         ->  4h
