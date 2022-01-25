@@ -21,6 +21,7 @@ export interface jsonNotification {
     timeout?: number;
   };
   timestamp?: number;
+  current?: boolean;
 }
 
 export interface strictJsonNotification {
@@ -33,10 +34,10 @@ export interface strictJsonNotification {
     timeout: number;
   };
   timestamp: number | null;
+  current: boolean;
 }
 
 const defaultApi = {
-  currentNotification: 0 as number,
   notifications: [] as strictJsonNotification[],
   setNotificationArray: (notifications: jsonNotification[]) => null,
   setNotification: (notification: jsonNotification) => null,
@@ -56,9 +57,6 @@ export const NotificationsContext =
   React.createContext<NotificationsContextValue>(defaultApi);
 
 export function NotificationsProvider({ children }: any) {
-  const [currentNotification, setCurrentNotification] = React.useState<number>(
-    defaultApi.currentNotification
-  );
   const [notifications, setNotifications] = React.useState<
     strictJsonNotification[]
   >(defaultApi.notifications);
@@ -78,48 +76,63 @@ export function NotificationsProvider({ children }: any) {
         timeout: n.type?.timeout ?? notificationTypes.info.timeout,
       },
       timestamp: null,
+      current: false,
     };
   }
 
-  function setCurrent(current: number) {
-    setCurrentNotification(current);
-    setNotifications(resetTimestamps(notifications, current));
+  function getCurrentNotificationIndex(): number {
+    let i = notifications.findIndex((n) => n.current);
+    return i == -1 ? 0 : i;
+  }
+
+  function getCurrentNotification(): strictJsonNotification | undefined {
+    return notifications.find((n) => n.current);
+  }
+
+  function setCurrentNotification(
+    current: number,
+    notifs?: strictJsonNotification[]
+  ) {
+    let newNotifications = notifs ? [...notifs] : [...notifications];
+
+    if (newNotifications?.length) {
+      newNotifications.forEach((n) => {
+        n.timestamp = null;
+        n.current = false;
+      });
+
+      newNotifications[current].current = true;
+      newNotifications[current].timestamp = Date.now();
+    }
+
+    setNotifications(newNotifications);
+  }
+
+  function appendOrSetNotifications(notifs: strictJsonNotification[]) {
+    if (notifications.length)
+      setNotifications([...notifications].concat(notifs));
+    else setCurrentNotification(0, notifs);
   }
 
   const prevNotification = React.useCallback(() => {
-    if (currentNotification > 0) setCurrent(currentNotification - 1);
+    if (getCurrentNotificationIndex() > 0)
+      setCurrentNotification(getCurrentNotificationIndex() - 1);
     return null;
-  }, [setCurrent, currentNotification]);
+  }, [setCurrentNotification]);
 
   const nextNotification = React.useCallback(() => {
-    if (currentNotification < notifications.length - 1)
-      setCurrent(currentNotification + 1);
+    if (getCurrentNotificationIndex() < notifications.length - 1)
+      setCurrentNotification(getCurrentNotificationIndex() + 1);
     return null;
-  }, [notifications, setCurrent, currentNotification]);
-
-  function resetTimestamps(
-    notifs: strictJsonNotification[],
-    current?: number
-  ): strictJsonNotification[] {
-    if (notifs && notifs.length > 0) {
-      notifs.forEach((n) => (n.timestamp = null));
-      notifs[current ?? currentNotification].timestamp = Date.now();
-    }
-    return notifs;
-  }
+  }, [notifications, setCurrentNotification]);
 
   // Append an array of notifications at the end of the notification array.
   const setNotificationArray = React.useCallback(
     (newNotifications: jsonNotification[]) => {
-      let newFilteredNotifications: strictJsonNotification[] = [];
-      newNotifications.forEach((n) =>
-        newFilteredNotifications.push(toStrict(n))
-      );
+      let strictNotifications: strictJsonNotification[] = [];
+      newNotifications.forEach((n) => strictNotifications.push(toStrict(n)));
 
-      if (notifications.length)
-        setNotifications(notifications.concat(newFilteredNotifications));
-      else setNotifications(resetTimestamps(newFilteredNotifications));
-
+      appendOrSetNotifications(strictNotifications);
       return null;
     },
     [notifications, setNotifications]
@@ -127,9 +140,9 @@ export function NotificationsProvider({ children }: any) {
 
   const setErrorNotification = React.useCallback(
     (newNotification: jsonNotification) => {
-      setNotifications(
-        notifications.concat(toStrict(newNotification, notificationTypes.error))
-      );
+      appendOrSetNotifications([
+        toStrict(newNotification, notificationTypes.error),
+      ]);
       return null;
     },
     [notifications, setNotifications]
@@ -137,11 +150,9 @@ export function NotificationsProvider({ children }: any) {
 
   const setWarningNotification = React.useCallback(
     (newNotification: jsonNotification) => {
-      setNotifications(
-        notifications.concat(
-          toStrict(newNotification, notificationTypes.warning)
-        )
-      );
+      appendOrSetNotifications([
+        toStrict(newNotification, notificationTypes.warning),
+      ]);
       return null;
     },
     [notifications, setNotifications]
@@ -149,9 +160,9 @@ export function NotificationsProvider({ children }: any) {
 
   const setInfoNotification = React.useCallback(
     (newNotification: jsonNotification) => {
-      setNotifications(
-        notifications.concat(toStrict(newNotification, notificationTypes.info))
-      );
+      appendOrSetNotifications([
+        toStrict(newNotification, notificationTypes.info),
+      ]);
       return null;
     },
     [notifications, setNotifications]
@@ -159,11 +170,9 @@ export function NotificationsProvider({ children }: any) {
 
   const setSuccessNotification = React.useCallback(
     (newNotification: jsonNotification) => {
-      setNotifications(
-        notifications.concat(
-          toStrict(newNotification, notificationTypes.success)
-        )
-      );
+      appendOrSetNotifications([
+        toStrict(newNotification, notificationTypes.success),
+      ]);
       return null;
     },
     [notifications, setNotifications]
@@ -172,9 +181,7 @@ export function NotificationsProvider({ children }: any) {
   // Add a new notification at the end of the notification array.
   const setNotification = React.useCallback(
     (newNotification: jsonNotification) => {
-      if (notifications.length)
-        setNotifications(notifications.concat(toStrict(newNotification)));
-      else setNotifications(resetTimestamps([toStrict(newNotification)]));
+      appendOrSetNotifications([toStrict(newNotification)]);
       return null;
     },
     [notifications, setNotifications]
@@ -182,29 +189,27 @@ export function NotificationsProvider({ children }: any) {
 
   // Delete a notification from 'id', and delete it from database if needed.
   const clearNotification = React.useCallback(() => {
-    let notification = notifications[currentNotification];
-    if (notification?.db) {
+    let notification = getCurrentNotification();
+    if (!notification) return null;
+    if (notification.db) {
       axios
         .delete(`/notifications/delete/${notification.id}`)
         .then((res) => res.data)
         .catch();
     }
 
-    let current = currentNotification;
-    if (currentNotification != 0) --current;
+    let current = getCurrentNotificationIndex();
+    if (current != 0) --current;
 
-    var newNotifications = resetTimestamps(
+    setCurrentNotification(
+      current,
       notifications
-        .slice(0, currentNotification)
-        .concat(notifications.splice(currentNotification + 1)),
-      current
+        .slice(0, getCurrentNotificationIndex())
+        .concat([...notifications].splice(getCurrentNotificationIndex() + 1))
     );
 
-    setCurrentNotification(current);
-    setNotifications(newNotifications);
-
     return null;
-  }, [notifications, setNotifications, currentNotification, setCurrent]);
+  }, [notifications, setNotifications]);
 
   // Delete a notification from 'id', and delete it from database if needed.
   const clearAllNotifications = React.useCallback(() => {
@@ -216,8 +221,9 @@ export function NotificationsProvider({ children }: any) {
   // #region Notification deletion
 
   const handleTimeout = React.useCallback(() => {
-    if (notifications.length > 0) {
-      let notification = notifications[currentNotification];
+    if (notifications.length) {
+      let notification = getCurrentNotification();
+      if (!notification) return;
 
       if (
         notification.timestamp !== null &&
@@ -234,7 +240,6 @@ export function NotificationsProvider({ children }: any) {
   return (
     <NotificationsContext.Provider
       value={{
-        currentNotification,
         notifications,
         setNotification,
         setErrorNotification,
