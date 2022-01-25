@@ -1,6 +1,6 @@
 # Cotulity
 
-**Cotulity is a work in progress and no release version have been released yet.**
+**Cotulity is a work in progress and no release version has been released yet.**
 
 Cotulity is a web application to help students manage their day-to-day life with roommates.
 
@@ -58,9 +58,21 @@ If you get an `Execution_Policy` error while running the migration or seed scrip
 
 ## DEV environment
 
-When developping, running the API locally might be less time-consuming than rebuilding Docker everytime a change is made. To do so, stop the execution of the Docker container named `api`, and run the following command in a terminal window, in the api folder: `npm run dev`. This will start a nodemon session, restarting the server after every change.
+When developping, running the API locally might be less time-consuming than rebuilding Docker everytime a change is made. To do so, stop the execution of the Docker container named `api`, then:
 
-\* Changes will not be detected for TypeScript files. Pressing on `Cmd+Shift+b` and selecting `tsc:watch - api/tsconfig.json` will solve this issue.
+1. Execute the following command in a terminal window, in the api folder: `npm run dev`. This will start a nodemon session, restarting the server after every change.
+1. Press `Cmd+Shift+b` and select `tsc:watch - api/tsconfig.json` to detect changes in TypeScript files and compile them in the `dist` folder.
+
+## DEBUG environment
+
+When debugging, stop the execution of the Docker container named `api`, then:
+
+1. Execute the following command in a terminal window, in the api folder: `npm run debug`. This will start a `ts-node-dev` instance with the `--inspect` flag.
+1. Go to the `Run and Debug` tab of visual studio, select `Node: TypeScript` and then press the green play button (or F5).
+
+\* `ts-node-dev` does not need to compile the TypeScript files to the `dist` folder as is the case for the `dev` environment. It acts as a replacement for `nodemon` and `ts-node`, to execute TypeScript without precompiling and restart the server after every change.
+
+For additional information, please consult [the ts-node-dev npm Homepage](https://www.npmjs.com/package/ts-node-dev).
 
 ## Compiling Less
 
@@ -73,20 +85,20 @@ If you are using Visual Studio Code, here are the instructions on how to compile
 1. Install the `Easy LESS` extension
 1. Click on the gear (settings) icon located at the bottom left of Visual Studio Code and then click on `Settings`
 1. Search for `Easy LESS`, select `Easy LESS configuration` and click `Edit in settings.json`
-1. And make sure your `less.compile` section looks like this:
+1. Add or modify the `less.compile` section so it looks like this:
 
 ```javascript
   "less.compile": {
-    "ignore": ["_*.less"],
-    "out": "../css/",
+    "out": "../../css/",
     "compress": true
   },
 ```
 
-6. Save and you're all set! When you save a `.less` file, a `.css` file will be created in the `public/css` folder.
+1. Save and you're all set! When you save a `.less` file, a `.css` file will be created in the appropriate folder.
 
-\* Please note that files starting with `_` are considered partial files and will not be compiled in `.css` when saving.
-\*\* This might not work anymore, files to exclude might now be required to start with `// out: false`.
+\* To ignore compilation of a file, copy `// out: false` and paste it at the top of your file. These files will not be copiled in `.css` when saving.
+
+For additional information, please consult [the Easy Less Marketplace Homepage](https://marketplace.visualstudio.com/items?itemName=mrcrowl.easy-less).
 
 ## You're good to go!
 

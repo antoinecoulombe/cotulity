@@ -8,7 +8,7 @@
 // TODO: Refactor api urls                                                  ->  4h
 // TODO: Add type uniformity react                                          ->  6h
 // TODO: Add missing validations (React + API)                              ->  8h
-// TODO: Update README (mainly .less section)                               ->  1h
+// DONE: Update README (mainly .less section)                               ->  1h
 // DONE: Replace all array.length === 0 to !array.length in ifs
 //  -> Test to be sure it works
 

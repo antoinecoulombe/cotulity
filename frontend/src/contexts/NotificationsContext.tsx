@@ -77,42 +77,31 @@ export function NotificationsProvider({ children }: any) {
         name: n.type?.name ?? notificationTypes.error.name,
         timeout: n.type?.timeout ?? notificationTypes.info.timeout,
       },
-      timestamp: null
+      timestamp: null,
     };
   }
 
-  function setCurrent(current: number)
-  {
+  function setCurrent(current: number) {
     setCurrentNotification(current);
     setNotifications(resetTimestamps(notifications, current));
   }
 
   const prevNotification = React.useCallback(() => {
-    if (currentNotification > 0)
-      setCurrent(currentNotification - 1);
+    if (currentNotification > 0) setCurrent(currentNotification - 1);
     return null;
-  }, [
-    setCurrent,
-    currentNotification,
-  ]);
+  }, [setCurrent, currentNotification]);
 
   const nextNotification = React.useCallback(() => {
-    if (currentNotification < notifications.length - 1) 
+    if (currentNotification < notifications.length - 1)
       setCurrent(currentNotification + 1);
     return null;
-  }, [
-    notifications,
-    setCurrent,
-    currentNotification,
-  ]);
+  }, [notifications, setCurrent, currentNotification]);
 
-  function resetTimestamps(notifs: strictJsonNotification[], current?: number) : strictJsonNotification[]
-  {
-    if (notifs && notifs.length > 0)
-    {
-      notifs.forEach((x, i) => console.log(`${i}: id -> ${x.id}, t -> ${x.timestamp}`));
-      console.log(`current: ${current ?? currentNotification}`);
-
+  function resetTimestamps(
+    notifs: strictJsonNotification[],
+    current?: number
+  ): strictJsonNotification[] {
+    if (notifs && notifs.length > 0) {
       notifs.forEach((n) => (n.timestamp = null));
       notifs[current ?? currentNotification].timestamp = Date.now();
     }
@@ -130,7 +119,7 @@ export function NotificationsProvider({ children }: any) {
       if (notifications.length)
         setNotifications(notifications.concat(newFilteredNotifications));
       else setNotifications(resetTimestamps(newFilteredNotifications));
-        
+
       return null;
     },
     [notifications, setNotifications]
@@ -193,9 +182,6 @@ export function NotificationsProvider({ children }: any) {
 
   // Delete a notification from 'id', and delete it from database if needed.
   const clearNotification = React.useCallback(() => {
-    // console.log(notifications);
-    // console.log(currentNotification);
-    
     let notification = notifications[currentNotification];
     if (notification?.db) {
       axios
@@ -205,54 +191,41 @@ export function NotificationsProvider({ children }: any) {
     }
 
     let current = currentNotification;
-    if (
-      //currentNotification >= notifications.length - 2 &&
-      currentNotification != 0
-    )
-      --current;
+    if (currentNotification != 0) --current;
 
-    setNotifications(
-      resetTimestamps(
-        notifications
-          .slice(0, currentNotification)
-          .concat(notifications.splice(currentNotification + 1)),
-          current
-      )
+    var newNotifications = resetTimestamps(
+      notifications
+        .slice(0, currentNotification)
+        .concat(notifications.splice(currentNotification + 1)),
+      current
     );
+
     setCurrentNotification(current);
+    setNotifications(newNotifications);
 
     return null;
-  }, [
-    notifications,
-    setNotifications,
-    currentNotification,
-    setCurrent,
-  ]);
+  }, [notifications, setNotifications, currentNotification, setCurrent]);
 
   // Delete a notification from 'id', and delete it from database if needed.
   const clearAllNotifications = React.useCallback(() => {
     setNotifications([]);
     setCurrentNotification(0);
     return null;
-  }, [
-    setNotifications,
-    setCurrentNotification,
-  ]);
+  }, [setNotifications, setCurrentNotification]);
 
   // #region Notification deletion
 
-  const handleTimeout = React.useCallback(
-    () => {
-      if (notifications.length > 0) {
-        let notification = notifications[currentNotification];
+  const handleTimeout = React.useCallback(() => {
+    if (notifications.length > 0) {
+      let notification = notifications[currentNotification];
 
-        if (notification.timestamp !== null && 
-          notification.timestamp + notification.type.timeout * 1000 < Date.now())
-          clearNotification();
-      }
-    },
-    [notifications, clearNotification]
-  );
+      if (
+        notification.timestamp !== null &&
+        notification.timestamp + notification.type.timeout * 1000 < Date.now()
+      )
+        clearNotification();
+    }
+  }, [notifications, clearNotification]);
 
   useInterval(handleTimeout, timeoutCallbackDelay * 1000);
 
