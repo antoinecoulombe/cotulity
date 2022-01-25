@@ -1,4 +1,4 @@
-const app = require('./app.js');
+const app = require('./app.ts');
 require('./routes/_utils/CronJobs');
 
 // Express Start
