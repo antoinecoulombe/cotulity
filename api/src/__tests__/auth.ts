@@ -1,4 +1,4 @@
-const app = require('../app.js');
+const app = require('../app.ts');
 import 'jest';
 import supertest from 'supertest';
 const request = supertest(app);

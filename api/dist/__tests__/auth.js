@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authToken = void 0;
-const app = require('../app.js');
+const app = require('../app.ts');
 require("jest");
 const supertest_1 = __importDefault(require("supertest"));
 const request = supertest_1.default(app);
