@@ -9,8 +9,7 @@
 // TODO: Add type uniformity react                                          ->  6h
 // TODO: Add missing validations (React + API)                              ->  8h
 // DONE: Update README (mainly .less section)                               ->  1h
-// DONE: Replace all array.length === 0 to !array.length in ifs
-//  -> Test to be sure it works
+// DONE: Rework TypeScript debug environment for vscode                     ->  6h
 
 // #endregion
 
@@ -50,7 +49,7 @@
 
 // TODO: Implement second chance                                            ->  8h
 // TODO: Fix height of popups inside open-app                               ->  4h
-// TODO: Delete notifications after timeout                                 ->  8h
+// DONE: Delete notifications after timeout                                 ->  8h
 //  -> Verify interval.tsx and see how it works
 // TODO: Block commits on test fail (implement on merge)                    ->  2h
 // TODO: Sidebar shrinking if window width < x pixels                       ->  4h
