@@ -22,3 +22,12 @@ export function useWindowSize() {
   }, []);
   return windowSize;
 }
+
+export function scrollHorizontal(e: any) {
+  e.stopPropagation();
+  var containerScrollPosition = e.currentTarget.scrollLeft;
+  e.currentTarget.scrollTo({
+    top: 0,
+    left: containerScrollPosition + e.deltaY,
+  });
+}

@@ -18,4 +18,4 @@ gulp.task(
   })
 );
 
-gulp.task('default', gulp.series('watch-less'));
+gulp.task('default', gulp.parallel('compile-less', 'watch-less'));

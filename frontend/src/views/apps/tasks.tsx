@@ -20,6 +20,7 @@ import Translate from '../../components/utils/translate';
 import EditPopup from '../../components/tasks/editPopup';
 import * as DateExt from '../../components/utils/date';
 import '../../assets/css/apps/tasks.css';
+import { scrollHorizontal } from '../../hooks/window';
 
 export interface Task {
   id: number;
@@ -390,6 +391,8 @@ export default function AppTasks() {
     tooltipMultiplier: 10,
   };
 
+  function handleHorizontalScroll(e: any) {}
+
   return (
     <AppContainer
       title={title}
@@ -434,7 +437,9 @@ export default function AppTasks() {
                       <>
                         <div
                           className="involved-users"
+                          id="involved-users-tasks"
                           style={t.Users.length < 5 ? { width: 'auto' } : {}}
+                          onWheel={scrollHorizontal}
                         >
                           {t.Users.map((u) =>
                             u.Image?.url ? (

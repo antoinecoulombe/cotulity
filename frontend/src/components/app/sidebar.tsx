@@ -1,8 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Translate from '../utils/translate';
-import $ from 'jquery';
 import '../../assets/css/app/sidebar.css';
 
 export interface SidebarTab {
