@@ -6,7 +6,7 @@ import App from '../../components/apps/app';
 import axios from '../../utils/fetchClient';
 import HomesDropdown from '../../components/apps/homesDropdown';
 import $ from 'jquery';
-import '../../assets/css/apps.css';
+import '../../assets/css/views/apps.css';
 
 interface OnlineApp {
   id: number;
@@ -105,6 +105,10 @@ export default function AppsPage() {
       .catch((err) => {
         setNotification(err.response.data);
       });
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   useEffect(() => {

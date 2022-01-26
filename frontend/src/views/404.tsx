@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { isAuthenticated } from '../utils/global';
 import Translate from '../components/utils/translate';
-import '../assets/css/404.css';
+import '../assets/css/views/404.css';
 
 export default function NotFoundPage() {
   return (

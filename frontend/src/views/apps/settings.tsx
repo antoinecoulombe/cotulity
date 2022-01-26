@@ -5,7 +5,7 @@ import SetTheme from '../../components/settings/setTheme';
 import SetSafeDelete from '../../components/settings/setSafeDelete';
 import SetProfilePicture from '../../components/settings/setProfilePicture';
 import DeleteAccount from '../../components/settings/deleteAccount';
-import '../../assets/css/settings.css';
+import '../../assets/css/apps/settings.css';
 
 interface AppSettingsProps {
   setTheme(theme: string): void;

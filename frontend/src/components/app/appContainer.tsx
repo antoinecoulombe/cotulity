@@ -5,7 +5,7 @@ import { useOutsideAlerter } from '../utils/outsideClick';
 import { useHistory } from 'react-router';
 import Header from './header';
 import $ from 'jquery';
-import '../../assets/css/open-app.css';
+import '../../assets/css/app/open-app.css';
 
 interface AppContainerProps {
   children: object;
@@ -24,6 +24,7 @@ export function handleOpenAppResize(bodyMinHeight?: number) {
     (($('.open-app-container')?.outerWidth() ?? 0) -
       ($('.open-app-container')?.innerWidth() ?? 0)) *
       2;
+
   if (appH) {
     appH -=
       $('.open-app-container > .headers > .header')?.outerHeight(true) ?? 0;
@@ -37,6 +38,11 @@ export function handleOpenAppResize(bodyMinHeight?: number) {
     if (bodyMinHeight && appH < bodyMinHeight) appH = bodyMinHeight;
     $('.open-app-container .fill-height').css({ maxHeight: appH + 'px' });
   }
+
+  // if window width is smaller than original app length (1120 px)
+  if ((window.innerWidth ?? 1500) < 1120)
+    $('.open-app-container').addClass('compact');
+  else $('.open-app-container').removeClass('compact');
 }
 
 export default function AppContainer(props: AppContainerProps) {
@@ -46,11 +52,13 @@ export default function AppContainer(props: AppContainerProps) {
     window.addEventListener('resize', () =>
       handleOpenAppResize(props.bodyMinHeight)
     );
+
+    handleOpenAppResize();
     return () =>
       window.removeEventListener('resize', () =>
         handleOpenAppResize(props.bodyMinHeight)
       );
-  });
+  }, []);
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => history.push('/apps'));

@@ -19,7 +19,7 @@ import ReactDOMServer from 'react-dom/server';
 import Translate from '../../components/utils/translate';
 import EditPopup from '../../components/tasks/editPopup';
 import * as DateExt from '../../components/utils/date';
-import '../../assets/css/tasks.css';
+import '../../assets/css/apps/tasks.css';
 
 export interface Task {
   id: number;
@@ -61,8 +61,7 @@ const nullJSX: JSX.Element = <></>;
 
 export default function AppTasks() {
   const { t, i18n } = useTranslation('common');
-  const { setNotification, setSuccessNotification } =
-    useNotifications();
+  const { setNotification, setSuccessNotification } = useNotifications();
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [sidebarTabs, setSidebarTabs] = useState<SidebarTab[]>([]);
   const [subHeader, setSubHeader] = useState<SubHeaderProps>({

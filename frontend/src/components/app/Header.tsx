@@ -1,6 +1,5 @@
 import IconToolTip from '../global/iconTooltip';
 import Translate from '../utils/translate';
-import '../../assets/css/open-app.css';
 
 interface HeaderProps {
   appName: string;

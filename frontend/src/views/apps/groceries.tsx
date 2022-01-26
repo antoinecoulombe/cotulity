@@ -9,7 +9,7 @@ import IconToolTip from '../../components/global/iconTooltip';
 import axios from '../../utils/fetchClient';
 import Translate from '../../components/utils/translate';
 import $ from 'jquery';
-import '../../assets/css/groceries.css';
+import '../../assets/css/apps/groceries.css';
 
 interface article {
   id: number;
@@ -62,7 +62,9 @@ export default function AppGroceries() {
   function handleArticle(id: number) {
     toggleArticle(
       id,
-      articles.find((x) => x.id === id)?.deletedAt === null ? 'delete' : 'restore'
+      articles.find((x) => x.id === id)?.deletedAt === null
+        ? 'delete'
+        : 'restore'
     );
   }
 

@@ -5,8 +5,8 @@ import { useNotifications } from '../contexts/NotificationsContext';
 import { getNotifications, isAuthenticated } from '../utils/global';
 
 // CSS
-import '../assets/css/theme.css';
-import '../assets/css/global.css';
+import '../assets/css/globals/theme.css';
+import '../assets/css/globals/global.css';
 
 // Components
 import Notifications from '../components/global/notifications';

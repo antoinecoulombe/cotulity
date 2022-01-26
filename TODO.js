@@ -1,6 +1,6 @@
 // #region Ameliorations                                                    ->  39h
 
-// TODO: Refactor css                                                       -> 20h
+// ONGO: Refactor css                                                       -> 20h
 //  -> Convert fixed sizes to em + responsive typography (media queries)    ->  8h
 //  -> Standardize classes                                                  ->  6h
 //  -> Standardize colors (grey tones, opacities...)                        ->  3h
@@ -39,7 +39,7 @@
 // TODO: Send verification email                                            ->  8h
 //  -> not needed if invited since link is only available to sent email
 // TODO: Password reset links                                               -> 10h
-// TODO: Host and convert website to SSL/HTTPS                              -> 24h
+// TODO: Host and convert website to HTTPS                                  -> 24h
 //  -> Vercel production environnement?
 //  -> Add "export HTTPS=true &&" at the beginning of start script in "frontend/package.json"
 
@@ -50,7 +50,6 @@
 // TODO: Implement second chance                                            ->  8h
 // TODO: Fix height of popups inside open-app                               ->  4h
 // DONE: Delete notifications after timeout                                 ->  8h
-//  -> Verify interval.tsx and see how it works
 // TODO: Block commits on test fail (implement on merge)                    ->  2h
 // TODO: Sidebar shrinking if window width < x pixels                       ->  4h
 // TODO: Implement working horizontal scroll without pressing shift         ->  4h

@@ -82,23 +82,14 @@ All `.css` files should be in the `public\css` folder and all `.less` files in t
 
 If you are using Visual Studio Code, here are the instructions on how to compile `.less` into `.css`:
 
-1. Install the `Easy LESS` extension
-1. Click on the gear (settings) icon located at the bottom left of Visual Studio Code and then click on `Settings`
-1. Search for `Easy LESS`, select `Easy LESS configuration` and click `Edit in settings.json`
-1. Add or modify the `less.compile` section so it looks like this:
+1. Install `gulp` globally: `npm install -g gulp`.
+1. Make sure the npm packages are installed at the root of the project.
+1. In a terminal at the root of the project, run `gulp`.
+1. You're all set! When you save a `.less` file, a `.css` file will be created in the appropriate folder.
 
-```javascript
-  "less.compile": {
-    "out": "../../css/",
-    "compress": true
-  },
-```
+\* To ignore compilation of a file, prefix them with an underscore (\_). These files will not be compiled in `.css` when saving.
 
-1. Save and you're all set! When you save a `.less` file, a `.css` file will be created in the appropriate folder.
-
-\* To ignore compilation of a file, copy `// out: false` and paste it at the top of your file. These files will not be copiled in `.css` when saving.
-
-For additional information, please consult [the Easy Less Marketplace Homepage](https://marketplace.visualstudio.com/items?itemName=mrcrowl.easy-less).
+For additional information, please consult [this help page](https://code.visualstudio.com/docs/languages/css).
 
 ## You're good to go!
 

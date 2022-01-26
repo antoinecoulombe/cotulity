@@ -5,7 +5,7 @@ import App from '../../components/apps/app';
 import SingleInputForm from '../../components/forms/singleInputForm';
 import axios from '../../utils/fetchClient';
 import $ from 'jquery';
-import '../../assets/css/apps.css';
+import '../../assets/css/views/apps.css';
 
 export default function AppNewHome() {
   const { setSuccessNotification, setErrorNotification } = useNotifications();

@@ -1,0 +1,132 @@
+.open-app-container > .sidebar {
+  position: relative;
+  top: -60px;
+  left: -60px;
+  display: flex;
+  flex-direction: column;
+  float: left;
+  width: 210px;
+  height: 100%;
+  padding: 60px;
+  border-right: solid 1px var(--tasks-sidebar-border-color);
+  border-radius: 10px 0 0 10px;
+  background-color: var(--tasks-sidebar-bg);
+  z-index: 1;
+}
+.open-app-container > .sidebar > .tabs {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.open-app-container > .sidebar > .tabs.top {
+  top: 0;
+}
+.open-app-container > .sidebar > .tabs.top > .tab svg {
+  margin-top: 3px;
+  font-size: 15px;
+  width: 16px;
+}
+.open-app-container > .sidebar > .tabs.bottom {
+  max-height: 184px;
+  margin-top: auto;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.open-app-container > .sidebar > .tabs.bottom::-webkit-scrollbar {
+  display: none;
+}
+.open-app-container > .sidebar > .tabs.bottom > .tab svg {
+  font-size: 30px;
+}
+.open-app-container > .sidebar > .tabs.bottom > .tab img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+.open-app-container > .sidebar > .tabs.bottom > .tab h4 {
+  height: 30px;
+  line-height: 30px;
+}
+.open-app-container > .sidebar > .tabs > .tab {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+  cursor: pointer;
+}
+.open-app-container > .sidebar > .tabs > .tab > .left,
+.open-app-container > .sidebar > .tabs > .tab > .right {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  overflow: hidden;
+}
+.open-app-container > .sidebar > .tabs > .tab > .left {
+  float: left;
+  width: calc(100% - 20px - 5px);
+}
+.open-app-container > .sidebar > .tabs > .tab > .right {
+  float: right;
+  margin-left: auto;
+  margin-right: 5px;
+}
+.open-app-container > .sidebar > .tabs > .tab > .right .counter {
+  opacity: 0.6;
+}
+.open-app-container > .sidebar > .tabs > .tab > .right .counter > p {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  color: var(--tasks-sidebar-counter-color);
+  background-color: var(--tasks-sidebar-counter-bg);
+  border-radius: 50%;
+  margin: 0;
+}
+.open-app-container > .sidebar > .tabs > .tab h4,
+.open-app-container > .sidebar > .tabs > .tab svg {
+  float: left;
+  color: var(--tasks-sidebar-color);
+}
+.open-app-container > .sidebar > .tabs > .tab h4 {
+  margin: 0;
+  display: block;
+  margin-left: 20px;
+  white-space: nowrap;
+  width: 0;
+}
+.open-app-container > .sidebar > .tabs > .tab:hover h4,
+.open-app-container > .sidebar > .tabs > .tab.selected h4,
+.open-app-container > .sidebar > .tabs > .tab:hover svg,
+.open-app-container > .sidebar > .tabs > .tab.selected svg {
+  color: var(--tasks-sidebar-hover-color);
+}
+.open-app-container.compact > .sidebar:not(.hovered) {
+  width: auto;
+  padding: 60px 30px 60px 30px;
+}
+.open-app-container.compact > .sidebar:not(.hovered) > .tabs.top svg {
+  padding-left: 7px;
+}
+.open-app-container.compact > .sidebar:not(.hovered) > .tabs > .tab > .left {
+  height: 21px;
+  width: auto;
+}
+.open-app-container.compact > .sidebar:not(.hovered) > .tabs > .tab > .right,
+.open-app-container.compact > .sidebar:not(.hovered) > .tabs > .tab h4 {
+  display: none;
+}
+.open-app-container.compact > .sidebar.hovered {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100% - 60px * 2);
+}

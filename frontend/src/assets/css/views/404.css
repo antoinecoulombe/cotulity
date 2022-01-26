@@ -1,0 +1,41 @@
+.container-404 {
+  background-color: var(--gradient-input-bg);
+  border-radius: 20px;
+  padding: 40px 20px;
+  width: 600px;
+}
+.container-404 > h1,
+.container-404 > h2,
+.container-404 a {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  color: var(--gray);
+}
+.container-404 > h1 {
+  font-size: 180px;
+  font-style: italic;
+  font-weight: 900;
+  text-shadow: 20px 20px var(--text-shadow-black-10);
+  margin: 0;
+}
+.container-404 > h2 {
+  padding-bottom: 30px;
+  font-weight: 100;
+}
+.container-404 > h2,
+.container-404 a {
+  font-size: 30px;
+  margin: 0;
+}
+.container-404 a {
+  color: var(--darkGray);
+  font-weight: bold;
+  text-decoration: none;
+}
+.container-404 a:hover {
+  color: var(--darkestGray);
+  text-decoration: underline;
+}

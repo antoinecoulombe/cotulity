@@ -16,7 +16,7 @@ import axios from '../../utils/fetchClient';
 import SingleInputPopup from '../../components/forms/singleInputPopup';
 import WarningPopup from '../../components/global/warningPopup';
 import EditPopup from '../../components/homes/editPopup';
-import '../../assets/css/homes.css';
+import '../../assets/css/apps/homes.css';
 
 export interface Home {
   id: number;
@@ -45,8 +45,7 @@ export default function AppHomes() {
     axios
       .get(`/homes`)
       .then((res: any) => {
-        if (res.data.homes && res.data.homes.length)
-          setHomes(res.data.homes);
+        if (res.data.homes && res.data.homes.length) setHomes(res.data.homes);
         else history.push('/apps/homes/new');
       })
       .catch((err) => {
@@ -160,7 +159,10 @@ export default function AppHomes() {
     axios
       .put(`/homes/${refNumber}/rename`, { nickname: value })
       .then((res: any) => {
-        let homecp = getCopyIndex(homes, (h: Home) => h.refNumber === refNumber);
+        let homecp = getCopyIndex(
+          homes,
+          (h: Home) => h.refNumber === refNumber
+        );
         if (homecp) {
           homecp.cp[homecp.i].UserHome.nickname = value;
           setHomes(homecp.cp);

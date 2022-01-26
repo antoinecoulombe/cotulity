@@ -1,5 +1,4 @@
 import Translate from '../utils/translate';
-import '../../assets/css/open-app.css';
 
 export interface SubHeaderProps {
   tabs: Array<{ name: string; action: () => void; selected?: boolean }>;

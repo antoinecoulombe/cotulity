@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AppContainer from '../../components/app/appContainer';
-import '../../assets/css/console.css';
+import '../../assets/css/apps/console.css';
 
 export default function AppConsole() {
   const [history, setHistory] = useState<Array<string>>([]);

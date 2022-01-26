@@ -1,7 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
+import { useEffect, useState } from 'react';
 import Translate from '../utils/translate';
-import '../../assets/css/open-app.css';
+import $ from 'jquery';
+import '../../assets/css/app/sidebar.css';
 
 export interface SidebarTab {
   id: number;
@@ -20,6 +22,8 @@ interface SidebarProps {
 }
 
 export default function Sidebar(props: SidebarProps) {
+  const [hovered, setHovered] = useState<boolean>(false);
+
   async function switchSidebarTab(id: number) {
     if (!props.tabs || !props.tabs.length) return [];
     let newTabs = [...props.tabs];
@@ -34,7 +38,11 @@ export default function Sidebar(props: SidebarProps) {
   }
 
   return (
-    <div className="sidebar">
+    <div
+      className={`${hovered ? 'hovered ' : ''}sidebar`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <div className="tabs top">
         {props.tabs
           .filter((t) => !t.isUser)
@@ -77,7 +85,9 @@ export default function Sidebar(props: SidebarProps) {
                   {ut.img ? (
                     <img
                       src={`http://localhost:3000/images/public/${ut.img}`}
-                      alt={`${ut.value[0]}${ut.value[ut.value.length - 2]}`.toUpperCase()}
+                      alt={`${ut.value[0]}${
+                        ut.value[ut.value.length - 2]
+                      }`.toUpperCase()}
                     />
                   ) : (
                     <FontAwesomeIcon icon="user-circle" />

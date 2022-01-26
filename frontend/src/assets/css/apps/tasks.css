@@ -1,0 +1,74 @@
+.open-app-container.tasks {
+  max-width: 1400px;
+  min-width: 700px;
+  min-height: 480px;
+}
+.open-app-container.tasks .content.fill-height {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.open-app-container.tasks .list > h2 {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 32px;
+  color: var(--black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: 100%;
+}
+.open-app-container.tasks .list-item .list-item-left {
+  height: 40px;
+}
+.open-app-container.tasks .list-item .list-item-left .icon-tooltip {
+  display: block;
+}
+.open-app-container.tasks .list-item .list-item-left .generic-input {
+  margin-right: 10px;
+}
+.open-app-container.tasks .list-item .list-item-left .generic-input > input {
+  height: 22px;
+  width: 22px;
+}
+.open-app-container.tasks .list-item .list-item-left .generic-input > input::after {
+  top: 3px;
+}
+.open-app-container.tasks .list-item .list-item-right > .involved-users {
+  width: 90px;
+  height: 40px;
+  position: relative;
+  display: block;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.open-app-container.tasks .list-item .list-item-right > .involved-users::-webkit-scrollbar {
+  display: none;
+}
+.open-app-container.tasks .list-item .list-item-right > .involved-users img,
+.open-app-container.tasks .list-item .list-item-right > .involved-users .user-initials {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-left: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.open-app-container.tasks .list-item .list-item-right > .involved-users .user-initials {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 17px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 40px;
+  color: var(--darkGray);
+  background-color: var(--lighterGray);
+  float: left;
+}
