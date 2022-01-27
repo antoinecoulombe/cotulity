@@ -1,0 +1,18 @@
+@import (reference) '../globals/global.less';
+
+.open-app-container .headers > .header {
+  display: block;
+  height: auto;
+  margin-bottom: 26px;
+
+  > .add-btn {
+    top: @app[padding] + 4;
+    margin-right: @app[padding];
+    color: var(--oapp-add-btn-color);
+
+    &:hover {
+      color: var(--oapp-add-btn-hover-color);
+      opacity: 0.9;
+    }
+  }
+}

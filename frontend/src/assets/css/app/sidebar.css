@@ -8,9 +8,9 @@
   width: 210px;
   height: 100%;
   padding: 60px;
-  border-right: solid 1px var(--tasks-sidebar-border-color);
+  border-right: solid 1px var(--accent-border-color);
   border-radius: 10px 0 0 10px;
-  background-color: var(--tasks-sidebar-bg);
+  background-color: var(--accent-bg);
   z-index: 1;
 }
 .open-app-container > .sidebar > .tabs {
@@ -86,15 +86,15 @@
   font-size: 12px;
   line-height: 20px;
   text-align: center;
-  color: var(--tasks-sidebar-counter-color);
-  background-color: var(--tasks-sidebar-counter-bg);
+  color: var(--badge-bg);
+  background-color: var(--badge-color);
   border-radius: 50%;
   margin: 0;
 }
 .open-app-container > .sidebar > .tabs > .tab h4,
 .open-app-container > .sidebar > .tabs > .tab svg {
   float: left;
-  color: var(--tasks-sidebar-color);
+  color: var(--clickable-accent-bg);
 }
 .open-app-container > .sidebar > .tabs > .tab h4 {
   margin: 0;
@@ -107,7 +107,7 @@
 .open-app-container > .sidebar > .tabs > .tab.selected h4,
 .open-app-container > .sidebar > .tabs > .tab:hover svg,
 .open-app-container > .sidebar > .tabs > .tab.selected svg {
-  color: var(--tasks-sidebar-hover-color);
+  color: var(--clickable-accent-bg-hover);
 }
 .open-app-container.compact > .sidebar:not(.hovered) {
   width: auto;

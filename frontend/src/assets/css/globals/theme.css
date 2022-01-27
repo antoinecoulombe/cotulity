@@ -62,17 +62,20 @@
   --popup-border-color: transparent;
   --sif-back-opacity: 0.35;
   --groceries-purple: #ba71ff;
-  --tasks-sidebar-bg: rgba(0, 0, 0, 0.3);
-  --tasks-sidebar-border-color: transparent;
-  --tasks-sidebar-color: var(--lightGray);
-  --tasks-sidebar-hover-color: var(--black);
-  --tasks-sidebar-counter-bg: var(--lighterGray);
-  --tasks-sidebar-counter-color: var(--darkestGray);
   --checkbox-opacity: 0.9;
   --dropdown-bg: #2b3035;
   --dropdown-border: solid 1px var(--dropdown-bg);
   --dropdown-hover: rgba(255, 255, 255, 0.1);
   --console-bg: rgba(0, 0, 0, 0.3);
+  --badge-bg: var(--lighterGray);
+  --badge-color: var(--darkestGray);
+  --clickable-white-bg: var(--lightGray);
+  --clickable-white-bg-focus: var(--darkGray);
+  --clickable-white-bg-hover: var(--black);
+  --accent-bg: rgba(0, 0, 0, 0.3);
+  --accent-border-color: transparent;
+  --clickable-accent-bg: var(--lightGray);
+  --clickable-accent-bg-hover: var(--black);
 }
 .light {
   --black: #000000;
@@ -137,15 +140,18 @@
   --popup-border-color: var(--lighteGray);
   --sif-back-opacity: 0.25;
   --groceries-purple: #4f29f0;
-  --tasks-sidebar-bg: #f5f8ff;
-  --tasks-sidebar-border-color: #e3e6f7;
-  --tasks-sidebar-color: var(--darkGray);
-  --tasks-sidebar-hover-color: var(--black);
-  --tasks-sidebar-counter-bg: var(--lighterGray);
-  --tasks-sidebar-counter-color: var(--gray);
   --checkbox-opacity: 1;
   --dropdown-border: solid 1px var(--popup-border-color);
   --dropdown-bg: white;
   --dropdown-hover: var(--lightestGray);
   --console-bg: rgba(0, 0, 0, 0.05);
+  --badge-bg: var(--lighterGray);
+  --badge-color: var(--gray);
+  --clickable-white-bg: var(--lightGray);
+  --clickable-white-bg-focus: var(--darkGray);
+  --clickable-white-bg-hover: var(--black);
+  --accent-bg: #f5f8ff;
+  --accent-border-color: #e3e6f7;
+  --clickable-accent-bg: var(--gray);
+  --clickable-accent-bg-hover: var(--black);
 }

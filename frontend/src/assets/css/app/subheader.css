@@ -1,0 +1,33 @@
+.open-app-container .headers > .sub-header {
+  position: relative;
+  width: 100%;
+  height: 24px;
+}
+.open-app-container .headers > .sub-header > .tabs,
+.open-app-container .headers > .sub-header > .options {
+  display: block;
+}
+.open-app-container .headers > .sub-header > .tabs {
+  float: left;
+}
+.open-app-container .headers > .sub-header > .options {
+  float: right;
+}
+.open-app-container .headers > .sub-header h3 {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  display: inline-block;
+  width: auto;
+  color: var(--clickable-white-bg);
+  margin-right: 36px;
+}
+.open-app-container .headers > .sub-header h3:last-of-type {
+  margin-right: 0;
+}
+.open-app-container .headers > .sub-header h3.selected,
+.open-app-container .headers > .sub-header h3:hover {
+  color: var(--clickable-white-bg-hover);
+}

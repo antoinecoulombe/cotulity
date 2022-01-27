@@ -126,25 +126,25 @@
   position: relative;
   top: 2px;
   font-size: 26px;
-  color: var(--gray);
+  color: var(--clickable-white-bg);
 }
 .open-app-container.groceries .app-body .article-new .icon:hover {
-  color: var(--black) !important;
+  color: var(--clickable-white-bg-hover) !important;
 }
 .open-app-container.groceries .app-body .article-new:hover .icon {
-  color: var(--darkGray);
+  color: var(--clickable-white-bg-focus);
 }
 .open-app-container.groceries .app-body .article-new:hover input::-webkit-input-placeholder {
-  color: var(--darkGray);
+  color: var(--clickable-white-bg-focus);
 }
 .open-app-container.groceries .app-body .article-new:hover input::-moz-placeholder {
-  color: var(--darkGray);
+  color: var(--clickable-white-bg-focus);
 }
 .open-app-container.groceries .app-body .article-new:hover input::-ms-placeholder {
-  color: var(--darkGray);
+  color: var(--clickable-white-bg-focus);
 }
 .open-app-container.groceries .app-body .article-new:hover input::placeholder {
-  color: var(--darkGray);
+  color: var(--clickable-white-bg-focus);
 }
 .open-app-container.groceries .app-body .article-new input {
   font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
@@ -158,21 +158,21 @@
   height: 24px;
   margin-left: 10px;
   outline: none;
-  color: var(--black);
+  color: var(--clickable-white-bg-hover);
   cursor: pointer;
   background-color: transparent;
 }
 .open-app-container.groceries .app-body .article-new input::-webkit-input-placeholder {
-  color: var(--gray);
+  color: var(--clickable-white-bg);
 }
 .open-app-container.groceries .app-body .article-new input::-moz-placeholder {
-  color: var(--gray);
+  color: var(--clickable-white-bg);
 }
 .open-app-container.groceries .app-body .article-new input::-ms-placeholder {
-  color: var(--gray);
+  color: var(--clickable-white-bg);
 }
 .open-app-container.groceries .app-body .article-new input::placeholder {
-  color: var(--gray);
+  color: var(--clickable-white-bg);
 }
 .open-app-container.groceries .app-body .article-new input:focus {
   cursor: auto;

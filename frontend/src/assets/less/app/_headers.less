@@ -1,66 +1,8 @@
-@import (reference) '../globals/global.less';
-
-> .headers {
+.headers {
   display: flex;
   flex-direction: column;
 
   > div:last-of-type {
     margin-bottom: 60px;
-  }
-
-  > .header {
-    display: block;
-    height: auto;
-    margin-bottom: 26px;
-
-    > .add-btn {
-      top: @app[padding] + 4;
-      margin-right: @app[padding];
-      color: var(--oapp-add-btn-color);
-
-      &:hover {
-        color: var(--oapp-add-btn-hover-color);
-        opacity: 0.9;
-      }
-    }
-  }
-
-  > .sub-header {
-    position: relative;
-    width: 100%;
-    height: 24px;
-    // height: auto;
-    // float: left;
-
-    > .tabs,
-    > .options {
-      display: block;
-    }
-
-    > .tabs {
-      float: left;
-    }
-
-    > .options {
-      float: right;
-    }
-
-    h3 {
-      .noselect();
-
-      display: inline-block;
-      width: auto;
-      color: var(--lightGray);
-      margin-right: 36px;
-
-      &:last-of-type {
-        margin-right: 0;
-      }
-
-      &.selected,
-      &:hover {
-        color: var(--black);
-      }
-    }
   }
 }

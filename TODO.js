@@ -64,6 +64,7 @@
 // TODO: Add filter and sort in Tasks app
 // TODO: Prevent notification deletion after timeout if hovered
 //   -> Set notification timestamp to null on mouse enter and to Date.now() on mouse leave
+// TODO: Add more descriptive images to notifications
 
 // #endregion
 

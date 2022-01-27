@@ -1,4 +1,5 @@
 import Translate from '../utils/translate';
+import '../../assets/css/app/subheader.css';
 
 export interface SubHeaderProps {
   tabs: Array<{ name: string; action: () => void; selected?: boolean }>;

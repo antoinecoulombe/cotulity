@@ -1,0 +1,14 @@
+.open-app-container .headers > .header {
+  display: block;
+  height: auto;
+  margin-bottom: 26px;
+}
+.open-app-container .headers > .header > .add-btn {
+  top: 64px;
+  margin-right: 60px;
+  color: var(--oapp-add-btn-color);
+}
+.open-app-container .headers > .header > .add-btn:hover {
+  color: var(--oapp-add-btn-hover-color);
+  opacity: 0.9;
+}
