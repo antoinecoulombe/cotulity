@@ -51,8 +51,8 @@
 // TODO: Fix height of popups inside open-app                               ->  4h
 // DONE: Delete notifications after timeout                                 ->  8h
 // TODO: Block commits on test fail (implement on merge)                    ->  2h
-// TODO: Sidebar shrinking if window width < x pixels                       ->  4h
-// TODO: Implement working horizontal scroll without pressing shift         ->  4h
+// DONE: Sidebar shrinking if window width < x pixels                       ->  4h
+// DONE: Implement working horizontal scroll without pressing shift         ->  4h
 
 // #endregion
 
@@ -62,6 +62,8 @@
 // TODO: Add app priority/visibility for each user (Many to Many table)
 // TODO: Add tasks statistics with graphs
 // TODO: Add filter and sort in Tasks app
+// TODO: Prevent notification deletion after timeout if hovered
+//   -> Set notification timestamp to null on mouse enter and to Date.now() on mouse leave
 
 // #endregion
 

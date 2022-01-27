@@ -165,7 +165,12 @@ export default function App() {
             )
           }
         />
-        <PrivateRoute exact path="/apps/:token?" component={AppsPage} />
+        <PrivateRoute exact path="/apps" component={AppsPage} />
+        <PrivateRoute
+          exact
+          path="/apps/invitations/:token"
+          component={AppsPage}
+        />
         <PublicRoute exact path="/" component={LoginPage} />
         <Route
           exact
@@ -176,7 +181,9 @@ export default function App() {
             ) : (
               <Redirect
                 to={{
-                  pathname: `/apps/${props.match.params.token ?? ''}`,
+                  pathname: `/apps/invitations/${
+                    props.match.params.token ?? ''
+                  }`,
                   state: { from: props.location },
                 }}
               />
