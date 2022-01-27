@@ -95,21 +95,22 @@ export default function AppHomes() {
     );
   }
 
+  function handleDeleteHomeSuccess(res: any, refNumber: number) {
+    const redirect = homes.length <= 1;
+    deleteHomeState(refNumber);
+    closeAndSuccess(res.data);
+    if (redirect) history.push('/apps/homes/new');
+    else if (refNumber.toString() == localStorage.getItem('currentHome'))
+      localStorage.setItem(
+        'currentHome',
+        homes.find((h) => h.refNumber != refNumber)?.refNumber.toString() ?? ''
+      );
+  }
+
   function deleteHome(refNumber: number) {
     axios
       .delete(`/homes/${refNumber}/delete`)
-      .then((res: any) => {
-        const redirect = homes.length <= 1;
-        deleteHomeState(refNumber);
-        closeAndSuccess(res.data);
-        if (redirect) history.push('/apps/homes/new');
-        else if (refNumber.toString() == localStorage.getItem('currentHome'))
-          localStorage.setItem(
-            'currentHome',
-            homes.find((h) => h.refNumber != refNumber)?.refNumber.toString() ??
-              ''
-          );
-      })
+      .then((res: any) => handleDeleteHomeSuccess(res, refNumber))
       .catch((err) => {
         closeAndError(err.response.data);
       });
@@ -118,10 +119,7 @@ export default function AppHomes() {
   function quitHome(refNumber: number) {
     axios
       .delete(`/homes/${refNumber}/quit`)
-      .then((res: any) => {
-        deleteHomeState(refNumber);
-        closeAndSuccess(res.data);
-      })
+      .then((res: any) => handleDeleteHomeSuccess(res, refNumber))
       .catch((err) => {
         closeAndError(err.response.data);
       });
