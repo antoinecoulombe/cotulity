@@ -187,6 +187,7 @@ export default function LoginForm() {
       .then((res) => {
         setSuccessNotification(res.data);
         resetForm();
+        login();
       })
       .catch((err) => {
         setValidationNotification(

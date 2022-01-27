@@ -66,7 +66,7 @@ export default function AppNewHome() {
       .then((res) => {
         setError(false);
         setSuccessNotification(res.data);
-        localStorage.setItem('homeRef', res.data.refNumber);
+        localStorage.setItem('currentHome', res.data.refNumber);
         history.push('/apps');
       })
       .catch((err) => {

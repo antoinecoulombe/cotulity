@@ -114,7 +114,7 @@ export async function deleteHome(home: any, transaction: any) {
     await notifyMembersExceptOwner(home, transaction);
 
     // Delete home
-    // await home.destroy({ force: true }, { transaction: transaction });
+    await home.destroy({ force: true }, { transaction: transaction });
     return {
       title: Translate.getJSON('homes.homeDeleted', [home.name]),
       msg: 'homes.homeDeleted',

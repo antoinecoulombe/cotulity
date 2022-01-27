@@ -103,6 +103,12 @@ export default function AppHomes() {
         deleteHomeState(refNumber);
         closeAndSuccess(res.data);
         if (redirect) history.push('/apps/homes/new');
+        else if (refNumber.toString() == localStorage.getItem('currentHome'))
+          localStorage.setItem(
+            'currentHome',
+            homes.find((h) => h.refNumber != refNumber)?.refNumber.toString() ??
+              ''
+          );
       })
       .catch((err) => {
         closeAndError(err.response.data);
