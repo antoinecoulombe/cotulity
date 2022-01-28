@@ -1,0 +1,56 @@
+.buttons {
+  display: flex;
+}
+
+button {
+  .noselect();
+
+  cursor: pointer;
+  border-radius: 50px;
+  border: 0;
+  opacity: 0.7;
+  font-size: 17px;
+  font-weight: normal;
+  padding: 6px 16px;
+
+  > p {
+    display: block;
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &.yes {
+    opacity: var(--itp-opacity);
+    background-color: var(--itp-error-bg-color);
+    color: white;
+
+    &:hover {
+      background-color: var(--itp-error-hover-bg-color);
+    }
+  }
+
+  &.no {
+    background-color: transparent;
+    color: var(--darkestGray);
+    border: 2px solid var(--darkestGray);
+    opacity: 0.6;
+  }
+
+  &.accept {
+    background-color: var(--success-color);
+    color: white;
+    opacity: 0.8;
+  }
+
+  &.save {
+    background-color: #275eff;
+    color: white;
+    opacity: 0.9;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}

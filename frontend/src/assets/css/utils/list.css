@@ -1,0 +1,186 @@
+.list {
+  position: relative;
+  display: block;
+  float: left;
+  width: 100%;
+}
+.list > .list-item {
+  position: relative;
+  display: block;
+  float: left;
+  width: calc(100% - 12px * 2);
+  border-radius: 10px;
+  border: var(--border-1-inv);
+  padding: 15px 12px;
+}
+.list > .list-item:hover {
+  box-shadow: 0px 3px 5px 0 rgba(0, 0, 0, 0.07);
+  border: var(--list-hover-border);
+  background-color: var(--list-hover-bg-color);
+}
+.list > .list-item:hover .icon-tooltip,
+.list > .list-item:hover button {
+  display: block !important;
+}
+.list > .list-item:hover > .list-item-left > h2.onHover,
+.list > .list-item:hover > .list-item-right > h2.onHover {
+  display: block;
+}
+.list > .list-item .tag,
+.list > .list-item button {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  position: relative;
+  font-weight: 500;
+  border-radius: 200px;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+.list > .list-item .tag {
+  padding: 7px 14px;
+  font-size: 15px;
+}
+.list > .list-item .tag.red {
+  color: #e77e89;
+  background-color: #fde6e9;
+}
+.list > .list-item .tag.orange {
+  color: #e79c7f;
+  background-color: #fdefe6;
+}
+.list > .list-item .tag.yellow {
+  color: #d1ba38;
+  background-color: #fff6c4;
+}
+.list > .list-item .tag.green {
+  color: #64c7af;
+  background-color: #e0fbf6;
+}
+.list > .list-item > .list-item-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: calc(100% - 12px * 2);
+  height: calc(100% - 15px * 2);
+  position: absolute;
+  margin: 0;
+}
+.list > .list-item > .list-item-left,
+.list > .list-item > .list-item-right {
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+.list > .list-item > .list-item-left > h3,
+.list > .list-item > .list-item-right > h3,
+.list > .list-item > .list-item-left > h2,
+.list > .list-item > .list-item-right > h2,
+.list > .list-item > .list-item-left > p,
+.list > .list-item > .list-item-right > p,
+.list > .list-item > .list-item-left > .img-text > h3,
+.list > .list-item > .list-item-right > .img-text > h3 {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  position: relative;
+  display: contents;
+  margin: 0;
+  width: auto;
+  float: left;
+  vertical-align: middle;
+}
+.list > .list-item > .list-item-left > h2,
+.list > .list-item > .list-item-right > h2 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: var(--darkestGray);
+}
+.list > .list-item > .list-item-left > h2.onHover,
+.list > .list-item > .list-item-right > h2.onHover {
+  display: none;
+}
+.list > .list-item > .list-item-left > h3,
+.list > .list-item > .list-item-right > h3,
+.list > .list-item > .list-item-left > .img-text > h3,
+.list > .list-item > .list-item-right > .img-text > h3 {
+  font-size: 17px;
+  font-weight: bold;
+  color: var(--darkGray);
+}
+.list > .list-item > .list-item-left > p,
+.list > .list-item > .list-item-right > p {
+  font-size: 15px;
+  color: var(--gray);
+}
+.list > .list-item > .list-item-left > .img-text,
+.list > .list-item > .list-item-right > .img-text {
+  display: block;
+  color: var(--darkestGray);
+}
+.list > .list-item > .list-item-left > .img-text > svg,
+.list > .list-item > .list-item-right > .img-text > svg {
+  float: left;
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+}
+.list > .list-item > .list-item-left > .img-text > h3,
+.list > .list-item > .list-item-right > .img-text > h3 {
+  float: left;
+  display: block;
+  line-height: 30px;
+  font-weight: normal;
+  color: var(--darkestGray);
+}
+.list > .list-item > .list-item-left > .img-text > .icon-tooltip,
+.list > .list-item > .list-item-right > .img-text > .icon-tooltip {
+  margin-right: 10px;
+}
+.list > .list-item > .list-item-left .icon-tooltip,
+.list > .list-item > .list-item-right .icon-tooltip,
+.list > .list-item > .list-item-left button,
+.list > .list-item > .list-item-right button {
+  position: relative !important;
+  cursor: pointer;
+  margin-left: 10px;
+  display: none;
+}
+.list > .list-item > .list-item-left .icon-tooltip.circled.error,
+.list > .list-item > .list-item-right .icon-tooltip.circled.error {
+  opacity: var(--itp-opacity);
+}
+.list > .list-item > .list-item-left .icon-tooltip.circled.error > svg,
+.list > .list-item > .list-item-right .icon-tooltip.circled.error > svg {
+  color: var(--itp-circled-error-color);
+}
+.list > .list-item > .list-item-left .icon-tooltip.circled.error:hover,
+.list > .list-item > .list-item-right .icon-tooltip.circled.error:hover {
+  opacity: 1;
+}
+.list > .list-item > .list-item-left {
+  float: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.list > .list-item > .list-item-left .icon-tooltip {
+  float: left;
+}
+.list > .list-item > .list-item-right {
+  float: right;
+}
+.list > .list-item > .list-item-right .icon-tooltip {
+  float: right;
+}

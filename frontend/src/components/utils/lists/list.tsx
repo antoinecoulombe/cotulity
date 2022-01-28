@@ -1,3 +1,5 @@
+import '../../../assets/css/utils/list.css';
+
 interface ListProps {
   children: object;
   className?: string;

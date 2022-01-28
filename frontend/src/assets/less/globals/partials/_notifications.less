@@ -1,0 +1,270 @@
+.notif-container {
+  .noselect();
+
+  @padding: 9px;
+  @height: 82px - (@padding * 2);
+  @width: 468px - (@padding * 2);
+  @navMargin: 20px;
+  @navWidth: 19px;
+
+  opacity: 0;
+  z-index: 99999;
+
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  width: 100%;
+  height: @height + (@padding * 2);
+  margin-top: 30px;
+  pointer-events: none;
+
+  > :first-child:not(.notif-list) > .notification {
+    margin-left: 59px;
+  }
+
+  > .notif-list,
+  .notif-current {
+    height: @height + (@padding * 2);
+  }
+
+  > .notif-list {
+    position: relative;
+    width: @width + (@padding * 2);
+
+    &:first-child:nth-last-child(3) ~ .notif-list {
+      &:last-child {
+        top: -41px;
+      }
+    }
+    &:first-child:nth-last-child(3) {
+      &:first-child {
+        top: 41px;
+      }
+    }
+
+    .notif-bg(@dir) {
+      background: linear-gradient(
+        to @dir,
+        var(--transparentWhite) 75%,
+        var(--notif-background-to) 100%
+      );
+    }
+
+    &.prev {
+      right: @width + (@padding * 2) + @navWidth + @navMargin * 2;
+
+      > .notification {
+        &:first-child {
+          .notif-bg(@dir:right);
+        }
+
+        > .text,
+        > .icon,
+        > .line-container > .vertical-line {
+          display: none;
+        }
+      }
+    }
+
+    &.next {
+      left: @width + (@padding * 2) + @navWidth + @navMargin * 2;
+
+      > .notification {
+        &:first-child {
+          .notif-bg(@dir:left);
+        }
+
+        > .text,
+        .close {
+          display: none;
+        }
+      }
+    }
+
+    > .notification {
+      &:not(:first-child) {
+        display: none;
+      }
+    }
+  }
+
+  > .notif-current {
+    position: absolute;
+    width: @width + (@padding * 2) + @navWidth * 2 + @navMargin * 4;
+
+    > .nav {
+      position: relative;
+      display: inline;
+      opacity: 0.7;
+      width: @navWidth;
+      height: @height + (@padding * 2);
+      line-height: @height;
+      color: var(--white);
+      cursor: pointer;
+      padding: 0 @navMargin 0 @navMargin;
+      pointer-events: auto;
+
+      &.prev {
+        float: left;
+      }
+
+      &.next {
+        position: absolute;
+        float: right;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .notification {
+      box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
+      border: solid 1px var(--oapp-border);
+      pointer-events: auto;
+
+      &:hover {
+        height: auto;
+
+        > .text {
+          height: auto;
+
+          > h1,
+          > p {
+            height: auto;
+            white-space: normal;
+          }
+        }
+      }
+    }
+  }
+
+  .notification {
+    @lineWidth: 6px;
+    @iconWidth: 28px;
+    @iconMarginLeft: 22px;
+    @iconMarginRight: 18px;
+    @closeWidth: 12px;
+    @closeMarginRight: 15px;
+
+    float: left;
+    position: relative;
+    width: @width;
+    height: @height;
+    padding: @padding;
+    border-radius: 10px;
+    background-color: var(--gradient-input-bg);
+    opacity: 0;
+
+    &.error {
+      > .icon {
+        color: var(--error-color);
+      }
+      > .line-container > .vertical-line {
+        background-color: var(--error-color);
+      }
+    }
+
+    &.warning {
+      > .icon {
+        color: var(--warning-color);
+      }
+      > .line-container > .vertical-line {
+        background-color: var(--warning-color);
+      }
+    }
+
+    &.info {
+      > .icon {
+        color: var(--info-color);
+      }
+      > .line-container > .vertical-line {
+        background-color: var(--info-color);
+      }
+    }
+
+    &.success {
+      > .icon {
+        color: var(--success-color);
+      }
+      > .line-container > .vertical-line {
+        background-color: var(--success-color);
+      }
+    }
+
+    > .line-container {
+      position: absolute;
+      display: block;
+      width: calc(100% - @padding * 2);
+      height: calc(100% - @padding * 2);
+
+      > .vertical-line {
+        position: relative;
+        float: left;
+        left: 0;
+        width: @lineWidth;
+        height: 100%;
+        border-radius: 10px;
+      }
+    }
+
+    > .icon {
+      float: left;
+      width: @iconWidth;
+      height: @height;
+      margin: 0 @iconMarginRight 0 @iconMarginLeft;
+    }
+
+    > .text {
+      position: relative;
+      float: left;
+      height: @height;
+      width: @width -
+        (
+          @padding * 2 + @lineWidth + @iconWidth + @iconMarginLeft +
+            @iconMarginRight + @closeMarginRight * 2 + @closeWidth
+        );
+
+      > h1,
+      p {
+        .font-default();
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      > h1 {
+        font-size: 18px;
+        font-weight: 300;
+        color: var(--black);
+        margin-bottom: 0;
+        margin-top: 9px;
+      }
+
+      > p {
+        font-size: 15px;
+        color: var(--gray);
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    > .close {
+      float: right;
+      display: inline;
+      top: -(@height + (@padding * 2));
+      width: @closeWidth;
+      height: @height;
+      margin-right: @closeMarginRight;
+      opacity: var(--notif-close-opacity);
+      color: var(--black);
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+}
