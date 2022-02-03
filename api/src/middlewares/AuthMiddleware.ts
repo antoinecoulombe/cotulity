@@ -24,8 +24,8 @@ AuthMiddleware.use(async (req: any, res, next) => {
 
       if (!user) {
         return next({
-          title: 'Access Denied',
-          msg: "You don't have the required permissions to access the requested ressource.",
+          title: 'request.denied',
+          msg: 'request.unauthorized',
         });
       } else return next();
     }

@@ -107,21 +107,19 @@ describe('authentication', () => {
     });
   });
 
-  it('should deny access', async () => {
-    console.log(TOKEN);
+  it('should deny access due to invalid token', async () => {
     const res = await request
       .delete('/users/delete')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${TOKEN.substring(0, 132)}xxxxx`);
 
-    expect(res.statusCode).toEqual(200);
+    expect(res.statusCode).toEqual(500);
     expect(res.body).toEqual({
-      title: 'user.deleted',
-      msg: 'user.deleted',
+      title: 'request.denied',
+      msg: 'request.unauthorized',
     });
   });
 
   it('should delete the logged in user', async () => {
-    console.log(TOKEN);
     const res = await request
       .delete('/users/delete')
       .set('Authorization', `Bearer ${TOKEN}`);
