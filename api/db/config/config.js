@@ -15,6 +15,7 @@ module.exports = {
     host: process.env.DB_HOST,
     dialect: 'mariadb',
     dialectOptions: { autoJsonmap: false },
+    logging: false,
   },
   production: {
     username: process.env.DB_PROD_USER,

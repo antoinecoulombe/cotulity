@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'homeId',
         targetKey: 'id',
         allowNull: false,
+        onDelete: 'cascade',
+        hooks: true,
       });
     }
   }

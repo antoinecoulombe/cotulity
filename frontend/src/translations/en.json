@@ -275,7 +275,8 @@
         "success": "Success!",
         "notFound": "Resource not found",
         "denied": "Access denied",
-        "authorized": "Authorized"
+        "authorized": "Authorized",
+        "missingField": "Missing field"
       },
       "apps": {
         "error": "Applications could not be loaded"
@@ -357,7 +358,8 @@
         "notFound": "Our robots can't find what you are looking for.",
         "reload": "Please reload the page.",
         "unauthorized": "You are not authorized to access this resource.",
-        "noResponse": "Couldn't get a response from the server."
+        "noResponse": "Couldn't get a response from the server.",
+        "missingField": "A required field is missing"
       },
       "apps": {
         "offline": "This app is currently offline."

@@ -1,7 +1,6 @@
 import express from 'express';
 import * as Image from './_utils/Image';
 import { deleteHome, notifyMembersExceptOwner } from './apps/Homes';
-import { deleteNotificationsToUser } from './Notifications';
 
 const Users = express.Router();
 
@@ -64,6 +63,11 @@ Users.put('/image', async (req: any, res: any) => {
 Users.post('/register', async (req, res) => {
   try {
     const { email, firstname, lastname, phone } = req.body;
+    if (!(email && firstname && lastname && phone && req.body.password))
+      return res
+        .status(500)
+        .json({ title: 'request.missingField', msg: 'request.missingField' });
+
     const salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(req.body.password, salt);
 
@@ -77,18 +81,21 @@ Users.post('/register', async (req, res) => {
 
     if (user) {
       // TODO: Send verification email
-    }
 
-    // TODO: Change register notification to include verification email status
-    res.json({
-      title: 'register.success',
-      msg: 'register.success',
-    });
+      res.json({
+        title: 'register.success',
+        msg: 'register.success',
+      });
+    } else
+      res.status(500).json({
+        title: 'request.error',
+        msg: 'request.error',
+      });
   } catch (e) {
     res.status(500).json({
-      title: (e as any).errors[0] ? 'register.error' : 'request.error',
-      msg: (e as any).errors[0]?.message ?? 'request.error',
-      input: (e as any).errors[0]?.path ?? null,
+      title: (e as any).errors?.[0] ? 'register.error' : 'request.error',
+      msg: (e as any).errors?.[0]?.message ?? 'request.error',
+      input: (e as any).errors?.[0]?.path ?? null,
     });
   }
 });
@@ -133,7 +140,7 @@ Users.delete('/delete', async (req: any, res: any) => {
       // Delete all owned homes and send notifications
       const homes = await req.user.getOwnedHomes();
       await homes.forEach(async (h: any) => {
-        await notifyMembersExceptOwner(h, t);
+        await deleteHome(h, t);
       });
 
       // Delete user

@@ -275,7 +275,8 @@
         "success": "Opération réussie!",
         "notFound": "Ressource introuvable",
         "denied": "Accès refusé",
-        "authorized": "Authorisé"
+        "authorized": "Authorisé",
+        "missingField": "Champ manquant"
       },
       "apps": {
         "error": "Erreur lors du chargement des applications"
@@ -356,7 +357,8 @@
         "error": "Veuillez réessayer.",
         "notFound": "Nos robots ne trouvent pas ce que vous cherchez.",
         "reload": "Veuillez rafraîchir la page.",
-        "unauthorized": "Vous n'êtes pas authorisé à accéder à cette ressource."
+        "unauthorized": "Vous n'êtes pas authorisé à accéder à cette ressource.",
+        "missingField": "Un champ obligatoire est manquant."
       },
       "apps": {
         "offline": "Cette application est actuellement hors-ligne."

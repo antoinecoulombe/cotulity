@@ -1,13 +1,13 @@
 // #region Ameliorations                                                    ->  39h
 
-// ONGO: Refactor css                                                       -> 20h
+// TODO: [ONGOING] Refactor css                                             -> 20h
 //  -> Convert fixed sizes to em + responsive typography (media queries)    ->  8h
 //  -> Standardize classes                                                  ->  6h
 //  -> Standardize colors (grey tones, opacities...)                        ->  3h
 //  -> Standardize font sizes and hX uses between apps                      ->  3h
-// TODO: Refactor api urls                                                  ->  4h
-// TODO: Add type uniformity react                                          ->  6h
-// TODO: Add missing validations (React + API)                              ->  8h
+// DONE: Refactor api urls                                                  ->  4h
+// TODO: [ONGOING] Add type uniformity react                                ->  6h
+// TODO: [ONGOING] Add missing validations (React + API)                    ->  8h
 // DONE: Update README (mainly .less section)                               ->  1h
 // DONE: Rework TypeScript debug environment for vscode                     ->  6h
 
@@ -15,7 +15,7 @@
 
 // #region Tests                                                            ->  26h
 
-// TODO: Implement API tests                                                -> 26h
+// TODO: [ONGOING] Implement API tests                                      -> 26h
 //  -> Groceries                                                            ->  4h
 //  -> Homes                                                                -> 12h
 //  -> Users                                                                ->  4h
@@ -65,6 +65,9 @@
 // TODO: Prevent notification deletion after timeout if hovered
 //   -> Set notification timestamp to null on mouse enter and to Date.now() on mouse leave
 // TODO: Add more descriptive images to notifications
+// TODO: Add phone number validation in user model
+// TODO: Keep transactions (transfers, expenses) when a user is involved
+//   -> Replace by dummy user?
 
 // #endregion
 

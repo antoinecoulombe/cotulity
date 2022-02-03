@@ -146,32 +146,7 @@ module.exports = (sequelize, DataTypes) => {
             args: true,
             msg: 'form.error.phone.missing',
           },
-          // isValid(phone) {
-          //   if (phone.startsWith('INVALID-'))
-          //     throw new Error('Invalid phone number.');
-          // },
         },
-        // set(value) {
-        //   this.setDataValue('phone', (value) => {
-        //     var cleaned = ('' + value).replace(/\D/g, '');
-        //     var match = cleaned.match(/^(\d{1,5}|)?(\d{3})(\d{3})(\d{4})$/);
-
-        //     if (match) {
-        //       let regionalCode = match[1] ? '+' + match[1] + ' ' : '';
-        //       return [
-        //         regionalCode,
-        //         '(',
-        //         match[2],
-        //         ') ',
-        //         match[3],
-        //         '-',
-        //         match[4],
-        //       ].join('');
-        //     }
-
-        //     return 'INVALID-' + value;
-        //   });
-        // },
       },
       admin: {
         type: DataTypes.BOOLEAN,

@@ -109,20 +109,20 @@ export async function notifyMembersExceptOwner(home: any, transaction: any) {
 
 // deletes a home
 export async function deleteHome(home: any, transaction: any) {
-  try {
-    // Send notifications to deleted users
-    await notifyMembersExceptOwner(home, transaction);
+  // Send notifications to deleted users
+  await notifyMembersExceptOwner(home, transaction);
 
-    // Delete home
-    await home.destroy({ force: true }, { transaction: transaction });
-    return {
-      title: Translate.getJSON('homes.homeDeleted', [home.name]),
-      msg: 'homes.homeDeleted',
-    };
-  } catch (error) {
-    console.log(error);
-    return { title: 'request.error', msg: 'request.error' };
-  }
+  await db.HomeInvitation.destroy(
+    { where: { homeId: home.id }, force: true },
+    { transaction: transaction }
+  );
+
+  // Delete home
+  await home.destroy({ force: true }, { transaction: transaction });
+  return {
+    title: Translate.getJSON('homes.homeDeleted', [home.name]),
+    msg: 'homes.homeDeleted',
+  };
 }
 
 // Retrieves the members from the current home, excluding the connected user.
