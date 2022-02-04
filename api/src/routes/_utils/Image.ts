@@ -33,7 +33,6 @@ export async function remove(
       });
     });
   } catch (error) {
-    console.log(error);
     return genericError;
   }
 }
@@ -57,7 +56,7 @@ export async function save(
 
         const authorizedExtension = ['.jpg', '.jpeg', '.png', '.gif'];
         if (!authorizedExtension.includes(ext))
-          reject({
+          return reject({
             success: false,
             title: 'picture.couldNotUpload',
             msg: 'picture.unsupportedExtension',
@@ -78,7 +77,6 @@ export async function save(
 
     return { success: true, title: 'request.success', image: img };
   } catch (error) {
-    console.log(error);
     return (error as any).title ? (error as any) : genericError;
   }
 }

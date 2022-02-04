@@ -15,13 +15,12 @@ async function respondImage(res: any, url: string) {
   try {
     const img = await db.Image.findOne({ where: { url: url } });
     if (!img)
-      res
+      return res
         .status(404)
         .json({ title: 'image.notFound', msg: 'picture.notFound' });
 
     res.sendFile(img.filePath);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 }

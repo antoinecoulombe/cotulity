@@ -9,7 +9,7 @@ var path = require('path');
 
 describe('users', () => {
   var TOKEN = '';
-  const CALLER = 'user';
+  const CALLER = 'users';
 
   beforeAll(async () => {
     await request.post('/users/register').send(await getTestUser(CALLER));
@@ -124,6 +124,21 @@ describe('users', () => {
     expect(res.body).toEqual({
       title: 'picture.updated',
       msg: 'user.imageUpdated',
+    });
+  });
+
+  it('should fail image upload due to unsupported extension', async () => {
+    const res = await request
+      .put('/users/current/picture')
+      .attach('file', path.join(__dirname, 'assets', 'test_pdf.pdf'))
+      .set('Authorization', `Bearer ${TOKEN}`)
+      .set('Content-Type', 'multipart/form-data');
+
+    expect(res.statusCode).toEqual(500);
+    expect(res.body).toEqual({
+      title: 'picture.couldNotUpload',
+      msg: 'picture.unsupportedExtension',
+      success: false,
     });
   });
 
