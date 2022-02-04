@@ -12,8 +12,9 @@
     "seed": "npx sequelize-cli db:seed:all",
     "migrate:reset": "npm run migrate:undo && npm run migrate && npm run seed",
     "test": "cross-env NODE_ENV=test jest --testTimeout=30000 --detectOpenHandles",
+    "test:one": "cross-env NODE_ENV=test npm run migrate:reset && jest -t $TEST --testTimeout=30000 --detectOpenHandles",
     "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
-    "coverage": "cross-env NODE_ENV=test npm run migrate:reset && jest --collectCoverage --"
+    "coverage": "cross-env NODE_ENV=test npm run migrate:reset && jest --testTimeout=30000 --collectCoverage --detectOpenHandles"
   },
   "author": "coulombe.antoine@hotmail.com",
   "license": "ISC",
@@ -27,6 +28,7 @@
     "@types/validator": "^13.1.4",
     "faker": "^5.5.3",
     "jest": "^27.0.6",
+    "jest-extended": "^2.0.0",
     "nodemon": "^2.0.7",
     "sequelize-cli": "^6.2.0",
     "supertest": "^6.1.4",
@@ -41,6 +43,7 @@
     "@babel/preset-env": "^7.14.7",
     "@babel/preset-typescript": "^7.14.5",
     "@babel/register": "^7.14.5",
+    "axios": "^0.25.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",

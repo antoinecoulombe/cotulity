@@ -15,7 +15,7 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
 
   useEffect(() => {
     axios
-      .get(`/images/profile`)
+      .get(`/users/current/picture/url`)
       .then((res) => {
         setProfilePicture(res.data.url);
       })
@@ -24,7 +24,7 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
 
   function deleteProfilePicture() {
     axios
-      .delete('users/image/delete')
+      .delete('users/current/picture')
       .then((res) => {
         setFile(null);
         setProfilePicture(null);
@@ -40,7 +40,7 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
     formData.append('file', event.target.files[0]);
 
     axios
-      .put(`/users/image`, formData, {
+      .put(`/users/current/picture`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

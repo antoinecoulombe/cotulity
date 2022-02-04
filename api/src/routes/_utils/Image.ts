@@ -12,7 +12,8 @@ const genericError = {
 };
 
 export async function remove(
-  id: number
+  id: number,
+  force?: boolean
 ): Promise<{ success: boolean; title: string; msg?: string }> {
   try {
     const img = await db.Image.findOne({ where: { id: id } });
@@ -27,7 +28,7 @@ export async function remove(
       fs.unlink(img.filePath, async (err: any) => {
         if (err) reject(genericError);
 
-        await img.destroy();
+        await img.destroy({ force: force ?? false });
         resolve({ success: true, title: 'request.success' });
       });
     });
@@ -42,7 +43,7 @@ export async function save(
   pathFromImage?: string
 ): Promise<{ success: boolean; title: string; msg?: string; image?: any }> {
   try {
-    let destination = path.join(__dirname, '../../images/');
+    let destination = path.join(__dirname, '../../../images/');
     if (pathFromImage) destination = path.join(destination, pathFromImage);
 
     var filename = await Global.createTokenAsync(4);
