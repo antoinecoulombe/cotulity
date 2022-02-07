@@ -11,22 +11,6 @@ const db = require('../../db/models');
 // ################### Getters / Globals ##################
 // ########################################################
 
-export async function deleteNotificationsToUser(
-  user: any,
-  transaction: any
-): Promise<{ success: boolean; title: string; msg: string }> {
-  try {
-    await db.Notification.destroy(
-      { where: { toId: user.id } },
-      { transaction: transaction }
-    );
-    return { success: true, title: 'request.success', msg: 'request.success' };
-  } catch (error) {
-    console.log(error);
-    return { success: false, title: 'request.error', msg: 'request.error' };
-  }
-}
-
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
@@ -45,10 +29,10 @@ Notifications.get('/', async (req: any, res: any) => {
         attributes: ['name', 'showTime'],
       },
     });
+
     await notifications.forEach((n: any) => (n.dataValues.db = true));
     res.json(notifications);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -77,10 +61,9 @@ Notifications.delete('/delete/:id', async (req: any, res: any) => {
         .status(404)
         .json({ title: 'request.notFound', msg: 'request.notFound' });
 
-    notification.destroy();
+    await notification.destroy();
     return res.json({ title: 'request.success', msg: 'request.success' });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });

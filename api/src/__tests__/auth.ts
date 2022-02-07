@@ -53,7 +53,7 @@ describe('authentication', () => {
       token: expect.anything(),
       userId: expect.toBePositive(),
     });
-    expect(res.body.token).toHaveLength(137);
+    expect(res.body.token).toBeString();
 
     TOKEN = res.body.token;
   });

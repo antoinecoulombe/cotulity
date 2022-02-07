@@ -4,10 +4,11 @@ import 'jest-extended';
 import 'jest-extended/all';
 import supertest from 'supertest';
 import { getTestUser } from './auth';
+import * as Image from '../routes/_utils/Image';
 const request = supertest(app);
 var path = require('path');
 
-describe('users', () => {
+describe('images', () => {
   var TOKEN = '';
   var URL = '';
   const CALLER = 'images';
@@ -58,8 +59,16 @@ describe('users', () => {
 
   it('should retreive an image without auth', async () => {
     const res = await request.get(`/images/public/${URL}`);
-
     expect(res.statusCode).toEqual(200);
+  });
+
+  it('should fail to delete an image', async () => {
+    const res = await Image.remove(99999);
+    expect(res).toEqual({
+      success: false,
+      title: 'picture.couldNotDelete',
+      msg: 'picture.notFound',
+    });
   });
 
   afterAll(async () => {

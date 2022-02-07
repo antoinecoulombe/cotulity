@@ -31,8 +31,8 @@ export async function readHtml(p: string) {
   return await readFile(path.join(__dirname, p), 'utf8');
 }
 
-export function respondHtml(res: any, html: string, code?: number) {
-  res.writeHead(code ?? 200, {
+export function respondHtml(res: any, html: string, statusCode?: number) {
+  res.writeHead(statusCode ?? 200, {
     'Content-Type': 'text/html',
     'Content-Length': html.length,
   });
