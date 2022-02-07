@@ -581,7 +581,6 @@ Homes.post('/:homename', async (req: any, res) => {
       refNumber: home.refNumber,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
