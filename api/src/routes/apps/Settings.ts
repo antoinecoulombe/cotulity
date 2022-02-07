@@ -8,10 +8,11 @@ const db = require('../../../db/models');
 // ##################### Middlewares ######################
 // ########################################################
 
-Settings.use(async (req: any, res, next) => {
-  req.params.appname = 'settings';
-  validateApp(req, res, next);
-});
+// TODO: uncomment this before adding routes
+// Settings.use(async (req: any, res, next) => {
+//   req.params.appname = 'settings';
+//   validateApp(req, res, next);
+// });
 
 // ########################################################
 // ################### Getters / Globals ##################

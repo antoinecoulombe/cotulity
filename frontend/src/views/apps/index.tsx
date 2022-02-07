@@ -13,8 +13,6 @@ interface OnlineApp {
   priority: number;
   name: string;
   image: string;
-  imageMultiplier: number;
-  description?: string;
 }
 
 export default function AppsPage() {
@@ -87,7 +85,7 @@ export default function AppsPage() {
     axios
       .get(`/apps`)
       .then(async (res: any) => {
-        setApps(res.data.apps);
+        setApps(res.data);
 
         if (token) {
           return axios

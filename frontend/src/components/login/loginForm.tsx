@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getNotifications, isAuthenticated } from '../../utils/global';
-import { useNotifications } from '../../contexts/NotificationsContext';
+import {
+  jsonNotification,
+  useNotifications,
+} from '../../contexts/NotificationsContext';
 import { useHistory, useParams } from 'react-router';
 import Input from '../forms/input';
 import FormToggle from './formToggle';
@@ -118,15 +121,16 @@ export default function LoginForm() {
             .then(async (res) => {
               history.push('/apps');
 
-              const notifications = await getNotifications();
               setNotificationArray(
-                [
-                  {
-                    type: { name: 'success' },
-                    title: res.data.title,
-                    msg: res.data.msg,
-                  },
-                ].concat(notifications)
+                (
+                  [
+                    {
+                      title: res.data.title,
+                      msg: res.data.msg,
+                      type: { name: 'success' },
+                    },
+                  ] as jsonNotification[]
+                ).concat(await getNotifications())
               );
             })
             .catch((err) => {
@@ -134,9 +138,7 @@ export default function LoginForm() {
             });
         } else {
           history.push('/apps');
-
-          const notifications = await getNotifications();
-          setNotificationArray(notifications);
+          setNotificationArray(await getNotifications());
         }
       })
       .catch((err) => {

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { PrivateRoute, PublicRoute } from '../components/utils/routes';
-import { useNotifications } from '../contexts/NotificationsContext';
+import {
+  jsonNotification,
+  useNotifications,
+} from '../contexts/NotificationsContext';
 import { getNotifications, isAuthenticated } from '../utils/global';
 
 // CSS
@@ -111,15 +114,15 @@ library.add(
 
 export default function App() {
   const history = useHistory();
-  const { clearAllNotifications } = useNotifications();
+  const { setNotificationArray, clearAllNotifications } = useNotifications();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const { i18n } = useTranslation('common');
 
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem('lang') || 'en');
 
-    const notifInterval = setInterval(() => {
-      getNotifications();
+    const notifInterval = setInterval(async () => {
+      setNotificationArray(await getNotifications());
     }, 10 * 60 * 1000); // Every 10 minutes
 
     if (!localStorage.getItem('safeDelete'))

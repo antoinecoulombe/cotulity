@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import { useState } from 'react';
+import { jsonNotification } from '../contexts/NotificationsContext';
 import axios from './fetchClient';
 
-export function getNotifications() {
+export function getNotifications(): Promise<jsonNotification[]> {
   return axios
     .get(`/notifications`)
     .then((res) => res.data)
-    .catch((err) => Promise.reject(err));
+    .catch((err) => []);
 }
 
 export function isAuthenticated() {
