@@ -1,6 +1,6 @@
 import express from 'express';
 import * as Image from './_utils/Image';
-import { deleteHome, notifyMembersExceptOwner } from './apps/Homes';
+import { deleteHome } from './apps/Home';
 
 const Users = express.Router();
 

@@ -42,7 +42,7 @@ const genericError = {
     title: 'request.error',
     msg: 'request.error',
 };
-function remove(id) {
+function remove(id, force) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const img = yield db.Image.findOne({ where: { id: id } });
@@ -56,13 +56,12 @@ function remove(id) {
                 fs.unlink(img.filePath, (err) => __awaiter(this, void 0, void 0, function* () {
                     if (err)
                         reject(genericError);
-                    yield img.destroy();
+                    yield img.destroy({ force: force !== null && force !== void 0 ? force : false });
                     resolve({ success: true, title: 'request.success' });
                 }));
             });
         }
         catch (error) {
-            console.log(error);
             return genericError;
         }
     });
@@ -71,7 +70,7 @@ exports.remove = remove;
 function save(req, pathFromImage) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let destination = path_1.default.join(__dirname, '../../images/');
+            let destination = path_1.default.join(__dirname, '../../../images/');
             if (pathFromImage)
                 destination = path_1.default.join(destination, pathFromImage);
             var filename = yield Global.createTokenAsync(4);
@@ -83,7 +82,7 @@ function save(req, pathFromImage) {
                     filename += ext;
                     const authorizedExtension = ['.jpg', '.jpeg', '.png', '.gif'];
                     if (!authorizedExtension.includes(ext))
-                        reject({
+                        return reject({
                             success: false,
                             title: 'picture.couldNotUpload',
                             msg: 'picture.unsupportedExtension',
@@ -103,7 +102,6 @@ function save(req, pathFromImage) {
             return { success: true, title: 'request.success', image: img };
         }
         catch (error) {
-            console.log(error);
             return error.title ? error : genericError;
         }
     });

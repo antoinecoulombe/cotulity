@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:lts-slim
 
 LABEL maintainer="Antoine Coulombe"
 

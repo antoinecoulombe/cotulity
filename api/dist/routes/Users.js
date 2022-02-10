@@ -33,7 +33,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const Image = __importStar(require("./_utils/Image"));
-const Homes_1 = require("./apps/Homes");
+const Home_1 = require("./apps/Home");
 const Users = express_1.default.Router();
 const db = require('../../db/models');
 const bcrypt = require('bcryptjs');
@@ -43,20 +43,36 @@ const bcrypt = require('bcryptjs');
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
+function sendProfilePicture(req, res, asFile) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let img = yield db.Image.findOne({ where: { id: req.user.ImageId } });
+        if (!img)
+            return res.status(404).json({
+                title: 'picture.notFound',
+                msg: 'picture.notFound',
+            });
+        if (asFile)
+            res.sendFile(img.filePath);
+        else
+            res.json({ url: img.url });
+    });
+}
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
-Users.get('/image', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Users.get('/current/picture', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!req.user.imageId)
-            return res
-                .status(404)
-                .json({ title: 'picture.notFound', msg: 'picture.notFound' });
-        const img = yield db.Image.findOne({ where: { id: req.user.imageId } });
-        res.sendFile(img.filePath);
+        return yield sendProfilePicture(req, res, true);
     }
     catch (error) {
-        console.log(error);
+        res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
+}));
+Users.get('/current/picture/url', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield sendProfilePicture(req, res, false);
+    }
+    catch (error) {
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -64,18 +80,18 @@ Users.get('/image', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 // ######################### PUT ##########################
 // ########################################################
 // Upload a new profile picture.
-Users.put('/image', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Users.put('/current/picture', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (req.user.ImageId)
-            yield Image.remove(req.user.ImageId);
+        const oldImgId = req.user.ImageId;
         const result = yield Image.save(req, 'profiles');
         if (!result.success)
             return res.status(500).json(result);
+        if (oldImgId)
+            yield Image.remove(req.user.ImageId, true);
         yield req.user.setImage(result.image);
         res.json({ title: 'picture.updated', msg: 'user.imageUpdated' });
     }
     catch (error) {
-        console.log(error);
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -84,9 +100,13 @@ Users.put('/image', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 // ########################################################
 // Register a new user.
 Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f, _g;
     try {
         const { email, firstname, lastname, phone } = req.body;
+        if (!(email && firstname && lastname && phone && req.body.password))
+            return res
+                .status(500)
+                .json({ title: 'request.missingField', msg: 'request.missingField' });
         const salt = bcrypt.genSaltSync(10);
         const password = bcrypt.hashSync(req.body.password, salt);
         const user = yield db.User.create({
@@ -98,18 +118,21 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
         });
         if (user) {
             // TODO: Send verification email
+            return res.json({
+                title: 'register.success',
+                msg: 'register.success',
+            });
         }
-        // TODO: Change register notification to include verification email status
-        res.json({
-            title: 'register.success',
-            msg: 'register.success',
+        res.status(500).json({
+            title: 'request.error',
+            msg: 'request.error',
         });
     }
     catch (e) {
         res.status(500).json({
-            title: e.errors[0] ? 'register.error' : 'request.error',
-            msg: (_b = (_a = e.errors[0]) === null || _a === void 0 ? void 0 : _a.message) !== null && _b !== void 0 ? _b : 'request.error',
-            input: (_d = (_c = e.errors[0]) === null || _c === void 0 ? void 0 : _c.path) !== null && _d !== void 0 ? _d : null,
+            title: ((_a = e.errors) === null || _a === void 0 ? void 0 : _a[0]) ? 'register.error' : 'request.error',
+            msg: (_d = (_c = (_b = e.errors) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.message) !== null && _d !== void 0 ? _d : 'request.error',
+            input: (_g = (_f = (_e = e.errors) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.path) !== null && _g !== void 0 ? _g : null,
         });
     }
 }));
@@ -126,20 +149,20 @@ Users.post('/public/password/reset', (req, res) => __awaiter(void 0, void 0, voi
 // ######################## DELETE ########################
 // ########################################################
 // Deletes profile picture.
-Users.delete('/image/delete', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+Users.delete('/current/picture', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.user.ImageId)
             return res
                 .status(404)
                 .json({ title: 'picture.couldNotDelete', msg: 'user.imageNotFound' });
-        const result = yield Image.remove(req.user.ImageId);
+        const imgId = req.user.ImageId;
+        yield req.user.setImage(null);
+        const result = yield Image.remove(imgId, true);
         if (!result.success)
             return res.status(500).json(result);
-        yield req.user.setImage(null);
         res.json({ title: 'picture.deleted', msg: 'user.imageDeleted' });
     }
     catch (error) {
-        console.log(error);
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -150,17 +173,20 @@ Users.delete('/delete', (req, res) => __awaiter(void 0, void 0, void 0, function
             // Delete all owned homes and send notifications
             const homes = yield req.user.getOwnedHomes();
             yield homes.forEach((h) => __awaiter(void 0, void 0, void 0, function* () {
-                yield Homes_1.notifyMembersExceptOwner(h, t);
+                yield Home_1.deleteHome(h, t);
             }));
             // Delete user
             yield req.user.destroy({ force: true }, { transaction: t, individualHooks: true });
-            // Delete user image
-            Image.remove(req.user.ImageId);
+            // Delete user image, if the user has one
+            if (req.user.ImageId) {
+                const result = yield Image.remove(req.user.ImageId, true);
+                if (!result.success)
+                    return res.status(500).json(result);
+            }
             res.json({ title: 'user.deleted', msg: 'user.deleted' });
         }));
     }
     catch (error) {
-        console.log(error);
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));

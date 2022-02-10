@@ -39,8 +39,8 @@ function readHtml(p) {
     });
 }
 exports.readHtml = readHtml;
-function respondHtml(res, html, code) {
-    res.writeHead(code !== null && code !== void 0 ? code : 200, {
+function respondHtml(res, html, statusCode) {
+    res.writeHead(statusCode !== null && statusCode !== void 0 ? statusCode : 200, {
         'Content-Type': 'text/html',
         'Content-Length': html.length,
     });

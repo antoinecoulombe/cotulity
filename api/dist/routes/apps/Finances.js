@@ -1,28 +1,19 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Apps_1 = require("../Apps");
 const Finances = express_1.default.Router();
 const db = require('../../../db/models');
 // ########################################################
 // ##################### Middlewares ######################
 // ########################################################
-Finances.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    req.params.appname = 'finances';
-    Apps_1.validateApp(req, res, next);
-}));
+// TODO: uncomment this before adding routes
+// Finances.use(async (req: any, res, next) => {
+//   req.params.appname = 'finances';
+//   validateApp(req, res, next);
+// });
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################

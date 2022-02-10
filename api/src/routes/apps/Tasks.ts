@@ -1,6 +1,5 @@
 import express from 'express';
-import { validateHome, validateApp } from '../Apps';
-import { getMembersExceptOwner } from './Homes';
+import { validateApp } from '../Apps';
 
 const Tasks = express.Router();
 const db = require('../../../db/models');

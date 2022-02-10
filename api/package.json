@@ -4,7 +4,7 @@
   "description": "Cotulity's REST API",
   "main": "./dist/server.js",
   "scripts": {
-    "start": "tsc && node ./dist/server.js",
+    "start": "tsc --outDir './dist' && node ./dist/server.js",
     "dev": "nodemon --exec babel-node ./dist/server.js",
     "debug": "cross-env TZ=UTC NODE_ENV=development tsnd --inspect --respawn src/server.ts",
     "migrate": "npx sequelize-cli db:migrate",

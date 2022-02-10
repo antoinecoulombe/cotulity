@@ -36,7 +36,6 @@ exports.validateHome = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         return next();
     }
     catch (error) {
-        console.log(error);
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
@@ -53,7 +52,6 @@ exports.validateApp = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         return next();
     }
     catch (error) {
-        console.log(error);
         return next({ title: 'request.error', msg: 'request.error' });
     }
 });
@@ -76,7 +74,7 @@ Apps.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             attributes: ['id', 'priority', 'name', 'image'],
             order: db.sequelize.col('priority'),
         });
-        res.json({ apps });
+        res.json(apps);
     }
     catch (e) {
         res.status(500).json({ title: 'apps.error', msg: 'request.reload' });
