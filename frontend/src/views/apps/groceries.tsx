@@ -14,7 +14,7 @@ import '../../assets/css/apps/groceries.css';
 interface article {
   id: number;
   description: string;
-  deletedAt: null | string;
+  deletedAt?: null | string;
 }
 
 export default function AppGroceries() {

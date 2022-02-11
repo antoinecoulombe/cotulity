@@ -35,6 +35,10 @@ export default {
         type: Sequelize.INTEGER,
         unique: true,
         defaultValue: null,
+        references: {
+          model: 'Images',
+          key: 'id',
+        },
       },
       admin: {
         allowNull: false,

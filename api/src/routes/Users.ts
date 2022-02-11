@@ -60,10 +60,9 @@ Users.put('/current/picture', async (req: any, res: any) => {
 
     const result = await Image.save(req, 'profiles');
     if (!result.success) return res.status(500).json(result);
-
-    if (oldImgId) await Image.remove(req.user.ImageId, true);
-
     await req.user.setImage(result.image);
+
+    if (oldImgId) await Image.remove(oldImgId, true);
 
     res.json({ title: 'picture.updated', msg: 'user.imageUpdated' });
   } catch (error) {

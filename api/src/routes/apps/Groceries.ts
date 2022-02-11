@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateHome, validateApp } from '../Apps';
+import { validateApp } from '../Apps';
 
 const Groceries = express.Router();
 const db = require('../../../db/models');
@@ -33,7 +33,7 @@ Groceries.get('/', async (req: any, res: any) => {
       ),
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -71,7 +71,7 @@ Groceries.put('/:id/:action', async (req: any, res: any) => {
       ),
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({
       title: `groceries.${req.params.action}`,
       msg: 'request.error',
@@ -99,12 +99,10 @@ Groceries.post('/', async (req: any, res: any) => {
     res.json({
       title: 'groceries.added',
       msg: 'groceries.added',
-      article: JSON.parse(
-        JSON.stringify(article, ['id', 'description', 'deletedAt'])
-      ),
+      article: JSON.parse(JSON.stringify(article, ['id', 'description'])),
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -128,7 +126,7 @@ Groceries.delete('/:id', async (req: any, res: any) => {
 
     res.json({ title: 'groceries.deleted', msg: 'groceries.deleted' });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
