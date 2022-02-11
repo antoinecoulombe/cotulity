@@ -1,16 +1,24 @@
 const app = require('../app.ts');
+const db = require('../../db/models');
+
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
 import supertest from 'supertest';
 import { getTestUser } from './auth';
+
 const request = supertest(app);
-const db = require('../../db/models');
+
+const sendMailMock = jest.fn();
+jest.mock('nodemailer');
+
+const nodemailer = require('nodemailer');
+nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
 
 describe('homes', () => {
+  const CALLER = 'homes';
   var USER = { token: '', id: 0 };
   var USER2 = { token: '', id: 0 };
-  const CALLER = 'homes';
   var homes: number[] = [];
   var inviteToken = '';
 
@@ -342,21 +350,26 @@ describe('homes', () => {
     });
   });
 
-  it('should invite a user and actually send email [USER1]', async () => {
+  it('should invite a user and mock email [USER1]', async () => {
+    sendMailMock.mockReturnValue(Promise.resolve());
+    sendMailMock.mockClear();
+    nodemailer.createTransport.mockClear();
+
     const res = await request
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
         email: (await getTestUser('sender')).email,
-        fake: true, // TODO: mock send emails and comment this line
       });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
       title: 'homes.invitationSent',
       msg: 'homes.invitationSent',
+      success: true,
       token: expect.toBeString(),
     });
+    expect(sendMailMock).toHaveBeenCalled();
 
     inviteToken = res.body.token;
   });

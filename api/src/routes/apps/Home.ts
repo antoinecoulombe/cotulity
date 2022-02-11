@@ -1,8 +1,8 @@
 import express from 'express';
 import * as Translate from '../_utils/Translate';
 import * as Global from '../_utils/Global';
-import * as Email from '../_utils/Email';
-import { validateHome, validateApp } from '../Apps';
+import { email, sendEmail } from '../_utils/Email';
+import { validateApp } from '../Apps';
 
 const Home = express.Router();
 const db = require('../../../db/models');
@@ -293,45 +293,27 @@ Home.post('/invitations', async (req: any, res: any) => {
         token: token,
       });
 
-    try {
-      const emailHtml = Global.format(
-        await Global.readHtml('../_html/emailInvite.html'),
-        [res.locals.home.name, token]
-      );
+    const emailHtml = Global.format(
+      await Global.readHtml('../_html/emailInvite.html'),
+      [res.locals.home.name, token]
+    );
 
-      return await Email.transporter.sendMail(
-        {
-          from: Email.FROM,
-          to: req.body.email,
-          subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
-          html: emailHtml,
-        },
-        (error: any, info: any) => {
-          if (error != null) {
-            console.log(error);
-            invite.destroy({ force: true });
-            return res.status(500).json({
-              title: 'homes.emailDidNotSend',
-              msg: 'request.error',
-            });
-          }
-
-          return res.json({
-            title: 'homes.invitationSent',
-            msg: 'homes.invitationSent',
-            token: token,
-          });
-        }
-      );
-    } catch (e) {
-      invite.destroy({ force: true });
-      throw e;
-    }
-  } catch (e) {
-    res.status(500).json({
-      title: (e as any).errors?.[0] ? 'homes.inviteError' : 'request.error',
-      msg: (e as any).errors?.[0]?.message ?? 'request.error',
+    const mailRes = await sendEmail({
+      from: email.sender,
+      to: req.body.email,
+      subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
+      html: emailHtml,
     });
+
+    if (!mailRes.success) {
+      await invite.destroy({ force: true });
+      return res.status(500).json({ ...mailRes, token: null });
+    }
+
+    res.json({ ...mailRes, token: token });
+  } catch (e) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
 
