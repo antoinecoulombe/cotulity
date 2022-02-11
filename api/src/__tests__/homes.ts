@@ -348,7 +348,7 @@ describe('homes', () => {
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
         email: (await getTestUser('sender')).email,
-        fake: true, // uncomment to actually send
+        fake: true, // TODO: mock send emails and comment this line
       });
 
     expect(res.statusCode).toEqual(200);
