@@ -41,7 +41,7 @@ import Homes from './routes/apps/Homes';
 app.use('/homes', Homes);
 
 import Home from './routes/apps/Home';
-app.use('/homes/:refnumber', validateHome, Home);
+app.use('/home/:refnumber', validateHome, Home);
 
 import Finances from './routes/apps/Finances';
 app.use('/finances/:refnumber', validateHome, Finances);

@@ -42,7 +42,6 @@ export default function EditPopup(props: EditPopupProps) {
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
 
-
   useEffect(() => {
     function getTabs(homeMembers: HomeMember[]) {
       return [
@@ -115,55 +114,54 @@ export default function EditPopup(props: EditPopupProps) {
         {
           name: 'requests',
           prefix: 'homes.list.',
-          body:
-            !homeMembers.filter((m) => !m.UserHome.accepted).length ? (
-              <div className="no-requests">
-                <Translate name="noRequests" prefix="homes.list." />
-              </div>
-            ) : (
-              <List>
-                {homeMembers
-                  .filter((m) => !m.UserHome.accepted)
-                  .map((m, i) => (
-                    <ListItem key={`r-${i}`} uid={m.id}>
-                      <ListItemLeft key={`rl-${i}`}>
-                        <div className="img-text" key={`rlp-${i}`}>
-                          <FontAwesomeIcon
-                            key={`rlpi-${i}`}
-                            icon="user-circle"
-                          ></FontAwesomeIcon>
-                          <h3 key={`rlph-${i}`}>
-                            {getFormattedMemberName(m.firstname, m.lastname)}
-                          </h3>
-                        </div>
-                      </ListItemLeft>
-                      <ListItemRight key={`rr-${i}`}>
-                        <IconToolTip
-                          key={`rrit-${i}`}
-                          icon="trash"
-                          style={{ iconWidth: 30, tooltipMultiplier: 5 }}
-                          circled={{ value: true, multiplier: 0.45 }}
-                          error={true}
-                          onClick={(e) => acceptRequest(e, false, m.id)}
-                        >
-                          {ReactDOMServer.renderToStaticMarkup(
-                            <Translate name="decline" prefix="nav."></Translate>
-                          )}
-                        </IconToolTip>
-                        <button
-                          key={`rrb-${i}`}
-                          className="accept"
-                          onClick={(e) => acceptRequest(e, true, m.id)}
-                        >
-                          <p>
-                            <Translate name="accept" prefix="nav."></Translate>
-                          </p>
-                        </button>
-                      </ListItemRight>
-                    </ListItem>
-                  ))}
-              </List>
-            ),
+          body: !homeMembers.filter((m) => !m.UserHome.accepted).length ? (
+            <div className="no-requests">
+              <Translate name="noRequests" prefix="homes.list." />
+            </div>
+          ) : (
+            <List>
+              {homeMembers
+                .filter((m) => !m.UserHome.accepted)
+                .map((m, i) => (
+                  <ListItem key={`r-${i}`} uid={m.id}>
+                    <ListItemLeft key={`rl-${i}`}>
+                      <div className="img-text" key={`rlp-${i}`}>
+                        <FontAwesomeIcon
+                          key={`rlpi-${i}`}
+                          icon="user-circle"
+                        ></FontAwesomeIcon>
+                        <h3 key={`rlph-${i}`}>
+                          {getFormattedMemberName(m.firstname, m.lastname)}
+                        </h3>
+                      </div>
+                    </ListItemLeft>
+                    <ListItemRight key={`rr-${i}`}>
+                      <IconToolTip
+                        key={`rrit-${i}`}
+                        icon="trash"
+                        style={{ iconWidth: 30, tooltipMultiplier: 5 }}
+                        circled={{ value: true, multiplier: 0.45 }}
+                        error={true}
+                        onClick={(e) => acceptRequest(e, false, m.id)}
+                      >
+                        {ReactDOMServer.renderToStaticMarkup(
+                          <Translate name="decline" prefix="nav."></Translate>
+                        )}
+                      </IconToolTip>
+                      <button
+                        key={`rrb-${i}`}
+                        className="accept"
+                        onClick={(e) => acceptRequest(e, true, m.id)}
+                      >
+                        <p>
+                          <Translate name="accept" prefix="nav."></Translate>
+                        </p>
+                      </button>
+                    </ListItemRight>
+                  </ListItem>
+                ))}
+            </List>
+          ),
         },
       ];
     }
@@ -186,7 +184,7 @@ export default function EditPopup(props: EditPopupProps) {
     function requestHandleRequest(accept: boolean, memberId: number) {
       axios
         .put(
-          `/homes/${props.home.refNumber}/requests/${memberId}/${
+          `/home/${props.home.refNumber}/requests/${memberId}/${
             accept ? 'accept' : 'reject'
           }`
         )
@@ -235,14 +233,14 @@ export default function EditPopup(props: EditPopupProps) {
     }
 
     function getFormattedMemberName(firstname: string, lastname: string) {
-      return `${firstname.charAt(0).toUpperCase()}${firstname.slice(1)} ${lastname
-        .charAt(0)
-        .toUpperCase()}.`;
+      return `${firstname.charAt(0).toUpperCase()}${firstname.slice(
+        1
+      )} ${lastname.charAt(0).toUpperCase()}.`;
     }
 
     function requestDeleteMember(memberId: number) {
       axios
-        .delete(`/homes/${props.home?.refNumber}/members/${memberId}/remove`)
+        .delete(`/home/${props.home?.refNumber}/members/${memberId}/remove`)
         .then((res: any) => {
           deleteMemberState(memberId);
         })
@@ -250,7 +248,7 @@ export default function EditPopup(props: EditPopupProps) {
           setErrorNotification(err.response.data);
         });
     }
-    
+
     setTabs(getTabs(members));
     const count = members.filter((m) => m.UserHome.accepted).length;
     if (count > 0) props.updateMemberCount(props.home.refNumber, count);
@@ -258,7 +256,7 @@ export default function EditPopup(props: EditPopupProps) {
 
   useEffect(() => {
     axios
-      .get(`/homes/${props.home.refNumber}`)
+      .get(`/home/${props.home.refNumber}`)
       .then((res: any) => {
         setMembers(res.data.Members);
       })

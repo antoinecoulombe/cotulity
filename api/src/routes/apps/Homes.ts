@@ -13,9 +13,7 @@ const db = require('../../../db/models');
 
 // Validates application and paths.
 Homes.use(async (req: any, res, next) => {
-  if (req.path.startsWith('/public')) {
-    return next();
-  }
+  if (req.path.startsWith('/public')) return next();
 
   req.params.appname = 'homes';
   validateApp(req, res, next);
@@ -71,6 +69,7 @@ async function getHomes(req: any, res: any, all: boolean) {
       ),
     });
   } catch (e) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 }
@@ -91,7 +90,6 @@ Homes.get('/accepted', async (req: any, res) => {
 
 // [PUBLIC] Decline the invitation linked to the specified token.
 Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
-  console.log('Decline');
   try {
     return await db.sequelize.transaction(async (t: any) => {
       const invite = await db.HomeInvitation.findOne({
@@ -137,6 +135,7 @@ Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
       );
     });
   } catch (e) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -164,6 +163,7 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
       const userInHome = await db.UserHome.findOne({
         where: { homeId: invite.Home.id, userId: req.user.id, accepted: true },
       });
+
       if (userInHome) {
         await invite.destroy();
         return res.status(500).json({
@@ -201,14 +201,19 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
         where: { homeId: invite.Home.id, userId: req.user.id },
         paranoid: false,
       });
+
+      // If user is in home
       if (userHome) {
+        // If he is not accepted
         if (!userHome.accepted) {
           userHome.accepted = true;
           await userHome.save({ transaction: t });
         }
+        // If he is deleted
         if (userHome.deletedAt != null)
           await userHome.restore({ transaction: t });
       } else {
+        // If he is not in home
         await db.UserHome.create(
           {
             homeId: invite.Home.id,
@@ -227,6 +232,77 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
       });
     });
   } catch (e) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// [ANY] Create a request to join the specified home.
+Homes.put('/:refnumber/join', async (req: any, res) => {
+  try {
+    const userHome = await req.user.getHomes({
+      where: { refNumber: req.params.refnumber },
+      through: { paranoid: false },
+    });
+
+    if (userHome.length !== 0) {
+      if (userHome[0].UserHome.deletedAt != null) {
+        if (
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) <
+          userHome[0].UserHome.deletedAt
+        )
+          return res.status(500).json({
+            title: 'homes.requestAlreadyDenied',
+            msg: 'homes.waitWeek',
+          });
+      } else {
+        if (userHome[0].UserHome.accepted)
+          return res.status(500).json({
+            title: 'homes.couldNotJoin',
+            msg: 'homes.alreadyInHome',
+          });
+
+        return res.status(500).json({
+          title: 'homes.couldNotJoin',
+          msg: 'homes.requestAlreadySent',
+        });
+      }
+    }
+
+    const home = await db.Home.findOne({
+      where: { refNumber: req.params.refnumber },
+    });
+
+    if (!home)
+      return res
+        .status(404)
+        .json({ title: 'homes.notFound', msg: 'homes.notFound' });
+
+    await db.sequelize.transaction(async (t: any) => {
+      await db.Notification.create(
+        {
+          typeId: 2,
+          toId: home.ownerId,
+          title: Translate.getJSON('homes.newRequest', [home.name]),
+          description: Translate.getJSON('homes.newRequest', [
+            req.user.firstname,
+            home.name,
+          ]),
+        },
+        { transaction: t }
+      );
+
+      if (userHome[0]?.UserHome?.deletedAt != null)
+        return userHome[0].UserHome.restore({}, { transaction: t });
+      else return req.user.addHomes(home.id, { transaction: t });
+    });
+
+    res.json({
+      title: 'homes.requestSent',
+      msg: 'homes.requestSent',
+    });
+  } catch (e) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -277,6 +353,7 @@ Homes.post('/:homename', async (req: any, res) => {
       refNumber: home.refNumber,
     });
   } catch (e) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });

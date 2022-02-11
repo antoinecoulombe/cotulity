@@ -109,7 +109,7 @@ export default function AppHomes() {
 
   function deleteHome(refNumber: number) {
     axios
-      .delete(`/homes/${refNumber}/delete`)
+      .delete(`/home/${refNumber}/delete`)
       .then((res: any) => handleDeleteHomeSuccess(res, refNumber))
       .catch((err) => {
         closeAndError(err.response.data);
@@ -118,7 +118,7 @@ export default function AppHomes() {
 
   function quitHome(refNumber: number) {
     axios
-      .delete(`/homes/${refNumber}/quit`)
+      .delete(`/home/${refNumber}/quit`)
       .then((res: any) => handleDeleteHomeSuccess(res, refNumber))
       .catch((err) => {
         closeAndError(err.response.data);
@@ -161,7 +161,7 @@ export default function AppHomes() {
 
   function renameHome(value: string, refNumber: number) {
     axios
-      .put(`/homes/${refNumber}/rename`, { nickname: value })
+      .put(`/home/${refNumber}/rename`, { nickname: value })
       .then((res: any) => {
         let homecp = getCopyIndex(
           homes,
@@ -181,7 +181,7 @@ export default function AppHomes() {
 
   function addMember(value: string, refNumber: number) {
     axios
-      .post(`/homes/${refNumber}/invitations`, { email: value })
+      .post(`/home/${refNumber}/invitations`, { email: value })
       .then((res: any) => {
         closeAndSuccess(res.data);
       })
@@ -224,7 +224,7 @@ export default function AppHomes() {
     const ref = await getRefNumber(event);
 
     axios
-      .delete(`/homes/${ref}/requests/cancel`)
+      .delete(`/home/${ref}/requests/cancel`)
       .then((res: any) => {
         deleteHomeState(ref);
         setSuccessNotification(res.data);

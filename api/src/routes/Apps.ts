@@ -27,6 +27,7 @@ export const validateHome = async (req: any, res: any, next: any) => {
     res.locals.home = home[0];
     return next();
   } catch (error) {
+    /* istanbul ignore next */
     return next({ title: 'request.error', msg: 'request.error' });
   }
 };
@@ -46,6 +47,7 @@ export const validateApp = async (req: any, res: any, next: any) => {
 
     return next();
   } catch (error) {
+    /* istanbul ignore next */
     return next({ title: 'request.error', msg: 'request.error' });
   }
 };
@@ -74,6 +76,7 @@ Apps.get('/', async (req, res) => {
     });
     res.json(apps);
   } catch (e) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'apps.error', msg: 'request.reload' });
   }
 });

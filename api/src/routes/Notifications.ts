@@ -33,6 +33,7 @@ Notifications.get('/', async (req: any, res: any) => {
     await notifications.forEach((n: any) => (n.dataValues.db = true));
     res.json(notifications);
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -64,6 +65,7 @@ Notifications.delete('/delete/:id', async (req: any, res: any) => {
     await notification.destroy();
     return res.json({ title: 'request.success', msg: 'request.success' });
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });

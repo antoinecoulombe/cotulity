@@ -8,7 +8,7 @@ const faker = require('faker');
 
 export const USER: { email: (suffix: string) => string; pwd: string } = {
   email: (suffix: string) => {
-    return `test-${suffix}@hotmail.com`;
+    return `cotulity-test-${suffix}@hotmail.com`;
   },
   pwd: '123123',
 };

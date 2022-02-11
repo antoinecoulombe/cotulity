@@ -93,7 +93,7 @@ export default function AppTasks() {
   useEffect(() => {
     // get home users for sidebar
     axios
-      .get(`/homes/${localStorage.getItem('currentHome')}/users`)
+      .get(`/home/${localStorage.getItem('currentHome')}/users`)
       .then(async (res: any) => {
         // get upcoming tasks (non-completed tasks)
         await axios

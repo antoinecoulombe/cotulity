@@ -35,6 +35,7 @@ Users.get('/current/picture', async (req: any, res: any) => {
   try {
     return await sendProfilePicture(req, res, true);
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -43,6 +44,7 @@ Users.get('/current/picture/url', async (req: any, res: any) => {
   try {
     return await sendProfilePicture(req, res, false);
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -65,6 +67,7 @@ Users.put('/current/picture', async (req: any, res: any) => {
 
     res.json({ title: 'picture.updated', msg: 'user.imageUpdated' });
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -102,6 +105,7 @@ Users.post('/register', async (req, res) => {
       });
     }
 
+    /* istanbul ignore next */
     res.status(500).json({
       title: 'request.error',
       msg: 'request.error',
@@ -115,14 +119,14 @@ Users.post('/register', async (req, res) => {
   }
 });
 
-Users.post('/public/password/reset', async (req, res) => {
-  try {
-    // TODO: Reset password
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
+// Users.post('/public/password/reset', async (req, res) => {
+//   try {
+//     // TODO: Reset password
+//   } catch (error) {
+//     /* istanbul ignore next */
+//     res.status(500).json({ title: 'request.error', msg: 'request.error' });
+//   }
+// });
 
 // ########################################################
 // ######################## DELETE ########################
@@ -145,6 +149,7 @@ Users.delete('/current/picture', async (req: any, res: any) => {
 
     res.json({ title: 'picture.deleted', msg: 'user.imageDeleted' });
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -174,6 +179,7 @@ Users.delete('/delete', async (req: any, res: any) => {
       res.json({ title: 'user.deleted', msg: 'user.deleted' });
     });
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
