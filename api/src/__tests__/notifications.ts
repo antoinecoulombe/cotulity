@@ -2,15 +2,17 @@ const app = require('../app.ts');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import supertest from 'supertest';
-import { getTestUser } from './auth';
 import * as Global from '../routes/_utils/Global';
 import * as Translate from '../routes/_utils/Translate';
+import { getTestUser } from '../routes/_utils/Test';
+
+// Supertest
+import supertest from 'supertest';
 const request = supertest(app);
 
 describe('notifications', () => {
-  var USER = { token: '', id: 0 };
   const CALLER = 'notifications';
+  var USER = { token: '', id: 0 };
   var notifications: [
     {
       id: number;
@@ -38,47 +40,37 @@ describe('notifications', () => {
     expect(res.body).toBeArrayOfSize(0);
   });
 
-  it('should create 4 notifications and retreive them', async () => {
-    let notifTypes = ['success', 'info', 'warning', 'error'];
-
-    for (let i = 1; i <= 4; ++i)
-      await Global.sendNotifications([USER.id], {
-        typeId: i,
-        title: 'title.test.' + notifTypes[i - 1],
-        description: Translate.getJSON('msg.test', [
-          notifTypes[i - 1].toString(),
-        ]),
-      });
+  it('should create a notification and retreive it', async () => {
+    await Global.sendNotifications([USER.id], {
+      typeId: 1,
+      title: 'title.test.success',
+      description: Translate.getJSON('msg.test', ['success']),
+    });
 
     const res = await request
       .get(`/notifications`)
       .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toBeArrayOfSize(4);
+    expect(res.body).toBeArrayOfSize(1);
 
     notifications = res.body;
-    for (let i = 0; i < 4; ++i) {
-      let n = notifications[i];
-      expect(n.title).toEqual('title.test.' + notifTypes[i]);
-      expect(n.msg).toEqual(
-        `{"translate":"msg.test","format":["${notifTypes[i]}"]}`
-      );
-      expect(n.type.name).toEqual(notifTypes[i]);
-    }
+
+    let n = notifications[0];
+    expect(n.title).toEqual('title.test.success');
+    expect(n.msg).toEqual(`{"translate":"msg.test","format":["success"]}`);
+    expect(n.type.name).toEqual('success');
   });
 
-  it('should delete the 4 notifications', async () => {
-    notifications.forEach(async (n) => {
-      const res = await request
-        .delete(`/notifications/delete/${n.id}`)
-        .set('Authorization', `Bearer ${USER.token}`);
+  it('should delete the notification', async () => {
+    const res = await request
+      .delete(`/notifications/delete/${notifications[0].id}`)
+      .set('Authorization', `Bearer ${USER.token}`);
 
-      expect(res.statusCode).toEqual(200);
-      expect(res.body).toEqual({
-        title: 'request.success',
-        msg: 'request.success',
-      });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      title: 'request.success',
+      msg: 'request.success',
     });
   });
 

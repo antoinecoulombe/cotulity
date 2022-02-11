@@ -1,15 +1,17 @@
 const app = require('../app.ts');
+const db = require('../../db/models');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
+import { getTestUser } from '../routes/_utils/Test';
+
+// Supertest
 import supertest from 'supertest';
-import { getTestUser } from './auth';
 const request = supertest(app);
-const db = require('../../db/models');
 
 describe('apps', () => {
-  var USER = { token: '', id: 0 };
   const CALLER = 'apps';
+  var USER = { token: '', id: 0 };
   var apps: [{ id?: number; priority: number; name: string; image: string }];
   var homeRef: string;
 

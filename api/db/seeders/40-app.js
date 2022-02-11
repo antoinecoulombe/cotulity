@@ -48,7 +48,7 @@ module.exports = {
         {
           priority: 90,
           name: 'console',
-          online: true,
+          online: false,
           image: 'terminal',
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),

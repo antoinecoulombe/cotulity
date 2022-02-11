@@ -1,33 +1,17 @@
 const app = require('../app.ts');
+const faker = require('faker');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
+import { TEST_USER, getTestUser } from '../routes/_utils/Test';
+
+// Supertest
 import supertest from 'supertest';
 const request = supertest(app);
-const faker = require('faker');
-
-export const USER: { email: (suffix: string) => string; pwd: string } = {
-  email: (suffix: string) => {
-    return `cotulity-test-${suffix}@hotmail.com`;
-  },
-  pwd: '123123',
-};
-
-export async function getTestUser(caller: string, basic?: boolean) {
-  return basic
-    ? { email: USER.email(caller), password: USER.pwd }
-    : {
-        email: USER.email(caller),
-        password: USER.pwd,
-        firstname: await faker.name.firstName(),
-        lastname: await faker.name.lastName(),
-        phone: await faker.phone.phoneNumber(),
-      };
-}
 
 describe('authentication', () => {
-  var TOKEN = '';
   const CALLER = 'auth';
+  var TOKEN = '';
 
   it('should register the user', async () => {
     const res = await request
@@ -63,7 +47,7 @@ describe('authentication', () => {
       .post('/auth/login')
       .send({ email: 'coulombe.antoine@hotmail.com', password: '123123' });
 
-    expect(res.statusCode).toEqual(404); // not found
+    expect(res.statusCode).toEqual(404);
     expect(res.body).toEqual({
       title: 'login.error',
       msg: 'login.error',
@@ -74,8 +58,8 @@ describe('authentication', () => {
     const res = await request.post('/users/register').send({
       email: 'coulombe.antoine@hotmail.com',
       password: '123123',
-      lastname: await faker.name.lastName(),
-      phone: await faker.phone.phoneNumber(),
+      lastname: 'doe',
+      phone: '1234567890',
     });
 
     expect(res.statusCode).toEqual(500);
@@ -86,13 +70,9 @@ describe('authentication', () => {
   });
 
   it('should fail to register due to existing email', async () => {
-    const res = await request.post('/users/register').send({
-      email: USER.email(CALLER),
-      password: USER.pwd,
-      firstname: await faker.name.firstName(),
-      lastname: await faker.name.lastName(),
-      phone: await faker.phone.phoneNumber(),
-    });
+    const res = await request
+      .post('/users/register')
+      .send(await getTestUser(CALLER));
 
     expect(res.statusCode).toEqual(500);
     expect(res.body).toEqual({
@@ -105,9 +85,9 @@ describe('authentication', () => {
   it('should reject login due to missing field', async () => {
     const res = await request
       .post('/auth/login')
-      .send({ email: USER.email(CALLER) });
+      .send({ email: TEST_USER.email(CALLER) });
 
-    expect(res.statusCode).toEqual(500); // error
+    expect(res.statusCode).toEqual(500);
     expect(res.body).toEqual({
       title: 'login.error',
       msg: 'login.error',
@@ -117,9 +97,9 @@ describe('authentication', () => {
   it('should reject login due to wrong password', async () => {
     const res = await request
       .post('/auth/login')
-      .send({ email: USER.email(CALLER), password: '123124' });
+      .send({ email: TEST_USER.email(CALLER), password: '123124' });
 
-    expect(res.statusCode).toEqual(401); // unauthorized
+    expect(res.statusCode).toEqual(401);
     expect(res.body).toEqual({
       title: 'login.error',
       msg: 'login.error',

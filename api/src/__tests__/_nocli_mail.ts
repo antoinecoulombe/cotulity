@@ -4,7 +4,7 @@ import 'jest-extended';
 import 'jest-extended/all';
 import { sendEmail } from '../routes/_utils/Email';
 
-describe('mail', () => {
+describe('nocli-mail', () => {
   it('should fail to send an email', async () => {
     const res = await sendEmail(
       {

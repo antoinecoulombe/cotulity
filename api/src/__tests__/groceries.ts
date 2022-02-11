@@ -2,15 +2,15 @@ const app = require('../app.ts');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { stringify } from 'querystring';
+import { getTestUser } from '../routes/_utils/Test';
+
+// Supertest
 import supertest from 'supertest';
-import { getTestUser } from './auth';
 const request = supertest(app);
-const db = require('../../db/models');
 
 describe('groceries', () => {
-  var USER = { token: '', id: 0 };
   const CALLER = 'groceries';
+  var USER = { token: '', id: 0 };
   var homeRef: string;
   var groceries: number[] = [];
 

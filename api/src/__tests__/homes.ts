@@ -1,12 +1,12 @@
 const app = require('../app.ts');
 const db = require('../../db/models');
-
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import supertest from 'supertest';
-import { getTestUser } from './auth';
+import { getTestUser } from '../routes/_utils/Test';
 
+// Supertest
+import supertest from 'supertest';
 const request = supertest(app);
 
 const sendMailMock = jest.fn();
