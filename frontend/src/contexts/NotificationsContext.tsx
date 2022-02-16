@@ -221,7 +221,7 @@ export function NotificationsProvider({ children }: any) {
   // #region Notification deletion
 
   const handleTimeout = React.useCallback(() => {
-    if (notifications.length) {
+    if (notifications && notifications.length) {
       let notification = getCurrentNotification();
       if (!notification) return;
 

@@ -167,12 +167,17 @@ export default function AppHomes() {
           homes,
           (h: Home) => h.refNumber === refNumber
         );
+        closeAndSuccess(res.data);
+
         if (homecp) {
-          homecp.cp[homecp.i].UserHome.nickname = value;
+          if (
+            localStorage.getItem('userId') ==
+            homecp.cp[homecp.i].ownerId.toString()
+          )
+            homecp.cp[homecp.i].name = value;
+          else homecp.cp[homecp.i].UserHome.nickname = value;
           setHomes(homecp.cp);
         }
-
-        closeAndSuccess(res.data);
       })
       .catch((err) => {
         setErrorNotification(err.response.data);
