@@ -81,11 +81,14 @@ export function NotificationsProvider({ children }: any) {
   }
 
   function getCurrentNotificationIndex(): number {
+    if (!notifications || !notifications.length) return -1;
+
     let i = notifications.findIndex((n) => n.current);
     return i == -1 ? 0 : i;
   }
 
   function getCurrentNotification(): strictJsonNotification | undefined {
+    if (!notifications || !notifications.length) return undefined;
     return notifications.find((n) => n.current);
   }
 
@@ -109,7 +112,7 @@ export function NotificationsProvider({ children }: any) {
   }
 
   function appendOrSetNotifications(notifs: strictJsonNotification[]) {
-    if (notifications.length)
+    if (notifications && notifications.length)
       setNotifications([...notifications].concat(notifs));
     else setCurrentNotification(0, notifs);
   }

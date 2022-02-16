@@ -35,7 +35,7 @@ interface EditPopupProps {
 const nullJSX = <></>;
 
 export default function EditPopup(props: EditPopupProps) {
-  const { setNotification, setErrorNotification } = useNotifications();
+  const { setErrorNotification } = useNotifications();
   const [name, setName] = useState<string>();
   const [error, setError] = useState<boolean>(false);
   const [members, setMembers] = useState<HomeMember[]>([]);
@@ -261,9 +261,9 @@ export default function EditPopup(props: EditPopupProps) {
         setMembers(res.data.Members);
       })
       .catch((err) => {
-        setNotification(err.response.data);
+        setErrorNotification(err.response.data);
       });
-  }, [props, setNotification]);
+  }, [props]);
 
   // #region Name
 
