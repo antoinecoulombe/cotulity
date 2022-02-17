@@ -4,7 +4,7 @@ interface ListItemLeftProps {
   style?: object;
 }
 
-export default function ListItemLeft(props: ListItemLeftProps) {
+const ListItemLeft = (props: ListItemLeftProps): JSX.Element => {
   return (
     <div
       className={`list-item-left ${props.className ?? ''}`}
@@ -13,4 +13,6 @@ export default function ListItemLeft(props: ListItemLeftProps) {
       {props.children}
     </div>
   );
-}
+};
+
+export default ListItemLeft;

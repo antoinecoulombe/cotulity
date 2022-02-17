@@ -7,17 +7,17 @@ import axios from '../../utils/fetchClient';
 import $ from 'jquery';
 import '../../assets/css/views/apps.css';
 
-export default function AppNewHome() {
+const AppNewHome = (): JSX.Element => {
   const { setSuccessNotification, setErrorNotification } = useNotifications();
   const history = useHistory();
   const [action, setAction] = useState<string | undefined>();
   const [error, setError] = useState<boolean>(false);
 
-  function handleClick(name: string) {
+  const handleClick = (name: string): void => {
     setAction(name);
-  }
+  };
 
-  function handleResize() {
+  const handleResize = (): void => {
     let containerWidth = $('#apps-container').outerWidth() ?? 500,
       appWidth = $('.app-container').outerWidth(true) ?? 500,
       appsPerLine = Math.floor(containerWidth / appWidth);
@@ -28,15 +28,16 @@ export default function AppNewHome() {
     $('#apps').css({
       width: appWidth * appsPerLine,
     });
-  }
+  };
 
-  function postJoin(value: string) {
+  const postJoin = (value: string): void => {
     if (!value || value.split('#').length < 2) {
       setError(true);
-      return setErrorNotification({
+      setErrorNotification({
         title: 'newHome.missingId',
         msg: 'newHome.missingId',
       });
+      return;
     }
 
     axios
@@ -50,15 +51,16 @@ export default function AppNewHome() {
         setError(true);
         setErrorNotification(err.response.data);
       });
-  }
+  };
 
-  function postCreate(value: string) {
+  const postCreate = (value: string): void => {
     if (!value) {
       setError(true);
-      return setErrorNotification({
+      setErrorNotification({
         title: 'newHome.missingName',
         msg: 'newHome.missingName',
       });
+      return;
     }
 
     axios
@@ -73,18 +75,18 @@ export default function AppNewHome() {
         setErrorNotification(err.response.data);
         setError(true);
       });
-  }
+  };
 
-  function handleSubmit(value: string) {
+  const handleSubmit = (value: string): void => {
     if (action === 'join') postJoin(value);
     else postCreate(value);
-  }
+  };
 
-  function handleBack() {
+  const handleBack = (): void => {
     console.log('back');
     setError(false);
     setAction(undefined);
-  }
+  };
 
   useEffect(() => {
     handleResize();
@@ -114,4 +116,6 @@ export default function AppNewHome() {
       )}
     </>
   );
-}
+};
+
+export default AppNewHome;

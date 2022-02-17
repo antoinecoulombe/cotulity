@@ -20,21 +20,21 @@ interface SidebarProps {
   tabs: Array<SidebarTab>;
 }
 
-export default function Sidebar(props: SidebarProps) {
+const Sidebar = (props: SidebarProps): JSX.Element => {
   const [hovered, setHovered] = useState<boolean>(false);
 
-  async function switchSidebarTab(id: number) {
+  const switchSidebarTab = async (id: number): Promise<SidebarTab[]> => {
     if (!props.tabs || !props.tabs.length) return [];
     let newTabs = [...props.tabs];
     newTabs[props.tabs.findIndex((t) => t.selected)].selected = false;
     newTabs[props.tabs.findIndex((t) => t.id === id)].selected = true;
     return newTabs;
-  }
+  };
 
-  async function handleClick(id: number) {
+  const handleClick = async (id: number): Promise<void> => {
     let tabs = await switchSidebarTab(id);
     props.tabs.find((t) => t.id === id)?.action(tabs);
-  }
+  };
 
   return (
     <div
@@ -106,4 +106,6 @@ export default function Sidebar(props: SidebarProps) {
       )}
     </div>
   );
-}
+};
+
+export default Sidebar;

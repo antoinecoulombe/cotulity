@@ -9,7 +9,7 @@ interface TooltipProps {
   noTranslate?: boolean;
 }
 
-export default function Tooltip(props: TooltipProps) {
+const Tooltip = (props: TooltipProps): JSX.Element => {
   return (
     <>
       {props.hovered && (
@@ -35,4 +35,6 @@ export default function Tooltip(props: TooltipProps) {
       )}
     </>
   );
-}
+};
+
+export default Tooltip;

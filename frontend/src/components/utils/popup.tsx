@@ -14,7 +14,7 @@ interface PopupProps {
   onDelete?(...attr: any): any;
 }
 
-export default function Popup(props: PopupProps) {
+const Popup = (props: PopupProps): JSX.Element => {
   return (
     <div className={`popup-container ${props.className ?? ''}`}>
       <div className={`popup ${props.type}`}>
@@ -60,4 +60,6 @@ export default function Popup(props: PopupProps) {
       </div>
     </div>
   );
-}
+};
+
+export default Popup;

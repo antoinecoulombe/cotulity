@@ -3,13 +3,13 @@ import Translate from '../utils/translate';
 
 interface SetSafeDeleteProps {}
 
-export default function SetSafeDelete(props: SetSafeDeleteProps) {
-  function toggleSafeDelete() {
+const SetSafeDelete = (props: SetSafeDeleteProps): JSX.Element => {
+  const toggleSafeDelete = (): void => {
     localStorage.setItem(
       'safeDelete',
       localStorage.getItem('safeDelete') === 'true' ? 'false' : 'true'
     );
-  }
+  };
 
   return (
     <div className="setting safe-delete">
@@ -48,4 +48,6 @@ export default function SetSafeDelete(props: SetSafeDeleteProps) {
       </div>
     </div>
   );
-}
+};
+
+export default SetSafeDelete;

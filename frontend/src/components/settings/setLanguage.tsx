@@ -1,15 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import Translate from '../utils/translate';
 
-interface SetLanguageProps {}
-
-export default function SetLanguage(props: SetLanguageProps) {
+const SetLanguage = (): JSX.Element => {
   const { i18n } = useTranslation('common');
 
-  function setLang(lang: string) {
+  const setLang = (lang: string): void => {
     i18n.changeLanguage(lang);
     localStorage.setItem('lang', lang);
-  }
+  };
 
   return (
     <div className="setting">
@@ -31,4 +29,6 @@ export default function SetLanguage(props: SetLanguageProps) {
       </div>
     </div>
   );
-}
+};
+
+export default SetLanguage;

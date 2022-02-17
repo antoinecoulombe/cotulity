@@ -60,7 +60,7 @@ export interface HomeMember {
 
 const nullJSX: JSX.Element = <></>;
 
-export default function AppTasks() {
+const AppTasks = (): JSX.Element => {
   const { t, i18n } = useTranslation('common');
   const { setNotification, setSuccessNotification } = useNotifications();
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
@@ -162,11 +162,11 @@ export default function AppTasks() {
     // handleOpenAppResize(250); // use with .fill-height on content
   }, []);
 
-  function handleSubHeader(tab: string) {
+  const handleSubHeader = (tab: string): void => {
     setSubHeader({ ...subHeader, tabs: switchSubHeaderTab(subHeader, tab) });
-  }
+  };
 
-  function handleTitle(tab: SidebarTab) {
+  const handleTitle = (tab: SidebarTab): void => {
     if (!sidebarTabs.length) return;
     if (!tab.value) setTitle('tasks');
     else if (tab.id < 0) setTitle(`sidebar.${tab.value ?? 'tasks'}.title`);
@@ -174,13 +174,13 @@ export default function AppTasks() {
       setTitle(
         getTranslateJSON('sidebar.user.title', [tab.value.split(' ')[0] ?? ''])
       );
-  }
+  };
 
-  function handleSidebar(newTabs: SidebarTab[]) {
+  const handleSidebar = (newTabs: SidebarTab[]): void => {
     setSidebarTabs(newTabs);
-  }
+  };
 
-  function handleTask(tab?: SidebarTab) {
+  const handleTask = (tab?: SidebarTab): void => {
     if (!tab) return;
 
     const important =
@@ -228,9 +228,9 @@ export default function AppTasks() {
       );
       setShownTasks(newUpcoming);
     }
-  }
+  };
 
-  function getTagColor(dueDate: string) {
+  const getTagColor = (dueDate: string): string => {
     let d = new Date(dueDate);
     let dNow = new Date(Date.now());
     let daysDiff = DateExt.getDaysDiff(d, dNow);
@@ -239,9 +239,9 @@ export default function AppTasks() {
     if (daysDiff < 4) return 'orange';
     if (daysDiff < 7) return 'yellow';
     return 'green';
-  }
+  };
 
-  function handleSubmit(task: Task) {
+  const handleSubmit = (task: Task): void => {
     axios({
       method: task.id === -1 ? 'post' : 'put',
       url: `/tasks/${localStorage.getItem('currentHome')}/${
@@ -261,9 +261,9 @@ export default function AppTasks() {
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
+  };
 
-  function showPopup(task?: Task) {
+  const showPopup = (task?: Task): void => {
     setPopup(
       <EditPopup
         onCancel={() => setPopup(nullJSX)}
@@ -286,9 +286,9 @@ export default function AppTasks() {
         onDelete={task ? (id: number) => deleteTask(id, true) : undefined}
       />
     );
-  }
+  };
 
-  function destroyTaskUpcoming(id: number, closePopup?: boolean) {
+  const destroyTaskUpcoming = (id: number, closePopup?: boolean): void => {
     let newUpcoming = [...upcomingTasks];
     let i = newUpcoming.findIndex((t) => t.id === id);
     if (i >= 0) {
@@ -308,9 +308,9 @@ export default function AppTasks() {
           setNotification(err.response.data);
         });
     }
-  }
+  };
 
-  function destroyTaskCompleted(id: number, closePopup?: boolean) {
+  const destroyTaskCompleted = (id: number, closePopup?: boolean): void => {
     let newCompleted = [...completedTasks];
     let i = newCompleted.findIndex((t) => t.id === id);
     if (i >= 0) {
@@ -330,15 +330,15 @@ export default function AppTasks() {
           setNotification(err.response.data);
         });
     }
-  }
+  };
 
-  function deleteTask(id: number, closePopup?: boolean) {
+  const deleteTask = (id: number, closePopup?: boolean): void => {
     if (upcomingTasks.find((t) => t.id === id))
       destroyTaskUpcoming(id, closePopup);
     else destroyTaskCompleted(id, closePopup);
-  }
+  };
 
-  function completeTask(id: number) {
+  const completeTask = (id: number): void => {
     let newCompleted = [...completedTasks];
     let newUpcoming = [...upcomingTasks];
     let i = newUpcoming.findIndex((t) => t.id === id);
@@ -356,9 +356,9 @@ export default function AppTasks() {
           setNotification(err.response.data);
         });
     }
-  }
+  };
 
-  function unCompleteTask(id: number) {
+  const unCompleteTask = (id: number): void => {
     let newCompleted = [...completedTasks];
     let newUpcoming = [...upcomingTasks];
     let i = newCompleted.findIndex((t) => t.id === id);
@@ -376,22 +376,22 @@ export default function AppTasks() {
           setNotification(err.response.data);
         });
     }
-  }
+  };
 
-  function getTranslatedMonthAndDay(date: string): JSX.Element {
+  const getTranslatedMonthAndDay = (date: string): JSX.Element => {
     let d = DateExt.getMonthAndDay(date);
     if (typeof d === 'string') return t(d);
 
     let json = getTranslateJSON('date.format', [d.day, t(d.month)]);
     return <Translate name={json}></Translate>;
-  }
+  };
 
   const iconStyle = {
     iconWidth: 34,
     tooltipMultiplier: 10,
   };
 
-  function handleHorizontalScroll(e: any) {}
+  const handleHorizontalScroll = (e: any): void => {};
 
   return (
     <AppContainer
@@ -505,4 +505,6 @@ export default function AppTasks() {
       </div>
     </AppContainer>
   );
-}
+};
+
+export default AppTasks;

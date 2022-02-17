@@ -1,7 +1,10 @@
 import { Redirect, Route } from 'react-router-dom';
 import { isAuthenticated } from '../../utils/global';
 
-export function PrivateRoute({ component: Component, ...rest }) {
+export const PrivateRoute = ({
+  component: Component,
+  ...rest
+}): JSX.Element => {
   return (
     <Route
       {...rest}
@@ -14,9 +17,9 @@ export function PrivateRoute({ component: Component, ...rest }) {
       }
     />
   );
-}
+};
 
-export function PublicRoute({ component: Component, ...rest }) {
+export const PublicRoute = ({ component: Component, ...rest }): JSX.Element => {
   return (
     <Route
       {...rest}
@@ -34,4 +37,4 @@ export function PublicRoute({ component: Component, ...rest }) {
       }
     />
   );
-}
+};

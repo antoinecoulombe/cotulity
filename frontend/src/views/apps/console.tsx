@@ -1,34 +1,33 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AppContainer from '../../components/app/appContainer';
 import '../../assets/css/apps/console.css';
 
-export default function AppConsole() {
+const AppConsole = (): JSX.Element => {
   const [history, setHistory] = useState<Array<string>>([]);
   const [currentLine, setCurrentLineState] = useState<number>(-1);
   const [text, setText] = useState<string>('> ');
 
-  function getLastLine() {
+  const getLastLine = (): string => {
     return text.substr(text.lastIndexOf('\n') + 3);
-  }
+  };
 
-  function handleCommand(event: any) {
+  const handleCommand = (event: any): void => {
     const newLine = '\n> ';
     history.push(getLastLine());
     setText(text + newLine);
     event.preventDefault();
-    return;
-  }
+  };
 
-  function handleKeyDown(event: any) {
+  const handleKeyDown = (event: any): void => {
     // up = 38, down = 40
     if (event.keyCode === 38 || event.keyCode === 40) setCurrentLine(event);
-  }
+  };
 
-  function handleText(event: any) {
+  const handleText = (event: any): void => {
     if (event.key === 'Enter') handleCommand(event);
-  }
+  };
 
-  function setCurrentLine(event: any) {
+  const setCurrentLine = (event: any): void => {
     event.preventDefault();
     const change = event.keyCode === 38 ? -1 : 1;
     console.log(change);
@@ -39,7 +38,7 @@ export default function AppConsole() {
     else if (currentLine === -1) setCurrentLineState(history.length - 1);
     else setCurrentLineState(current);
     event.preventDefault();
-  }
+  };
 
   return (
     <AppContainer title="console" appName="console">
@@ -55,4 +54,6 @@ export default function AppConsole() {
       </div>
     </AppContainer>
   );
-}
+};
+
+export default AppConsole;

@@ -22,7 +22,7 @@ Home.use(async (req: any, res, next) => {
 // ########################################################
 
 // Returns false if the connected user is not the home owner.
-async function denyIfNotOwner(req: any, res: any) {
+const denyIfNotOwner = async (req: any, res: any): Promise<boolean> => {
   if (res.locals.home.ownerId !== req.user.id) {
     res
       .status(403)
@@ -30,26 +30,29 @@ async function denyIfNotOwner(req: any, res: any) {
     return true;
   }
   return false;
-}
+};
 
 // Retrieves the members from the current home, excluding the connected user.
-async function getMembersExceptRequester(
+const getMembersExceptRequester = async (
   req: any,
   res: any
-): Promise<number[]> {
+): Promise<number[]> => {
   return (await res.locals.home.getMembers())
     .filter((m: any) => m.id !== req.user.id)
     .map((m: any) => m.id);
-}
+};
 
 // Retrieves the members from the current home, excluding the owner.
-export async function getMembersExceptOwner(home: any): Promise<number[]> {
+export const getMembersExceptOwner = async (home: any): Promise<number[]> => {
   return (await home.getMembers())
     .filter((m: any) => m.id !== home.ownerId)
     .map((m: any) => m.id);
-}
+};
 
-export async function notifyMembersExceptOwner(home: any, transaction: any) {
+export const notifyMembersExceptOwner = async (
+  home: any,
+  transaction: any
+): Promise<void> => {
   // Send notifications to deleted users
   await Global.sendNotifications(
     await getMembersExceptOwner(home),
@@ -60,10 +63,13 @@ export async function notifyMembersExceptOwner(home: any, transaction: any) {
     },
     transaction
   );
-}
+};
 
 // deletes a home
-export async function deleteHome(home: any, transaction: any) {
+export const deleteHome = async (
+  home: any,
+  transaction: any
+): Promise<{ title: string; msg: string }> => {
   // Send notifications to deleted users
   await notifyMembersExceptOwner(home, transaction);
 
@@ -78,7 +84,7 @@ export async function deleteHome(home: any, transaction: any) {
     title: Translate.getJSON('homes.homeDeleted', [home.name]),
     msg: 'homes.homeDeleted',
   };
-}
+};
 
 // ########################################################
 // ######################### GET ##########################

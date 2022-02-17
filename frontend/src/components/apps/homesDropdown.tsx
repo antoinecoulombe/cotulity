@@ -10,15 +10,15 @@ interface HomesDropdownProps {
   onChange: (home: Home[]) => void;
 }
 
-export default function HomesDropdown(props: HomesDropdownProps) {
+const HomesDropdown = (props: HomesDropdownProps): JSX.Element => {
   const [active, setActive] = useState<boolean>(false);
   const history = useHistory();
 
-  function handleClick() {
+  const handleClick = (): void => {
     if (props.homes.length > 1) setActive(!active);
-  }
+  };
 
-  function handleChange(event: any) {
+  const handleChange = (event: any): void => {
     const clickedIndex = props.homes.findIndex(
       (home) => home.refNumber === event.target.id
     );
@@ -28,7 +28,7 @@ export default function HomesDropdown(props: HomesDropdownProps) {
 
     props.onChange(newHomes);
     setActive(false);
-  }
+  };
 
   const iconWidth = 32;
 
@@ -95,4 +95,6 @@ export default function HomesDropdown(props: HomesDropdownProps) {
       <div className="homes-dropdown-blocker"></div>
     </>
   );
-}
+};
+
+export default HomesDropdown;

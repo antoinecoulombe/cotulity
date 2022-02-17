@@ -13,7 +13,7 @@ import $ from 'jquery';
 import Translate from '../utils/translate';
 import SingleInputPopup from '../forms/singleInputPopup';
 
-export default function LoginForm() {
+const LoginForm = (): JSX.Element => {
   let { token } = useParams<{ token: string }>();
 
   const {
@@ -50,7 +50,7 @@ export default function LoginForm() {
   const [errors, setError] = useState(errorForm);
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
 
-  function handlePopupSubmit(email: string) {
+  const handlePopupSubmit = (email: string): void => {
     if (!email || !email.length) {
       setError({ ...errorForm, reset: true });
       setErrorNotification({
@@ -69,9 +69,9 @@ export default function LoginForm() {
       .catch((err) => {
         if (err.response?.data) setNotification(err.response.data);
       });
-  }
+  };
 
-  function showPopup() {
+  const showPopup = (): void => {
     setPopup(
       <SingleInputPopup
         name={`login.pwd-reset.placeholder`}
@@ -83,13 +83,13 @@ export default function LoginForm() {
         containerClassName="bg-light"
       />
     );
-  }
+  };
 
   useEffect(() => {
     handleLoad();
   }, []);
 
-  function handleLoad() {
+  const handleLoad = (): void => {
     $('.logo.big').animate({ opacity: 1 }, 400);
 
     setTimeout(() => {
@@ -100,9 +100,9 @@ export default function LoginForm() {
         $('#login').animate({ opacity: 1 }, 300);
       }, 600);
     }, 900);
-  }
+  };
 
-  async function login() {
+  const login = async (): Promise<void> => {
     if (isAuthenticated()) return;
 
     return await axios
@@ -149,9 +149,9 @@ export default function LoginForm() {
             msg: 'request.noResponse',
           });
       });
-  }
+  };
 
-  function setValidationNotification(input: string[], errorMsg: string) {
+  const setValidationNotification = (input: string[], errorMsg: string) => {
     input.forEach((i: string) => {
       setError({ ...errorForm, [i]: true });
     });
@@ -160,9 +160,9 @@ export default function LoginForm() {
       title: 'register.error',
       msg: errorMsg,
     });
-  }
+  };
 
-  function resetForm() {
+  const resetForm = (): void => {
     $('#login > .toggle > i:last-child').trigger('click');
     setForm({ ...initForm, email: form.email, password: form.password });
 
@@ -171,9 +171,9 @@ export default function LoginForm() {
       $(inputs[i]).removeClass('filled');
       $(inputs[i]).next().removeClass('filled');
     }
-  }
+  };
 
-  async function register() {
+  const register = async (): Promise<void> => {
     if (isAuthenticated()) return;
 
     setError({ ...errorForm });
@@ -197,15 +197,15 @@ export default function LoginForm() {
           err.response?.data?.msg ?? 'request.noResponse'
         );
       });
-  }
+  };
 
-  async function handleSubmit(event: any) {
+  const handleSubmit = async (event: any): Promise<void> => {
     isLogin ? await login() : await register();
-  }
+  };
 
-  function handleKeyPress(event: any) {
+  const handleKeyPress = (event: any): void => {
     if (event.key === 'Enter') handleSubmit(event);
-  }
+  };
 
   return (
     <>
@@ -276,4 +276,6 @@ export default function LoginForm() {
       </form>
     </>
   );
-}
+};
+
+export default LoginForm;

@@ -11,7 +11,7 @@ interface DeleteAccountProps {
 
 const nullJSX: JSX.Element = <></>;
 
-export default function DeleteAccount(props: DeleteAccountProps) {
+const DeleteAccount = (props: DeleteAccountProps): JSX.Element => {
   const {
     setErrorNotification,
     setSuccessNotification,
@@ -19,7 +19,7 @@ export default function DeleteAccount(props: DeleteAccountProps) {
   } = useNotifications();
   const history = useHistory();
 
-  function showWarningPopup() {
+  const showWarningPopup = (): void => {
     props.setPopup(
       <WarningPopup
         title="settings.account.delete.title"
@@ -29,9 +29,9 @@ export default function DeleteAccount(props: DeleteAccountProps) {
         onSubmit={deleteAccount}
       ></WarningPopup>
     );
-  }
+  };
 
-  function deleteAccount() {
+  const deleteAccount = (): void => {
     axios
       .delete('/users/delete')
       .then((res) => {
@@ -43,7 +43,7 @@ export default function DeleteAccount(props: DeleteAccountProps) {
       .catch((err) => {
         setErrorNotification(err.response.data);
       });
-  }
+  };
 
   return (
     <div className="setting centered delete">
@@ -53,4 +53,6 @@ export default function DeleteAccount(props: DeleteAccountProps) {
       </button>
     </div>
   );
-}
+};
+
+export default DeleteAccount;

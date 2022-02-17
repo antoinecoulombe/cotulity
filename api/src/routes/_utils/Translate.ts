@@ -1,3 +1,3 @@
-export function getJSON(path: string, format: string[]) {
+export const getJSON = (path: string, format: string[]): string => {
   return `{"translate":"${path}","format":["${format.join('","')}"]}`;
-}
+};

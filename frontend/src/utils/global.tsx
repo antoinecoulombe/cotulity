@@ -3,34 +3,43 @@ import { useState } from 'react';
 import { jsonNotification } from '../contexts/NotificationsContext';
 import axios from './fetchClient';
 
-export function getNotifications(): Promise<jsonNotification[]> {
+export const getNotifications = (): Promise<jsonNotification[]> => {
   return axios
     .get(`/notifications`)
     .then((res) => res.data)
     .catch((err) => []);
-}
+};
 
-export function isAuthenticated() {
+export const isAuthenticated = (): boolean => {
+  if (!localStorage.getItem('x-access-token')) return false;
+  if (!localStorage.getItem('x-access-token-expiration')) return true;
   return (
-    localStorage.getItem('x-access-token') &&
     parseInt(localStorage.getItem('x-access-token-expiration') ?? '0') >
-      Date.now()
+    Date.now()
   );
-}
+};
 
-export function useForceUpdate() {
+export const useForceUpdate = (): (() => void) => {
   const [value, setValue] = useState(0);
   return () => setValue((value) => value + 1);
-}
+};
 
-export function getTranslateJSON(translate: string, format: Array<string>) {
+export const getTranslateJSON = (
+  translate: string,
+  format: Array<string>
+): string => {
   return `{"translate":"${translate}","format":["${format.join('","')}"]}`;
-}
+};
 
-export function getCopyIndex(array: any, where?: (...attr: any) => any) {
+export const getCopyIndex = (
+  array: any,
+  where?: (...attr: any) => any
+): { cp: any; i: number } => {
   let cp = _.cloneDeep(array);
-  if (where == null) return { cp: cp };
+  return { cp: cp, i: !where ? -1 : cp.findIndex(where) };
+};
 
-  const i = cp.findIndex(where);
-  return i >= 0 ? { cp: cp, i: i } : null;
-}
+export const validateEmail = (email): boolean => {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(email);
+};

@@ -32,6 +32,7 @@ function respondImage(res, url) {
             res.sendFile(img.filePath);
         }
         catch (error) {
+            /* istanbul ignore next */
             res.status(500).json({ title: 'request.error', msg: 'request.error' });
         }
     });

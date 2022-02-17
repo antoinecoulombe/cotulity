@@ -8,7 +8,7 @@ export interface TranslateProps {
   spaceAfter?: boolean;
 }
 
-export default function Translate(props: TranslateProps) {
+const Translate = (props: TranslateProps): JSX.Element => {
   const { t } = useTranslation('common');
 
   function format(string: string, params: string[]) {
@@ -22,7 +22,7 @@ export default function Translate(props: TranslateProps) {
     return str;
   }
 
-  let translated;
+  let translated: string;
   try {
     let json = JSON.parse(props.name);
     translated = format(
@@ -40,4 +40,6 @@ export default function Translate(props: TranslateProps) {
       {props.spaceAfter ? ' ' : ''}
     </>
   );
-}
+};
+
+export default Translate;

@@ -18,7 +18,12 @@ Tasks.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
-async function getTasks(req: any, res: any, when: string, id?: boolean) {
+const getTasks = async (
+  req: any,
+  res: any,
+  when: string,
+  id?: boolean
+): Promise<any> => {
   try {
     return await res.locals.home.getTasks({
       where:
@@ -60,7 +65,7 @@ async function getTasks(req: any, res: any, when: string, id?: boolean) {
   } catch (error) {
     throw error;
   }
-}
+};
 
 // ########################################################
 // ######################### GET ##########################

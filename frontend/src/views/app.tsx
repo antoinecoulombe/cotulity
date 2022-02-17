@@ -112,7 +112,7 @@ library.add(
   faTerminal
 );
 
-export default function App() {
+const App = (): JSX.Element => {
   const history = useHistory();
   const { setNotificationArray, clearAllNotifications } = useNotifications();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
@@ -139,11 +139,11 @@ export default function App() {
     return () => clearInterval(notifInterval);
   }, []);
 
-  function logout() {
+  const logout = (): void => {
     localStorage.clear();
     clearAllNotifications();
     history.push('/');
-  }
+  };
 
   return (
     <div className={`App ${theme}`}>
@@ -215,4 +215,6 @@ export default function App() {
       )}
     </div>
   );
-}
+};
+
+export default App;

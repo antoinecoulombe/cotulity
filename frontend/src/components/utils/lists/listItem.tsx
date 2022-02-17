@@ -4,10 +4,12 @@ interface ListItemProps {
   className?: string;
 }
 
-export default function ListItem(props: ListItemProps) {
+const ListItem = (props: ListItemProps): JSX.Element => {
   return (
     <div className={`list-item ${props.className ?? ''}`} data-uid={props.uid}>
       {props.children}
     </div>
   );
-}
+};
+
+export default ListItem;

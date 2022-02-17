@@ -8,11 +8,11 @@ interface WarningPopupProps {
   yesText: string;
   noText: string;
   children?: string;
-  onCancel(...attr: any): any;
-  onSubmit(...attr: any): any;
+  onCancel(...attr: any): void;
+  onSubmit(...attr: any): void;
 }
 
-export default function WarningPopup(props: WarningPopupProps) {
+const WarningPopup = (props: WarningPopupProps): JSX.Element => {
   return (
     <Popup onCancel={props.onCancel} type="warning">
       <div className="icon">
@@ -46,4 +46,6 @@ export default function WarningPopup(props: WarningPopupProps) {
       </div>
     </Popup>
   );
-}
+};
+
+export default WarningPopup;

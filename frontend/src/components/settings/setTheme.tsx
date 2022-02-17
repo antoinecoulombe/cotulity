@@ -7,19 +7,19 @@ interface SetThemeProps {
   theme: string;
 }
 
-export default function SetTheme(props: SetThemeProps) {
+const SetTheme = (props: SetThemeProps): JSX.Element => {
   const [autoTheme, setAutoThemeState] = useState<string>(
     localStorage.getItem('autoTheme') ?? 'true'
   );
 
-  function setTheme(theme: string, click: boolean) {
+  const setTheme = (theme: string, click: boolean): void => {
     if (theme === localStorage.getItem('theme')) return;
     if (click) $('#theme-switch').trigger('click');
     localStorage.setItem('theme', theme);
     props.setTheme(theme);
-  }
+  };
 
-  function setAutoTheme(auto: string) {
+  const setAutoTheme = (auto: string): void => {
     localStorage.setItem('autoTheme', auto);
     setAutoThemeState(auto);
 
@@ -27,18 +27,18 @@ export default function SetTheme(props: SetThemeProps) {
       const darkThemeMq = window.matchMedia('(prefers-color-scheme: dark)');
       props.setTheme(darkThemeMq.matches ? 'dark' : 'light');
     } else props.setTheme(localStorage.getItem('theme') ?? 'light');
-  }
+  };
 
-  function toggleTheme() {
+  const toggleTheme = (): void => {
     const theme = localStorage.getItem('theme') === 'light' ? 'dark' : 'light';
     setTheme(theme, false);
-  }
+  };
 
-  function toggleAutoTheme() {
+  const toggleAutoTheme = (): void => {
     const auto =
       localStorage.getItem('autoTheme') === 'true' ? 'false' : 'true';
     setAutoTheme(auto);
-  }
+  };
 
   return (
     <>
@@ -120,4 +120,6 @@ export default function SetTheme(props: SetThemeProps) {
       )}
     </>
   );
-}
+};
+
+export default SetTheme;

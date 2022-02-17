@@ -65,6 +65,7 @@ Users.get('/current/picture', (req, res) => __awaiter(void 0, void 0, void 0, fu
         return yield sendProfilePicture(req, res, true);
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -73,6 +74,7 @@ Users.get('/current/picture/url', (req, res) => __awaiter(void 0, void 0, void 0
         return yield sendProfilePicture(req, res, false);
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -86,12 +88,13 @@ Users.put('/current/picture', (req, res) => __awaiter(void 0, void 0, void 0, fu
         const result = yield Image.save(req, 'profiles');
         if (!result.success)
             return res.status(500).json(result);
-        if (oldImgId)
-            yield Image.remove(req.user.ImageId, true);
         yield req.user.setImage(result.image);
+        if (oldImgId)
+            yield Image.remove(oldImgId, true);
         res.json({ title: 'picture.updated', msg: 'user.imageUpdated' });
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -123,6 +126,7 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
                 msg: 'register.success',
             });
         }
+        /* istanbul ignore next */
         res.status(500).json({
             title: 'request.error',
             msg: 'request.error',
@@ -136,15 +140,14 @@ Users.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function
         });
     }
 }));
-Users.post('/public/password/reset', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        // TODO: Reset password
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ title: 'request.error', msg: 'request.error' });
-    }
-}));
+// Users.post('/public/password/reset', async (req, res) => {
+//   try {
+//     // TODO: Reset password
+//   } catch (error) {
+//     /* istanbul ignore next */
+//     res.status(500).json({ title: 'request.error', msg: 'request.error' });
+//   }
+// });
 // ########################################################
 // ######################## DELETE ########################
 // ########################################################
@@ -163,6 +166,7 @@ Users.delete('/current/picture', (req, res) => __awaiter(void 0, void 0, void 0,
         res.json({ title: 'picture.deleted', msg: 'user.imageDeleted' });
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -187,6 +191,7 @@ Users.delete('/delete', (req, res) => __awaiter(void 0, void 0, void 0, function
         }));
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));

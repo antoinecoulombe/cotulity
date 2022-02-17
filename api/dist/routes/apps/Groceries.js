@@ -39,7 +39,7 @@ Groceries.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        console.log(error);
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -73,7 +73,7 @@ Groceries.put('/:id/:action', (req, res) => __awaiter(void 0, void 0, void 0, fu
         });
     }
     catch (error) {
-        console.log(error);
+        /* istanbul ignore next */
         res.status(500).json({
             title: `groceries.${req.params.action}`,
             msg: 'request.error',
@@ -97,11 +97,11 @@ Groceries.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json({
             title: 'groceries.added',
             msg: 'groceries.added',
-            article: JSON.parse(JSON.stringify(article, ['id', 'description', 'deletedAt'])),
+            article: JSON.parse(JSON.stringify(article, ['id', 'description'])),
         });
     }
     catch (error) {
-        console.log(error);
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -122,7 +122,7 @@ Groceries.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.json({ title: 'groceries.deleted', msg: 'groceries.deleted' });
     }
     catch (error) {
-        console.log(error);
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));

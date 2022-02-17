@@ -11,7 +11,7 @@ const db = require('../../db/models');
 // ################### Getters / Globals ##################
 // ########################################################
 
-async function respondImage(res: any, url: string) {
+const respondImage = async (res: any, url: string): Promise<void> => {
   try {
     const img = await db.Image.findOne({ where: { url: url } });
     if (!img)
@@ -24,7 +24,7 @@ async function respondImage(res: any, url: string) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
-}
+};
 
 // ########################################################
 // ######################### GET ##########################

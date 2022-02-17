@@ -4,7 +4,7 @@ interface ListItemCenterProps {
   style?: object;
 }
 
-export default function ListItemCenter(props: ListItemCenterProps) {
+const ListItemCenter = (props: ListItemCenterProps): JSX.Element => {
   return (
     <div
       className={`list-item-center ${props.className ?? ''}`}
@@ -13,4 +13,6 @@ export default function ListItemCenter(props: ListItemCenterProps) {
       {props.children}
     </div>
   );
-}
+};
+
+export default ListItemCenter;

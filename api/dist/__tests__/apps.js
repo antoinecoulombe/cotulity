@@ -13,21 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app = require('../app.ts');
+const db = require('../../db/models');
 require("jest");
 require("jest-extended");
 require("jest-extended/all");
+const Test_1 = require("../routes/_utils/Test");
+// Supertest
 const supertest_1 = __importDefault(require("supertest"));
-const auth_1 = require("./auth");
 const request = supertest_1.default(app);
-const db = require('../../db/models');
 describe('apps', () => {
-    var USER = { token: '', id: 0 };
     const CALLER = 'apps';
+    var USER = { token: '', id: 0 };
     var apps;
     var homeRef;
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield request.post('/users/register').send(yield auth_1.getTestUser(CALLER));
-        let res = (yield request.post('/auth/login').send(yield auth_1.getTestUser(CALLER, true))).body;
+        yield request.post('/users/register').send(yield Test_1.getTestUser(CALLER));
+        let res = (yield request.post('/auth/login').send(yield Test_1.getTestUser(CALLER, true))).body;
         USER.token = res.token;
         USER.id = res.userId;
         yield db.App.create({

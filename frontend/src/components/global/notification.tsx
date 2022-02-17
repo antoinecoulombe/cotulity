@@ -12,7 +12,7 @@ interface NotificationProps {
   current: boolean;
 }
 
-export default function Notification(props: NotificationProps) {
+const Notification = (props: NotificationProps): JSX.Element => {
   const icons = {
     error: 'times-circle',
     warning: 'exclamation-circle',
@@ -23,14 +23,11 @@ export default function Notification(props: NotificationProps) {
 
   useEffect(() => {
     $('.notification').animate({ opacity: 1 }, 200);
-    // setTimeout(() => {
-    //   handleClose();
-    // }, props.json.type.showTime * 1000);
   }, []);
 
-  async function handleClose() {
+  const handleClose = async (): Promise<void> => {
     if (props.current && props.json.id) clearNotification();
-  }
+  };
 
   return (
     <div className={`notification ${props.json.type.name}`}>
@@ -58,4 +55,6 @@ export default function Notification(props: NotificationProps) {
       <FontAwesomeIcon icon="times" className="close" onClick={handleClose} />
     </div>
   );
-}
+};
+
+export default Notification;

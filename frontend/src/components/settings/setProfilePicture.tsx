@@ -8,7 +8,7 @@ import $ from 'jquery';
 
 interface SetProfilePictureProps {}
 
-export default function SetProfilePicture(props: SetProfilePictureProps) {
+const SetProfilePicture = (props: SetProfilePictureProps): JSX.Element => {
   const { setErrorNotification, setSuccessNotification } = useNotifications();
   const [file, setFile] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -22,7 +22,7 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
       .catch((err) => {});
   }, []);
 
-  function deleteProfilePicture() {
+  const deleteProfilePicture = (): void => {
     axios
       .delete('users/current/picture')
       .then((res) => {
@@ -33,9 +33,9 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
       .catch((err) => {
         setErrorNotification(err.response.data);
       });
-  }
+  };
 
-  function onFileChange(event: any) {
+  const onFileChange = (event: any): void => {
     let formData = new FormData();
     formData.append('file', event.target.files[0]);
 
@@ -56,7 +56,7 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
       .catch((err) => {
         setErrorNotification(err.response.data);
       });
-  }
+  };
 
   return (
     <div className="setting picture">
@@ -97,4 +97,6 @@ export default function SetProfilePicture(props: SetProfilePictureProps) {
       )}
     </div>
   );
-}
+};
+
+export default SetProfilePicture;

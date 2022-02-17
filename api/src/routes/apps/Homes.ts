@@ -24,7 +24,7 @@ Homes.use(async (req: any, res, next) => {
 // ########################################################
 
 // Get home list.
-async function getHomes(req: any, res: any, all: boolean) {
+const getHomes = async (req: any, res: any, all: boolean): Promise<void> => {
   try {
     const dbHomes = await req.user.getHomes({
       group: ['Home.id'],
@@ -72,7 +72,7 @@ async function getHomes(req: any, res: any, all: boolean) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
-}
+};
 
 // ########################################################
 // ######################### GET ##########################

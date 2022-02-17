@@ -42,6 +42,7 @@ Notifications.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.json(notifications);
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));
@@ -68,6 +69,7 @@ Notifications.delete('/delete/:id', (req, res) => __awaiter(void 0, void 0, void
         return res.json({ title: 'request.success', msg: 'request.success' });
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ title: 'request.error', msg: 'request.error' });
     }
 }));

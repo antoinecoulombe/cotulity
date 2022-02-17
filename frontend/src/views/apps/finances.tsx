@@ -1,9 +1,11 @@
 import AppContainer from '../../components/app/appContainer';
 
-export default function AppFinances() {
+const AppFinances = (): JSX.Element => {
   return (
     <AppContainer title="finances" appName="finances">
       <></>
     </AppContainer>
   );
-}
+};
+
+export default AppFinances;

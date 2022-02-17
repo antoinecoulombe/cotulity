@@ -1,5 +1,13 @@
 const faker = require('faker');
 
+interface tUser {
+  email: string;
+  password: string;
+  firstname?: string;
+  lastname?: string;
+  phone?: string;
+}
+
 export const TEST_USER: { email: (suffix: string) => string; pwd: string } = {
   email: (suffix: string) => {
     return `cotulity-test-${suffix}@hotmail.com`;
@@ -7,7 +15,10 @@ export const TEST_USER: { email: (suffix: string) => string; pwd: string } = {
   pwd: '123123',
 };
 
-export async function getTestUser(caller: string, basic?: boolean) {
+export const getTestUser = async (
+  caller: string,
+  basic?: boolean
+): Promise<tUser> => {
   return basic
     ? { email: TEST_USER.email(caller), password: TEST_USER.pwd }
     : {
@@ -17,4 +28,4 @@ export async function getTestUser(caller: string, basic?: boolean) {
         lastname: await faker.name.lastName(),
         phone: await faker.phone.phoneNumber(),
       };
-}
+};

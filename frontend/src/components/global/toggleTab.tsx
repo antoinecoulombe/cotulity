@@ -4,6 +4,8 @@ interface ToggleTabProps {
   active?: boolean;
 }
 
-export default function ToggleTab(props: ToggleTabProps) {
+const ToggleTab = (props: ToggleTabProps): JSX.Element => {
   return props.active ? props.children : <></>;
-}
+};
+
+export default ToggleTab;

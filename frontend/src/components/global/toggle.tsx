@@ -13,7 +13,7 @@ interface ToggleProps {
   toggleTab(name: string): void;
 }
 
-export default function Toggle(props: ToggleProps) {
+const Toggle = (props: ToggleProps): JSX.Element => {
   return (
     <div className="toggle">
       <div className="tabs">
@@ -39,4 +39,6 @@ export default function Toggle(props: ToggleProps) {
       ))}
     </div>
   );
-}
+};
+
+export default Toggle;

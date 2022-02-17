@@ -18,7 +18,7 @@ interface AppContainerProps {
   onAddClick?: (e: any) => void;
 }
 
-export function handleOpenAppResize(bodyMinHeight?: number) {
+export const handleOpenAppResize = (bodyMinHeight?: number): void => {
   let appH =
     ($(window)?.height() ?? 0) * 0.7 -
     (($('.open-app-container')?.outerWidth() ?? 0) -
@@ -43,9 +43,9 @@ export function handleOpenAppResize(bodyMinHeight?: number) {
   if ((window.innerWidth ?? 1500) < 1120)
     $('.open-app-container').addClass('compact');
   else $('.open-app-container').removeClass('compact');
-}
+};
 
-export default function AppContainer(props: AppContainerProps) {
+const AppContainer = (props: AppContainerProps): JSX.Element => {
   const history = useHistory();
 
   useEffect(() => {
@@ -84,4 +84,6 @@ export default function AppContainer(props: AppContainerProps) {
       <div className="app-body">{props.children}</div>
     </div>
   );
-}
+};
+
+export default AppContainer;

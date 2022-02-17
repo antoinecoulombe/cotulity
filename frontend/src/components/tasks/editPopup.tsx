@@ -14,15 +14,10 @@ interface EditPopupProps {
   onSubmit(...attr: any): any;
   onDelete?(...attr: any): any;
 }
-export default function EditPopup(props: EditPopupProps) {
-  const [task, setTask] = useState<Task>(
-    props.task
-      ? { ...props.task, dueDateTime: handleDate(props.task.dueDateTime) }
-      : initTask
-  );
 
+const EditPopup = (props: EditPopupProps): JSX.Element => {
   // Input format: 2021-08-18T08:26:21.000Z
-  function handleDate(date: string): string {
+  const handleDate = (date: string): string => {
     let split = date.split('T');
     let handledDate = '';
     handledDate += split[0].substring(split[0].lastIndexOf('-') + 1) + '/';
@@ -35,26 +30,37 @@ export default function EditPopup(props: EditPopupProps) {
       split[1].lastIndexOf(':')
     );
     return handledDate;
-  }
+  };
+
+  const [task, setTask] = useState<Task>(
+    props.task
+      ? { ...props.task, dueDateTime: handleDate(props.task.dueDateTime) }
+      : initTask
+  );
 
   useEffect(() => {}, []);
 
-  // function onChange(event: any) {
+  // const onChange = (event: any) => {
   //   setName(event.target.value);
-  // }
+  // };
 
-  function toggleSwitch(field: string) {
+  const toggleSwitch = (field: string): void => {
     if (field === 'important') setTask({ ...task, important: !task.important });
     else if (field === 'shared') {
       setTask({ ...task, shared: !task.shared });
     }
-  }
+  };
 
-  function onSubmit() {
+  const onSubmit = (): void => {
     props.onSubmit(task);
-  }
+  };
 
-  function getDateTime() {
+  const getDateTime = (): {
+    day: string;
+    month: string;
+    hour: string;
+    minute: string;
+  } => {
     let split = task.dueDateTime.split('@');
     var day: string, month: string, hour: string, minute: string;
     if (split[0].length > 1) {
@@ -73,9 +79,9 @@ export default function EditPopup(props: EditPopupProps) {
       minute = '';
     }
     return { day: day, month: month, hour: hour, minute: minute };
-  }
+  };
 
-  function setDateTime(e: any, field: string) {
+  const setDateTime = (e: any, field: string): boolean => {
     if (e.target.value.length > 2) return false;
 
     var newDate: string = '';
@@ -115,9 +121,9 @@ export default function EditPopup(props: EditPopupProps) {
     }
     setTask({ ...task, dueDateTime: newDate });
     return true;
-  }
+  };
 
-  function handleSelect(selected: DropdownOption[]) {
+  const handleSelect = (selected: DropdownOption[]): void => {
     let newTask = { ...task };
     newTask.Users = selected.map((us) => {
       return {
@@ -128,7 +134,7 @@ export default function EditPopup(props: EditPopupProps) {
       };
     });
     setTask(newTask);
-  }
+  };
 
   return (
     <Popup
@@ -260,4 +266,6 @@ export default function EditPopup(props: EditPopupProps) {
       </div>
     </Popup>
   );
-}
+};
+
+export default EditPopup;

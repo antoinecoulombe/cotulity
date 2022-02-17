@@ -56,16 +56,16 @@ export type NotificationsContextValue = typeof defaultApi;
 export const NotificationsContext =
   React.createContext<NotificationsContextValue>(defaultApi);
 
-export function NotificationsProvider({ children }: any) {
+export const NotificationsProvider = ({ children }: any): JSX.Element => {
   const [notifications, setNotifications] = React.useState<
     strictJsonNotification[]
   >(defaultApi.notifications);
 
   // Convert a jsonNotification to a strictJsonNotificaiton.
-  function toStrict(
+  const toStrict = (
     n: jsonNotification,
     type?: { name: string; timeout: number }
-  ): strictJsonNotification {
+  ): strictJsonNotification => {
     return {
       id: n.id ?? new Date().getTime(),
       db: n.db ?? false,
@@ -78,24 +78,24 @@ export function NotificationsProvider({ children }: any) {
       timestamp: null,
       current: false,
     };
-  }
+  };
 
-  function getCurrentNotificationIndex(): number {
+  const getCurrentNotificationIndex = (): number => {
     if (!notifications || !notifications.length) return -1;
 
     let i = notifications.findIndex((n) => n.current);
     return i == -1 ? 0 : i;
-  }
+  };
 
-  function getCurrentNotification(): strictJsonNotification | undefined {
+  const getCurrentNotification = (): strictJsonNotification | undefined => {
     if (!notifications || !notifications.length) return undefined;
     return notifications.find((n) => n.current);
-  }
+  };
 
-  function setCurrentNotification(
+  const setCurrentNotification = (
     current: number,
     notifs?: strictJsonNotification[]
-  ) {
+  ): void => {
     let newNotifications = notifs ? [...notifs] : [...notifications];
 
     if (newNotifications?.length) {
@@ -109,13 +109,13 @@ export function NotificationsProvider({ children }: any) {
     }
 
     setNotifications(newNotifications);
-  }
+  };
 
-  function appendOrSetNotifications(notifs: strictJsonNotification[]) {
+  const appendOrSetNotifications = (notifs: strictJsonNotification[]) => {
     if (notifications && notifications.length)
       setNotifications([...notifications].concat(notifs));
     else setCurrentNotification(0, notifs);
-  }
+  };
 
   const prevNotification = React.useCallback(() => {
     if (getCurrentNotificationIndex() > 0)
@@ -259,9 +259,9 @@ export function NotificationsProvider({ children }: any) {
       {children}
     </NotificationsContext.Provider>
   );
-}
+};
 
 // Notification hook
-export function useNotifications() {
+export const useNotifications = () => {
   return React.useContext(NotificationsContext);
-}
+};

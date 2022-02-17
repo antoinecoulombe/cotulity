@@ -5,8 +5,10 @@ interface ListProps {
   className?: string;
 }
 
-export default function List(props: ListProps) {
+const List = (props: ListProps): JSX.Element => {
   return (
     <div className={`list ${props.className ?? ''}`}>{props.children}</div>
   );
-}
+};
+
+export default List;

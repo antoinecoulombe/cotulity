@@ -7,8 +7,7 @@ export interface TitleProps {
   required?: boolean;
   className?: string;
 }
-
-export default function Title(props: TitleProps) {
+const Title = (props: TitleProps): JSX.Element => {
   return (
     <div className={`title ${props.className ?? ''}`}>
       <h2>
@@ -25,4 +24,6 @@ export default function Title(props: TitleProps) {
       )}
     </div>
   );
-}
+};
+
+export default Title;

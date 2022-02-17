@@ -19,8 +19,8 @@ interface InputProps {
   onBlur?: (e: any) => void;
 }
 
-export default function Input(props: InputProps) {
-  function handleBlur(event: any) {
+const Input = (props: InputProps): JSX.Element => {
+  const handleBlur = (event: any): void => {
     if (!props.filled && !event.target.value.length) {
       $(event.target).removeClass('filled');
       $(event.target).next().removeClass('filled');
@@ -30,7 +30,7 @@ export default function Input(props: InputProps) {
     }
 
     props.onBlur?.(event);
-  }
+  };
 
   return (
     <div
@@ -58,4 +58,6 @@ export default function Input(props: InputProps) {
       {props.after}
     </div>
   );
-}
+};
+
+export default Input;

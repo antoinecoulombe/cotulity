@@ -6,7 +6,7 @@ interface FormToggleProps {
   onClick: () => void;
 }
 
-export default function FormToggle(props: FormToggleProps) {
+const FormToggle = (props: FormToggleProps): JSX.Element => {
   var p = {
     signup: {
       static: 'login.signup-p.static',
@@ -18,7 +18,7 @@ export default function FormToggle(props: FormToggleProps) {
     },
   };
 
-  function toggleForm(signup: boolean) {
+  const toggleForm = (signup: boolean): void => {
     $('.toggle, .pwd-reset').css('opacity', 0);
     $('.toggle, .pwd-reset').hide();
 
@@ -35,12 +35,12 @@ export default function FormToggle(props: FormToggleProps) {
     } else {
       $('.submit').animate({ top: -4 }, 275);
     }
-  }
+  };
 
-  function handleClick() {
+  const handleClick = (): void => {
     toggleForm(props.login);
     props.onClick();
-  }
+  };
 
   return (
     <p className="toggle">
@@ -55,4 +55,6 @@ export default function FormToggle(props: FormToggleProps) {
       </i>
     </p>
   );
-}
+};
+
+export default FormToggle;

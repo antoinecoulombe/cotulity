@@ -17,14 +17,14 @@ interface article {
   deletedAt?: null | string;
 }
 
-export default function AppGroceries() {
+const AppGroceries = (): JSX.Element => {
   const [newArticle, setNewArticle] = useState<string>('');
   const [articles, setArticles] = useState<article[]>([]);
   const { setNotification, setErrorNotification } = useNotifications();
   const { t, i18n } = useTranslation('common');
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  function getArticles() {
+  const getArticles = (): void => {
     axios
       .get(`/groceries/${localStorage.getItem('currentHome')}`)
       .then((res: any) => {
@@ -35,7 +35,7 @@ export default function AppGroceries() {
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
+  };
 
   useEffect(() => {
     getArticles();
@@ -45,7 +45,7 @@ export default function AppGroceries() {
     handleOpenAppResize(140);
   }, [articles]);
 
-  function forceDeleteArticle(e: any, id: number) {
+  const forceDeleteArticle = (e: any, id: number): void => {
     axios
       .delete(`/groceries/${localStorage.getItem('currentHome')}/${id}`)
       .then(async (res: any) => {
@@ -57,18 +57,18 @@ export default function AppGroceries() {
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
+  };
 
-  function handleArticle(id: number) {
+  const handleArticle = (id: number): void => {
     toggleArticle(
       id,
       articles.find((x) => x.id === id)?.deletedAt === null
         ? 'delete'
         : 'restore'
     );
-  }
+  };
 
-  function toggleArticle(id: number, action: string) {
+  const toggleArticle = (id: number, action: string): void => {
     axios
       .put(`/groceries/${localStorage.getItem('currentHome')}/${id}/${action}`)
       .then((res: any) => {
@@ -80,9 +80,9 @@ export default function AppGroceries() {
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
+  };
 
-  function AddArticle() {
+  const AddArticle = (): void => {
     axios
       .post(`/groceries/${localStorage.getItem('currentHome')}`, {
         description: newArticle,
@@ -98,7 +98,7 @@ export default function AppGroceries() {
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
+  };
 
   return (
     <AppContainer title="groceries" appName="groceries" bodyMinHeight={140}>
@@ -165,4 +165,6 @@ export default function AppGroceries() {
       </div>
     </AppContainer>
   );
-}
+};
+
+export default AppGroceries;

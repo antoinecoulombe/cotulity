@@ -51,7 +51,7 @@ app.use('/apps', Apps_1.default);
 const Homes_1 = __importDefault(require("./routes/apps/Homes"));
 app.use('/homes', Homes_1.default);
 const Home_1 = __importDefault(require("./routes/apps/Home"));
-app.use('/homes/:refnumber', Apps_1.validateHome, Home_1.default);
+app.use('/home/:refnumber', Apps_1.validateHome, Home_1.default);
 const Finances_1 = __importDefault(require("./routes/apps/Finances"));
 app.use('/finances/:refnumber', Apps_1.validateHome, Finances_1.default);
 const Groceries_1 = __importDefault(require("./routes/apps/Groceries"));

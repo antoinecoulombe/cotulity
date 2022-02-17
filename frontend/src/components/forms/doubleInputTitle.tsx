@@ -23,18 +23,18 @@ interface Inputs {
   second: string;
 }
 
-export default function DoubleInputForm(props: DoubleInputFormProps) {
+const DoubleInputForm = (props: DoubleInputFormProps): JSX.Element => {
   const [values, setValues] = useState<Inputs>({
     first: props.values?.first ?? '',
     second: props.values?.second ?? '',
   });
 
-  function onChange(e: any, input: number) {
+  const onChange = (e: any, input: number): void => {
     if (props.onChange === undefined || props.onChange(e, input)) {
       if (input === 1) setValues({ ...values, first: e.target.value });
       if (input === 2) setValues({ ...values, second: e.target.value });
     }
-  }
+  };
 
   return (
     <div className={`si-form double r-offset ${props.className ?? ''}`}>
@@ -63,4 +63,6 @@ export default function DoubleInputForm(props: DoubleInputFormProps) {
       </div>
     </div>
   );
-}
+};
+
+export default DoubleInputForm;

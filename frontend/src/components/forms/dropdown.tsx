@@ -31,7 +31,7 @@ export interface DropdownOption {
   selected?: boolean;
 }
 
-export default function Dropdown(props: DropdownProps) {
+const Dropdown = (props: DropdownProps): JSX.Element => {
   const selectedRef = useRef<HTMLDivElement>(null);
 
   const [selected, setSelected] = useState<DropdownOption[]>(
@@ -45,39 +45,40 @@ export default function Dropdown(props: DropdownProps) {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => setOpened(false));
 
-
   useEffect(() => {
-    if (selectedRef.current)
-      selectedRef.current.scrollLeft = 15000;
+    if (selectedRef.current) selectedRef.current.scrollLeft = 15000;
   }, [selected]);
 
-  function selectHandle(id:number, from: DropdownOption[], to: DropdownOption[], selected: boolean) {
+  const selectHandle = (
+    id: number,
+    from: DropdownOption[],
+    to: DropdownOption[],
+    selected: boolean
+  ): void => {
     let f = [...from];
     let t = [...to];
 
-    let i = from.findIndex((x) => x.id === id); 
+    let i = from.findIndex((x) => x.id === id);
     f.splice(i, 1);
     t.push(from[i]);
     t[t.length - 1].selected = selected;
 
-    if (!selected)
-      t.sort((a, b) => a.value.localeCompare(b.value));
+    if (!selected) t.sort((a, b) => a.value.localeCompare(b.value));
 
     setSelected(selected ? t : f);
     setUnselected(selected ? f : t);
     props.onSelect?.(selected ? t : f);
 
-    if (selected && !f.length)
-      setOpened(false);
-  }
+    if (selected && !f.length) setOpened(false);
+  };
 
-  function unSelect(id: number) {
+  const unSelect = (id: number): void => {
     selectHandle(id, selected, unselected, false);
-  }
+  };
 
-  function select(id: number) {
+  const select = (id: number): void => {
     selectHandle(id, unselected, selected, true);
-  }
+  };
 
   return (
     <div className={`si-form ${props.className ?? ''} r-offset `}>
@@ -100,7 +101,7 @@ export default function Dropdown(props: DropdownProps) {
           value={''}
           error={props.error}
           onChange={() => {}}
-          onFocus={() => setOpened(true)} 
+          onFocus={() => setOpened(true)}
           className={opened ? 'active' : ''}
           filled={selected.length > 0}
           before={
@@ -133,7 +134,9 @@ export default function Dropdown(props: DropdownProps) {
                     {us.img && (
                       <img
                         src={`http://localhost:3000/images/public/${us.img}`}
-                        alt={`${us.value[0]}${us.value.split(' ')[1][0]}`.toUpperCase()}
+                        alt={`${us.value[0]}${
+                          us.value.split(' ')[1][0]
+                        }`.toUpperCase()}
                       />
                     )}
                     {us.icon && (
@@ -152,4 +155,6 @@ export default function Dropdown(props: DropdownProps) {
       </div>
     </div>
   );
-}
+};
+
+export default Dropdown;

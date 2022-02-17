@@ -15,7 +15,7 @@ interface OnlineApp {
   image: string;
 }
 
-export default function AppsPage() {
+const AppsPage = (): JSX.Element => {
   const { setNotification, setSuccessNotification } = useNotifications();
   const [apps, setApps] = useState<OnlineApp[]>([]);
   const [homes, setHomes] = useState<Home[]>([]);
@@ -26,7 +26,11 @@ export default function AppsPage() {
   if (!localStorage.getItem('lang')) localStorage.setItem('lang', 'en');
   if (!localStorage.getItem('theme')) localStorage.setItem('theme', 'light');
 
-  function setHome(home: Home | undefined, homes: Home[], reorder?: boolean) {
+  const setHome = (
+    home: Home | undefined,
+    homes: Home[],
+    reorder?: boolean
+  ) => {
     if (!home) return;
     localStorage.setItem('currentHome', home.refNumber.toString());
 
@@ -36,13 +40,13 @@ export default function AppsPage() {
       newHomes.unshift(newHomes.splice(i, 1)[0]);
     }
     setHomes(newHomes);
-  }
+  };
 
-  function handleHomeChange(homes: Home[]) {
+  const handleHomeChange = (homes: Home[]): void => {
     setHome(homes[0], homes);
-  }
+  };
 
-  function handleResize() {
+  const handleResize = (): void => {
     let containerWidth = $('#apps-container').outerWidth() ?? 500,
       appWidth = $('.app-container').outerWidth(true) ?? 500,
       appsPerLine = Math.floor(containerWidth / appWidth);
@@ -53,9 +57,9 @@ export default function AppsPage() {
     $('#apps').css({
       width: appWidth * appsPerLine,
     });
-  }
+  };
 
-  async function getHomes() {
+  const getHomes = async (): Promise<void> => {
     axios
       .get(`/homes/accepted`)
       .then((res: any) => {
@@ -77,7 +81,7 @@ export default function AppsPage() {
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
+  };
 
   useEffect(() => {
     window.addEventListener('resize', handleResize);
@@ -135,4 +139,6 @@ export default function AppsPage() {
   ) : (
     <></>
   );
-}
+};
+
+export default AppsPage;

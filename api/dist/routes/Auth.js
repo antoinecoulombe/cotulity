@@ -73,6 +73,7 @@ Router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     catch (error) {
+        /* istanbul ignore next */
         res.status(500).json({ msg: error.message });
     }
 }));

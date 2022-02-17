@@ -11,10 +11,10 @@ const genericError = {
   msg: 'request.error',
 };
 
-export async function remove(
+export const remove = async (
   id: number,
   force?: boolean
-): Promise<{ success: boolean; title: string; msg?: string }> {
+): Promise<{ success: boolean; title: string; msg?: string }> => {
   try {
     const img = await db.Image.findOne({ where: { id: id } });
     if (!img)
@@ -35,12 +35,12 @@ export async function remove(
   } catch (error) {
     return genericError;
   }
-}
+};
 
-export async function save(
+export const save = async (
   req: any,
   pathFromImage?: string
-): Promise<{ success: boolean; title: string; msg?: string; image?: any }> {
+): Promise<{ success: boolean; title: string; msg?: string; image?: any }> => {
   try {
     let destination = path.join(__dirname, '../../../images/');
     if (pathFromImage) destination = path.join(destination, pathFromImage);
@@ -79,4 +79,4 @@ export async function save(
   } catch (error) {
     return (error as any).title ? (error as any) : genericError;
   }
-}
+};

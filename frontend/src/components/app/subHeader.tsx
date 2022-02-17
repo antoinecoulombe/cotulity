@@ -7,17 +7,21 @@ export interface SubHeaderProps {
   filters?: Array<{ name: string; action: () => void }>;
 }
 
-export function switchSubHeaderTab(
+export const switchSubHeaderTab = (
   subHeader: SubHeaderProps,
   selected: string
-) {
+): Array<{
+  name: string;
+  action: () => void;
+  selected?: boolean | undefined;
+}> => {
   let newTabs = [...subHeader.tabs];
   newTabs[subHeader.tabs.findIndex((t) => t.selected)].selected = false;
   newTabs[subHeader.tabs.findIndex((t) => t.name === selected)].selected = true;
   return newTabs;
-}
+};
 
-export default function SubHeader(props: SubHeaderProps) {
+const SubHeader = (props: SubHeaderProps): JSX.Element => {
   return (
     <div className="sub-header">
       <div className="tabs">
@@ -46,4 +50,6 @@ export default function SubHeader(props: SubHeaderProps) {
       </div>
     </div>
   );
-}
+};
+
+export default SubHeader;

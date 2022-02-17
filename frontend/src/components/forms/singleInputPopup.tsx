@@ -6,9 +6,9 @@ interface SingleInputPopupProps {
   containerClassName?: string;
 }
 
-export default function SingleInputPopup(
+const SingleInputPopup = (
   props: SingleInputFormProps & SingleInputPopupProps
-) {
+): JSX.Element => {
   return (
     <Popup
       onCancel={props.onCancel}
@@ -20,4 +20,6 @@ export default function SingleInputPopup(
       </SingleInputForm>
     </Popup>
   );
-}
+};
+
+export default SingleInputPopup;

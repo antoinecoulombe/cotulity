@@ -24,17 +24,17 @@ export interface SingleInputFormProps {
   onBack?: (e: any) => void;
 }
 
-export default function SingleInputForm(props: SingleInputFormProps) {
+const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
   const [value, setValue] = useState<string>(props.value ?? '');
 
-  function handleKeyPress(event: any) {
+  const handleKeyPress = (event: any): void => {
     if (event.key === 'Enter') props.onSubmit?.(value);
-  }
+  };
 
-  function onChange(event: any) {
+  const onChange = (event: any): void => {
     setValue(event.target.value);
     if (props.parent?.onChange) props.parent.onChange(event);
-  }
+  };
 
   return (
     <div
@@ -82,4 +82,6 @@ export default function SingleInputForm(props: SingleInputFormProps) {
       </div>
     </div>
   );
-}
+};
+
+export default SingleInputForm;

@@ -35,18 +35,19 @@ const app = require('../app.ts');
 require("jest");
 require("jest-extended");
 require("jest-extended/all");
-const supertest_1 = __importDefault(require("supertest"));
-const auth_1 = require("./auth");
 const Global = __importStar(require("../routes/_utils/Global"));
 const Translate = __importStar(require("../routes/_utils/Translate"));
+const Test_1 = require("../routes/_utils/Test");
+// Supertest
+const supertest_1 = __importDefault(require("supertest"));
 const request = supertest_1.default(app);
 describe('notifications', () => {
-    var USER = { token: '', id: 0 };
     const CALLER = 'notifications';
+    var USER = { token: '', id: 0 };
     var notifications;
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield request.post('/users/register').send(yield auth_1.getTestUser(CALLER));
-        let res = (yield request.post('/auth/login').send(yield auth_1.getTestUser(CALLER, true))).body;
+        yield request.post('/users/register').send(yield Test_1.getTestUser(CALLER));
+        let res = (yield request.post('/auth/login').send(yield Test_1.getTestUser(CALLER, true))).body;
         USER.token = res.token;
         USER.id = res.userId;
     }));
@@ -57,40 +58,32 @@ describe('notifications', () => {
         expect(res.statusCode).toEqual(200);
         expect(res.body).toBeArrayOfSize(0);
     }));
-    it('should create 4 notifications and retreive them', () => __awaiter(void 0, void 0, void 0, function* () {
-        let notifTypes = ['success', 'info', 'warning', 'error'];
-        for (let i = 1; i <= 4; ++i)
-            yield Global.sendNotifications([USER.id], {
-                typeId: i,
-                title: 'title.test.' + notifTypes[i - 1],
-                description: Translate.getJSON('msg.test', [
-                    notifTypes[i - 1].toString(),
-                ]),
-            });
+    it('should create a notification and retreive it', () => __awaiter(void 0, void 0, void 0, function* () {
+        yield Global.sendNotifications([USER.id], {
+            typeId: 1,
+            title: 'title.test.success',
+            description: Translate.getJSON('msg.test', ['success']),
+        });
         const res = yield request
             .get(`/notifications`)
             .set('Authorization', `Bearer ${USER.token}`);
         expect(res.statusCode).toEqual(200);
-        expect(res.body).toBeArrayOfSize(4);
+        expect(res.body).toBeArrayOfSize(1);
         notifications = res.body;
-        for (let i = 0; i < 4; ++i) {
-            let n = notifications[i];
-            expect(n.title).toEqual('title.test.' + notifTypes[i]);
-            expect(n.msg).toEqual(`{"translate":"msg.test","format":["${notifTypes[i]}"]}`);
-            expect(n.type.name).toEqual(notifTypes[i]);
-        }
+        let n = notifications[0];
+        expect(n.title).toEqual('title.test.success');
+        expect(n.msg).toEqual(`{"translate":"msg.test","format":["success"]}`);
+        expect(n.type.name).toEqual('success');
     }));
-    it('should delete the 4 notifications', () => __awaiter(void 0, void 0, void 0, function* () {
-        notifications.forEach((n) => __awaiter(void 0, void 0, void 0, function* () {
-            const res = yield request
-                .delete(`/notifications/delete/${n.id}`)
-                .set('Authorization', `Bearer ${USER.token}`);
-            expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual({
-                title: 'request.success',
-                msg: 'request.success',
-            });
-        }));
+    it('should delete the notification', () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield request
+            .delete(`/notifications/delete/${notifications[0].id}`)
+            .set('Authorization', `Bearer ${USER.token}`);
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toEqual({
+            title: 'request.success',
+            msg: 'request.success',
+        });
     }));
     it('should fail to delete a notification due to invalid id', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield request

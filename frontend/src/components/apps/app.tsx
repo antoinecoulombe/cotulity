@@ -13,12 +13,12 @@ interface AppProps {
   onClick?: (name: string) => void;
 }
 
-export default function App(props: AppProps) {
+const App = (props: AppProps): JSX.Element => {
   const { setNotification } = useNotifications();
   const [hovered, setHover] = useState<boolean>(false);
   const history = useHistory();
 
-  function handleClick() {
+  const handleClick = (): void => {
     if (props.onClick) props.onClick(props.name);
     else
       axios
@@ -29,7 +29,7 @@ export default function App(props: AppProps) {
         .catch((err) => {
           setNotification(err.response.data);
         });
-  }
+  };
 
   return (
     <div
@@ -47,4 +47,6 @@ export default function App(props: AppProps) {
       </div>
     </div>
   );
-}
+};
+
+export default App;

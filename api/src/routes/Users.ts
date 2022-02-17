@@ -15,7 +15,11 @@ const bcrypt = require('bcryptjs');
 // ################### Getters / Globals ##################
 // ########################################################
 
-async function sendProfilePicture(req: any, res: any, asFile: boolean) {
+const sendProfilePicture = async (
+  req: any,
+  res: any,
+  asFile: boolean
+): Promise<void> => {
   let img = await db.Image.findOne({ where: { id: req.user.ImageId } });
   if (!img)
     return res.status(404).json({
@@ -25,7 +29,7 @@ async function sendProfilePicture(req: any, res: any, asFile: boolean) {
 
   if (asFile) res.sendFile(img.filePath);
   else res.json({ url: img.url });
-}
+};
 
 // ########################################################
 // ######################### GET ##########################

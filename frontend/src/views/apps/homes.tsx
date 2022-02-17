@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import { getCopyIndex, getTranslateJSON } from '../../utils/global';
+import {
+  getCopyIndex,
+  getTranslateJSON,
+  validateEmail,
+} from '../../utils/global';
 import AppContainer, {
   handleOpenAppResize,
 } from '../../components/app/appContainer';
@@ -29,7 +33,7 @@ export interface Home {
 
 const nullJSX: JSX.Element = <></>;
 
-export default function AppHomes() {
+const AppHomes = () => {
   const { setNotification, setErrorNotification, setSuccessNotification } =
     useNotifications();
   const history = useHistory();
@@ -53,31 +57,31 @@ export default function AppHomes() {
       });
   }, []);
 
-  async function getRefNumber(event: any) {
+  const getRefNumber = async (event: any): Promise<number> => {
     return await event.target.closest('.list-item').dataset.uid;
-  }
+  };
 
-  function closePopup() {
+  const closePopup = (): void => {
     setPopup(nullJSX);
-  }
+  };
 
-  function closeAndSuccess(data: any) {
+  const closeAndSuccess = (data: any): void => {
     setSuccessNotification(data);
     closePopup();
-  }
+  };
 
-  function closeAndError(data: any) {
+  const closeAndError = (data: any): void => {
     setNotification(data);
     closePopup();
-  }
+  };
 
-  async function showWarningPopup(
+  const showWarningPopup = async (
     event: any,
     action: string,
     refNumber?: number
-  ) {
-    const ref = refNumber ?? (await getRefNumber(event));
-    const home = homes.find((h) => h.refNumber === ref);
+  ): Promise<void> => {
+    const ref: number = refNumber ?? (await getRefNumber(event));
+    const home: Home | undefined = homes.find((h) => h.refNumber === ref);
 
     setPopup(
       <WarningPopup
@@ -93,9 +97,9 @@ export default function AppHomes() {
         {`homes.tooltip.${action === 'quit' ? 'quitHome' : 'deleteHome'}`}
       </WarningPopup>
     );
-  }
+  };
 
-  function handleDeleteHomeSuccess(res: any, refNumber: number) {
+  const handleDeleteHomeSuccess = (res: any, refNumber: number): void => {
     const redirect = homes.length <= 1;
     deleteHomeState(refNumber);
     closeAndSuccess(res.data);
@@ -105,32 +109,32 @@ export default function AppHomes() {
         'currentHome',
         homes.find((h) => h.refNumber != refNumber)?.refNumber.toString() ?? ''
       );
-  }
+  };
 
-  function deleteHome(refNumber: number) {
+  const deleteHome = (refNumber: number): void => {
     axios
       .delete(`/home/${refNumber}/delete`)
       .then((res: any) => handleDeleteHomeSuccess(res, refNumber))
       .catch((err) => {
         closeAndError(err.response.data);
       });
-  }
+  };
 
-  function quitHome(refNumber: number) {
+  const quitHome = (refNumber: number): void => {
     axios
       .delete(`/home/${refNumber}/quit`)
       .then((res: any) => handleDeleteHomeSuccess(res, refNumber))
       .catch((err) => {
         closeAndError(err.response.data);
       });
-  }
+  };
 
-  async function showPopup(
+  const showPopup = async (
     event: any,
     action: string,
     refNumber?: number,
     error?: boolean
-  ) {
+  ): Promise<void> => {
     const ref = refNumber ?? (await getRefNumber(event));
     const home = homes.find((h) => h.refNumber === ref);
 
@@ -152,39 +156,51 @@ export default function AppHomes() {
         {getTranslateJSON(`homes.tooltip.${action}`, [home?.name ?? ''])}
       </SingleInputPopup>
     );
-  }
+  };
 
-  function deleteHomeState(refNumber: number) {
+  const deleteHomeState = (refNumber: number): void => {
     const i = homes.findIndex((h) => h.refNumber === refNumber);
     setHomes(homes.slice(0, i).concat(homes.slice(i + 1)));
-  }
+  };
 
-  function renameHome(value: string, refNumber: number) {
+  const renameHome = (value: string, refNumber: number): void => {
     axios
       .put(`/home/${refNumber}/rename`, { nickname: value })
       .then((res: any) => {
-        let homecp = getCopyIndex(
-          homes,
-          (h: Home) => h.refNumber === refNumber
-        );
+        let h = getCopyIndex(homes, (h: Home) => h.refNumber === refNumber);
         closeAndSuccess(res.data);
 
-        if (homecp) {
-          if (
-            localStorage.getItem('userId') ==
-            homecp.cp[homecp.i].ownerId.toString()
-          )
-            homecp.cp[homecp.i].name = value;
-          else homecp.cp[homecp.i].UserHome.nickname = value;
-          setHomes(homecp.cp);
+        if (h && h.i >= 0) {
+          if (localStorage.getItem('userId') == h.cp[h.i].ownerId.toString())
+            h.cp[h.i].name = value;
+          else h.cp[h.i].UserHome.nickname = value;
+          setHomes(h.cp);
         }
       })
       .catch((err) => {
         setErrorNotification(err.response.data);
       });
-  }
+  };
 
-  function addMember(value: string, refNumber: number) {
+  const addMember = (value: string, refNumber: number): void => {
+    if (!value || !value.length) {
+      showPopup(null, 'inviteMember', refNumber, true);
+      setErrorNotification({
+        title: 'form.email.error',
+        msg: 'form.error.email.missing',
+      });
+      return;
+    }
+
+    if (!validateEmail(value)) {
+      showPopup(null, 'inviteMember', refNumber, true);
+      setErrorNotification({
+        title: 'form.email.error',
+        msg: 'form.error.email.valid',
+      });
+      return;
+    }
+
     axios
       .post(`/home/${refNumber}/invitations`, { email: value })
       .then((res: any) => {
@@ -194,17 +210,17 @@ export default function AppHomes() {
         showPopup(null, 'inviteMember', refNumber, true);
         setErrorNotification(err.response.data);
       });
-  }
+  };
 
-  function updateMemberCount(refNumber: number, count: number) {
+  const updateMemberCount = (refNumber: number, count: number): void => {
     let h = getCopyIndex(homes, (h: Home) => h.refNumber === refNumber);
-    if (h) {
+    if (h && h.i >= 0) {
       h.cp[h.i].memberCount = count;
       setHomes(h.cp);
     }
-  }
+  };
 
-  async function showEditPopup(event: any, refN?: number) {
+  const showEditPopup = async (event: any, refN?: number): Promise<void> => {
     const ref = refN ?? (await getRefNumber(event));
     const home = homes.find((h) => h.refNumber === ref) ?? homes[0];
 
@@ -223,9 +239,9 @@ export default function AppHomes() {
         home={home}
       />
     );
-  }
+  };
 
-  async function cancelRequest(event: any) {
+  const cancelRequest = async (event: any): Promise<void> => {
     const ref = await getRefNumber(event);
 
     axios
@@ -237,7 +253,7 @@ export default function AppHomes() {
       .catch((err) => {
         setNotification(err.response.data);
       });
-  }
+  };
 
   const iconStyle = {
     iconWidth: 34,
@@ -374,4 +390,6 @@ export default function AppHomes() {
       </List>
     </AppContainer>
   );
-}
+};
+
+export default AppHomes;

@@ -1,7 +1,7 @@
 import LoginForm from '../components/login/loginForm';
 import '../assets/css/views/login.css';
 
-export default function LoginPage() {
+const LoginPage = (): JSX.Element => {
   return (
     <>
       <div id="container">
@@ -10,4 +10,6 @@ export default function LoginPage() {
       <div className="logo big"></div>
     </>
   );
-}
+};
+
+export default LoginPage;

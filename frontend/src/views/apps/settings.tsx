@@ -12,7 +12,7 @@ interface AppSettingsProps {
   theme: string;
 }
 
-export default function AppSettings(props: AppSettingsProps) {
+const AppSettings = (props: AppSettingsProps): JSX.Element => {
   const [popup, setPopup] = useState<JSX.Element>(<></>);
 
   return (
@@ -26,4 +26,6 @@ export default function AppSettings(props: AppSettingsProps) {
       </div>
     </AppContainer>
   );
-}
+};
+
+export default AppSettings;

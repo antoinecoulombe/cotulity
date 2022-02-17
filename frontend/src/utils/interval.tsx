@@ -2,7 +2,7 @@ import * as React from 'react';
 
 type TCallback = (time?: number) => void;
 
-export function useInterval(callback: TCallback, timeout: number) {
+export const useInterval = (callback: TCallback, timeout: number): void => {
   const savedCallback = React.useRef(callback);
 
   const handler = React.useCallback(
@@ -22,4 +22,4 @@ export function useInterval(callback: TCallback, timeout: number) {
       return () => window.clearInterval(id);
     }
   }, [handler, timeout]);
-}
+};

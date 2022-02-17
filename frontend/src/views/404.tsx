@@ -3,7 +3,7 @@ import { isAuthenticated } from '../utils/global';
 import Translate from '../components/utils/translate';
 import '../assets/css/views/404.css';
 
-export default function NotFoundPage() {
+const NotFoundPage = (): JSX.Element => {
   return (
     <div className="container-404">
       <h1>404</h1>
@@ -17,4 +17,6 @@ export default function NotFoundPage() {
       </h2>
     </div>
   );
-}
+};
+
+export default NotFoundPage;

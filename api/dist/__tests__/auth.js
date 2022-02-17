@@ -12,41 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTestUser = exports.USER = void 0;
 const app = require('../app.ts');
+const faker = require('faker');
 require("jest");
 require("jest-extended");
 require("jest-extended/all");
+const Test_1 = require("../routes/_utils/Test");
+// Supertest
 const supertest_1 = __importDefault(require("supertest"));
 const request = supertest_1.default(app);
-const faker = require('faker');
-exports.USER = {
-    email: (suffix) => {
-        return `test-${suffix}@hotmail.com`;
-    },
-    pwd: '123123',
-};
-function getTestUser(caller, basic) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return basic
-            ? { email: exports.USER.email(caller), password: exports.USER.pwd }
-            : {
-                email: exports.USER.email(caller),
-                password: exports.USER.pwd,
-                firstname: yield faker.name.firstName(),
-                lastname: yield faker.name.lastName(),
-                phone: yield faker.phone.phoneNumber(),
-            };
-    });
-}
-exports.getTestUser = getTestUser;
 describe('authentication', () => {
-    var TOKEN = '';
     const CALLER = 'auth';
+    var TOKEN = '';
     it('should register the user', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield request
             .post('/users/register')
-            .send(yield getTestUser(CALLER));
+            .send(yield Test_1.getTestUser(CALLER));
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({
             title: 'register.success',
@@ -56,7 +37,7 @@ describe('authentication', () => {
     it('should authenticate user and receive an authentication token', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield request
             .post('/auth/login')
-            .send(yield getTestUser(CALLER, true));
+            .send(yield Test_1.getTestUser(CALLER, true));
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual({
             title: 'login.success',
@@ -71,7 +52,7 @@ describe('authentication', () => {
         const res = yield request
             .post('/auth/login')
             .send({ email: 'coulombe.antoine@hotmail.com', password: '123123' });
-        expect(res.statusCode).toEqual(404); // not found
+        expect(res.statusCode).toEqual(404);
         expect(res.body).toEqual({
             title: 'login.error',
             msg: 'login.error',
@@ -81,8 +62,8 @@ describe('authentication', () => {
         const res = yield request.post('/users/register').send({
             email: 'coulombe.antoine@hotmail.com',
             password: '123123',
-            lastname: yield faker.name.lastName(),
-            phone: yield faker.phone.phoneNumber(),
+            lastname: 'doe',
+            phone: '1234567890',
         });
         expect(res.statusCode).toEqual(500);
         expect(res.body).toEqual({
@@ -91,13 +72,9 @@ describe('authentication', () => {
         });
     }));
     it('should fail to register due to existing email', () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield request.post('/users/register').send({
-            email: exports.USER.email(CALLER),
-            password: exports.USER.pwd,
-            firstname: yield faker.name.firstName(),
-            lastname: yield faker.name.lastName(),
-            phone: yield faker.phone.phoneNumber(),
-        });
+        const res = yield request
+            .post('/users/register')
+            .send(yield Test_1.getTestUser(CALLER));
         expect(res.statusCode).toEqual(500);
         expect(res.body).toEqual({
             title: 'register.error',
@@ -108,8 +85,8 @@ describe('authentication', () => {
     it('should reject login due to missing field', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield request
             .post('/auth/login')
-            .send({ email: exports.USER.email(CALLER) });
-        expect(res.statusCode).toEqual(500); // error
+            .send({ email: Test_1.TEST_USER.email(CALLER) });
+        expect(res.statusCode).toEqual(500);
         expect(res.body).toEqual({
             title: 'login.error',
             msg: 'login.error',
@@ -118,8 +95,8 @@ describe('authentication', () => {
     it('should reject login due to wrong password', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield request
             .post('/auth/login')
-            .send({ email: exports.USER.email(CALLER), password: '123124' });
-        expect(res.statusCode).toEqual(401); // unauthorized
+            .send({ email: Test_1.TEST_USER.email(CALLER), password: '123124' });
+        expect(res.statusCode).toEqual(401);
         expect(res.body).toEqual({
             title: 'login.error',
             msg: 'login.error',

@@ -4,7 +4,7 @@ import { useNotifications } from '../../contexts/NotificationsContext';
 import Notification from './notification';
 import $ from 'jquery';
 
-export default function Notifications() {
+const Notifications = (): JSX.Element => {
   const { notifications, nextNotification, prevNotification } =
     useNotifications();
 
@@ -12,9 +12,9 @@ export default function Notifications() {
     $('.notif-container').animate({ opacity: 1 }, 500);
   }, []);
 
-  function getCurrent(): number {
+  const getCurrent = (): number => {
     return notifications.findIndex((n) => n.current);
-  }
+  };
 
   return (
     <div className="notif-container">
@@ -72,4 +72,6 @@ export default function Notifications() {
       )}
     </div>
   );
-}
+};
+
+export default Notifications;

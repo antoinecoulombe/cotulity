@@ -8,7 +8,7 @@ interface HeaderProps {
   onAddClick?: (e: any) => void;
 }
 
-export default function Header(props: HeaderProps) {
+const Header = (props: HeaderProps): JSX.Element => {
   let title = '';
   const translateStart = '{"translate":"';
   if (props.title.startsWith(translateStart)) {
@@ -34,4 +34,6 @@ export default function Header(props: HeaderProps) {
       )}
     </div>
   );
-}
+};
+
+export default Header;

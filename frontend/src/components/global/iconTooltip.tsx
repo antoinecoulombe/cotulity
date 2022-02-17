@@ -22,7 +22,7 @@ interface IconTooltipProps {
   className?: string;
 }
 
-export default function IconToolTip(props: IconTooltipProps) {
+const IconToolTip = (props: IconTooltipProps): JSX.Element => {
   const [hovered, setHover] = useState<boolean>(false);
 
   let iconSize = props.style.iconWidth;
@@ -90,4 +90,6 @@ export default function IconToolTip(props: IconTooltipProps) {
       </div>
     </>
   );
-}
+};
+
+export default IconToolTip;
