@@ -44,7 +44,7 @@ jobs:
         run: npm install
       - name: Run tests
         working-directory: ./api
-        run: npm run test:cli
+        run: npm run test:noci
         env:
           DB_TEST: ${{ secrets.DB_TEST }}
           DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}

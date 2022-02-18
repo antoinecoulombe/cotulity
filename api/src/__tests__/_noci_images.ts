@@ -10,7 +10,7 @@ import * as Image from '../routes/_utils/Image';
 import supertest from 'supertest';
 const request = supertest(app);
 
-describe('nocli-images', () => {
+describe('noci-images', () => {
   const CALLER = 'images';
   var TOKEN = '';
   var URL = '';

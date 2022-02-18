@@ -14,7 +14,7 @@
     "test": "cross-env NODE_ENV=test jest --testTimeout=30000 --detectOpenHandles",
     "pretest": "cross-env NODE_ENV=test npm run migrate:reset",
     "test:one": "cross-env NODE_ENV=test npm run migrate:reset && jest $TEST --testTimeout=30000 --detectOpenHandles",
-    "test:cli": "cross-env NODE_ENV=test npm run migrate:reset && jest --testPathIgnorePatterns='.*(_nocli_).*' --testTimeout=30000 --detectOpenHandles",
+    "test:noci": "cross-env NODE_ENV=test npm run migrate:reset && jest --testPathIgnorePatterns='.*(_noci_).*' --testTimeout=30000 --detectOpenHandles",
     "coverage": "cross-env NODE_ENV=test npm run migrate:reset && jest --testTimeout=30000 --collectCoverage --detectOpenHandles"
   },
   "author": "coulombe.antoine@hotmail.com",
