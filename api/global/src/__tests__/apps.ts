@@ -1,9 +1,9 @@
 const app = require('../app.ts');
-const db = require('../../db/models');
+const db = require('../../../shared/db/models');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/_utils/Test';
+import { getTestUser } from '../../../shared/src/Test';
 
 // Supertest
 import supertest from 'supertest';

@@ -1,7 +1,7 @@
 import express from 'express';
 
 const Notifications = express.Router();
-const db = require('../../db/models');
+const db = require('../../../shared/db/models');
 
 // ########################################################
 // ##################### Middlewares ######################

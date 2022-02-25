@@ -1,8 +1,8 @@
 import express from 'express';
-import { validateApp } from '../../../shared/src/routes/_utils/Apps';
+import { validateApp } from '../../../shared/src/Apps';
 
 const Groceries = express.Router();
-const db = require('../../../db/models');
+const db = require('../../../shared/db/models');
 
 // ########################################################
 // ##################### Middlewares ######################

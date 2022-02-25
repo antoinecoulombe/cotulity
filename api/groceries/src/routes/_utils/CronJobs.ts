@@ -1,5 +1,5 @@
 var CronJob = require('cron').CronJob;
-var db = require('../../../db/models');
+const db = require('../../../../shared/db/models');
 var { Op } = require('sequelize');
 
 // Every hour (0 0 * * * *), deletes groceries older than one day.

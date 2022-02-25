@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsc --outDir './dist' && node ./dist/server.js",
     "dev": "nodemon --exec babel-node ./dist/server.js",
-    "debug": "cross-env TZ=UTC NODE_ENV=development tsnd --inspect --respawn src/server.ts",
+    "debug": "cross-env TZ=UTC NODE_ENV=development tsnd --inspect=0.0.0.0:9226 --respawn src/server.ts",
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",

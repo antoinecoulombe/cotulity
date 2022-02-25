@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../../.env' });
+require('dotenv').config({ path: '../../../shared/db/config/config' });
 module.exports = {
   development: {
     username: process.env.DB_DEV_USER,

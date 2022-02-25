@@ -1,11 +1,10 @@
 import express from 'express';
-import * as Translate from '../../../../shared/routes/_utils/Translate';
-import * as Global from '../../../../shared/routes/_utils/Global';
-import * as Email from '../_utils/Email';
-import { validateHome, validateApp } from '../Apps';
+import * as Translate from '../../../../shared/src/Translate';
+import * as Global from '../../../../shared/src/Global';
+import { validateApp } from '../../../../shared/src/Apps';
 
 const Homes = express.Router();
-const db = require('../../../db/models');
+const db = require('../../../../shared/db/models');
 
 // ########################################################
 // ##################### Middlewares ######################

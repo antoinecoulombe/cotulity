@@ -2,7 +2,7 @@ const app = require('../app.ts');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/_utils/Test';
+import { getTestUser } from '../../../shared/src/Test';
 
 // Supertest
 import supertest from 'supertest';

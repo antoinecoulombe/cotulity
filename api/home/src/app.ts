@@ -1,6 +1,7 @@
 // Imports
 import express from 'express';
 import bodyParser from 'body-parser';
+import { validateHome } from '../../shared/src/Apps';
 
 // Requires
 var cors = require('cors');
@@ -23,8 +24,8 @@ app.use(
 
 // Routes
 
-import Auth from './routes/Auth';
-app.use('/auth', Auth);
+import Home from './routes/Home';
+app.use('/home/:refnumber', validateHome, Home);
 
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {

@@ -1,7 +1,7 @@
 // Imports
 import express from 'express';
 import bodyParser from 'body-parser';
-import { validateHome } from '../../shared/src/routes/_utils/Apps';
+import { validateHome } from '../../shared/src/Apps';
 
 // Requires
 var cors = require('cors');

@@ -11,4 +11,6 @@ RUN npm install -g sequelize-cli
 
 COPY . .
 
+COPY ../shared ../shared
+
 CMD ["npm", "start"]

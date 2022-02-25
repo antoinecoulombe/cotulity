@@ -1,11 +1,8 @@
 import express from 'express';
-import {
-  validateApp,
-  validateHome,
-} from '../../../shared/src/routes/_utils/Apps';
+import { validateApp, validateHome } from '../../../shared/src/Apps';
 
 const Apps = express.Router();
-const db = require('../../db/models');
+const db = require('../../../shared/db/models');
 
 // ########################################################
 // ##################### Middlewares ######################

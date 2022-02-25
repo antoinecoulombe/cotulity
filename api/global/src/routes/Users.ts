@@ -1,10 +1,10 @@
 import express from 'express';
-import * as Image from '../../../shared/routes/_utils/Image';
-import { deleteHome } from './apps/Home';
+import * as Image from '../../../shared/src/Image';
+import { notifyMembersExceptOwner } from '../../../shared/src/Homes';
 
 const Users = express.Router();
 
-const db = require('../../db/models');
+const db = require('../../../shared/db/models');
 const bcrypt = require('bcryptjs');
 
 // ########################################################
@@ -164,8 +164,22 @@ Users.delete('/delete', async (req: any, res: any) => {
       // Delete all owned homes and send notifications
       const homes = await req.user.getOwnedHomes();
       await homes.forEach(async (h: any) => {
-        await deleteHome(h, t);
+        await notifyMembersExceptOwner(h, t);
       });
+
+      let homeIds = homes.map((h: any) => h.id);
+
+      // Delete home invitations
+      await db.HomeInvitation.destroy(
+        { where: { homeId: homeIds }, force: true },
+        { transaction: t }
+      );
+
+      // Delete homes
+      await db.Home.destroy(
+        { where: { id: homeIds }, force: true },
+        { transaction: t }
+      );
 
       // Delete user
       await req.user.destroy(

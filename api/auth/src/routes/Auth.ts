@@ -1,8 +1,6 @@
 import express from 'express';
-// import { validateApp } from '../../../shared/src/routes/Apps';
 
 const Auth = express.Router();
-const db = require('../../../db/models');
 
 const passport = require('passport');
 require('../../config/passport');

@@ -21,10 +21,6 @@ app.use(
   bodyParser.urlencoded({ extended: true, parameterLimit: 100, limit: '100mb' })
 );
 
-// Middlewares
-import AuthMiddleware from './middlewares/AuthMiddleware';
-app.use(AuthMiddleware);
-
 // Routes
 import Auth from './routes/Auth';
 app.use('/auth', Auth);

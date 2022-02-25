@@ -7,7 +7,7 @@ import express from 'express';
 
 const Router = express.Router();
 
-const db = require('../../db/models');
+const db = require('../../../shared/db/models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -72,7 +72,10 @@ Router.post('/login', async (req, res) => {
     }
   } catch (error) {
     /* istanbul ignore next */
-    res.status(500).json({ msg: (error as any).message });
+    res.status(500).json({
+      title: 'request.error',
+      msg: 'request.error',
+    });
   }
 });
 

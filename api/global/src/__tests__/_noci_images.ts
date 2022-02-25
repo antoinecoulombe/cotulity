@@ -3,8 +3,8 @@ var path = require('path');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/_utils/Test';
-import * as Image from '../../../shared/src/routes/_utils/Image';
+import { getTestUser } from '../../../shared/src/Test';
+import * as Image from '../../../shared/src/Image';
 
 // Supertest
 import supertest from 'supertest';
