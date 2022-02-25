@@ -1,0 +1,11 @@
+require('@babel/register');
+require('dotenv').config({ path: path.resolve(__dirname, '../shared/.env') });
+
+const path = require('path');
+
+module.exports = {
+  config: path.resolve(process.env.DB_CONFIG_PATH, 'db', 'config', 'config.js'),
+  'models-path': path.resolve('db', 'models'),
+  'seeders-path': path.resolve('db', 'seeders'),
+  'migrations-path': path.resolve('db', 'migrations'),
+};
