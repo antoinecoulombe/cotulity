@@ -1,6 +1,7 @@
 // Imports
 import express from 'express';
 import bodyParser from 'body-parser';
+import { AddUser } from '../../shared/middlewares/AuthMiddleware';
 
 // Requires
 var cors = require('cors');
@@ -20,6 +21,11 @@ app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({ extended: true, parameterLimit: 100, limit: '100mb' })
 );
+
+app.use(async (req: any, res: any, next) => {
+  await AddUser(req);
+  next();
+});
 
 // Routes
 import Auth from './routes/Auth';
