@@ -1,14 +1,14 @@
 import express from 'express';
-import * as Translate from '../../../shared/src/Translate';
-import * as Global from '../../../shared/src/Global';
-import { email, sendEmail } from '../../../shared/src/Email';
-import { validateApp } from '../../../shared/src/Apps';
+import * as Translate from '../../../shared/src/routes/Translate';
+import * as Global from '../../../shared/src/routes/Global';
+import { email, sendEmail } from '../../../shared/src/routes/Email';
+import { validateApp } from '../../../shared/src/routes/Apps';
 import {
   notifyMembersExceptOwner,
   denyIfNotOwner,
   getMembersExceptOwner,
   getMembersExceptRequester,
-} from '../../../shared/src/Homes';
+} from '../../../shared/src/routes/Homes';
 
 const Home = express.Router();
 const db = require('../../../shared/db/models');
@@ -191,7 +191,7 @@ Home.put('/requests/:id/:action', async (req: any, res: any) => {
         await Global.sendNotifications(
           (
             await getMembersExceptOwner(res.locals.home)
-          ).filter((id) => id != req.params.id),
+          ).filter((id: number) => id != req.params.id),
           {
             typeId: 2,
             title: Translate.getJSON('homes.memberAdded', [userHome.Home.name]),
@@ -316,7 +316,7 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
       await Global.sendNotifications(
         (
           await getMembersExceptOwner(res.locals.home)
-        ).filter((id) => id != req.params.id),
+        ).filter((id: number) => id != req.params.id),
         {
           typeId: 2,
           title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),

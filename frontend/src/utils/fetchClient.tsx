@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 
 const fetchClient = (): AxiosInstance => {
   const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:4000',
     method: 'get',
     headers: {
       'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-const db = require('../db/models');
+const db = require('../../db/models');
 
 // Verifies that the requested home is valid and accessible by the user.
 export const validateHome = async (req: any, res: any, next: any) => {

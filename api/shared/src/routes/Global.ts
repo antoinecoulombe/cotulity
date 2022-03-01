@@ -2,7 +2,7 @@ const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
 const readFile = promisify(fs.readFile);
-const db = require('../db/models');
+const db = require('../../db/models');
 
 export const sendNotifications = async (
   userIds: number[],

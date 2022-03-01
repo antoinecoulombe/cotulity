@@ -1,6 +1,6 @@
 import express from 'express';
-import * as Image from '../../../shared/src/Image';
-import { notifyMembersExceptOwner } from '../../../shared/src/Homes';
+import * as Image from '../../../shared/src/routes/Image';
+import { notifyMembersExceptOwner } from '../../../shared/src/routes/Homes';
 
 const Users = express.Router();
 

@@ -1,8 +1,8 @@
 import express from 'express';
-import { validateApp } from '../Apps';
+import { validateApp } from '../../../shared/src/routes/Apps';
 
 const Tasks = express.Router();
-const db = require('../../../db/models');
+const db = require('../../../shared/db/models');
 const { Op } = require('sequelize');
 
 // ########################################################

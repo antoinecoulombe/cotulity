@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateApp, validateHome } from '../../../shared/src/Apps';
+import { validateApp, validateHome } from '../../../shared/src/routes/Apps';
 
 const Apps = express.Router();
 const db = require('../../../shared/db/models');

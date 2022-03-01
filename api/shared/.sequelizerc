@@ -1,6 +1,4 @@
 require('@babel/register');
-require('dotenv').config({ path: path.resolve(__dirname, '../shared/.env') });
-
 const path = require('path');
 
 module.exports = {

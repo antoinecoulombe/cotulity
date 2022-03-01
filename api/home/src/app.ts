@@ -1,7 +1,8 @@
 // Imports
 import express from 'express';
 import bodyParser from 'body-parser';
-import { validateHome } from '../../shared/src/Apps';
+import { validateHome } from '../../shared/src/routes/Apps';
+import { AddUserToRequest } from '../../shared/src/middlewares/AuthMiddleware';
 
 // Requires
 var cors = require('cors');
@@ -21,6 +22,13 @@ app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({ extended: true, parameterLimit: 100, limit: '100mb' })
 );
+
+// Middlewares
+
+app.use(async (req: any, res: any, next) => {
+  await AddUserToRequest(req);
+  next();
+});
 
 // Routes
 

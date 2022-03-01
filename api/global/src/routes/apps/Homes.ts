@@ -1,7 +1,7 @@
 import express from 'express';
-import * as Translate from '../../../../shared/src/Translate';
-import * as Global from '../../../../shared/src/Global';
-import { validateApp } from '../../../../shared/src/Apps';
+import * as Translate from '../../../../shared/src/routes/Translate';
+import * as Global from '../../../../shared/src/routes/Global';
+import { validateApp } from '../../../../shared/src/routes/Apps';
 
 const Homes = express.Router();
 const db = require('../../../../shared/db/models');

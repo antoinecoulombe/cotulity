@@ -1,10 +1,10 @@
 {
-  "name": "api",
+  "name": "api-auth",
   "version": "1.0.0",
-  "description": "Cotulity's REST API",
+  "description": "Cotulity's authentication microservice api",
   "main": "./dist/server.js",
   "scripts": {
-    "start": "tsc --outDir './dist' && node ./dist/server.js",
+    "start": "npx ts-node ./src/server.ts",
     "dev": "nodemon --exec babel-node ./dist/server.js",
     "debug": "cross-env TZ=UTC NODE_ENV=development tsnd --inspect=0.0.0.0:9225 --respawn src/server.ts",
     "migrate": "npx sequelize-cli db:migrate",

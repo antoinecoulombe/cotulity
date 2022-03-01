@@ -2,7 +2,7 @@ import path from 'path';
 import * as Global from './Global';
 
 const fs = require('fs');
-const db = require('../db/models');
+const db = require('../../db/models');
 const formidable = require('formidable');
 
 const genericError = {

@@ -1,6 +1,7 @@
 const atob = require('atob');
 
-export function parseJwt(token: string) {
+export function parseJwt(token: string | null): any {
+  if (!token) return null;
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   var jsonPayload = decodeURIComponent(
@@ -15,7 +16,7 @@ export function parseJwt(token: string) {
   return JSON.parse(jsonPayload);
 }
 
-export function extractToken(req: any) {
+export function extractToken(req: any): string | null {
   if (
     req.headers.authorization &&
     req.headers.authorization.split(' ')[0] === 'Bearer'
