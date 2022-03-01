@@ -8,7 +8,7 @@ import * as Image from '../../../shared/src/routes/Image';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest(app);
+const request = supertest('http://127.0.0.1:4000');
 
 describe('noci-images', () => {
   const CALLER = 'images';

@@ -1,8 +1,8 @@
 // Imports
 import express from 'express';
 import bodyParser from 'body-parser';
-import { validateHome } from '../../shared/src/routes/Apps';
-import { AddUserToRequest } from '../../shared/src/middlewares/AuthMiddleware';
+import { validateHome } from '../../src/routes/Apps';
+import { AddUserToRequest } from '../../src/middlewares/AuthMiddleware';
 
 // Requires
 var cors = require('cors');

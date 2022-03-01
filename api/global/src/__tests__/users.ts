@@ -6,7 +6,7 @@ import { getTestUser } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest(app);
+const request = supertest('http://127.0.0.1:4000');
 
 describe('users', () => {
   const CALLER = 'users';

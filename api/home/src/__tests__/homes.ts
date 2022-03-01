@@ -4,11 +4,11 @@ const db = require('../../../shared/db/models');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/Test';
+import { getTestUser } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest(app);
+const request = supertest('http://127.0.0.1:4000');
 
 const sendMailMock = jest.fn();
 jest.mock('nodemailer');

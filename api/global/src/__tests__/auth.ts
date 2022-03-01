@@ -7,7 +7,7 @@ import { TEST_USER, getTestUser } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest(app);
+const request = supertest('http://127.0.0.1:4000');
 
 describe('authentication', () => {
   const CALLER = 'auth';
@@ -111,11 +111,10 @@ describe('authentication', () => {
       .delete('/users/delete')
       .set('Authorization', `Bearer ${TOKEN.substring(0, 132)}xxxxx`);
 
-    expect(res.statusCode).toEqual(500);
-    expect(res.body).toEqual({
-      title: 'request.denied',
-      msg: 'request.unauthorized',
-    });
+    expect(res.statusCode).toEqual(401);
+    expect(res.text).toEqual(
+      '{"title":"request.denied","msg":"request.unauthorized"}'
+    );
   });
 
   it('should delete the logged in user', async () => {

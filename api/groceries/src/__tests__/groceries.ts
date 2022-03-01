@@ -6,7 +6,7 @@ import { getTestUser } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest(app);
+const request = supertest('http://127.0.0.1:4000');
 
 describe('groceries', () => {
   const CALLER = 'groceries';
@@ -15,14 +15,10 @@ describe('groceries', () => {
   var groceries: number[] = [];
 
   beforeAll(async () => {
-    let res1 = await request
-      .post('/users/register')
-      .send(await getTestUser(CALLER));
-    console.log(res1.body);
+    await request.post('/users/register').send(await getTestUser(CALLER));
     let res = (
       await request.post('/auth/login').send(await getTestUser(CALLER, true))
     ).body;
-    console.log(res);
     USER.token = res.token;
     USER.id = res.userId;
 
