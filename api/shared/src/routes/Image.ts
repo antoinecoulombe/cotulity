@@ -1,3 +1,4 @@
+import { rejects } from 'assert';
 import path from 'path';
 import * as Global from './Global';
 
@@ -39,11 +40,15 @@ export const remove = async (
 
 export const save = async (
   req: any,
-  pathFromImage?: string
+  destination: string
 ): Promise<{ success: boolean; title: string; msg?: string; image?: any }> => {
   try {
-    let destination = path.join(__dirname, '../../../images/');
-    if (pathFromImage) destination = path.join(destination, pathFromImage);
+    if (!fs.existsSync(destination))
+      return {
+        success: false,
+        title: 'picture.couldNotUpload',
+        msg: 'path.invalid',
+      };
 
     var filename = await Global.createTokenAsync(4);
 

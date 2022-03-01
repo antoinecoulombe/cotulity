@@ -63,7 +63,10 @@ Users.put('/current/picture', async (req: any, res: any) => {
   try {
     const oldImgId = req.user.ImageId;
 
-    const result = await Image.save(req, 'profiles');
+    const result = await Image.save(
+      req,
+      __dirname + '/./../../images/profiles'
+    );
     if (!result.success) return res.status(500).json(result);
     await req.user.setImage(result.image);
 

@@ -463,6 +463,7 @@
         "unsupportedExtension": "L'extension de l'image n'est pas supportée. Les extensions supportées sont les suivantes: jpg, jpeg, png et gif.",
         "notFound": "L'image est introuvable."
       },
+      "path": { "invalid": "Le chemin spécifié est invalide." },
       "groceries": {
         "notFound": "L'article est introuvable.",
         "descInvalid": "L'article devrait contenir au moins un caractère.",
