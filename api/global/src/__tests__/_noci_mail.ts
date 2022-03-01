@@ -2,7 +2,7 @@ const app = require('../app.ts');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { sendEmail } from '../../../shared/src/Email';
+import { sendEmail } from '../../../shared/src/routes/Email';
 
 describe('noci-mail', () => {
   it('should fail to send an email', async () => {

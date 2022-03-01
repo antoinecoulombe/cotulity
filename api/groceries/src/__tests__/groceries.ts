@@ -15,10 +15,14 @@ describe('groceries', () => {
   var groceries: number[] = [];
 
   beforeAll(async () => {
-    await request.post('/users/register').send(await getTestUser(CALLER));
+    let res1 = await request
+      .post('/users/register')
+      .send(await getTestUser(CALLER));
+    console.log(res1.body);
     let res = (
       await request.post('/auth/login').send(await getTestUser(CALLER, true))
     ).body;
+    console.log(res);
     USER.token = res.token;
     USER.id = res.userId;
 

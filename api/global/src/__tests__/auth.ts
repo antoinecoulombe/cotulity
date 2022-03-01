@@ -3,7 +3,7 @@ const faker = require('faker');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { TEST_USER, getTestUser } from '../../../shared/src/Test';
+import { TEST_USER, getTestUser } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';

@@ -2,9 +2,9 @@ const app = require('../app.ts');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import * as Global from '../../../shared/src/Global';
-import * as Translate from '../../../shared/src/Translate';
-import { getTestUser } from '../../../shared/src/Test';
+import * as Global from '../../../shared/src/routes/Global';
+import * as Translate from '../../../shared/src/routes/Translate';
+import { getTestUser } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';

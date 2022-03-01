@@ -2,6 +2,7 @@ const atob = require('atob');
 
 export function parseJwt(token: string | null): any {
   if (!token) return null;
+  console.log(token);
   var base64Url = token.split('.')[1];
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   var jsonPayload = decodeURIComponent(

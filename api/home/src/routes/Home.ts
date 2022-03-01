@@ -71,6 +71,11 @@ Home.get('/', async (req: any, res: any) => {
       ],
     });
 
+    if (!home)
+      return res
+        .status(404)
+        .json({ title: 'homes.notFound', msg: 'homes.notFound' });
+
     res.json(home[0]);
   } catch (e) {
     /* istanbul ignore next */
