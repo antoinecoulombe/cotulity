@@ -45,11 +45,12 @@ app.use('/images', Images);
 import Apps from './routes/Apps';
 app.use('/apps', Apps);
 
-import Settings from './routes/apps/Settings';
+import Settings from './routes/Settings';
 app.use('/settings', Settings);
 
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
+  /* istanbul ignore next */
   res.status(err.status || 500).json({
     title: err.title || 'request.error',
     msg: err.msg || 'request.error',
@@ -59,6 +60,7 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 // 404 Handler
 app.use((req, res) => {
+  /* istanbul ignore next */
   res.status(404).send({
     title: 'request.notFound',
     msg: 'request.notFound',

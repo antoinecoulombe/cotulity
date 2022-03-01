@@ -37,6 +37,7 @@ app.use('/tasks/:refnumber', validateHome, Tasks);
 
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
+  /* istanbul ignore next */
   res.status(err.status || 500).json({
     title: err.title || 'request.error',
     msg: err.msg || 'request.error',
@@ -46,6 +47,7 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 // 404 Handler
 app.use((req, res) => {
+  /* istanbul ignore next */
   res.status(404).send({
     title: 'request.notFound',
     msg: 'request.notFound',
