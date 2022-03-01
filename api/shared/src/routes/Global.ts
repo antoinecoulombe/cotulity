@@ -28,7 +28,7 @@ export function format(string: string, params: string[]): string {
 }
 
 export const readHtml = async (p: string): Promise<any> => {
-  return await readFile(path.join(__dirname, p), 'utf8');
+  return await readFile(p, 'utf8');
 };
 
 export const respondHtml = (

@@ -9,8 +9,48 @@
       "type": "pwa-node"
     },
     {
-      "name": "Node: Typescript",
+      "name": "Node: Auth - 9225",
+      "port": 9225,
+      "request": "attach",
+      "type": "node",
+      "protocol": "inspector",
+      "restart": true
+    },
+    {
+      "name": "Node: Groceries - 9226",
+      "port": 9226,
+      "request": "attach",
+      "type": "node",
+      "protocol": "inspector",
+      "restart": true
+    },
+    {
+      "name": "Node: Homes - 9227",
+      "port": 9227,
+      "request": "attach",
+      "type": "node",
+      "protocol": "inspector",
+      "restart": true
+    },
+    {
+      "name": "Node: Tasks - 9228",
+      "port": 9228,
+      "request": "attach",
+      "type": "node",
+      "protocol": "inspector",
+      "restart": true
+    },
+    {
+      "name": "Node: Global - 9229",
       "port": 9229,
+      "request": "attach",
+      "type": "node",
+      "protocol": "inspector",
+      "restart": true
+    },
+    {
+      "name": "Node: Finances - 9230",
+      "port": 9230,
       "request": "attach",
       "type": "node",
       "protocol": "inspector",

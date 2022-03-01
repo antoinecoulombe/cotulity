@@ -241,6 +241,11 @@ Home.post('/invitations', async (req: any, res: any) => {
   try {
     if (await denyIfNotOwner(req, res)) return;
 
+    if (!req.body.email)
+      return res
+        .status(500)
+        .json({ title: 'homes.couldNotSendInvite', msg: 'form.email.error' });
+
     const member = await res.locals.home.getMembers({
       where: { email: req.body.email },
     });
@@ -267,7 +272,7 @@ Home.post('/invitations', async (req: any, res: any) => {
       });
 
     const emailHtml = Global.format(
-      await Global.readHtml('../_html/emailInvite.html'),
+      await Global.readHtml(__dirname + '/_html/emailInvite.html'),
       [res.locals.home.name, token]
     );
 

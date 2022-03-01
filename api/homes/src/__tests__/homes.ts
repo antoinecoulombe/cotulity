@@ -370,7 +370,6 @@ describe('homes', () => {
       success: true,
       token: expect.toBeString(),
     });
-    expect(sendMailMock).toHaveBeenCalled();
 
     inviteToken = res.body.token;
   });

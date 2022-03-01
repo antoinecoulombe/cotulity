@@ -96,7 +96,9 @@ Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
         include: db.Home,
       });
 
-      const html = await Global.readHtml('../_html/responsePage.html');
+      const html = await Global.readHtml(
+        __dirname + '/_html/responsePage.html'
+      );
 
       if (!invite) {
         return Global.respondHtml(
