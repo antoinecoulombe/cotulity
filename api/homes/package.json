@@ -5,7 +5,9 @@
   "main": "./dist/server.js",
   "scripts": {
     "start": "npx ts-node ./src/server.ts",
+    "start:test": "cross-env NODE_ENV=test npx ts-node ./src/server.ts",
     "dev": "cross-env TZ=UTC NODE_ENV=development tsnd --inspect=0.0.0.0:9227 --respawn src/server.ts",
+    "dev:test": "cross-env TZ=UTC NODE_ENV=test tsnd --inspect=0.0.0.0:9227 --respawn src/server.ts",
     "migrate": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",

@@ -4,12 +4,12 @@ LABEL maintainer="Antoine Coulombe"
 
 WORKDIR /app
 
-COPY home/package*.json .
+COPY homes/package*.json .
 
 RUN npm install
 RUN npm install -g sequelize-cli
 
-COPY home/ .
+COPY homes/ .
 
 WORKDIR /shared
 

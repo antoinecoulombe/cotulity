@@ -35,6 +35,9 @@ app.use(async (req: any, res: any, next) => {
 import Home from './routes/Home';
 app.use('/home/:refnumber', validateHome, Home);
 
+import Homes from './routes/Homes';
+app.use('/homes', Homes);
+
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   res.status(err.status || 500).json({

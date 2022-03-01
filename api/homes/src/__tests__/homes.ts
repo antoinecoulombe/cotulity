@@ -1,5 +1,5 @@
-const app = require('../app.ts');
 const db = require('../../../shared/db/models');
+require('dotenv').config({ path: __dirname + '/./../../../shared/.env' });
 
 import 'jest';
 import 'jest-extended';

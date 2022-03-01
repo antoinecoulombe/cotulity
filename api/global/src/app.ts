@@ -45,9 +45,6 @@ app.use('/images', Images);
 import Apps from './routes/Apps';
 app.use('/apps', Apps);
 
-import Homes from './routes/apps/Homes';
-app.use('/homes', Homes);
-
 import Settings from './routes/apps/Settings';
 app.use('/settings', Settings);
 

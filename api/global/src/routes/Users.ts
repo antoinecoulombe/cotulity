@@ -6,6 +6,7 @@ const Users = express.Router();
 
 const db = require('../../../shared/db/models');
 const bcrypt = require('bcryptjs');
+require('dotenv').config({ path: __dirname + '/./../../../shared/.env' });
 
 // ########################################################
 // ##################### Middlewares ######################
