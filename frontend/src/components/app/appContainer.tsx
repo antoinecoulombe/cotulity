@@ -3,7 +3,7 @@ import SubHeader, { SubHeaderProps } from './subHeader';
 import Sidebar, { SidebarTab } from './sidebar';
 import { useOutsideAlerter } from '../utils/outsideClick';
 import { useHistory } from 'react-router';
-import Header from './header';
+import Header from './Header';
 import $ from 'jquery';
 import '../../assets/css/app/open-app.css';
 
