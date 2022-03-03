@@ -13,7 +13,8 @@ export interface SidebarTab {
   isUser?: boolean;
   count?: number;
   selected?: boolean;
-  action: (tabs: SidebarTab[]) => void;
+  handle: (tabs: SidebarTab[]) => void;
+  action?: (...attr: any) => any;
 }
 
 interface SidebarProps {
@@ -24,7 +25,6 @@ const Sidebar = (props: SidebarProps): JSX.Element => {
   const [hovered, setHovered] = useState<boolean>(false);
 
   const switchSidebarTab = async (id: number): Promise<SidebarTab[]> => {
-    if (!props.tabs || !props.tabs.length) return [];
     let newTabs = [...props.tabs];
     newTabs[props.tabs.findIndex((t) => t.selected)].selected = false;
     newTabs[props.tabs.findIndex((t) => t.id === id)].selected = true;
@@ -32,45 +32,51 @@ const Sidebar = (props: SidebarProps): JSX.Element => {
   };
 
   const handleClick = async (id: number): Promise<void> => {
+    if (!props.tabs || !props.tabs.length) return;
+    if (props.tabs.find((t) => t.selected && t.id === id)) return;
     let tabs = await switchSidebarTab(id);
-    props.tabs.find((t) => t.id === id)?.action(tabs);
+    props.tabs.find((t) => t.id === id)?.handle(tabs);
   };
 
-  return (
+  return props.tabs ? (
     <div
       className={`${hovered ? 'hovered ' : ''}sidebar`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div className="tabs top">
-        {props.tabs
-          .filter((t) => !t.isUser)
-          .map((t) => (
-            <div
-              key={`tab-${t.id}`}
-              className={`tab${t.selected ? ' selected' : ''}`}
-              onClick={() => handleClick(t.id)}
-            >
-              <div className="left">
-                <FontAwesomeIcon
-                  icon={[
-                    t.img === 'star' ? 'far' : 'fas',
-                    (t.img ?? 'plus') as IconName,
-                  ]}
-                  className="icon"
-                />
-                <h4>
-                  <Translate
-                    name={t.value}
-                    prefix={t.prefix}
-                    suffix={t.suffix}
+        {props.tabs.filter((t) => !t.isUser).length ? (
+          props.tabs
+            .filter((t) => !t.isUser)
+            .map((t) => (
+              <div
+                key={`tab-${t.id}`}
+                className={`tab${t.selected ? ' selected' : ''}`}
+                onClick={() => handleClick(t.id)}
+              >
+                <div className="left">
+                  <FontAwesomeIcon
+                    icon={[
+                      t.img === 'star' ? 'far' : 'fas',
+                      (t.img ?? 'plus') as IconName,
+                    ]}
+                    className="icon"
                   />
-                </h4>
+                  <h4>
+                    <Translate
+                      name={t.value}
+                      prefix={t.prefix}
+                      suffix={t.suffix}
+                    />
+                  </h4>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+        ) : (
+          <></>
+        )}
       </div>
-      {props.tabs.filter((t) => t.isUser).length && (
+      {props.tabs.filter((t) => t.isUser).length ? (
         <div className="tabs bottom">
           {props.tabs
             .filter((t) => t.isUser)
@@ -103,8 +109,12 @@ const Sidebar = (props: SidebarProps): JSX.Element => {
               </div>
             ))}
         </div>
+      ) : (
+        <></>
       )}
     </div>
+  ) : (
+    <></>
   );
 };
 

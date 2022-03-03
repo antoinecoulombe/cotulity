@@ -62,14 +62,28 @@ const getTasks = async (
       ],
       paranoid: false,
     });
-  } catch (error) {
-    throw error;
+  } catch (e) {
+    throw e;
   }
 };
 
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
+
+// Get all tasks
+Tasks.get('/', async (req: any, res: any) => {
+  try {
+    let tasks = await getTasks(req, res, 'all');
+    return res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      tasks: tasks,
+    });
+  } catch (error) {
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
 
 // Get all upcoming tasks
 Tasks.get('/upcoming', async (req: any, res: any) => {

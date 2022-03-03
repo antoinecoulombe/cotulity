@@ -4,6 +4,7 @@ import { useNotifications } from '../../contexts/NotificationsContext';
 import { useTranslation } from 'react-i18next';
 import { getTranslateJSON } from '../../utils/global';
 import { DropdownOption } from '../../components/forms/dropdown';
+import { scrollHorizontal } from '../../hooks/window';
 import {
   SubHeaderProps,
   switchSubHeaderTab,
@@ -20,7 +21,6 @@ import Translate from '../../components/utils/translate';
 import EditPopup from '../../components/tasks/editPopup';
 import * as DateExt from '../../components/utils/date';
 import '../../assets/css/apps/tasks.css';
-import { scrollHorizontal } from '../../hooks/window';
 
 export interface Task {
   id: number;
@@ -37,6 +37,7 @@ export interface Task {
     lastname: string;
     Image: { url: string } | null;
   }>;
+  visible: boolean;
 }
 
 export const initTask: Task = {
@@ -47,6 +48,7 @@ export const initTask: Task = {
   shared: true,
   completedOn: null,
   deletedAt: null,
+  visible: false,
 };
 
 export interface HomeMember {
@@ -61,7 +63,7 @@ export interface HomeMember {
 const nullJSX: JSX.Element = <></>;
 
 const AppTasks = (): JSX.Element => {
-  const { t, i18n } = useTranslation('common');
+  const { t } = useTranslation('common');
   const { setNotification, setSuccessNotification } = useNotifications();
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [sidebarTabs, setSidebarTabs] = useState<SidebarTab[]>([]);
@@ -75,10 +77,8 @@ const AppTasks = (): JSX.Element => {
       { name: 'important', action: () => handleSubHeader('important') },
     ],
   });
-  const [completedTasks, setCompletedTasks] = useState<Task[]>([]); // shown when anything but 'Completed' is selected on taskbar
-  const [upcomingTasks, setUpcomingTasks] = useState<Task[]>([]); // shown when 'Completed' is selected on taskbar
-  const [shownTasks, setShownTasks] = useState<Task[]>([]); // currently visible
-  const [title, setTitle] = useState<string>('sidebar.myTasks.title');
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [title, setHeader] = useState<string>('sidebar.myTasks.title');
   const [loaded, setLoaded] = useState<boolean>(false);
   const [users, setUsers] = useState<HomeMember[]>([]);
 
@@ -88,41 +88,68 @@ const AppTasks = (): JSX.Element => {
     let selected = sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0];
     handleTitle(selected);
     handleTask(selected);
-  }, [sidebarTabs, subHeader, completedTasks, upcomingTasks]);
+  }, [sidebarTabs, subHeader]);
 
   useEffect(() => {
     // get home users for sidebar
     axios
       .get(`/home/${localStorage.getItem('currentHome')}/users`)
       .then(async (res: any) => {
-        // get upcoming tasks (non-completed tasks)
+        // get tasks
         await axios
-          .get(`/tasks/${localStorage.getItem('currentHome')}/upcoming`)
+          .get(`/tasks/${localStorage.getItem('currentHome')}`)
           .then((res: any) => {
-            setUpcomingTasks(res.data.tasks);
-            setShownTasks(res.data.tasks);
-          })
-          .catch((err) => {
-            setNotification(err.response.data);
-          });
-
-        // get completed tasks
-        await axios
-          .get(`/tasks/${localStorage.getItem('currentHome')}/completed`)
-          .then((res: any) => {
-            setCompletedTasks(res.data.tasks);
+            setTasks(res.data.tasks);
           })
           .catch((err) => {
             setNotification(err.response.data);
           });
 
         // sidebar tabs (upper - categories)
-        let tabs = [
-          { icon: 'star', name: 'myTasks' },
-          { icon: 'calendar', name: 'upcoming' },
-          { icon: 'lock', name: 'private' },
-          { icon: 'history', name: 'history' },
-          { icon: 'trash', name: 'trash' },
+        let tabs: SidebarTab[] = [
+          {
+            icon: 'star',
+            name: 'myTasks',
+            action: (t: Task) =>
+              !t
+                ? true
+                : t.Users?.find(
+                    (u) =>
+                      u.id === parseInt(localStorage.getItem('userId') ?? '-2')
+                  ) != null &&
+                  t.deletedAt == null &&
+                  t.completedOn == null,
+          },
+          {
+            icon: 'calendar',
+            name: 'upcoming',
+            action: (t: Task) =>
+              !t ? true : t.completedOn == null && t.deletedAt == null,
+          },
+          {
+            icon: 'lock',
+            name: 'private',
+            action: (t: Task) =>
+              !t
+                ? true
+                : t.Users?.find(
+                    (u) =>
+                      u.id === parseInt(localStorage.getItem('userId') ?? '-2')
+                  ) &&
+                  !t.shared &&
+                  t.deletedAt == null,
+          },
+          {
+            icon: 'history',
+            name: 'history',
+            action: (t: Task) =>
+              !t ? true : t.completedOn !== null && t.deletedAt == null,
+          },
+          {
+            icon: 'trash',
+            name: 'trash',
+            action: (t: Task) => (!t ? true : t.deletedAt != null),
+          },
         ].map((t, i) => {
           return {
             id: -i - 1,
@@ -131,7 +158,11 @@ const AppTasks = (): JSX.Element => {
             prefix: 'tasks.title.sidebar.',
             suffix: '.value',
             img: t.icon,
-            action: (tabs: SidebarTab[]) => handleSidebar(tabs),
+            handle: (tabs: SidebarTab[]) => {
+              handleSidebar(tabs);
+              return t.action;
+            },
+            action: t.action,
             selected: i === 0,
           };
         });
@@ -149,11 +180,12 @@ const AppTasks = (): JSX.Element => {
               img: m.Image?.url,
               count: m.Tasks.length,
               isUser: true,
-              action: (tabs: SidebarTab[]) => handleSidebar(tabs),
+              handle: (tabs: SidebarTab[]) => handleSidebar(tabs),
+              action: (t: Task) => t.Owner?.id === m.id,
             };
           })
         );
-        setSidebarTabs(tabs as SidebarTab[]);
+        setSidebarTabs(tabs);
         setUsers(res.data.users);
       })
       .catch((err) => {
@@ -168,10 +200,10 @@ const AppTasks = (): JSX.Element => {
 
   const handleTitle = (tab: SidebarTab): void => {
     if (!sidebarTabs.length) return;
-    if (!tab.value) setTitle('tasks');
-    else if (tab.id < 0) setTitle(`sidebar.${tab.value ?? 'tasks'}.title`);
+    if (!tab.value) setHeader('tasks');
+    else if (tab.id < 0) setHeader(`sidebar.${tab.value ?? 'tasks'}.title`);
     else
-      setTitle(
+      setHeader(
         getTranslateJSON('sidebar.user.title', [tab.value.split(' ')[0] ?? ''])
       );
   };
@@ -181,53 +213,21 @@ const AppTasks = (): JSX.Element => {
   };
 
   const handleTask = (tab?: SidebarTab): void => {
-    if (!tab) return;
+    let newTasks = [...tasks];
+    let important =
+      subHeader.tabs.find((ht) => ht.selected)?.name === 'important';
 
-    const important =
-      subHeader.tabs.find((t) => t.selected)?.name === 'important';
+    newTasks.forEach((t) => {
+      t.visible = false;
 
-    let newCompleted = [...completedTasks].filter((t) => t.deletedAt === null);
-    let newUpcoming = [...upcomingTasks].filter((t) => t.deletedAt === null);
-    if (important) {
-      newCompleted = newCompleted.filter((t) => t.important);
-      newUpcoming = newUpcoming.filter((t) => t.important);
-    }
-
-    if (tab.id < 0) {
-      switch (tab.value) {
-        case 'history':
-          setShownTasks(newCompleted);
-          break;
-        case 'upcoming':
-          setShownTasks(newUpcoming);
-          break;
-        case 'trash':
-          let concats = [...completedTasks]
-            .concat([...upcomingTasks])
-            .filter((t) => t.deletedAt != null);
-          if (important) concats = concats.filter((t) => t.important);
-          setShownTasks(concats);
-          break;
-        case 'private':
-          newUpcoming = newUpcoming.filter((t) => !t.shared);
-          setShownTasks(newUpcoming);
-          break;
-        case 'myTasks':
-          newUpcoming = newUpcoming.filter(
-            (t) =>
-              t.Users?.find(
-                (u) => u.id === parseInt(localStorage.getItem('userId') ?? '-2')
-              ) != null
-          );
-          setShownTasks(newUpcoming);
-          break;
-      }
-    } else {
-      newUpcoming = newUpcoming.filter(
-        (t) => t.Users?.find((u) => u.id === tab.id) != null
-      );
-      setShownTasks(newUpcoming);
-    }
+      if (
+        (!important || (important && t.important)) &&
+        tab?.action &&
+        (tab.action(t) as boolean)
+      )
+        t.visible = true;
+    });
+    setTasks(newTasks);
   };
 
   const getTagColor = (dueDate: string): string => {
@@ -242,140 +242,140 @@ const AppTasks = (): JSX.Element => {
   };
 
   const handleSubmit = (task: Task): void => {
-    axios({
-      method: task.id === -1 ? 'post' : 'put',
-      url: `/tasks/${localStorage.getItem('currentHome')}/${
-        task.id === -1 ? '' : task.id
-      }`,
-      data: {
-        task,
-      },
-    })
-      .then((res: any) => {
-        let newUpcoming = [...upcomingTasks];
-        newUpcoming.push(res.data.task);
-        setUpcomingTasks(newUpcoming);
-        setPopup(nullJSX);
-        setSuccessNotification(res.data);
-      })
-      .catch((err) => {
-        setNotification(err.response.data);
-      });
+    // axios({
+    //   method: task.id === -1 ? 'post' : 'put',
+    //   url: `/tasks/${localStorage.getItem('currentHome')}/${
+    //     task.id === -1 ? '' : task.id
+    //   }`,
+    //   data: {
+    //     task,
+    //   },
+    // })
+    //   .then((res: any) => {
+    //     let newUpcoming = [...upcomingTasks];
+    //     newUpcoming.push(res.data.task);
+    //     setUpcomingTasks(newUpcoming);
+    //     setPopup(nullJSX);
+    //     setSuccessNotification(res.data);
+    //   })
+    //   .catch((err) => {
+    //     setNotification(err.response.data);
+    //   });
   };
 
   const showPopup = (task?: Task): void => {
-    setPopup(
-      <EditPopup
-        onCancel={() => setPopup(nullJSX)}
-        task={task}
-        users={users.map((u) => {
-          return {
-            id: u.id,
-            value: `${u.firstname} ${u.lastname}`,
-            img: u.Image?.url ?? undefined,
-            icon:
-              (u.Image?.url ?? undefined) === undefined
-                ? 'user-circle'
-                : undefined,
-            selected: !task
-              ? false
-              : (task.Users?.find((tu) => tu.id === u.id) ?? null) != null,
-          } as DropdownOption;
-        })}
-        onSubmit={(task: Task) => handleSubmit(task)}
-        onDelete={task ? (id: number) => deleteTask(id, true) : undefined}
-      />
-    );
+    // setPopup(
+    //   <EditPopup
+    //     onCancel={() => setPopup(nullJSX)}
+    //     task={task}
+    //     users={users.map((u) => {
+    //       return {
+    //         id: u.id,
+    //         value: `${u.firstname} ${u.lastname}`,
+    //         img: u.Image?.url ?? undefined,
+    //         icon:
+    //           (u.Image?.url ?? undefined) === undefined
+    //             ? 'user-circle'
+    //             : undefined,
+    //         selected: !task
+    //           ? false
+    //           : (task.Users?.find((tu) => tu.id === u.id) ?? null) != null,
+    //       } as DropdownOption;
+    //     })}
+    //     onSubmit={(task: Task) => handleSubmit(task)}
+    //     onDelete={task ? (id: number) => deleteTask(id, true) : undefined}
+    //   />
+    // );
   };
 
   const destroyTaskUpcoming = (id: number, closePopup?: boolean): void => {
-    let newUpcoming = [...upcomingTasks];
-    let i = newUpcoming.findIndex((t) => t.id === id);
-    if (i >= 0) {
-      axios
-        .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
-        .then((res: any) => {
-          if (res.data.deletedAt == null) {
-            newUpcoming.splice(i, 1);
-            setCompletedTasks(newUpcoming);
-          } else {
-            newUpcoming[i].deletedAt = res.data.deletedAt;
-            setUpcomingTasks(newUpcoming);
-          }
-          if (closePopup) setPopup(nullJSX);
-        })
-        .catch((err) => {
-          setNotification(err.response.data);
-        });
-    }
+    // let newUpcoming = [...upcomingTasks];
+    // let i = newUpcoming.findIndex((t) => t.id === id);
+    // if (i >= 0) {
+    //   axios
+    //     .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
+    //     .then((res: any) => {
+    //       if (res.data.deletedAt == null) {
+    //         newUpcoming.splice(i, 1);
+    //         setCompletedTasks(newUpcoming);
+    //       } else {
+    //         newUpcoming[i].deletedAt = res.data.deletedAt;
+    //         setUpcomingTasks(newUpcoming);
+    //       }
+    //       if (closePopup) setPopup(nullJSX);
+    //     })
+    //     .catch((err) => {
+    //       setNotification(err.response.data);
+    //     });
+    // }
   };
 
   const destroyTaskCompleted = (id: number, closePopup?: boolean): void => {
-    let newCompleted = [...completedTasks];
-    let i = newCompleted.findIndex((t) => t.id === id);
-    if (i >= 0) {
-      axios
-        .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
-        .then((res: any) => {
-          if (res.data.deletedAt == null) {
-            newCompleted.splice(i, 1);
-            setCompletedTasks(newCompleted);
-          } else {
-            newCompleted[i].deletedAt = res.data.deletedAt;
-            setCompletedTasks(newCompleted);
-          }
-          if (closePopup) setPopup(nullJSX);
-        })
-        .catch((err) => {
-          setNotification(err.response.data);
-        });
-    }
+    // let newCompleted = [...completedTasks];
+    // let i = newCompleted.findIndex((t) => t.id === id);
+    // if (i >= 0) {
+    //   axios
+    //     .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
+    //     .then((res: any) => {
+    //       if (res.data.deletedAt == null) {
+    //         newCompleted.splice(i, 1);
+    //         setCompletedTasks(newCompleted);
+    //       } else {
+    //         newCompleted[i].deletedAt = res.data.deletedAt;
+    //         setCompletedTasks(newCompleted);
+    //       }
+    //       if (closePopup) setPopup(nullJSX);
+    //     })
+    //     .catch((err) => {
+    //       setNotification(err.response.data);
+    //     });
+    // }
   };
 
   const deleteTask = (id: number, closePopup?: boolean): void => {
-    if (upcomingTasks.find((t) => t.id === id))
-      destroyTaskUpcoming(id, closePopup);
-    else destroyTaskCompleted(id, closePopup);
+    // if (upcomingTasks.find((t) => t.id === id))
+    //   destroyTaskUpcoming(id, closePopup);
+    // else destroyTaskCompleted(id, closePopup);
   };
 
   const completeTask = (id: number): void => {
-    let newCompleted = [...completedTasks];
-    let newUpcoming = [...upcomingTasks];
-    let i = newUpcoming.findIndex((t) => t.id === id);
-    if (i >= 0) {
-      axios
-        .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/do`)
-        .then((res: any) => {
-          newUpcoming[i].completedOn = res.data.completedOn;
-          newCompleted.push(newUpcoming[i]);
-          newUpcoming.splice(i, 1);
-          setUpcomingTasks(newUpcoming);
-          setCompletedTasks(newCompleted);
-        })
-        .catch((err) => {
-          setNotification(err.response.data);
-        });
-    }
+    // let newCompleted = [...completedTasks];
+    // let newUpcoming = [...upcomingTasks];
+    // let i = newUpcoming.findIndex((t) => t.id === id);
+    // if (i >= 0) {
+    //   axios
+    //     .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/do`)
+    //     .then((res: any) => {
+    //       newUpcoming[i].completedOn = res.data.completedOn;
+    //       newCompleted.push(newUpcoming[i]);
+    //       newUpcoming.splice(i, 1);
+    //       setUpcomingTasks(newUpcoming);
+    //       setCompletedTasks(newCompleted);
+    //     })
+    //     .catch((err) => {
+    //       setNotification(err.response.data);
+    //     });
+    // }
   };
 
   const unCompleteTask = (id: number): void => {
-    let newCompleted = [...completedTasks];
-    let newUpcoming = [...upcomingTasks];
-    let i = newCompleted.findIndex((t) => t.id === id);
-    if (i >= 0) {
-      axios
-        .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/undo`)
-        .then((res: any) => {
-          newCompleted[i].completedOn = null;
-          newUpcoming.push(newCompleted[i]);
-          newCompleted.splice(i, 1);
-          setUpcomingTasks(newUpcoming);
-          setCompletedTasks(newCompleted);
-        })
-        .catch((err) => {
-          setNotification(err.response.data);
-        });
-    }
+    // let newCompleted = [...completedTasks];
+    // let newUpcoming = [...upcomingTasks];
+    // let i = newCompleted.findIndex((t) => t.id === id);
+    // if (i >= 0) {
+    //   axios
+    //     .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/undo`)
+    //     .then((res: any) => {
+    //       newCompleted[i].completedOn = null;
+    //       newUpcoming.push(newCompleted[i]);
+    //       newCompleted.splice(i, 1);
+    //       setUpcomingTasks(newUpcoming);
+    //       setCompletedTasks(newCompleted);
+    //     })
+    //     .catch((err) => {
+    //       setNotification(err.response.data);
+    //     });
+    // }
   };
 
   const getTranslatedMonthAndDay = (date: string): JSX.Element => {
@@ -405,94 +405,96 @@ const AppTasks = (): JSX.Element => {
       <div className="content">
         <List>
           {loaded ? (
-            shownTasks.length ? (
-              shownTasks.map((t) => (
-                <ListItem key={`task-${t.id}`} uid={t.id}>
-                  <ListItemLeft>
-                    <div className="generic-input">
-                      <input
-                        id="c2"
-                        type="checkbox"
-                        onClick={() =>
-                          t.completedOn == null
-                            ? completeTask(t.id)
-                            : unCompleteTask(t.id)
-                        }
-                      />
-                    </div>
-                    <h3>{t.name}</h3>
-                    {t.important && (
-                      <IconToolTip
-                        className="icon"
-                        icon="exclamation-circle"
-                        error={true}
-                        style={{ iconWidth: 22, tooltipMultiplier: 5 }}
-                      >
-                        subHeader.important
-                      </IconToolTip>
-                    )}
-                  </ListItemLeft>
-                  <ListItemRight>
-                    {t.Users && (
-                      <>
-                        <div
-                          className="involved-users"
-                          id="involved-users-tasks"
-                          style={t.Users.length < 5 ? { width: 'auto' } : {}}
-                          onWheel={scrollHorizontal}
+            tasks?.filter((t) => t.visible).length ? (
+              tasks
+                .filter((t) => t.visible)
+                .map((t) => (
+                  <ListItem key={`task-${t.id}`} uid={t.id}>
+                    <ListItemLeft>
+                      <div className="generic-input">
+                        <input
+                          id="c2"
+                          type="checkbox"
+                          onClick={() =>
+                            t.completedOn == null
+                              ? completeTask(t.id)
+                              : unCompleteTask(t.id)
+                          }
+                        />
+                      </div>
+                      <h3>{t.name}</h3>
+                      {t.important && (
+                        <IconToolTip
+                          className="icon"
+                          icon="exclamation-circle"
+                          error={true}
+                          style={{ iconWidth: 22, tooltipMultiplier: 5 }}
                         >
-                          {t.Users.map((u) =>
-                            u.Image?.url ? (
-                              <img
-                                key={`involved-${t.id}-${u.id}`}
-                                src={`http://localhost:3000/images/public/${u.Image.url}`}
-                                alt={`${u.firstname[0]}${u.lastname[0]}`.toUpperCase()}
-                              />
-                            ) : (
-                              <div
-                                key={`involved-${t.id}-${u.id}`}
-                                className="user-initials"
-                              >
-                                {`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}
-                              </div>
-                            )
-                          )}
-                        </div>
-                        <div className={`tag ${getTagColor(t.dueDateTime)}`}>
-                          {getTranslatedMonthAndDay(t.dueDateTime)}
-                        </div>
-                      </>
-                    )}
+                          subHeader.important
+                        </IconToolTip>
+                      )}
+                    </ListItemLeft>
+                    <ListItemRight>
+                      {t.Users && (
+                        <>
+                          <div
+                            className="involved-users"
+                            id="involved-users-tasks"
+                            style={t.Users.length < 5 ? { width: 'auto' } : {}}
+                            onWheel={scrollHorizontal}
+                          >
+                            {t.Users.map((u) =>
+                              u.Image?.url ? (
+                                <img
+                                  key={`involved-${t.id}-${u.id}`}
+                                  src={`http://localhost:3000/images/public/${u.Image.url}`}
+                                  alt={`${u.firstname[0]}${u.lastname[0]}`.toUpperCase()}
+                                />
+                              ) : (
+                                <div
+                                  key={`involved-${t.id}-${u.id}`}
+                                  className="user-initials"
+                                >
+                                  {`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}
+                                </div>
+                              )
+                            )}
+                          </div>
+                          <div className={`tag ${getTagColor(t.dueDateTime)}`}>
+                            {getTranslatedMonthAndDay(t.dueDateTime)}
+                          </div>
+                        </>
+                      )}
 
-                    <IconToolTip
-                      icon="pen"
-                      style={iconStyle}
-                      circled={{ value: true, multiplier: 0.45 }}
-                      onClick={() => showPopup(t)}
-                    >
-                      {ReactDOMServer.renderToStaticMarkup(
-                        <Translate
-                          name="editHome"
-                          prefix="homes.action."
-                        ></Translate>
-                      )}
-                    </IconToolTip>
-                    <IconToolTip
-                      icon="times-circle"
-                      style={iconStyle}
-                      error={true}
-                      onClick={(e) => deleteTask(t.id)}
-                    >
-                      {ReactDOMServer.renderToStaticMarkup(
-                        <Translate
-                          name="deleteHome"
-                          prefix="homes.action."
-                        ></Translate>
-                      )}
-                    </IconToolTip>
-                  </ListItemRight>
-                </ListItem>
-              ))
+                      <IconToolTip
+                        icon="pen"
+                        style={iconStyle}
+                        circled={{ value: true, multiplier: 0.45 }}
+                        onClick={() => showPopup(t)}
+                      >
+                        {ReactDOMServer.renderToStaticMarkup(
+                          <Translate
+                            name="editHome"
+                            prefix="homes.action."
+                          ></Translate>
+                        )}
+                      </IconToolTip>
+                      <IconToolTip
+                        icon="times-circle"
+                        style={iconStyle}
+                        error={true}
+                        onClick={(e) => deleteTask(t.id)}
+                      >
+                        {ReactDOMServer.renderToStaticMarkup(
+                          <Translate
+                            name="deleteHome"
+                            prefix="homes.action."
+                          ></Translate>
+                        )}
+                      </IconToolTip>
+                    </ListItemRight>
+                  </ListItem>
+                ))
             ) : (
               <h2>
                 <Translate name="noTasks" prefix="tasks." />

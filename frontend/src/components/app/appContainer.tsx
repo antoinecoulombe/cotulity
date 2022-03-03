@@ -65,8 +65,8 @@ const AppContainer = (props: AppContainerProps): JSX.Element => {
 
   return (
     <div ref={wrapperRef} className={`open-app-container ${props.appName}`}>
-      {props.popup}
-      {props.sidebar && <Sidebar tabs={props.sidebar} />}
+      {props.popup ? props.popup : <></>}
+      {props.sidebar ? <Sidebar tabs={props.sidebar} /> : <></>}
       <div className="headers">
         <Header
           appName={props.appName}

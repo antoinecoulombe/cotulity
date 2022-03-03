@@ -26,8 +26,8 @@ app.use(
 // Middlewares
 
 app.use(async (req: any, res: any, next) => {
-  await AddUserToRequest(req);
-  next();
+  if (await AddUserToRequest(req)) next();
+  else next({ title: 'request.error', msg: 'request.error' });
 });
 
 // Routes
