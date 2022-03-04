@@ -56,10 +56,7 @@ const Sidebar = (props: SidebarProps): JSX.Element => {
               >
                 <div className="left">
                   <FontAwesomeIcon
-                    icon={[
-                      t.img === 'star' ? 'far' : 'fas',
-                      (t.img ?? 'plus') as IconName,
-                    ]}
+                    icon={['fas', (t.img ?? 'plus') as IconName]}
                     className="icon"
                   />
                   <h4>

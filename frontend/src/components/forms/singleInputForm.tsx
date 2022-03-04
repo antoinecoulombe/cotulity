@@ -10,6 +10,7 @@ export interface SingleInputFormProps {
     iconWidth: number;
     tooltipMultiplier: number;
     marginRight?: number;
+    marginTop?: number;
   };
   type?: 'text' | 'password' | 'phone' | 'email';
   label?: string;

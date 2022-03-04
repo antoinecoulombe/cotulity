@@ -31,9 +31,9 @@ const FormToggle = (props: FormToggleProps): JSX.Element => {
 
     if (signup) {
       $('.form-input.signup').css('display', 'inline-block');
-      setTimeout(() => $('.submit').animate({ top: 119 }, 275), 150);
+      setTimeout(() => $('.submit').animate({ top: 122 }, 275), 150);
     } else {
-      $('.submit').animate({ top: -4 }, 275);
+      $('.submit').animate({ top: -2 }, 275);
     }
   };
 

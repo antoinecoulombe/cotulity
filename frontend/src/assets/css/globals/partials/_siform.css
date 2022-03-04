@@ -120,10 +120,10 @@
   margin-left: 0;
 }
 .si-form > .input-container.dropdown .dropdown-selected > .option > .icon {
-  font-size: 14px;
-  color: #062137;
-  height: 24px;
-  margin-left: 5px;
+  color: #4b7cc5;
+  height: 16px;
+  margin-left: 8px;
+  margin-top: 4px;
   opacity: 0.65;
   cursor: pointer;
 }
@@ -131,7 +131,7 @@
   opacity: 1;
 }
 .si-form > .input-container.dropdown .dropdown-selected > .option > p {
-  color: #062137;
+  color: #4b7cc5;
 }
 .si-form > .input-container.dropdown .dropdown-unselected {
   position: absolute;

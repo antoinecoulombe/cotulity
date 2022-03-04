@@ -32,13 +32,25 @@
         border-radius: @app[border-radius];
 
         > svg {
-          font-size: 70px;
+          width: 70px;
           height: 100%;
+        }
+
+        &.groceries {
+          > svg {
+            width: 62px;
+          }
+        }
+
+        &.settings {
+          > svg {
+            width: 88px;
+          }
         }
 
         &.console {
           > svg {
-            font-size: 58px;
+            width: 58px;
           }
         }
       }
@@ -51,12 +63,24 @@
           margin: ((@app-size - @new-app-size) / 2);
 
           > svg {
-            font-size: 64px;
+            width: 64px;
+          }
+
+          &.groceries {
+            > svg {
+              width: 56px;
+            }
+          }
+
+          &.settings {
+            > svg {
+              width: 80px;
+            }
           }
 
           &.console {
             > svg {
-              font-size: 52px;
+              width: 52px;
             }
           }
         }

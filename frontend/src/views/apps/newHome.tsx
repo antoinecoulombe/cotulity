@@ -83,7 +83,6 @@ const AppNewHome = (): JSX.Element => {
   };
 
   const handleBack = (): void => {
-    console.log('back');
     setError(false);
     setAction(undefined);
   };

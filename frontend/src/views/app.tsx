@@ -67,8 +67,9 @@ import {
   faHistory,
   faPlus,
   faTerminal,
+  faTrashArrowUp,
+  faStar,
 } from '@fortawesome/free-solid-svg-icons';
-import { faStar } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 
@@ -109,7 +110,8 @@ library.add(
   faStar,
   faHistory,
   faPlus,
-  faTerminal
+  faTerminal,
+  faTrashArrowUp
 );
 
 const App = (): JSX.Element => {

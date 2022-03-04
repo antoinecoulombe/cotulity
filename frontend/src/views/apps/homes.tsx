@@ -150,7 +150,7 @@ const AppHomes = () => {
             ? addMember(value, ref)
             : renameHome(value, ref)
         }
-        style={{ iconWidth: 32, tooltipMultiplier: 15 }}
+        style={{ iconWidth: 32, tooltipMultiplier: 15, marginTop: 2 }}
         error={error ?? false}
       >
         {getTranslateJSON(`homes.tooltip.${action}`, [home?.name ?? ''])}

@@ -28,11 +28,17 @@
   border-radius: 10px;
 }
 #apps-container > #apps > .app-container > .app > svg {
-  font-size: 70px;
+  width: 70px;
   height: 100%;
 }
+#apps-container > #apps > .app-container > .app.groceries > svg {
+  width: 62px;
+}
+#apps-container > #apps > .app-container > .app.settings > svg {
+  width: 88px;
+}
 #apps-container > #apps > .app-container > .app.console > svg {
-  font-size: 58px;
+  width: 58px;
 }
 #apps-container > #apps > .app-container:hover > .app {
   width: 162px;
@@ -40,10 +46,16 @@
   margin: 7px;
 }
 #apps-container > #apps > .app-container:hover > .app > svg {
-  font-size: 64px;
+  width: 64px;
+}
+#apps-container > #apps > .app-container:hover > .app.groceries > svg {
+  width: 56px;
+}
+#apps-container > #apps > .app-container:hover > .app.settings > svg {
+  width: 80px;
 }
 #apps-container > #apps > .app-container:hover > .app.console > svg {
-  font-size: 52px;
+  width: 52px;
 }
 .homes-dropdown-container {
   display: flex;

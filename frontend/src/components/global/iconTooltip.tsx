@@ -9,6 +9,7 @@ interface IconTooltipProps {
     iconWidth: number;
     tooltipMultiplier: number;
     marginRight?: number;
+    marginTop?: number;
   };
   children?: string;
   circled?: {
@@ -36,6 +37,7 @@ const IconToolTip = (props: IconTooltipProps): JSX.Element => {
     width: props.style.iconWidth,
     height: props.style.iconWidth,
     marginRight: props.style.marginRight,
+    marginTop: props.style.marginTop,
   };
 
   const iconStyle: any = {

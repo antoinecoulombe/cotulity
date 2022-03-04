@@ -27,7 +27,7 @@ const App = (props: AppProps): JSX.Element => {
           history.push(`/apps/${props.name}`);
         })
         .catch((err) => {
-          setNotification(err.response.data);
+          if (err?.response?.data) setNotification(err.response.data);
         });
   };
 

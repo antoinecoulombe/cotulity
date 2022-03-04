@@ -21,15 +21,28 @@ const sendProfilePicture = async (
   res: any,
   asFile: boolean
 ): Promise<void> => {
-  let img = await db.Image.findOne({ where: { id: req.user.ImageId } });
-  if (!img)
-    return res.status(404).json({
-      title: 'picture.notFound',
-      msg: 'picture.notFound',
-    });
+  try {
+    if (!req?.user?.ImageId)
+      return res.status(404).json({
+        title: 'picture.notFound',
+        msg: 'picture.notFound',
+      });
 
-  if (asFile) res.sendFile(img.filePath);
-  else res.json({ url: img.url });
+    let img = await db.Image.findOne({ where: { id: req.user.ImageId } });
+    if (!img)
+      return res.status(404).json({
+        title: 'picture.notFound',
+        msg: 'picture.notFound',
+      });
+
+    if (asFile) return res.sendFile(img.filePath);
+    else return res.json({ url: img.url });
+  } catch (error) {
+    /* istanbul ignore next */
+    return res
+      .status(500)
+      .json({ title: 'request.error', msg: 'request.error' });
+  }
 };
 
 // ########################################################
@@ -37,21 +50,11 @@ const sendProfilePicture = async (
 // ########################################################
 
 Users.get('/current/picture', async (req: any, res: any) => {
-  try {
-    return await sendProfilePicture(req, res, true);
-  } catch (error) {
-    /* istanbul ignore next */
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
+  return await sendProfilePicture(req, res, true);
 });
 
 Users.get('/current/picture/url', async (req: any, res: any) => {
-  try {
-    return await sendProfilePicture(req, res, false);
-  } catch (error) {
-    /* istanbul ignore next */
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
+  return await sendProfilePicture(req, res, false);
 });
 
 // ########################################################

@@ -17,7 +17,7 @@ const SetProfilePicture = (props: SetProfilePictureProps): JSX.Element => {
     axios
       .get(`/users/current/picture/url`)
       .then((res) => {
-        setProfilePicture(res.data.url);
+        if (res.data?.url) setProfilePicture(res.data.url);
       })
       .catch((err) => {});
   }, []);
