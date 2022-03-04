@@ -6,8 +6,8 @@
 //  -> Standardize colors (grey tones, opacities...)                        ->  3h
 //  -> Standardize font sizes and hX uses between apps                      ->  3h
 // DONE: Refactor api urls                                                  ->  4h
-// TODO: [ONGOING] Add type uniformity react                                ->  6h
-// TODO: [ONGOING] Add missing validations (React + API)                    ->  8h
+// DONE: [ONGOING] Add type uniformity react                                ->  6h
+// DONE: [ONGOING] Add missing validations (React + API)                    ->  8h
 // DONE: Update README (mainly .less section)                               ->  1h
 // DONE: Rework TypeScript debug environment for vscode                     ->  6h
 
@@ -15,7 +15,7 @@
 
 // #region Tests                                                            ->  26h
 
-// TODO: [ONGOING] Implement API tests                                      -> 26h
+// DONE: Implement API tests                                                -> 26h
 //  -> Groceries                                                            ->  4h
 //  -> Homes                                                                -> 12h
 //  -> Users                                                                ->  4h
@@ -26,10 +26,10 @@
 
 // #region Features                                                         -> 170h
 
-// TODO: Micro-services per app (proof of concept for larger web app)       -> 16h
+// DONE: Micro-services per app (proof of concept for larger web app)       -> 16h
 // TODO: Complete Tasks app                                                 -> 32h
 //  -> Add repeating options                                                ->  6h
-//  -> Fix task refresh                                                     ->  8h
+//  -> DONE: Fix task refresh                                               ->  8h
 //  -> Restore tasks from trash                                             ->  2h
 //  -> Add field validation                                                 ->  4h
 //  -> Complete task only if all members complete the task                  ->  6h

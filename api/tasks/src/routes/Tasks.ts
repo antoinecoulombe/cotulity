@@ -63,8 +63,29 @@ const getTasks = async (
       paranoid: false,
     });
   } catch (e) {
+    /* istanbul ignore next */
     throw e;
   }
+};
+
+const toDate = (dateString: string): Date => {
+  // 09/08@20:42
+  let dateSplit = dateString.split('@');
+  let dayMonth: number[] = dateSplit[0].split('/').map((x) => +x);
+  let hourMinute: number[] = dateSplit[1].split(':').map((x) => +x);
+
+  let now = new Date();
+  let month = dayMonth[1] - 1;
+  return new Date(
+    month < now.getMonth() ||
+    (month == now.getMonth() && dayMonth[0] < now.getDay())
+      ? now.getFullYear() + 1
+      : now.getFullYear(),
+    month,
+    dayMonth[0],
+    hourMinute[0],
+    hourMinute[1]
+  );
 };
 
 // ########################################################
@@ -81,6 +102,7 @@ Tasks.get('/', async (req: any, res: any) => {
       tasks: tasks,
     });
   } catch (error) {
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -95,7 +117,7 @@ Tasks.get('/upcoming', async (req: any, res: any) => {
       tasks: tasks,
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -110,7 +132,7 @@ Tasks.get('/completed', async (req: any, res: any) => {
       tasks: tasks,
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -122,106 +144,111 @@ Tasks.get('/completed', async (req: any, res: any) => {
 // Modifies a task.
 Tasks.put('/:id', async (req: any, res: any) => {
   try {
-    let task = await getTasks(req, res, 'all', req.params.id);
+    let date = toDate(req.body.task.dueDateTime);
+    return await db.sequelize.transaction(async (t: any) => {
+      let taskDb = await getTasks(req, res, 'all', req.params.id);
+      if (!taskDb?.length)
+        return res
+          .status(404)
+          .json({ title: 'task.notFound', msg: 'task.notFound' });
 
-    // 09/08@20:42
-    let dateSplit = req.body.task.dueDateTime.split('@');
-    let dayMonth = dateSplit[0].split('/');
-    let hourMinute = dateSplit[1].split(':');
+      let task = taskDb[0];
+      let members = await res.locals.home.getMembers({
+        attributes: ['id', 'firstname', 'lastname'],
+        include: [
+          {
+            model: db.Image,
+            as: 'Image',
+            attributes: ['url'],
+          },
+        ],
+      });
 
-    let now = new Date();
-    let month = parseInt(dayMonth[1]) - 1;
-    let date = new Date(
-      month < now.getMonth() ||
-      (month == now.getMonth() && dayMonth[0] < now.getDay())
-        ? now.getFullYear() + 1
-        : now.getFullYear(),
-      month,
-      dayMonth[0],
-      hourMinute[0],
-      hourMinute[1]
-    );
+      task.name = req.body.task.name;
+      task.dueDateTime = date;
+      task.important = req.body.task.important;
 
-    // let task = await db.Task.create({
-    //   homeId: res.locals.home.id,
-    //   ownerId: req.user.id,
-    //   name: req.body.task.name,
-    //   dueDateTime: date.toUTCString(),
-    //   shared: req.body.task.shared,
-    //   important: req.body.task.important,
-    // });
+      if (task.ownerId === req.user.id) task.shared = req.body.task.shared;
 
-    // if (req.body.task.shared == false || !req.body.task.Users.length) {
-    //   await db.UserTask.create({ userId: req.user.id, taskId: task.id });
-    // } else {
-    //   await req.body.task.Users.forEach(async (u: any) => {
-    //     let members = (await res.locals.home.getMembers()).map(
-    //       (m: any) => m.id
-    //     );
-    //     let toAdd: { userId: number; taskId: number }[] = [];
-    //     if (members.includes(u.id))
-    //       toAdd.push({ userId: u.id, taskId: task.id });
+      let taskUsers: any[] = [];
 
-    //     if (toAdd.length) await db.UserTask.bulkCreate(toAdd);
-    //   });
-    // }
+      if (req.body.task.shared == false) taskUsers.push(req.user.id);
+      else {
+        taskUsers = members.filter(
+          (u: any) =>
+            req.body.task.Users.filter((uT: any) => uT.id === u.id).length > 0
+        );
+      }
 
-    res.json({
-      title: 'tasks.modified',
-      msg: 'tasks.modified',
-      task: await getTasks(req, res, 'upcoming', task.id),
+      if (!taskUsers.length)
+        return res
+          .status(500)
+          .json({ title: 'tasks.noUsers', msg: 'tasks.noUsers' });
+
+      await db.UserTask.destroy(
+        {
+          where: {
+            taskId: task.id,
+            userId: { [Op.ne]: taskUsers.map((m: any) => m.id) },
+          },
+          force: true,
+        },
+        { transaction: t }
+      );
+      await task.save({ transaction: t });
+      await task.setUsers(
+        taskUsers.map((m: any) => m.id),
+        { transaction: t }
+      );
+
+      return res.json({
+        title: 'tasks.modified',
+        msg: 'tasks.modified',
+        task: { ...task.dataValues, Users: taskUsers },
+      });
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
+
+const editCompletion = async (req: any, res: any, done: boolean) => {
+  try {
+    let tasks = await getTasks(
+      req,
+      res,
+      done ? 'upcoming' : 'completed',
+      req.params.id
+    );
+    if (!tasks.length)
+      return res
+        .status(404)
+        .json({ title: 'task.notFound', msg: 'task.notFound' });
+
+    tasks[0].completedOn = done ? new Date() : null;
+    await tasks[0].save();
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      completedOn: tasks[0].completedOn,
+    });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+};
 
 // Completes a task.
-Tasks.put('/:id/do', async (req: any, res: any) => {
-  try {
-    let tasks = await getTasks(req, res, 'upcoming', req.params.id);
-    if (!tasks.length)
-      return res
-        .status(404)
-        .json({ title: 'request.notFound', msg: 'request.notFound' });
-
-    tasks[0].completedOn = new Date();
-    await tasks[0].save();
-
-    res.json({
-      title: 'request.success',
-      msg: 'request.success',
-      completedOn: tasks[0].completedOn,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
+Tasks.put('/:id/do', async (req: any, res: any) =>
+  editCompletion(req, res, true)
+);
 
 // Uncompletes a task.
-Tasks.put('/:id/undo', async (req: any, res: any) => {
-  try {
-    let tasks = await getTasks(req, res, 'completed', req.params.id);
-    if (!tasks.length)
-      return res
-        .status(404)
-        .json({ title: 'request.notFound', msg: 'request.notFound' });
-
-    tasks[0].completedOn = null;
-    await tasks[0].save();
-
-    res.json({
-      title: 'request.success',
-      msg: 'request.success',
-      completedOn: tasks[0].completedOn,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
+Tasks.put('/:id/undo', async (req: any, res: any) =>
+  editCompletion(req, res, false)
+);
 
 // ########################################################
 // ######################### POST #########################
@@ -230,58 +257,56 @@ Tasks.put('/:id/undo', async (req: any, res: any) => {
 // Creates a new task.
 Tasks.post('/', async (req: any, res: any) => {
   try {
-    // 09/08@20:42
-    let dateSplit = req.body.task.dueDateTime.split('@');
-    let dayMonth = dateSplit[0].split('/');
-    let hourMinute = dateSplit[1].split(':');
+    let date = toDate(req.body.task.dueDateTime);
+    return await db.sequelize.transaction(async (t: any) => {
+      let members = await res.locals.home.getMembers({
+        attributes: ['id', 'firstname', 'lastname'],
+        include: [
+          {
+            model: db.Image,
+            as: 'Image',
+            attributes: ['url'],
+          },
+        ],
+      });
 
-    let now = new Date();
-    let month = parseInt(dayMonth[1]) - 1;
-    let date = new Date(
-      month < now.getMonth() ||
-      (month == now.getMonth() && dayMonth[0] < now.getDay())
-        ? now.getFullYear() + 1
-        : now.getFullYear(),
-      month,
-      dayMonth[0],
-      hourMinute[0],
-      hourMinute[1]
-    );
+      let taskUsers: any[] = [];
 
-    let taskUsers: Array<{ id: number }> = [];
+      if (req.body.task.shared == false) taskUsers.push(req.user.id);
+      else {
+        taskUsers = members.filter(
+          (u: any) =>
+            req.body.task.Users.filter((uT: any) => uT.id === u.id).length > 0
+        );
+      }
 
-    if (req.body.task.shared == false || !req.body.task.Users.length)
-      taskUsers.push({ id: req.user.id });
-    else {
-      let members = (await res.locals.home.getMembers()).map((m: any) => m.id);
-      taskUsers = members.filter(async (u: any) =>
-        req.body.task.Users.some(async (m: any) => u.id === m.id)
+      if (!taskUsers.length)
+        return res
+          .status(500)
+          .json({ title: 'request.error', msg: 'request.error' });
+
+      let task = await db.Task.create(
+        {
+          homeId: res.locals.home.id,
+          ownerId: req.user.id,
+          name: req.body.task.name,
+          dueDateTime: date.toUTCString(),
+          shared: req.body.task.shared,
+          important: req.body.task.important,
+        },
+        { transaction: t }
       );
-    }
 
-    if (!taskUsers.length)
-      return res
-        .status(500)
-        .json({ title: 'request.error', msg: 'request.error' });
+      await task.setUsers(taskUsers, { transaction: t });
 
-    let task = await db.Task.create({
-      homeId: res.locals.home.id,
-      ownerId: req.user.id,
-      name: req.body.task.name,
-      dueDateTime: date.toUTCString(),
-      shared: req.body.task.shared,
-      important: req.body.task.important,
-    });
-
-    await task.setUsers(taskUsers);
-
-    res.json({
-      title: 'tasks.created',
-      msg: 'tasks.created',
-      task: await getTasks(req, res, 'upcoming', task.id),
+      return res.json({
+        title: 'tasks.created',
+        msg: 'tasks.created',
+        task: { ...task.dataValues, Users: taskUsers },
+      });
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
@@ -297,14 +322,20 @@ Tasks.delete('/:id', async (req: any, res: any) => {
     if (tasks.length == 0)
       return res
         .status(404)
-        .json({ title: 'request.notFound', msg: 'request.notFound' });
+        .json({ title: 'task.notFound', msg: 'task.notFound' });
+
+    let task = tasks[0];
+    // if (task.ownerId !== req.user.id)
+    //   return res
+    //     .status(401)
+    //     .json({ title: 'request.denied', msg: 'request.unauthorized' });
 
     var deletedAt = null;
-    if (tasks[0].deletedAt == null) {
-      await tasks[0].destroy();
-      deletedAt = tasks[0].deletedAt;
+    if (task.deletedAt == null) {
+      await task.destroy();
+      deletedAt = task.deletedAt;
     } else {
-      await tasks[0].destroy({ force: true });
+      await task.destroy({ force: true });
     }
 
     res.json({
@@ -313,7 +344,7 @@ Tasks.delete('/:id', async (req: any, res: any) => {
       deletedAt: deletedAt,
     });
   } catch (error) {
-    console.log(error);
+    /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });

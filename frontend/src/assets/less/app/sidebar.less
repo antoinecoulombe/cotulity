@@ -96,8 +96,16 @@
               text-align: center;
               color: var(--badge-bg);
               background-color: var(--badge-color);
-              border-radius: 50%;
+              border-radius: @sidebar[badge-size];
               margin: 0;
+            }
+
+            &.done > p {
+              width: 58px;
+              margin-right: 19px;
+              font-weight: 700;
+              background-color: #95ed94;
+              color: #028701;
             }
           }
         }

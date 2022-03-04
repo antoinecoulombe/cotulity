@@ -88,8 +88,15 @@
   text-align: center;
   color: var(--badge-bg);
   background-color: var(--badge-color);
-  border-radius: 50%;
+  border-radius: 20px;
   margin: 0;
+}
+.open-app-container > .sidebar > .tabs > .tab > .right .counter.done > p {
+  width: 58px;
+  margin-right: 19px;
+  font-weight: 700;
+  background-color: #95ed94;
+  color: #028701;
 }
 .open-app-container > .sidebar > .tabs > .tab h4,
 .open-app-container > .sidebar > .tabs > .tab svg {

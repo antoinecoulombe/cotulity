@@ -1,0 +1,26 @@
+.logout {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 20px;
+  padding: 5px;
+  cursor: pointer;
+}
+.logout:hover > .icon {
+  opacity: 1;
+}
+.logout:hover > .icon.open {
+  display: block;
+}
+.logout:hover > .icon.close {
+  display: none;
+}
+.logout > .icon {
+  opacity: 0.6;
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+.logout > .icon.open {
+  display: none;
+}

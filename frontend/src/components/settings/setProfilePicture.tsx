@@ -87,7 +87,7 @@ const SetProfilePicture = (props: SetProfilePictureProps): JSX.Element => {
           ) : (
             <img
               id="img-profile"
-              src={`http://localhost:3000/images/public/${profilePicture}`}
+              src={`http://localhost:4000/images/public/${profilePicture}`}
               alt={'NA'}
             />
           )}

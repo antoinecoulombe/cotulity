@@ -1,0 +1,236 @@
+.form-input {
+  display: inline-block;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 210px;
+  height: 50px;
+  overflow: hidden;
+}
+.form-input .font {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 500;
+}
+.form-input:nth-of-type(2n + 2) {
+  margin-left: 8px;
+}
+.form-input:nth-of-type(n + 3) {
+  margin-top: 8px;
+}
+.form-input .label-filled {
+  font-size: 12px;
+  line-height: 26px;
+  height: 26px;
+}
+.form-input > label {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 50px;
+  padding: 0 14px 0 14px;
+  color: var(--gradient-input-label);
+  line-height: 50px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9;
+  transition: 0.2s;
+  font-weight: 400;
+  cursor: text;
+}
+.form-input > label.filled {
+  font-size: 12px;
+  line-height: 26px;
+  height: 26px;
+}
+.form-input > input {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 500;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  padding: 0 14px 0 14px;
+  color: var(--darkestGray);
+  background-color: var(--gradient-input-bg);
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+.form-input > input:focus,
+.form-input > input.filled,
+.form-input > input:-webkit-autofill {
+  padding-top: 18px;
+}
+.form-input > input:focus ~ label {
+  font-size: 12px;
+  line-height: 26px;
+  height: 26px;
+}
+.form-input > input:-webkit-autofill + label {
+  font-size: 12px;
+  line-height: 26px;
+  height: 26px;
+}
+.form-input.error > label {
+  color: var(--error-color) !important;
+  font-weight: 500;
+}
+@supports (-webkit-appearance: none) or (-moz-appearance: none) {
+  .generic-input input[type='checkbox'],
+  .generic-input input[type='radio'] {
+    --active: #275efe;
+    --active-inner: #fff;
+    --focus: 2px rgba(39, 94, 254, 0.3);
+    --border: #bbc1e1;
+    --border-hover: #275efe;
+    --background: #fff;
+    --disabled: #f6f8ff;
+    --disabled-inner: #e1e6f9;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    height: 29px;
+    outline: none;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+    border: 1px solid var(--bc, var(--border));
+    background: var(--b, var(--background));
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+  }
+  .generic-input input[type='checkbox']:after,
+  .generic-input input[type='radio']:after {
+    content: '';
+    display: block;
+    left: 0;
+    top: 0;
+    position: absolute;
+    transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);
+  }
+  .generic-input input[type='checkbox']:checked,
+  .generic-input input[type='radio']:checked {
+    --b: var(--active);
+    --bc: var(--active);
+    --d-o: 0.3s;
+    --d-t: 0.6s;
+    --d-t-e: cubic-bezier(0.2, 0.85, 0.32, 1.2);
+  }
+  .generic-input input[type='checkbox']:disabled,
+  .generic-input input[type='radio']:disabled {
+    --b: var(--disabled);
+    cursor: not-allowed;
+    opacity: 0.9;
+  }
+  .generic-input input[type='checkbox']:disabled:checked,
+  .generic-input input[type='radio']:disabled:checked {
+    --b: var(--disabled-inner);
+    --bc: var(--border);
+  }
+  .generic-input input[type='checkbox']:disabled + label,
+  .generic-input input[type='radio']:disabled + label {
+    cursor: not-allowed;
+  }
+  .generic-input input[type='checkbox']:hover:not(:checked):not(:disabled),
+  .generic-input input[type='radio']:hover:not(:checked):not(:disabled) {
+    --bc: var(--border-hover);
+  }
+  .generic-input input[type='checkbox']:focus,
+  .generic-input input[type='radio']:focus {
+    box-shadow: 0 0 0 var(--focus);
+  }
+  .generic-input input[type='checkbox']:not(.switch),
+  .generic-input input[type='radio']:not(.switch) {
+    width: 29px;
+  }
+  .generic-input input[type='checkbox']:not(.switch):after,
+  .generic-input input[type='radio']:not(.switch):after {
+    opacity: var(--o, 0);
+  }
+  .generic-input input[type='checkbox']:not(.switch):checked,
+  .generic-input input[type='radio']:not(.switch):checked {
+    --o: 1;
+  }
+  .generic-input input[type='checkbox'] + label,
+  .generic-input input[type='radio'] + label {
+    font-size: 14px;
+    line-height: 29px;
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+    margin-left: 4px;
+  }
+  .generic-input input[type='checkbox'] {
+    opacity: var(--checkbox-opacity);
+  }
+  .generic-input input[type='checkbox']:not(.switch) {
+    border-radius: 7px;
+  }
+  .generic-input input[type='checkbox']:not(.switch):after {
+    width: 5px;
+    height: 9px;
+    border: 2px solid var(--active-inner);
+    border-top: 0;
+    border-left: 0;
+    left: 7px;
+    top: 4px;
+    transform: rotate(var(--r, 20deg));
+  }
+  .generic-input input[type='checkbox']:not(.switch):checked {
+    --r: 43deg;
+  }
+  .generic-input input[type='checkbox'].switch {
+    width: 50px;
+    border-radius: 50px;
+  }
+  .generic-input input[type='checkbox'].switch:after {
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    background: var(--ab, var(--border));
+    transform: translateX(var(--x, 0));
+  }
+  .generic-input input[type='checkbox'].switch:checked {
+    --ab: var(--active-inner);
+    --x: 21px;
+  }
+  .generic-input input[type='checkbox'].switch:disabled:not(:checked):after {
+    opacity: 0.6;
+  }
+  .generic-input input[type='radio'] {
+    border-radius: 50%;
+  }
+  .generic-input input[type='radio']:after {
+    width: 29px;
+    height: 29px;
+    border-radius: 50%;
+    background: var(--active-inner);
+    opacity: 0;
+    transform: scale(var(--s, 0.7));
+  }
+  .generic-input input[type='radio']:checked {
+    --s: 0.5;
+  }
+}

@@ -203,28 +203,19 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           </h2>
           <div className="input-toggle">
             <div className="generic-input">
-              {task.important ? (
-                <>
-                  <input
-                    id="theme-switch"
-                    type="checkbox"
-                    className="switch"
-                    defaultChecked
-                    onClick={() => toggleSwitch('important')}
-                  />
-                  <IconToolTip
-                    icon="exclamation-circle"
-                    style={{ iconWidth: 23, tooltipMultiplier: 10 }}
-                    error={true}
-                    className="after-switch"
-                  />
-                </>
-              ) : (
-                <input
-                  id="theme-switch"
-                  type="checkbox"
-                  className="switch"
-                  onClick={() => toggleSwitch('important')}
+              <input
+                id="theme-switch"
+                type="checkbox"
+                className="switch"
+                defaultChecked={task.important}
+                onClick={() => toggleSwitch('important')}
+              />
+              {task.important && (
+                <IconToolTip
+                  icon="exclamation-circle"
+                  style={{ iconWidth: 23, tooltipMultiplier: 10 }}
+                  error={true}
+                  className="after-switch"
                 />
               )}
             </div>
@@ -242,24 +233,20 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
               tasks.tooltip.shared
             </IconToolTip>
           </h2>
-          <div className="input-toggle">
-            <div className="generic-input">
-              {task.shared ? (
-                <input
-                  id="theme-switch"
-                  type="checkbox"
-                  className="switch"
-                  defaultChecked
-                  onClick={() => toggleSwitch('shared')}
-                />
-              ) : (
-                <input
-                  id="theme-switch"
-                  type="checkbox"
-                  className="switch"
-                  onClick={() => toggleSwitch('shared')}
-                />
-              )}
+          <div className="input-toggle disabled">
+            <div className="generic-input disabled">
+              <input
+                id="theme-switch"
+                type="checkbox"
+                className="switch"
+                defaultChecked={task.shared}
+                disabled={
+                  task.id !== -1 &&
+                  task.Owner?.id !==
+                    parseInt(localStorage.getItem('userId') ?? '-1')
+                }
+                onClick={() => toggleSwitch('shared')}
+              />
             </div>
           </div>
         </div>

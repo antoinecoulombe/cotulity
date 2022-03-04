@@ -1,0 +1,51 @@
+.buttons {
+  display: flex;
+}
+button {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  cursor: pointer;
+  border-radius: 50px;
+  border: 0;
+  opacity: 0.7;
+  font-size: 17px;
+  font-weight: normal;
+  padding: 6px 16px;
+}
+button > p {
+  display: block;
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+button.yes {
+  opacity: var(--itp-opacity);
+  background-color: var(--itp-error-bg-color);
+  color: white;
+}
+button.yes:hover {
+  background-color: var(--itp-error-hover-bg-color);
+}
+button.no {
+  background-color: transparent;
+  color: var(--darkestGray);
+  border: 2px solid var(--darkestGray);
+  opacity: 0.6;
+}
+button.accept {
+  background-color: var(--success-color);
+  color: white;
+  opacity: 0.8;
+}
+button.save {
+  background-color: #275eff;
+  color: white;
+  opacity: 0.9;
+}
+button:hover {
+  opacity: 1;
+}

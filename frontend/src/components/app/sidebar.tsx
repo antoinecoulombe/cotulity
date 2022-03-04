@@ -89,7 +89,7 @@ const Sidebar = (props: SidebarProps): JSX.Element => {
                 <div className="left">
                   {ut.img ? (
                     <img
-                      src={`http://localhost:3000/images/public/${ut.img}`}
+                      src={`http://localhost:4000/images/public/${ut.img}`}
                       alt={`${ut.value[0]}${
                         ut.value[ut.value.length - 2]
                       }`.toUpperCase()}
@@ -99,10 +99,25 @@ const Sidebar = (props: SidebarProps): JSX.Element => {
                   )}
                   <h4>{ut.value}</h4>
                 </div>
-                {(ut.count ?? 0) > 0 && (
+                {(ut.count ?? -1) >= 0 && (
                   <div className="right">
-                    <div className="counter">
-                      <p>{(ut.count ?? 0) > 9 ? '9+' : ut.count}</p>
+                    <div
+                      className={`counter${
+                        (ut.count ?? -1) == 0 ? ' done' : ''
+                      }`}
+                    >
+                      <p>
+                        {(ut.count ?? 0) > 9 ? (
+                          '9+'
+                        ) : ut.count === 0 ? (
+                          <Translate
+                            name={'countZero'}
+                            prefix={'tasks.sidebar.'}
+                          />
+                        ) : (
+                          ut.count
+                        )}
+                      </p>
                     </div>
                   </div>
                 )}

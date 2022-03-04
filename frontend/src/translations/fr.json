@@ -103,6 +103,13 @@
       "placeholder": "Veuillez entrer votre adresse courriel."
     }
   },
+  "actions": {
+    "editHome": "Modifier",
+    "deleteHome": "Supprimer",
+    "quitHome": "Quitter",
+    "renameHome": "Renommer",
+    "restore": "Restorer"
+  },
   "homes": {
     "tooltip": {
       "add": "Créez ou rejoignez une maison",
@@ -252,7 +259,10 @@
       "add": "Ajouter une tâche",
       "shared": "Une tâche privée ne sera pas affichée aux autres membres de la maison."
     },
-    "noTasks": "Aucune tâches."
+    "noTasks": "Aucune tâches.",
+    "sidebar": {
+      "countZero": "terminé"
+    }
   },
   "groceries": {
     "title": { "groceries": "Liste d'épicerie" },
@@ -349,7 +359,12 @@
         },
         "deleted": "Article supprimé"
       },
-      "tasks": { "created": "Tâche créée", "modified": "Tâche modifiée" }
+      "tasks": {
+        "created": "Tâche créée",
+        "modified": "Tâche modifiée",
+        "notFound": "Tâche introuvable",
+        "noUsers": "La tâche n'a pas d'utilisateurs"
+      }
     },
     "msg": {
       "request": {
@@ -471,7 +486,9 @@
       },
       "tasks": {
         "created": "Vous la retrouverez dans la section 'À venir'.",
-        "modified": "La tâche a été modifiée."
+        "modified": "La tâche a été modifiée.",
+        "notFound": "Auncune tâche n'est associée à cet identifiant.",
+        "noUsers": "Veuillez ajouter des utilisateurs à la tâche."
       }
     }
   }

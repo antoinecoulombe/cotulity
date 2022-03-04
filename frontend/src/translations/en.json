@@ -103,6 +103,13 @@
       "placeholder": "Please enter your email address."
     }
   },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "quit": "Quit",
+    "rename": "Rename",
+    "restore": "Restore"
+  },
   "homes": {
     "tooltip": {
       "add": "Join or create a home",
@@ -252,7 +259,10 @@
       "add": "Add task",
       "shared": "A private task will not be shown to other people in the house."
     },
-    "noTasks": "No Tasks."
+    "noTasks": "No Tasks.",
+    "sidebar": {
+      "countZero": "DONE"
+    }
   },
   "groceries": {
     "title": { "groceries": "Grocery List" },
@@ -349,7 +359,12 @@
         },
         "deleted": "Grocery item deleted"
       },
-      "tasks": { "created": "Task Created", "modified": "Task Updated" }
+      "tasks": {
+        "created": "Task Created",
+        "modified": "Task Updated",
+        "notFound": "Task not found",
+        "noUsers": "Task has no users"
+      }
     },
     "msg": {
       "request": {
@@ -472,7 +487,9 @@
       },
       "tasks": {
         "created": "You can find it under the 'Upcoming' tab.",
-        "modified": "The task has been updated."
+        "modified": "The task has been updated.",
+        "notFound": "We couldn't find a task associated to that identifier.",
+        "noUsers": "Please add users to the task."
       }
     }
   }

@@ -178,10 +178,16 @@ const AppTasks = (): JSX.Element => {
                   : m.firstname
               } ${m.lastname[0].toUpperCase()}.`,
               img: m.Image?.url,
-              count: m.Tasks.length,
+              count: m.Tasks.filter(
+                (t: Task) => t.deletedAt == null && t.completedOn == null
+              ).length,
               isUser: true,
               handle: (tabs: SidebarTab[]) => handleSidebar(tabs),
-              action: (t: Task) => t.Owner?.id === m.id,
+              action: (t: Task) =>
+                (t.Users?.filter((uT: any) => uT.id === m.id).length ?? -1) >
+                  0 &&
+                t.deletedAt == null &&
+                t.completedOn == null,
             };
           })
         );
@@ -212,8 +218,9 @@ const AppTasks = (): JSX.Element => {
     setSidebarTabs(newTabs);
   };
 
-  const handleTask = (tab?: SidebarTab): void => {
-    let newTasks = [...tasks];
+  const handleTask = (tab: SidebarTab, newTasks?: Task[]): void => {
+    if (!newTasks) newTasks = [...tasks];
+
     let important =
       subHeader.tabs.find((ht) => ht.selected)?.name === 'important';
 
@@ -222,7 +229,7 @@ const AppTasks = (): JSX.Element => {
 
       if (
         (!important || (important && t.important)) &&
-        tab?.action &&
+        tab.action &&
         (tab.action(t) as boolean)
       )
         t.visible = true;
@@ -242,140 +249,103 @@ const AppTasks = (): JSX.Element => {
   };
 
   const handleSubmit = (task: Task): void => {
-    // axios({
-    //   method: task.id === -1 ? 'post' : 'put',
-    //   url: `/tasks/${localStorage.getItem('currentHome')}/${
-    //     task.id === -1 ? '' : task.id
-    //   }`,
-    //   data: {
-    //     task,
-    //   },
-    // })
-    //   .then((res: any) => {
-    //     let newUpcoming = [...upcomingTasks];
-    //     newUpcoming.push(res.data.task);
-    //     setUpcomingTasks(newUpcoming);
-    //     setPopup(nullJSX);
-    //     setSuccessNotification(res.data);
-    //   })
-    //   .catch((err) => {
-    //     setNotification(err.response.data);
-    //   });
+    axios({
+      method: task.id === -1 ? 'post' : 'put',
+      url: `/tasks/${localStorage.getItem('currentHome')}/${
+        task.id === -1 ? '' : task.id
+      }`,
+      data: {
+        task,
+      },
+    })
+      .then((res: any) => {
+        let newTasks = [...tasks];
+        if (task.id === -1) newTasks.push(res.data.task);
+        else {
+          let i = newTasks.findIndex((t) => t.id === task.id);
+          if (i >= 0) newTasks[i] = res.data.task;
+        }
+
+        setPopup(nullJSX);
+        handleTask(
+          sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0],
+          newTasks
+        );
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   };
 
   const showPopup = (task?: Task): void => {
-    // setPopup(
-    //   <EditPopup
-    //     onCancel={() => setPopup(nullJSX)}
-    //     task={task}
-    //     users={users.map((u) => {
-    //       return {
-    //         id: u.id,
-    //         value: `${u.firstname} ${u.lastname}`,
-    //         img: u.Image?.url ?? undefined,
-    //         icon:
-    //           (u.Image?.url ?? undefined) === undefined
-    //             ? 'user-circle'
-    //             : undefined,
-    //         selected: !task
-    //           ? false
-    //           : (task.Users?.find((tu) => tu.id === u.id) ?? null) != null,
-    //       } as DropdownOption;
-    //     })}
-    //     onSubmit={(task: Task) => handleSubmit(task)}
-    //     onDelete={task ? (id: number) => deleteTask(id, true) : undefined}
-    //   />
-    // );
-  };
-
-  const destroyTaskUpcoming = (id: number, closePopup?: boolean): void => {
-    // let newUpcoming = [...upcomingTasks];
-    // let i = newUpcoming.findIndex((t) => t.id === id);
-    // if (i >= 0) {
-    //   axios
-    //     .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
-    //     .then((res: any) => {
-    //       if (res.data.deletedAt == null) {
-    //         newUpcoming.splice(i, 1);
-    //         setCompletedTasks(newUpcoming);
-    //       } else {
-    //         newUpcoming[i].deletedAt = res.data.deletedAt;
-    //         setUpcomingTasks(newUpcoming);
-    //       }
-    //       if (closePopup) setPopup(nullJSX);
-    //     })
-    //     .catch((err) => {
-    //       setNotification(err.response.data);
-    //     });
-    // }
-  };
-
-  const destroyTaskCompleted = (id: number, closePopup?: boolean): void => {
-    // let newCompleted = [...completedTasks];
-    // let i = newCompleted.findIndex((t) => t.id === id);
-    // if (i >= 0) {
-    //   axios
-    //     .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
-    //     .then((res: any) => {
-    //       if (res.data.deletedAt == null) {
-    //         newCompleted.splice(i, 1);
-    //         setCompletedTasks(newCompleted);
-    //       } else {
-    //         newCompleted[i].deletedAt = res.data.deletedAt;
-    //         setCompletedTasks(newCompleted);
-    //       }
-    //       if (closePopup) setPopup(nullJSX);
-    //     })
-    //     .catch((err) => {
-    //       setNotification(err.response.data);
-    //     });
-    // }
+    setPopup(
+      <EditPopup
+        onCancel={() => setPopup(nullJSX)}
+        task={task}
+        users={users.map((u) => {
+          return {
+            id: u.id,
+            value: `${u.firstname} ${u.lastname}`,
+            img: u.Image?.url ?? undefined,
+            icon:
+              (u.Image?.url ?? undefined) === undefined
+                ? 'user-circle'
+                : undefined,
+            selected: !task
+              ? false
+              : (task.Users?.find((tu) => tu.id === u.id) ?? null) != null,
+          } as DropdownOption;
+        })}
+        onSubmit={(task: Task) => handleSubmit(task)}
+        onDelete={task ? (id: number) => deleteTask(id, true) : undefined}
+      />
+    );
   };
 
   const deleteTask = (id: number, closePopup?: boolean): void => {
-    // if (upcomingTasks.find((t) => t.id === id))
-    //   destroyTaskUpcoming(id, closePopup);
-    // else destroyTaskCompleted(id, closePopup);
+    let newTasks = [...tasks];
+    let i = newTasks.findIndex((t) => t.id === id);
+    if (i >= 0) {
+      axios
+        .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
+        .then((res: any) => {
+          if (res.data.deletedAt == null) newTasks.splice(i, 1);
+          else newTasks[i].deletedAt = res.data.deletedAt;
+
+          if (closePopup) setPopup(nullJSX);
+          handleTask(
+            sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0],
+            newTasks
+          );
+        })
+        .catch((err) => {
+          setNotification(err.response.data);
+        });
+    }
   };
 
-  const completeTask = (id: number): void => {
-    // let newCompleted = [...completedTasks];
-    // let newUpcoming = [...upcomingTasks];
-    // let i = newUpcoming.findIndex((t) => t.id === id);
-    // if (i >= 0) {
-    //   axios
-    //     .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/do`)
-    //     .then((res: any) => {
-    //       newUpcoming[i].completedOn = res.data.completedOn;
-    //       newCompleted.push(newUpcoming[i]);
-    //       newUpcoming.splice(i, 1);
-    //       setUpcomingTasks(newUpcoming);
-    //       setCompletedTasks(newCompleted);
-    //     })
-    //     .catch((err) => {
-    //       setNotification(err.response.data);
-    //     });
-    // }
-  };
-
-  const unCompleteTask = (id: number): void => {
-    // let newCompleted = [...completedTasks];
-    // let newUpcoming = [...upcomingTasks];
-    // let i = newCompleted.findIndex((t) => t.id === id);
-    // if (i >= 0) {
-    //   axios
-    //     .put(`/tasks/${localStorage.getItem('currentHome')}/${id}/undo`)
-    //     .then((res: any) => {
-    //       newCompleted[i].completedOn = null;
-    //       newUpcoming.push(newCompleted[i]);
-    //       newCompleted.splice(i, 1);
-    //       setUpcomingTasks(newUpcoming);
-    //       setCompletedTasks(newCompleted);
-    //     })
-    //     .catch((err) => {
-    //       setNotification(err.response.data);
-    //     });
-    // }
+  const setCompletionTask = (id: number, done: boolean): void => {
+    let newTasks = [...tasks];
+    let i = newTasks.findIndex((t) => t.id === id);
+    if (i >= 0) {
+      axios
+        .put(
+          `/tasks/${localStorage.getItem('currentHome')}/${id}/${
+            done ? 'do' : 'undo'
+          }`
+        )
+        .then((res: any) => {
+          newTasks[i].completedOn = res.data.completedOn;
+          handleTask(
+            sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0],
+            newTasks
+          );
+        })
+        .catch((err) => {
+          setNotification(err.response.data);
+        });
+    }
   };
 
   const getTranslatedMonthAndDay = (date: string): JSX.Element => {
@@ -391,8 +361,6 @@ const AppTasks = (): JSX.Element => {
     tooltipMultiplier: 10,
   };
 
-  const handleHorizontalScroll = (e: any): void => {};
-
   return (
     <AppContainer
       title={title}
@@ -403,7 +371,7 @@ const AppTasks = (): JSX.Element => {
       onAddClick={() => showPopup(undefined)}
     >
       <div className="content">
-        <List>
+        <List key={`task-list`}>
           {loaded ? (
             tasks?.filter((t) => t.visible).length ? (
               tasks
@@ -416,10 +384,9 @@ const AppTasks = (): JSX.Element => {
                           id="c2"
                           type="checkbox"
                           onClick={() =>
-                            t.completedOn == null
-                              ? completeTask(t.id)
-                              : unCompleteTask(t.id)
+                            setCompletionTask(t.id, t.completedOn === null)
                           }
+                          defaultChecked={t.completedOn !== null}
                         />
                       </div>
                       <h3>{t.name}</h3>
@@ -447,7 +414,7 @@ const AppTasks = (): JSX.Element => {
                               u.Image?.url ? (
                                 <img
                                   key={`involved-${t.id}-${u.id}`}
-                                  src={`http://localhost:3000/images/public/${u.Image.url}`}
+                                  src={`http://localhost:4000/images/public/${u.Image.url}`}
                                   alt={`${u.firstname[0]}${u.lastname[0]}`.toUpperCase()}
                                 />
                               ) : (
@@ -460,25 +427,49 @@ const AppTasks = (): JSX.Element => {
                               )
                             )}
                           </div>
-                          <div className={`tag ${getTagColor(t.dueDateTime)}`}>
+                          <div
+                            className={`tag ${
+                              t.completedOn !== null
+                                ? 'green'
+                                : getTagColor(t.dueDateTime)
+                            }`}
+                          >
                             {getTranslatedMonthAndDay(t.dueDateTime)}
                           </div>
                         </>
                       )}
 
-                      <IconToolTip
-                        icon="pen"
-                        style={iconStyle}
-                        circled={{ value: true, multiplier: 0.45 }}
-                        onClick={() => showPopup(t)}
-                      >
-                        {ReactDOMServer.renderToStaticMarkup(
-                          <Translate
-                            name="editHome"
-                            prefix="homes.action."
-                          ></Translate>
-                        )}
-                      </IconToolTip>
+                      {(sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0])
+                        .value === 'trash' ? (
+                        <IconToolTip
+                          icon="pen"
+                          style={iconStyle}
+                          circled={{ value: true, multiplier: 0.45 }}
+                          onClick={() => showPopup(t)}
+                        >
+                          {ReactDOMServer.renderToStaticMarkup(
+                            <Translate
+                              name="restore"
+                              prefix="actions."
+                            ></Translate>
+                          )}
+                        </IconToolTip>
+                      ) : (
+                        <IconToolTip
+                          icon="pen"
+                          style={iconStyle}
+                          circled={{ value: true, multiplier: 0.45 }}
+                          onClick={() => showPopup(t)}
+                        >
+                          {ReactDOMServer.renderToStaticMarkup(
+                            <Translate
+                              name="edit"
+                              prefix="actions."
+                            ></Translate>
+                          )}
+                        </IconToolTip>
+                      )}
+
                       <IconToolTip
                         icon="times-circle"
                         style={iconStyle}
@@ -487,8 +478,8 @@ const AppTasks = (): JSX.Element => {
                       >
                         {ReactDOMServer.renderToStaticMarkup(
                           <Translate
-                            name="deleteHome"
-                            prefix="homes.action."
+                            name="delete"
+                            prefix="actions."
                           ></Translate>
                         )}
                       </IconToolTip>

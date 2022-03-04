@@ -133,7 +133,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
                   >
                     {us.img && (
                       <img
-                        src={`http://localhost:3000/images/public/${us.img}`}
+                        src={`http://localhost:4000/images/public/${us.img}`}
                         alt={`${us.value[0]}${
                           us.value.split(' ')[1][0]
                         }`.toUpperCase()}

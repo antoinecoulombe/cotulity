@@ -92,7 +92,7 @@ Home.get('/users', async (req: any, res: any) => {
         {
           model: db.Task,
           as: 'Tasks',
-          attributes: ['id'],
+          attributes: ['id', 'completedOn', 'deletedAt'],
         },
       ],
       through: {
