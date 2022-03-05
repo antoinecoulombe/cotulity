@@ -30,7 +30,7 @@
 // TODO: Complete Tasks app                                                 -> 32h
 //  -> Add repeating options                                                ->  6h
 //  -> DONE: Fix task refresh                                               ->  8h
-//  -> Restore tasks from trash                                             ->  2h
+//  -> DONE: Restore tasks from trash                                       ->  2h
 //  -> Add field validation                                                 ->  4h
 //  -> Complete task only if all members complete the task                  ->  6h
 //  -> Add slider for minutes, hours, days and months                       ->  6h

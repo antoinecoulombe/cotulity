@@ -250,6 +250,27 @@ Tasks.put('/:id/undo', async (req: any, res: any) =>
   editCompletion(req, res, false)
 );
 
+// Restores a task.
+Tasks.put('/:id/restore', async (req: any, res: any) => {
+  try {
+    let tasks = await getTasks(req, res, 'all', req.params.id);
+    if (tasks.length == 0)
+      return res
+        .status(404)
+        .json({ title: 'task.notFound', msg: 'task.notFound' });
+
+    await tasks[0].restore();
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+    });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
 // ########################################################
 // ######################### POST #########################
 // ########################################################
@@ -325,10 +346,6 @@ Tasks.delete('/:id', async (req: any, res: any) => {
         .json({ title: 'task.notFound', msg: 'task.notFound' });
 
     let task = tasks[0];
-    // if (task.ownerId !== req.user.id)
-    //   return res
-    //     .status(401)
-    //     .json({ title: 'request.denied', msg: 'request.unauthorized' });
 
     var deletedAt = null;
     if (task.deletedAt == null) {

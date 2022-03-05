@@ -85,7 +85,7 @@ const AppTasks = (): JSX.Element => {
   useEffect(() => {
     if (!sidebarTabs.length) return;
     setLoaded(true);
-    let selected = sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0];
+    let selected = getSelectedTab();
     handleTitle(selected);
     handleTask(selected);
   }, [sidebarTabs, subHeader]);
@@ -237,6 +237,9 @@ const AppTasks = (): JSX.Element => {
     setTasks(newTasks);
   };
 
+  const getSelectedTab = (): SidebarTab =>
+    sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0];
+
   const getTagColor = (dueDate: string): string => {
     let d = new Date(dueDate);
     let dNow = new Date(Date.now());
@@ -267,10 +270,7 @@ const AppTasks = (): JSX.Element => {
         }
 
         setPopup(nullJSX);
-        handleTask(
-          sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0],
-          newTasks
-        );
+        handleTask(getSelectedTab(), newTasks);
         setSuccessNotification(res.data);
       })
       .catch((err) => {
@@ -314,10 +314,7 @@ const AppTasks = (): JSX.Element => {
           else newTasks[i].deletedAt = res.data.deletedAt;
 
           if (closePopup) setPopup(nullJSX);
-          handleTask(
-            sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0],
-            newTasks
-          );
+          handleTask(getSelectedTab(), newTasks);
         })
         .catch((err) => {
           setNotification(err.response.data);
@@ -337,15 +334,29 @@ const AppTasks = (): JSX.Element => {
         )
         .then((res: any) => {
           newTasks[i].completedOn = res.data.completedOn;
-          handleTask(
-            sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0],
-            newTasks
-          );
+          handleTask(getSelectedTab(), newTasks);
         })
         .catch((err) => {
           setNotification(err.response.data);
         });
     }
+  };
+
+  const restoreTask = (task: Task): void => {
+    axios({
+      method: 'put',
+      url: `/tasks/${localStorage.getItem('currentHome')}/${task.id}/restore`,
+    })
+      .then((res: any) => {
+        let newTasks = [...tasks];
+        let i = newTasks.findIndex((t) => t.id === task.id);
+        if (i >= 0) newTasks[i].deletedAt = null;
+
+        handleTask(getSelectedTab(), newTasks);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   };
 
   const getTranslatedMonthAndDay = (date: string): JSX.Element => {
@@ -439,13 +450,12 @@ const AppTasks = (): JSX.Element => {
                         </>
                       )}
 
-                      {(sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0])
-                        .value === 'trash' ? (
+                      {getSelectedTab().value === 'trash' ? (
                         <IconToolTip
-                          icon="pen"
+                          icon="trash-arrow-up"
                           style={iconStyle}
                           circled={{ value: true, multiplier: 0.45 }}
-                          onClick={() => showPopup(t)}
+                          onClick={() => restoreTask(t)}
                         >
                           {ReactDOMServer.renderToStaticMarkup(
                             <Translate

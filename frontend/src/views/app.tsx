@@ -198,15 +198,6 @@ const App = (): JSX.Element => {
         <Route exact path="/404" component={NotFoundPage} />
         <Redirect to="/404" />
       </Switch>
-      <Link
-        className="logo small"
-        style={
-          localStorage.getItem('userId') == undefined
-            ? { display: 'none' }
-            : { display: 'block' }
-        }
-        to="/"
-      ></Link>
 
       <div className="trashDiv"></div>
       {isAuthenticated() && (
