@@ -373,7 +373,8 @@
         "notFound": "Nos robots ne trouvent pas ce que vous cherchez.",
         "reload": "Veuillez rafraîchir la page.",
         "unauthorized": "Vous n'êtes pas authorisé à accéder à cette ressource.",
-        "missingField": "Un champ obligatoire est manquant."
+        "missingField": "Un champ obligatoire est manquant.",
+        "timeout": "La requête a dépassée le délai d'attente maximal. Veuillez réessayer."
       },
       "apps": {
         "offline": "Cette application est actuellement hors-ligne."

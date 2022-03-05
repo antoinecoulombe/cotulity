@@ -19,19 +19,6 @@ require('../config/passport');
 
 Auth.get('/', async (req: any, res: any) => {
   try {
-    const url = req.get('x-original-uri'); // req.path
-    const publicPaths = ['/auth/login', '/users/register'];
-    const publicPathStarts = [
-      '/homes/public',
-      '/images/public',
-      '/users/public',
-    ];
-    if (
-      publicPaths.includes(url) ||
-      publicPathStarts.filter((p: string) => url.startsWith(p)).length
-    )
-      return res.json({ title: 'request.success', msg: 'request.success' });
-
     passport.authenticate(
       'jwt',
       {

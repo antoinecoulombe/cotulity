@@ -105,7 +105,7 @@ const AppsPage = (): JSX.Element => {
         } else getHomes();
       })
       .catch((err) => {
-        setNotification(err.response.data);
+        if (err?.response?.data) setNotification(err.response.data);
       });
 
     return () => {

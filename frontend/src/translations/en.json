@@ -374,7 +374,8 @@
         "reload": "Please reload the page.",
         "unauthorized": "You are not authorized to access this resource.",
         "noResponse": "Couldn't get a response from the server.",
-        "missingField": "A required field is missing"
+        "missingField": "A required field is missing",
+        "timeout": "The request timed out. Please try again."
       },
       "apps": {
         "offline": "This app is currently offline."
