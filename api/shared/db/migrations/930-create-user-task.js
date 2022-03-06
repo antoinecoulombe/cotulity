@@ -12,11 +12,11 @@ module.exports = {
             key: 'id',
           },
         },
-        taskId: {
+        taskOccurenceId: {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: 'Tasks',
+            model: 'TaskOccurences',
             key: 'id',
           },
         },
@@ -39,7 +39,7 @@ module.exports = {
         queryInterface.addConstraint('UserTasks', {
           type: 'primary key',
           name: 'user_task_pk',
-          fields: ['userId', 'taskId'],
+          fields: ['userId', 'taskOccurenceId'],
         })
       );
   },

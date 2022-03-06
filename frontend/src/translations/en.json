@@ -235,6 +235,8 @@
       "shared": "Shared",
       "manage": "Manage Task",
       "create": "Create Task",
+      "until": "Until",
+      "repeat": "Repeat",
       "sidebar": {
         "tasks": { "value": "Tasks", "title": "Tasks" },
         "myTasks": { "value": "My Tasks", "title": "My Tasks" },
@@ -253,6 +255,14 @@
         "dd": "DD",
         "mm": "MM",
         "hh": "HH"
+      },
+      "repeat": {
+        "none": "None",
+        "day": "Every Day",
+        "week": "Every Week",
+        "twoweek": "Every Two Weeks",
+        "month": "Every Month",
+        "year": "Every Year"
       }
     },
     "tooltip": {

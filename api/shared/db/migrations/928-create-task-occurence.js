@@ -2,42 +2,27 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Tasks', {
+    await queryInterface.createTable('TaskOccurences', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      homeId: {
+      taskId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'Homes',
+          model: 'Tasks',
           key: 'id',
         },
       },
-      ownerId: {
+      dueDateTime: {
         allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
-        },
+        type: Sequelize.DATE,
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      important: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
-      shared: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: true,
+      completedOn: {
+        type: Sequelize.DATE,
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +41,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Tasks');
+    await queryInterface.dropTable('TaskOccurences');
   },
 };

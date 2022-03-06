@@ -65,11 +65,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         otherKey: 'homeId',
       });
-      User.belongsToMany(models.Task, {
+      User.belongsToMany(models.TaskOccurence, {
         through: models.UserTask,
-        as: 'Tasks',
+        as: 'TaskOccurences',
         foreignKey: 'userId',
-        otherKey: 'taskId',
+        otherKey: 'taskOccurenceId',
       });
     }
   }

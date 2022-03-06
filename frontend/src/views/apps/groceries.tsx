@@ -21,7 +21,7 @@ const AppGroceries = (): JSX.Element => {
   const [newArticle, setNewArticle] = useState<string>('');
   const [articles, setArticles] = useState<article[]>([]);
   const { setNotification, setErrorNotification } = useNotifications();
-  const { t, i18n } = useTranslation('common');
+  const { t } = useTranslation('common');
   const [loaded, setLoaded] = useState<boolean>(false);
 
   const getArticles = (): void => {

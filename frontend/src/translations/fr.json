@@ -235,6 +235,8 @@
       "shared": "Partagé",
       "manage": "Modifier la tâche",
       "create": "Créer une nouvelle tâche",
+      "until": "Jusqu'à",
+      "repeat": "Répétition",
       "sidebar": {
         "tasks": { "value": "Tâches", "title": "Tâches" },
         "myTasks": { "value": "Mes tâches", "title": "Mes tâches" },
@@ -253,6 +255,14 @@
         "dd": "DD",
         "mm": "MM",
         "hh": "HH"
+      },
+      "repeat": {
+        "none": "Aucune",
+        "day": "Chaque jour",
+        "week": "Chaque semaine",
+        "twoweek": "Chaque deux semaines",
+        "month": "Chaque mois",
+        "year": "Chaque année"
       }
     },
     "tooltip": {

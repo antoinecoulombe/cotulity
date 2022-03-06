@@ -5,8 +5,8 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class UserTask extends Model {
     static associate(models) {
-      UserTask.belongsTo(models.Task, {
-        foreignKey: 'taskId',
+      UserTask.belongsTo(models.TaskOccurence, {
+        foreignKey: 'taskOccurenceId',
         targetKey: 'id',
         allowNull: false,
       });
