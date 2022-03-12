@@ -30,13 +30,11 @@ const getTasks = async (
   req: any,
   res: any,
   when: string,
-  id?: number,
   occurenceId?: number
 ): Promise<any> => {
   try {
     return await res.locals.home.getTasks({
       where: {
-        id: id == undefined ? { [Op.ne]: 0 } : id,
         [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
       },
       attributes: ['id', 'name', 'important', 'shared'],
@@ -333,7 +331,7 @@ Tasks.put('/:id', async (req: any, res: any) => {
           .status(500)
           .json({ title: 'task.invalidDate', msg: 'task.invalidDate' });
 
-      let taskDb = await getTasks(req, res, 'all', undefined, req.params.id);
+      let taskDb = await getTasks(req, res, 'all', req.params.id);
       if (!taskDb?.length)
         return res
           .status(404)
@@ -383,7 +381,6 @@ const editCompletion = async (req: any, res: any, done: boolean) => {
       req,
       res,
       done ? 'upcoming' : 'completed',
-      undefined,
       req.params.id
     );
     if (!tasks.length)
@@ -419,7 +416,7 @@ Tasks.put('/:id/undo', async (req: any, res: any) =>
 // Restores a task occurence.
 Tasks.put('/:id/restore', async (req: any, res: any) => {
   try {
-    let tasks = await getTasks(req, res, 'all', undefined, req.params.id);
+    let tasks = await getTasks(req, res, 'all', req.params.id);
     if (tasks.length == 0)
       return res
         .status(404)
@@ -498,7 +495,7 @@ Tasks.post('/', async (req: any, res: any) => {
 // Deletes the task occurence with the specified id.
 Tasks.delete('/:id', async (req: any, res: any) => {
   try {
-    let tasks = await getTasks(req, res, 'all', undefined, req.params.id);
+    let tasks = await getTasks(req, res, 'all', req.params.id);
     if (tasks.length == 0)
       return res
         .status(404)
