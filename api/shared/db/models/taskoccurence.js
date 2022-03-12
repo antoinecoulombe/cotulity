@@ -5,7 +5,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class TaskOccurence extends Model {
     static associate(models) {
-      TaskOccurence.belongsTo(models.User, {
+      TaskOccurence.belongsTo(models.Task, {
         foreignKey: 'taskId',
         targetKey: 'id',
         as: 'Task',
@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       TaskOccurence.hasMany(models.UserTask, {
         foreignKey: 'taskOccurenceId',
+        as: 'userRelation',
         sourceId: 'id',
         onDelete: 'cascade',
         hooks: true,

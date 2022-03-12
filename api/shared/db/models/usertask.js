@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'taskOccurenceId',
         targetKey: 'id',
         allowNull: false,
+        hooks: true,
       });
       UserTask.belongsTo(models.User, {
         foreignKey: 'userId',

@@ -18,11 +18,20 @@ Tasks.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
+interface TaskOccurence {
+  taskId: number;
+  Users: any[];
+  dueDate: Date;
+  repeat: string;
+  untilDate: Date | null;
+}
+
 const getTasks = async (
   req: any,
   res: any,
   when: string,
-  id?: boolean
+  id?: number,
+  occurenceId?: number
 ): Promise<any> => {
   try {
     return await res.locals.home.getTasks({
@@ -36,6 +45,7 @@ const getTasks = async (
           model: db.TaskOccurence,
           as: 'Occurences',
           where: {
+            id: occurenceId == undefined ? { [Op.ne]: 0 } : occurenceId,
             [Op.or]:
               when == 'all'
                 ? [{ completedOn: null }, { completedOn: { [Op.ne]: null } }]
@@ -50,6 +60,7 @@ const getTasks = async (
             attributes: ['id', 'firstname', 'lastname'],
             include: { model: db.Image, attributes: ['url'] },
           },
+          paranoid: false,
         },
         {
           model: db.User,
@@ -67,24 +78,30 @@ const getTasks = async (
   }
 };
 
-const toDate = (dateString: string): Date => {
-  // 09/08@20:42
-  let dateSplit = dateString.split('@');
-  let dayMonth: number[] = dateSplit[0].split('/').map((x) => +x);
-  let hourMinute: number[] = dateSplit[1].split(':').map((x) => +x);
+const toDate = (dateString: string): Date | null => {
+  try {
+    if (!dateString.includes('@')) dateString += '@23:59';
 
-  let now = new Date();
-  let month = dayMonth[1] - 1;
-  return new Date(
-    month < now.getMonth() ||
-    (month == now.getMonth() && dayMonth[0] < now.getDay())
-      ? now.getFullYear() + 1
-      : now.getFullYear(),
-    month,
-    dayMonth[0],
-    hourMinute[0],
-    hourMinute[1]
-  );
+    // 09/08@20:42
+    let dateSplit = dateString.split('@');
+    let dayMonth: number[] = dateSplit[0].split('/').map((x) => +x);
+    let hourMinute: number[] = dateSplit[1].split(':').map((x) => +x);
+
+    let now = new Date();
+    let month = dayMonth[1] - 1;
+    return new Date(
+      month < now.getMonth() ||
+      (month == now.getMonth() && dayMonth[0] < now.getDay())
+        ? now.getFullYear() + 1
+        : now.getFullYear(),
+      month,
+      dayMonth[0],
+      hourMinute[0],
+      hourMinute[1]
+    );
+  } catch (e) {
+    return null;
+  }
 };
 
 const getRepeatingDatesUntil = (
@@ -97,9 +114,10 @@ const getRepeatingDatesUntil = (
 
   if (repeat !== 'none' && untilDate !== null) {
     let valid: boolean = true;
-    let untilMilliseconds = untilDate.getMilliseconds();
+    let untilMilliseconds = untilDate.getTime();
+    let dueMilliseconds = dueDate.getTime();
 
-    while (dueDate.getMilliseconds() <= untilMilliseconds) {
+    while (dueMilliseconds <= untilMilliseconds && occurences.length < 50) {
       switch (repeat) {
         case 'day':
           dueDate.setDate(dueDate.getDate() + 1);
@@ -118,13 +136,134 @@ const getRepeatingDatesUntil = (
           break;
       }
 
-      if (!valid || dueDate.getMilliseconds() > untilMilliseconds) break;
+      dueMilliseconds = dueDate.getTime();
+      if (!valid || dueMilliseconds > untilMilliseconds) break;
 
       occurences.push(dueDate.toUTCString());
     }
   }
 
   return occurences;
+};
+
+const getUsers = async (req: any, res: any) => {
+  let members = await res.locals.home.getMembers({
+    attributes: ['id', 'firstname', 'lastname'],
+    include: [
+      {
+        model: db.Image,
+        as: 'Image',
+        attributes: ['url'],
+      },
+    ],
+  });
+
+  if (req.body.task.shared == false)
+    return members.filter((m: any) => m.id === req.user.id);
+  else {
+    return members.filter(
+      (u: any) =>
+        req.body.task.Users.filter((id: any) => id === u.id).length > 0
+    );
+  }
+};
+
+const respondIfErrors = (users: any[], repeat: string, res: any) => {
+  if (!users.length) {
+    res.status(500).json({ title: 'tasks.noUsers', msg: 'tasks.noUsers' });
+    return true;
+  }
+
+  let repeatOptions: string[] = ['none', 'day', 'week', 'twoweek', 'month'];
+  if (!repeatOptions.includes(repeat)) {
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    return true;
+  }
+
+  return false;
+};
+
+const createTaskOccurences = async (
+  task: TaskOccurence,
+  transaction: any,
+  deleteOld?: number
+) => {
+  let firstDueDate = new Date(task.dueDate);
+  let taskOccurence = { taskId: task.taskId, Users: task.Users };
+
+  let taskOccurences: any[] = getRepeatingDatesUntil(
+    task.repeat,
+    task.dueDate,
+    task.untilDate
+  ).map((o) => {
+    return { ...taskOccurence, dueDateTime: o };
+  });
+
+  if (deleteOld) {
+    let oldTaskOccurences = await db.TaskOccurence.findAll(
+      {
+        where: {
+          taskId: task.taskId,
+          [Op.or]: {
+            id: { [Op.gte]: deleteOld },
+            dueDateTime: {
+              [Op.gte]: firstDueDate,
+            },
+          },
+        },
+      },
+      { transaction: transaction }
+    );
+
+    let otoIds = oldTaskOccurences.map((oto: any) => oto.id);
+
+    await db.UserTask.destroy(
+      {
+        where: { taskOccurenceId: otoIds },
+        force: true,
+      },
+      { transaction: transaction }
+    );
+
+    await db.TaskOccurence.destroy(
+      {
+        where: { id: otoIds },
+        force: true,
+      },
+      { transaction: transaction }
+    );
+  }
+
+  // Create task occurences
+  let taskOccurencesDb = await db.TaskOccurence.bulkCreate(taskOccurences, {
+    transaction: transaction,
+  });
+
+  taskOccurences = taskOccurences.map((t: any) => {
+    let tDate: string = new Date(t.dueDateTime).toUTCString();
+    let taskOcc = taskOccurencesDb.find(
+      (tDb: any) => new Date(tDb.dueDateTime).toUTCString() == tDate
+    );
+
+    if (!taskOcc)
+      throw new Error(
+        `Couldn't find taskOccurence with date equal to '${tDate}'`
+      );
+
+    return { ...t, id: taskOcc.id };
+  });
+
+  let userTasks: { userId: number; taskOccurenceId: number }[] = [];
+  taskOccurences.forEach((t) => {
+    t.Users.forEach((u: any) =>
+      userTasks.push({ userId: u.id, taskOccurenceId: t.id })
+    );
+  });
+
+  // Create users for each of those task occurences
+  await db.UserTask.bulkCreate(userTasks, { transaction: transaction });
+
+  return taskOccurences;
 };
 
 // ########################################################
@@ -180,7 +319,7 @@ Tasks.get('/completed', async (req: any, res: any) => {
 // ######################### PUT ##########################
 // ########################################################
 
-// TODO: TEST -> Modifies a task.
+// Modifies a task and its taskOccurences.
 Tasks.put('/:id', async (req: any, res: any) => {
   try {
     let dueDate = toDate(req.body.task.dueDateTime);
@@ -189,79 +328,42 @@ Tasks.put('/:id', async (req: any, res: any) => {
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {
-      let taskDb = await getTasks(req, res, 'all', req.params.id);
+      if (dueDate === null)
+        return res
+          .status(500)
+          .json({ title: 'task.invalidDate', msg: 'task.invalidDate' });
+
+      let taskDb = await getTasks(req, res, 'all', undefined, req.params.id);
       if (!taskDb?.length)
         return res
           .status(404)
           .json({ title: 'task.notFound', msg: 'task.notFound' });
 
-      if (
-        ['none', 'day', 'week', 'twoweek', 'month'].includes(
-          req.body.task.repeat
-        )
-      )
-        return res
-          .status(500)
-          .json({ title: 'request.error', msg: 'request.error' });
-
       let task = taskDb[0];
-      let members = await res.locals.home.getMembers({
-        attributes: ['id', 'firstname', 'lastname'],
-        include: [
-          {
-            model: db.Image,
-            as: 'Image',
-            attributes: ['url'],
-          },
-        ],
-      });
 
       task.name = req.body.task.name;
       task.dueDateTime = dueDate;
       task.important = req.body.task.important;
-
       if (task.ownerId === req.user.id) task.shared = req.body.task.shared;
 
-      let taskUsers: any[] = [];
+      let taskUsers: any[] = await getUsers(req, res);
 
-      if (req.body.task.shared == false) taskUsers.push(req.user.id);
-      else {
-        taskUsers = members.filter(
-          (u: any) =>
-            req.body.task.Users.filter((uT: any) => uT.id === u.id).length > 0
-        );
-      }
+      if (respondIfErrors(taskUsers, req.body.task.repeat, res)) return;
 
-      if (!taskUsers.length)
-        return res
-          .status(500)
-          .json({ title: 'tasks.noUsers', msg: 'tasks.noUsers' });
-
-      await db.TaskOccurence.destroy(
-        {
-          where: {
-            taskId: task.id,
-            dueDateTime: {
-              [Op.gte]: db.sequelize.literal("NOW() - INTERVAL '7d'"),
-            },
-          },
-          force: true,
-        },
-        { transaction: t }
-      );
       await task.save({ transaction: t });
 
-      let taskOccurence = { taskId: task.id, Users: taskUsers };
-
-      let taskOccurences: any[] = getRepeatingDatesUntil(
-        req.body.task.repeat,
-        dueDate,
-        untilDate
-      ).map((o) => {
-        return { ...taskOccurence, dueDateTime: o };
-      });
-
-      await db.TaskOccurence.bulkCreate(taskOccurences, { transaction: t });
+      let taskOccurence: TaskOccurence = {
+        taskId: task.id,
+        Users: taskUsers,
+        dueDate: dueDate,
+        repeat: req.body.task.repeat,
+        untilDate: untilDate,
+      };
+      let taskOccurences = await createTaskOccurences(
+        taskOccurence,
+        t,
+        req.params.id
+      );
 
       return res.json({
         title: 'tasks.modified',
@@ -281,6 +383,7 @@ const editCompletion = async (req: any, res: any, done: boolean) => {
       req,
       res,
       done ? 'upcoming' : 'completed',
+      undefined,
       req.params.id
     );
     if (!tasks.length)
@@ -288,10 +391,7 @@ const editCompletion = async (req: any, res: any, done: boolean) => {
         .status(404)
         .json({ title: 'task.notFound', msg: 'task.notFound' });
 
-    let taskOccurence = db.TaskOccurence.findOne({
-      where: { id: req.params.occurenceId, taskId: tasks[0].id },
-    });
-
+    let taskOccurence = tasks[0].Occurences[0];
     taskOccurence.completedOn = done ? new Date() : null;
     await taskOccurence.save();
 
@@ -316,16 +416,16 @@ Tasks.put('/:id/undo', async (req: any, res: any) =>
   editCompletion(req, res, false)
 );
 
-// TODO: Restores a task.
+// Restores a task occurence.
 Tasks.put('/:id/restore', async (req: any, res: any) => {
   try {
-    let tasks = await getTasks(req, res, 'all', req.params.id);
+    let tasks = await getTasks(req, res, 'all', undefined, req.params.id);
     if (tasks.length == 0)
       return res
         .status(404)
         .json({ title: 'task.notFound', msg: 'task.notFound' });
 
-    await tasks[0].restore();
+    await tasks[0].Occurences[0].restore();
 
     res.json({
       title: 'request.success',
@@ -341,7 +441,7 @@ Tasks.put('/:id/restore', async (req: any, res: any) => {
 // ######################### POST #########################
 // ########################################################
 
-// TODO: TEST -> Creates a new task.
+// Creates a new task.
 Tasks.post('/', async (req: any, res: any) => {
   try {
     let dueDate = toDate(req.body.task.dueDateTime);
@@ -350,40 +450,14 @@ Tasks.post('/', async (req: any, res: any) => {
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {
-      let members = await res.locals.home.getMembers({
-        attributes: ['id', 'firstname', 'lastname'],
-        include: [
-          {
-            model: db.Image,
-            as: 'Image',
-            attributes: ['url'],
-          },
-        ],
-      });
-
-      let taskUsers: any[] = [];
-
-      if (req.body.task.shared == false) taskUsers.push(req.user.id);
-      else {
-        taskUsers = members.filter(
-          (u: any) =>
-            req.body.task.Users.filter((uT: any) => uT.id === u.id).length > 0
-        );
-      }
-
-      if (!taskUsers.length)
+      if (dueDate === null)
         return res
           .status(500)
-          .json({ title: 'request.error', msg: 'request.error' });
+          .json({ title: 'task.invalidDate', msg: 'task.invalidDate' });
 
-      if (
-        ['none', 'day', 'week', 'twoweek', 'month'].includes(
-          req.body.task.repeat
-        )
-      )
-        return res
-          .status(500)
-          .json({ title: 'request.error', msg: 'request.error' });
+      let taskUsers: any[] = await getUsers(req, res);
+
+      if (respondIfErrors(taskUsers, req.body.task.repeat, res)) return;
 
       let task = await db.Task.create(
         {
@@ -396,17 +470,14 @@ Tasks.post('/', async (req: any, res: any) => {
         { transaction: t }
       );
 
-      let taskOccurence = { taskId: task.id, Users: taskUsers };
-
-      let taskOccurences: any[] = getRepeatingDatesUntil(
-        req.body.task.repeat,
-        dueDate,
-        untilDate
-      ).map((o) => {
-        return { ...taskOccurence, dueDateTime: o };
-      });
-
-      await db.TaskOccurence.bulkCreate(taskOccurences, { transaction: t });
+      let taskOccurence: TaskOccurence = {
+        taskId: task.id,
+        Users: taskUsers,
+        dueDate: dueDate,
+        repeat: req.body.task.repeat,
+        untilDate: untilDate,
+      };
+      let taskOccurences = await createTaskOccurences(taskOccurence, t);
 
       return res.json({
         title: 'tasks.created',
@@ -424,10 +495,10 @@ Tasks.post('/', async (req: any, res: any) => {
 // ######################## DELETE ########################
 // ########################################################
 
-// TODO: Deletes the task with the specified id.
+// Deletes the task occurence with the specified id.
 Tasks.delete('/:id', async (req: any, res: any) => {
   try {
-    let tasks = await getTasks(req, res, 'all', req.params.id);
+    let tasks = await getTasks(req, res, 'all', undefined, req.params.id);
     if (tasks.length == 0)
       return res
         .status(404)
@@ -435,18 +506,38 @@ Tasks.delete('/:id', async (req: any, res: any) => {
 
     let task = tasks[0];
 
-    var deletedAt = null;
-    if (task.deletedAt == null) {
-      await task.destroy();
-      deletedAt = task.deletedAt;
-    } else {
-      await task.destroy({ force: true });
-    }
+    return await db.sequelize.transaction(async (t: any) => {
+      // Delete task occurence users
+      await db.UserTask.destroy(
+        { where: { taskOccurenceId: req.params.id }, force: true },
+        { transaction: t }
+      );
 
-    res.json({
-      title: 'request.success',
-      msg: 'request.success',
-      deletedAt: deletedAt,
+      // Delete task occurence
+      var deletedAt = null;
+      if (task.Occurences[0].deletedAt == null) {
+        await db.TaskOccurence.destroy({
+          where: { id: req.params.id },
+        });
+        deletedAt = new Date().toUTCString();
+      } else {
+        await db.TaskOccurence.destroy({
+          where: { id: req.params.id },
+          force: true,
+        });
+      }
+
+      // Delete task if no more occurences
+      let taskOccurenceCount = await db.TaskOccurence.count({
+        where: { taskId: task.id },
+      });
+      if (taskOccurenceCount === 0) await task.destroy({ force: true });
+
+      return res.json({
+        title: 'request.success',
+        msg: 'request.success',
+        deletedAt: deletedAt,
+      });
     });
   } catch (error) {
     /* istanbul ignore next */

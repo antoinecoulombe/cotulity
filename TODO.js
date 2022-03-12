@@ -28,12 +28,10 @@
 
 // DONE: Micro-services per app (proof of concept for larger web app)       -> 16h
 // TODO: Complete Tasks app                                                 -> 32h
-//  -> Add repeating options                                                ->  6h
+//  -> DONE: Add repeating options                                          ->  6h
 //  -> DONE: Fix task refresh                                               ->  8h
 //  -> DONE: Restore tasks from trash                                       ->  2h
 //  -> Add field validation                                                 ->  4h
-//  -> Complete task only if all members complete the task                  ->  6h
-//  -> Add slider for minutes, hours, days and months                       ->  6h
 // TODO: Redesign + Develop Finances app                                    -> 30h
 // TODO: Develop Calendar app                                               -> 50h
 // TODO: Send verification email                                            ->  8h
@@ -67,6 +65,7 @@
 // TODO: Add more descriptive images to notifications
 // TODO: Add phone number validation in user model
 // TODO: Keep transactions (transfers, expenses) when a user is involved
+// TODO: Add slider for minutes, hours, days and months                       ->  6h
 //   -> Replace by dummy user?
 
 // #endregion
