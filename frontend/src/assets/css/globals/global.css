@@ -717,9 +717,11 @@ button:hover {
   left: -14px;
   padding: 10px 14px;
 }
+.si-form > .input-container.dropdown .dropdown-unselected > .option:not(.no-margin) > p {
+  margin-left: 15px;
+}
 .si-form > .input-container.dropdown .dropdown-unselected > .option > p {
   line-height: 30px;
-  margin-left: 15px;
   color: var(--black);
 }
 .si-form > .input-container.dropdown .dropdown-unselected > .option:hover {
@@ -789,11 +791,17 @@ button:hover {
 .si-form.double.squared-inputs .form-input {
   width: 50px !important;
 }
-.si-form.double:nth-of-type(2n - 1) {
+.si-form.double.left {
   margin-right: 20px;
 }
-.si-form.double:nth-of-type(2n) {
+.si-form.double.right {
   margin-left: 20px;
+}
+.si-form.double.with-d-squared {
+  width: calc(100% - 145px) !important;
+}
+.si-form.double.with-d-squared .form-input {
+  width: 100% !important;
 }
 .form-input {
   display: inline-block;
@@ -846,7 +854,10 @@ button:hover {
   font-weight: 400;
   cursor: text;
 }
-.form-input > label.filled {
+.form-input > label.never-focused {
+  color: var(--black);
+}
+.form-input > label:not(.never-focused).filled {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
@@ -873,17 +884,17 @@ button:hover {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-.form-input > input:focus,
-.form-input > input.filled,
-.form-input > input:-webkit-autofill {
+.form-input > input:not(.never-focused):focus,
+.form-input > input:not(.never-focused).filled,
+.form-input > input:not(.never-focused):-webkit-autofill {
   padding-top: 18px;
 }
-.form-input > input:focus ~ label {
+.form-input > input:not(.never-focused):focus ~ label {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
 }
-.form-input > input:-webkit-autofill + label {
+.form-input > input:not(.never-focused):-webkit-autofill + label {
   font-size: 12px;
   line-height: 26px;
   height: 26px;

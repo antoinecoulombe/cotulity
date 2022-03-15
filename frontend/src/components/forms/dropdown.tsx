@@ -8,7 +8,7 @@ import Title from './title';
 export interface DropdownProps {
   name: string;
   title: string;
-  options: Array<DropdownOption>;
+  options: DropdownOption[];
   label?: string;
   children?: string;
   error?: boolean;
@@ -20,64 +20,50 @@ export interface DropdownProps {
     second?: string;
   };
   onSelectTransform?: (value: string) => string;
-  onSelect: (selected: Array<DropdownOption>) => void;
+  onSelect: (selected: DropdownOption) => void;
 }
 
 export interface DropdownOption {
   id: number;
   value: string;
+  altId?: string;
   img?: string;
   icon?: string;
   selected?: boolean;
 }
 
 const Dropdown = (props: DropdownProps): JSX.Element => {
-  const selectedRef = useRef<HTMLDivElement>(null);
-
-  const [selected, setSelected] = useState<DropdownOption[]>(
-    props.options.filter((o) => o.selected)
-  );
-  const [unselected, setUnselected] = useState<DropdownOption[]>(
-    props.options.filter((o) => !o.selected)
-  );
+  const [options, setOptions] = useState<DropdownOption[]>(props.options);
   const [opened, setOpened] = useState<boolean>(false);
 
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, () => setOpened(false));
 
   useEffect(() => {
-    if (selectedRef.current) selectedRef.current.scrollLeft = 15000;
-  }, [selected]);
+    let newOptions = [...props.options];
+    if (!newOptions.find((o) => o.selected)) {
+      newOptions[0].selected = true;
+      setOptions(newOptions);
+    }
+  }, []);
 
-  const selectHandle = (
-    id: number,
-    from: DropdownOption[],
-    to: DropdownOption[],
-    selected: boolean
-  ): void => {
-    let f = [...from];
-    let t = [...to];
+  const selectHandle = (id: number): void => {
+    let newOptions = [...options];
+    newOptions.forEach((o) => (o.selected = false));
 
-    let i = from.findIndex((x) => x.id === id);
-    f.splice(i, 1);
-    t.push(from[i]);
-    t[t.length - 1].selected = selected;
+    let selected = newOptions.find((o) => o.id === id);
+    if (!selected) newOptions[0].selected = true;
+    else {
+      selected.selected = true;
+      props.onSelect?.(selected);
+    }
 
-    if (!selected) t.sort((a, b) => a.value.localeCompare(b.value));
-
-    setSelected(selected ? t : f);
-    setUnselected(selected ? f : t);
-    props.onSelect?.(selected ? t : f);
-
-    if (selected && !f.length) setOpened(false);
+    setOptions(newOptions);
   };
 
-  const unSelect = (id: number): void => {
-    selectHandle(id, selected, unselected, false);
-  };
-
-  const select = (id: number): void => {
-    selectHandle(id, unselected, selected, true);
+  const getSelectedValue = () => {
+    let selected = options.find((o) => o.selected);
+    return !selected ? options[0].value : selected.value;
   };
 
   return (
@@ -95,59 +81,46 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
         }`}
       >
         <Input
-          name={props.name}
+          name={getSelectedValue()}
           label={props.label}
           type={'text'}
-          value={''}
+          value={getSelectedValue()}
           error={props.error}
           onChange={() => {}}
           onFocus={() => setOpened(true)}
           className={opened ? 'active' : ''}
-          filled={selected.length > 0}
-          before={
-            <div className="dropdown-selected" ref={selectedRef}>
-              {selected.map((s) => (
-                <div key={`s-${s.id}`} className="option">
-                  <p>
-                    {props.onSelectTransform
-                      ? props.onSelectTransform(s.value)
-                      : s.value}
-                  </p>
-                  <FontAwesomeIcon
-                    icon="times-circle"
-                    onClick={() => unSelect(s.id)}
-                    className="icon"
-                  />
-                </div>
-              ))}
-            </div>
-          }
+          filled={false}
+          neverFocused={true}
           after={
             opened ? (
               <div className="dropdown-unselected">
-                {unselected.map((us) => (
-                  <div
-                    key={`us-${us.id}`}
-                    className="option"
-                    onClick={() => select(us.id)}
-                  >
-                    {us.img && (
-                      <img
-                        src={`http://localhost:4000/images/public/${us.img}`}
-                        alt={`${us.value[0]}${
-                          us.value.split(' ')[1][0]
-                        }`.toUpperCase()}
-                      />
-                    )}
-                    {us.icon && (
-                      <FontAwesomeIcon
-                        icon={['fas', us.icon as IconName]}
-                        className="icon"
-                      />
-                    )}
-                    <p>{us.value}</p>
-                  </div>
-                ))}
+                {options
+                  .filter((o) => !o.selected)
+                  .map((us) => (
+                    <div
+                      key={`us-${us.id}`}
+                      className={`option${
+                        !us.img && !us.icon ? ' no-margin' : ''
+                      }`}
+                      onClick={() => selectHandle(us.id)}
+                    >
+                      {us.img && (
+                        <img
+                          src={`http://localhost:4000/images/public/${us.img}`}
+                          alt={`${us.value[0]}${
+                            us.value.split(' ')[1][0]
+                          }`.toUpperCase()}
+                        />
+                      )}
+                      {us.icon && (
+                        <FontAwesomeIcon
+                          icon={['fas', us.icon as IconName]}
+                          className="icon"
+                        />
+                      )}
+                      <p>{us.value}</p>
+                    </div>
+                  ))}
               </div>
             ) : undefined
           }

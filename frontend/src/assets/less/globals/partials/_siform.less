@@ -190,9 +190,12 @@
           padding: 10px @padding;
           // background-color: var(--popup-input-bg-color);
 
+          &:not(.no-margin) > p {
+            margin-left: 15px;
+          }
+
           > p {
             line-height: @optionIconSize;
-            margin-left: 15px;
             color: var(--black);
           }
 
@@ -289,12 +292,20 @@
       }
     }
 
-    &:nth-of-type(2n - 1) {
+    &.left {
       margin-right: @margin;
     }
 
-    &:nth-of-type(2n) {
+    &.right {
       margin-left: @margin;
+    }
+
+    &.with-d-squared {
+      width: calc(100% - 145px) !important;
+
+      .form-input {
+        width: 100% !important;
+      }
     }
   }
 }

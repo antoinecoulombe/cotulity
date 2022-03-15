@@ -49,7 +49,11 @@
     font-weight: 400;
     cursor: text;
 
-    &.filled {
+    &.never-focused {
+      color: var(--black);
+    }
+
+    &:not(.never-focused).filled {
       .label-filled();
     }
   }
@@ -74,18 +78,20 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 
-    &:focus,
-    &.filled,
-    &:-webkit-autofill {
-      padding-top: 18px;
-    }
+    &:not(.never-focused) {
+      &:focus,
+      &.filled,
+      &:-webkit-autofill {
+        padding-top: 18px;
+      }
 
-    &:focus ~ label {
-      .label-filled();
-    }
+      &:focus ~ label {
+        .label-filled();
+      }
 
-    &:-webkit-autofill + label {
-      .label-filled();
+      &:-webkit-autofill + label {
+        .label-filled();
+      }
     }
   }
 

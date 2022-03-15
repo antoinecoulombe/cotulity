@@ -49,7 +49,10 @@
   font-weight: 400;
   cursor: text;
 }
-.form-input > label.filled {
+.form-input > label.never-focused {
+  color: var(--black);
+}
+.form-input > label:not(.never-focused).filled {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
@@ -76,17 +79,17 @@
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-.form-input > input:focus,
-.form-input > input.filled,
-.form-input > input:-webkit-autofill {
+.form-input > input:not(.never-focused):focus,
+.form-input > input:not(.never-focused).filled,
+.form-input > input:not(.never-focused):-webkit-autofill {
   padding-top: 18px;
 }
-.form-input > input:focus ~ label {
+.form-input > input:not(.never-focused):focus ~ label {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
 }
-.form-input > input:-webkit-autofill + label {
+.form-input > input:not(.never-focused):-webkit-autofill + label {
   font-size: 12px;
   line-height: 26px;
   height: 26px;

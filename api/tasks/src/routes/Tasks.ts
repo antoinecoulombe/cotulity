@@ -194,6 +194,7 @@ const createTaskOccurences = async (
 ) => {
   let firstDueDate = new Date(task.dueDate);
   let taskOccurence = { taskId: task.taskId, Users: task.Users };
+  let oldIds: number[] = [];
 
   let taskOccurences: any[] = getRepeatingDatesUntil(
     task.repeat,
@@ -219,11 +220,11 @@ const createTaskOccurences = async (
       { transaction: transaction }
     );
 
-    let otoIds = oldTaskOccurences.map((oto: any) => oto.id);
+    oldIds = oldTaskOccurences.map((oto: any) => oto.id);
 
     await db.UserTask.destroy(
       {
-        where: { taskOccurenceId: otoIds },
+        where: { taskOccurenceId: oldIds },
         force: true,
       },
       { transaction: transaction }
@@ -231,7 +232,7 @@ const createTaskOccurences = async (
 
     await db.TaskOccurence.destroy(
       {
-        where: { id: otoIds },
+        where: { id: oldIds },
         force: true,
       },
       { transaction: transaction }
@@ -267,7 +268,7 @@ const createTaskOccurences = async (
   // Create users for each of those task occurences
   await db.UserTask.bulkCreate(userTasks, { transaction: transaction });
 
-  return taskOccurences;
+  return { created: taskOccurences, deleted: oldIds };
 };
 
 // ########################################################
@@ -284,6 +285,47 @@ Tasks.get('/', async (req: any, res: any) => {
       tasks: tasks,
     });
   } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+Tasks.get('/users', async (req: any, res: any) => {
+  try {
+    var inTwoWeeks = new Date();
+    inTwoWeeks.setDate(inTwoWeeks.getDate() + 14);
+
+    let users = await res.locals.home.getMembers({
+      attributes: ['id', 'firstname', 'lastname'],
+      include: [{ model: db.Image, attributes: ['url'] }],
+      through: {
+        where: { accepted: true },
+      },
+    });
+
+    let usersWithTasks = await Promise.all(
+      users.map(async (u: any) => {
+        let taskOccurences = await u.getTaskOccurences({
+          where: {
+            [Op.and]: [
+              { dueDateTime: { [Op.gte]: new Date() } },
+              { dueDateTime: { [Op.gte]: inTwoWeeks } },
+            ],
+          },
+          attributes: ['taskId', 'deletedAt', 'completedOn', 'dueDateTime'],
+          order: ['dueDateTime'],
+        });
+
+        return { ...u.dataValues, TaskOccurences: taskOccurences };
+      })
+    );
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      users: usersWithTasks,
+    });
+  } catch (e) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
@@ -346,8 +388,6 @@ Tasks.put('/:id', async (req: any, res: any) => {
       let task = taskDb[0];
 
       task.name = req.body.task.name;
-      task.dueDateTime = dueDate;
-      task.important = req.body.task.important;
       if (task.ownerId === req.user.id) task.shared = req.body.task.shared;
 
       let taskUsers: any[] = await getUsers(req, res);
@@ -362,7 +402,7 @@ Tasks.put('/:id', async (req: any, res: any) => {
         dueDate: dueDate,
         repeat: req.body.task.repeat,
         untilDate: untilDate,
-        important: task.important,
+        important: req.body.task.important,
       };
       let taskOccurences = await createTaskOccurences(
         taskOccurence,
@@ -534,6 +574,7 @@ Tasks.delete('/:id', async (req: any, res: any) => {
         // Delete task if no more occurences
         let taskOccurenceCount = await db.TaskOccurence.count({
           where: { taskId: task.id },
+          paranoid: false,
         });
         if (taskOccurenceCount === 0) await task.destroy({ force: true });
       }

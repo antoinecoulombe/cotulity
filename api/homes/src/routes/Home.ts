@@ -91,21 +91,7 @@ Home.get('/users', async (req: any, res: any) => {
 
     let users = await res.locals.home.getMembers({
       attributes: ['id', 'firstname', 'lastname'],
-      include: [
-        { model: db.Image, attributes: ['url'] },
-        {
-          model: db.TaskOccurence,
-          as: 'TaskOccurences',
-          where: {
-            [Op.and]: [
-              { dueDateTime: { [Op.gte]: new Date() } },
-              { dueDateTime: { [Op.gte]: inTwoWeeks } },
-            ],
-          },
-          attributes: ['taskId', 'deletedAt', 'completedOn', 'dueDateTime'],
-          order: ['dueDateTime', 'ASC'],
-        },
-      ],
+      include: [{ model: db.Image, attributes: ['url'] }],
       through: {
         where: { accepted: true },
       },

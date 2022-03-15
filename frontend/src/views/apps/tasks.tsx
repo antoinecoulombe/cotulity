@@ -3,7 +3,7 @@ import { SidebarTab } from '../../components/app/sidebar';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useTranslation } from 'react-i18next';
 import { getTranslateJSON } from '../../utils/global';
-import { DropdownOption } from '../../components/forms/dropdown';
+import { DropdownMultiOption } from '../../components/forms/dropdownMulti';
 import { scrollHorizontal } from '../../hooks/window';
 import {
   SubHeaderProps,
@@ -26,6 +26,8 @@ export interface Task {
   id: number;
   name: string;
   shared: boolean;
+  repeat: string;
+  untilDate: string;
   Owner?: HomeMember;
   Occurences: TaskOccurence[];
 }
@@ -34,6 +36,8 @@ export const initTask: Task = {
   id: -1,
   name: '',
   shared: true,
+  repeat: 'none',
+  untilDate: '/@:',
   Occurences: [],
 };
 
@@ -107,7 +111,7 @@ const AppTasks = (): JSX.Element => {
   useEffect(() => {
     // get home users for sidebar
     axios
-      .get(`/home/${localStorage.getItem('currentHome')}/users`)
+      .get(`/tasks/${localStorage.getItem('currentHome')}/users`)
       .then(async (res: any) => {
         // get tasks
         await axios
@@ -331,7 +335,6 @@ const AppTasks = (): JSX.Element => {
       <EditPopup
         onCancel={() => setPopup(nullJSX)}
         taskOccurence={taskOccurence}
-        task={taskOccurence?.Task}
         users={users.map((u) => {
           return {
             id: u.id,
@@ -345,7 +348,7 @@ const AppTasks = (): JSX.Element => {
               ? false
               : (taskOccurence.Users?.find((tu) => tu.id === u.id) ?? null) !=
                 null,
-          } as DropdownOption;
+          } as DropdownMultiOption;
         })}
         onSubmit={(task: Task) => handleSubmit(task)}
         onDelete={

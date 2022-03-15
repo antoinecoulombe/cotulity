@@ -12,6 +12,7 @@ interface InputProps {
   before?: JSX.Element;
   after?: JSX.Element;
   filled?: boolean;
+  neverFocused?: boolean;
   onChange: (e: any) => void;
   onKeyPress?: (e: any) => void;
   onClick?: (e: any) => void;
@@ -21,7 +22,10 @@ interface InputProps {
 
 const Input = (props: InputProps): JSX.Element => {
   const handleBlur = (event: any): void => {
-    if (!props.filled && !event.target.value.length) {
+    if (
+      props.neverFocused === true ||
+      (!props.filled && !event.target.value.length)
+    ) {
       $(event.target).removeClass('filled');
       $(event.target).next().removeClass('filled');
     } else {
@@ -49,9 +53,24 @@ const Input = (props: InputProps): JSX.Element => {
         onKeyPress={props.onKeyPress}
         onClick={props.onClick}
         onFocus={props.onFocus}
-        className={props.filled ? 'filled' : ''}
+        className={
+          props.neverFocused === true
+            ? 'never-focused'
+            : props.filled
+            ? 'filled'
+            : ''
+        }
       ></input>
-      <label htmlFor={props.name} className={props.filled ? 'filled' : ''}>
+      <label
+        htmlFor={props.name}
+        className={
+          props.neverFocused === true
+            ? 'never-focused'
+            : props.filled
+            ? 'filled'
+            : ''
+        }
+      >
         <Translate name={`${props.label ?? props.name}`} />{' '}
         {props.error && <FontAwesomeIcon icon="times-circle" />}
       </label>

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { initTaskOccurence, Task, TaskOccurence } from '../../views/apps/tasks';
 import { useTranslation } from 'react-i18next';
-import Dropdown, { DropdownOption } from '../forms/dropdown';
+import DropdownMulti, { DropdownMultiOption } from '../forms/dropdownMulti';
 import Popup from '../utils/popup';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
 import Translate from '../utils/translate';
 import IconToolTip from '../global/iconTooltip';
+import Dropdown from '../forms/dropdown';
 
 interface EditPopupProps {
-  task?: Task;
   taskOccurence?: TaskOccurence;
-  users: Array<DropdownOption>;
+  users: Array<DropdownMultiOption>;
   onCancel(...attr: any): any;
   onSubmit(...attr: any): any;
   onDelete?(...attr: any): any;
@@ -75,13 +75,15 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     props.onSubmit(taskOccurence);
   };
 
-  const getDateTime = (): {
+  const getDateTime = (
+    dateTime: string
+  ): {
     day: string;
     month: string;
     hour: string;
     minute: string;
   } => {
-    let split = taskOccurence.dueDateTime.split('@');
+    let split = dateTime.split('@');
     var day: string, month: string, hour: string, minute: string;
     if (split[0].length > 1) {
       day = split[0].substring(0, split[0].indexOf('/'));
@@ -146,7 +148,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     return newDate;
   };
 
-  const setDateTime = (e: any, field: string): boolean => {
+  const setDueDateTime = (e: any, field: string): boolean => {
     if (e.target.value.length > 2) return false;
     let newDate = InputToDateTime(e, field);
     if (!newDate) return false;
@@ -154,7 +156,18 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     return true;
   };
 
-  const handleUserSelect = (selected: DropdownOption[]): void => {
+  const setUntilDate = (e: any, field: string): boolean => {
+    if (e.target.value.length > 2) return false;
+    let newDate = InputToDateTime(e, field);
+    if (!newDate) return false;
+    setTaskOccurence({
+      ...taskOccurence,
+      Task: { ...taskOccurence.Task, untilDate: newDate },
+    });
+    return true;
+  };
+
+  const handleUserSelect = (selected: DropdownMultiOption[]): void => {
     let newTask = { ...taskOccurence };
     newTask.Users = selected.map((us) => {
       return {
@@ -167,8 +180,11 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     setTaskOccurence(newTask);
   };
 
-  const handleRepeatSelect = (selected: DropdownOption[]): void => {
-    // TODO: handle dropdown
+  const handleRepeatSelect = (selected: DropdownMultiOption): void => {
+    let newTask = { ...taskOccurence };
+    console.log(selected);
+    newTask.Task.repeat = selected.altId ?? 'none';
+    setTaskOccurence(newTask);
   };
 
   return (
@@ -206,7 +222,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           style={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup"
         ></SingleInputForm>
-        <Dropdown
+        <DropdownMulti
           name="tasks.name.participants"
           title="tasks.title.participants"
           options={props.users}
@@ -218,52 +234,92 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           className="in-popup"
           required={taskOccurence.Task.shared}
           disabled={!taskOccurence.Task.shared}
-        ></Dropdown>
+        ></DropdownMulti>
         <Dropdown
           name="tasks.name.repeat.none"
           title="tasks.title.repeat"
           options={[
-            t('tasks.name.repeat.none'),
-            t('tasks.name.repeat.day'),
-            t('tasks.name.repeat.week'),
-            t('tasks.name.repeat.twoweek'),
-            t('tasks.name.repeat.month'),
+            {
+              id: 1,
+              altId: 'none',
+              value: t('tasks.name.repeat.none'),
+              selected: taskOccurence.Task.repeat === 'none',
+            },
+            {
+              id: 2,
+              altId: 'day',
+              value: t('tasks.name.repeat.day'),
+              selected: taskOccurence.Task.repeat === 'day',
+            },
+            {
+              id: 3,
+              altId: 'week',
+              value: t('tasks.name.repeat.week'),
+              selected: taskOccurence.Task.repeat === 'week',
+            },
+            {
+              id: 4,
+              altId: 'twoweek',
+              value: t('tasks.name.repeat.twoweek'),
+              selected: taskOccurence.Task.repeat === 'twoweek',
+            },
+            {
+              id: 5,
+              altId: 'month',
+              value: t('tasks.name.repeat.month'),
+              selected: taskOccurence.Task.repeat === 'month',
+            },
           ]}
           onSelect={(selected) => handleRepeatSelect(selected)}
-          className="in-popup"
+          className={`in-popup${
+            taskOccurence.Task.repeat !== 'none'
+              ? ' half double with-d-squared'
+              : ''
+          }`}
           required={true}
         ></Dropdown>
-        <DoubleInputTitle
-          name={['tasks.name.date.dd', 'tasks.name.date.mm']}
-          title="tasks.title.until"
-          required={true}
-          type="text"
-          values={{ first: getDateTime().day, second: getDateTime().month }}
-          onChange={(e: any, input: number) =>
-            setDateTime(e, input === 1 ? 'day' : 'month')
-          }
-          className="in-popup half squared-inputs"
-        ></DoubleInputTitle>
+        {taskOccurence.Task.repeat !== 'none' && (
+          <DoubleInputTitle
+            name={['tasks.name.date.dd', 'tasks.name.date.mm']}
+            title="tasks.title.until"
+            required={true}
+            type="text"
+            values={{
+              first: getDateTime(taskOccurence.Task.untilDate).day,
+              second: getDateTime(taskOccurence.Task.untilDate).month,
+            }}
+            onChange={(e: any, input: number) =>
+              setUntilDate(e, input === 1 ? 'day' : 'month')
+            }
+            className="in-popup half squared-inputs right"
+          ></DoubleInputTitle>
+        )}
         <DoubleInputTitle
           name={['tasks.name.date.dd', 'tasks.name.date.mm']}
           title="tasks.title.dueDate"
           required={true}
           type="text"
-          values={{ first: getDateTime().day, second: getDateTime().month }}
+          values={{
+            first: getDateTime(taskOccurence.dueDateTime).day,
+            second: getDateTime(taskOccurence.dueDateTime).month,
+          }}
           onChange={(e: any, input: number) =>
-            setDateTime(e, input === 1 ? 'day' : 'month')
+            setDueDateTime(e, input === 1 ? 'day' : 'month')
           }
-          className="in-popup half squared-inputs"
+          className="in-popup half squared-inputs left"
         ></DoubleInputTitle>
         <DoubleInputTitle
           name={['tasks.name.date.hh', 'tasks.name.date.mm']}
           title="tasks.title.dueTime"
           type="text"
-          values={{ first: getDateTime().hour, second: getDateTime().minute }}
+          values={{
+            first: getDateTime(taskOccurence.dueDateTime).hour,
+            second: getDateTime(taskOccurence.dueDateTime).minute,
+          }}
           onChange={(e: any, input: number) =>
-            setDateTime(e, input === 1 ? 'hour' : 'minute')
+            setDueDateTime(e, input === 1 ? 'hour' : 'minute')
           }
-          className="in-popup half squared-inputs"
+          className="in-popup half squared-inputs right"
         ></DoubleInputTitle>
         <div className="switch">
           <h2>

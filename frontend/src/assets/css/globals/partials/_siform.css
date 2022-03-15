@@ -151,9 +151,11 @@
   left: -14px;
   padding: 10px 14px;
 }
+.si-form > .input-container.dropdown .dropdown-unselected > .option:not(.no-margin) > p {
+  margin-left: 15px;
+}
 .si-form > .input-container.dropdown .dropdown-unselected > .option > p {
   line-height: 30px;
-  margin-left: 15px;
   color: var(--black);
 }
 .si-form > .input-container.dropdown .dropdown-unselected > .option:hover {
@@ -223,9 +225,15 @@
 .si-form.double.squared-inputs .form-input {
   width: 50px !important;
 }
-.si-form.double:nth-of-type(2n - 1) {
+.si-form.double.left {
   margin-right: 20px;
 }
-.si-form.double:nth-of-type(2n) {
+.si-form.double.right {
   margin-left: 20px;
+}
+.si-form.double.with-d-squared {
+  width: calc(100% - 145px) !important;
+}
+.si-form.double.with-d-squared .form-input {
+  width: 100% !important;
 }
