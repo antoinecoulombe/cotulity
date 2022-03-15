@@ -34,6 +34,15 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
       },
+      repeat: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: 'none',
+      },
+      untilDate: {
+        type: Sequelize.DATE,
+        defaultValue: null,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

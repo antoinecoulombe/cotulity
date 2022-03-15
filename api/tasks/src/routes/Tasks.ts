@@ -22,9 +22,14 @@ interface TaskOccurence {
   taskId: number;
   Users: any[];
   dueDate: Date;
-  repeat: string;
-  untilDate: Date | null;
   important: boolean;
+  Task?: Task;
+}
+
+interface Task {
+  shared: boolean;
+  repeat: string;
+  untilDate?: Date;
 }
 
 const getTasks = async (
@@ -109,14 +114,14 @@ const toDate = (dateString: string): Date | null => {
 };
 
 const getRepeatingDatesUntil = (
-  repeat: string,
   dueDate: Date,
-  untilDate: Date | null
+  repeat?: string,
+  untilDate?: Date
 ): string[] => {
   let occurences: string[] = [];
   occurences.push(dueDate.toUTCString());
 
-  if (repeat !== 'none' && untilDate !== null) {
+  if (repeat && untilDate && repeat !== 'none') {
     let valid: boolean = true;
     let untilMilliseconds = untilDate.getTime();
     let dueMilliseconds = dueDate.getTime();
@@ -162,12 +167,12 @@ const getUsers = async (req: any, res: any) => {
     ],
   });
 
-  if (req.body.task.shared == false)
+  if (req.body.task.Task.shared == false)
     return members.filter((m: any) => m.id === req.user.id);
   else {
     return members.filter(
-      (u: any) =>
-        req.body.task.Users.filter((id: any) => id === u.id).length > 0
+      (m: any) =>
+        req.body.task.Users.filter((u: any) => u.id === m.id).length > 0
     );
   }
 };
@@ -188,18 +193,19 @@ const respondIfErrors = (users: any[], repeat: string, res: any) => {
 };
 
 const createTaskOccurences = async (
-  task: TaskOccurence,
+  taskOcc: TaskOccurence,
+  task: Task,
   transaction: any,
   deleteOld?: number
 ) => {
-  let firstDueDate = new Date(task.dueDate);
-  let taskOccurence = { taskId: task.taskId, Users: task.Users };
+  let firstDueDate = new Date(taskOcc.dueDate);
+  let taskOccurence = { taskId: taskOcc.taskId, Users: taskOcc.Users };
   let oldIds: number[] = [];
 
   let taskOccurences: any[] = getRepeatingDatesUntil(
-    task.repeat,
-    task.dueDate,
-    task.untilDate
+    taskOcc.dueDate,
+    task?.repeat,
+    task?.untilDate
   ).map((o) => {
     return { ...taskOccurence, dueDateTime: o };
   });
@@ -208,7 +214,7 @@ const createTaskOccurences = async (
     let oldTaskOccurences = await db.TaskOccurence.findAll(
       {
         where: {
-          taskId: task.taskId,
+          taskId: taskOcc.taskId,
           [Op.or]: {
             id: { [Op.gte]: deleteOld },
             dueDateTime: {
@@ -400,12 +406,11 @@ Tasks.put('/:id', async (req: any, res: any) => {
         taskId: task.id,
         Users: taskUsers,
         dueDate: dueDate,
-        repeat: req.body.task.repeat,
-        untilDate: untilDate,
         important: req.body.task.important,
       };
       let taskOccurences = await createTaskOccurences(
         taskOccurence,
+        task,
         t,
         req.params.id
       );
@@ -501,14 +506,16 @@ Tasks.post('/', async (req: any, res: any) => {
 
       let taskUsers: any[] = await getUsers(req, res);
 
-      if (respondIfErrors(taskUsers, req.body.task.repeat, res)) return;
+      if (respondIfErrors(taskUsers, req.body.task.Task.repeat, res)) return;
 
       let task = await db.Task.create(
         {
           homeId: res.locals.home.id,
           ownerId: req.user.id,
-          name: req.body.task.name,
-          shared: req.body.task.shared,
+          name: req.body.task.Task.name,
+          repeat: req.body.task.Task.repeat,
+          shared: req.body.task.Task.shared,
+          untilDate: untilDate,
         },
         { transaction: t }
       );
@@ -517,11 +524,9 @@ Tasks.post('/', async (req: any, res: any) => {
         taskId: task.id,
         Users: taskUsers,
         dueDate: dueDate,
-        repeat: req.body.task.repeat,
-        untilDate: untilDate,
         important: req.body.task.important,
       };
-      let taskOccurences = await createTaskOccurences(taskOccurence, t);
+      let taskOccurences = await createTaskOccurences(taskOccurence, task, t);
 
       return res.json({
         title: 'tasks.created',

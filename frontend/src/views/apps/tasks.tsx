@@ -154,7 +154,7 @@ const AppTasks = (): JSX.Element => {
                     (u) =>
                       u.id === parseInt(localStorage.getItem('userId') ?? '-2')
                   ) &&
-                  !shared &&
+                  shared &&
                   t.deletedAt == null &&
                   t.completedOn === null,
           },
@@ -277,12 +277,9 @@ const AppTasks = (): JSX.Element => {
       t.Occurences?.forEach((to) => {
         to.visible = false;
 
-        if (
-          (!important || (important && to.important)) &&
-          tab.action &&
-          (tab.action(to) as boolean)
-        )
-          to.visible = true;
+        if ((!important || (important && to.important)) && tab.action)
+          to.visible =
+            tab.value === 'private' ? tab.action(to, t.shared) : tab.action(to);
       });
     });
     setTasks(newTasks);

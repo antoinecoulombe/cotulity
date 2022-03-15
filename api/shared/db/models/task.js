@@ -40,6 +40,8 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       shared: DataTypes.BOOLEAN,
+      repeat: DataTypes.STRING,
+      untilDate: DataTypes.DATE,
     },
     {
       timestamps: true,

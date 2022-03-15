@@ -142,8 +142,8 @@ const App = (): JSX.Element => {
   }, []);
 
   const logout = (): void => {
-    localStorage.clear();
     clearAllNotifications();
+    localStorage.clear();
     history.push('/');
   };
 

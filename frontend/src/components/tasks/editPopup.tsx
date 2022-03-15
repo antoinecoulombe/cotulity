@@ -17,6 +17,20 @@ interface EditPopupProps {
   onDelete?(...attr: any): any;
 }
 
+interface TaskEditErrors {
+  name: boolean;
+  participants: boolean;
+  dueDate: boolean;
+  untilDate: boolean;
+}
+
+const initTaskEditErrors: TaskEditErrors = {
+  name: false,
+  participants: false,
+  dueDate: false,
+  untilDate: false,
+};
+
 const EditPopup = (props: EditPopupProps): JSX.Element => {
   const { t } = useTranslation('common');
 
@@ -45,6 +59,8 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
       : initTaskOccurence
   );
 
+  const [errors, setErrors] = useState<TaskEditErrors>(initTaskEditErrors);
+
   useEffect(() => {}, []);
 
   // const onChange = (event: any) => {
@@ -72,7 +88,27 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
   };
 
   const onSubmit = (): void => {
-    props.onSubmit(taskOccurence);
+    let newErrors = { ...initTaskEditErrors };
+
+    if (!taskOccurence.Task.name.length) newErrors.name = true;
+    if (taskOccurence.Task.shared && !taskOccurence.Users?.length)
+      newErrors.participants = true;
+    if (
+      taskOccurence.Task.repeat !== 'none' &&
+      taskOccurence.Task.untilDate === '/@:'
+    )
+      newErrors.untilDate = true;
+    if (taskOccurence.dueDateTime === '/@:') newErrors.dueDate = true;
+
+    setErrors(newErrors);
+
+    if (
+      !newErrors.dueDate &&
+      !newErrors.name &&
+      !newErrors.participants &&
+      !newErrors.untilDate
+    )
+      props.onSubmit(taskOccurence);
   };
 
   const getDateTime = (
@@ -221,6 +257,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           }}
           style={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup"
+          error={errors.name}
         ></SingleInputForm>
         <DropdownMulti
           name="tasks.name.participants"
@@ -234,6 +271,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           className="in-popup"
           required={taskOccurence.Task.shared}
           disabled={!taskOccurence.Task.shared}
+          error={errors.participants}
         ></DropdownMulti>
         <Dropdown
           name="tasks.name.repeat.none"
@@ -292,6 +330,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
               setUntilDate(e, input === 1 ? 'day' : 'month')
             }
             className="in-popup half squared-inputs right"
+            error={errors.untilDate}
           ></DoubleInputTitle>
         )}
         <DoubleInputTitle
@@ -307,6 +346,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             setDueDateTime(e, input === 1 ? 'day' : 'month')
           }
           className="in-popup half squared-inputs left"
+          error={errors.dueDate}
         ></DoubleInputTitle>
         <DoubleInputTitle
           name={['tasks.name.date.hh', 'tasks.name.date.mm']}

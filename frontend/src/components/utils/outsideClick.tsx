@@ -10,6 +10,7 @@ export const useOutsideAlerter = (
       if (
         ref.current &&
         !ref.current.contains(event.target) &&
+        !event.target.classList.contains('logout') &&
         (!currentNotif.length || !currentNotif[0].contains(event.target))
       )
         callback();

@@ -59,6 +59,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
     }
 
     setOptions(newOptions);
+    setOpened(false);
   };
 
   const getSelectedValue = () => {

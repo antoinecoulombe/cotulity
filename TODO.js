@@ -27,11 +27,11 @@
 // #region Features                                                         -> 170h
 
 // DONE: Micro-services per app (proof of concept for larger web app)       -> 16h
-// TODO: Complete Tasks app                                                 -> 32h
+// DONE: Complete Tasks app                                                 -> 32h
 //  -> DONE: Add repeating options                                          ->  6h
 //  -> DONE: Fix task refresh                                               ->  8h
 //  -> DONE: Restore tasks from trash                                       ->  2h
-//  -> Add field validation                                                 ->  4h
+//  -> DONE: Add field validation                                           ->  4h
 // TODO: Redesign + Develop Finances app                                    -> 30h
 // TODO: Develop Calendar app                                               -> 50h
 // TODO: Send verification email                                            ->  8h
