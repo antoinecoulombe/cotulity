@@ -32,8 +32,15 @@ export const handleOpenAppResize = (bodyMinHeight?: number): void => {
       $('.open-app-container > .headers > .sub-header')?.outerHeight(true) ?? 0;
 
     let noFill = $('.open-app-container > .app-body > *:not(.fill-height)');
-    for (let i = 0; i < noFill.length; ++i)
+    for (let i = 0; i < noFill.length; ++i) {
       appH -= $(noFill[i])?.outerHeight(true) ?? 0;
+    }
+
+    let paddingTop = $('.open-app-container .fill-height').css('padding-top');
+    appH += parseInt(paddingTop.substring(0, paddingTop.length));
+
+    if ($('.headers > div:last-of-type').length > 0)
+      $('.headers > div:last-of-type').css('margin-bottom', '10px');
 
     if (bodyMinHeight && appH < bodyMinHeight) appH = bodyMinHeight;
     $('.open-app-container .fill-height').css({ maxHeight: appH + 'px' });

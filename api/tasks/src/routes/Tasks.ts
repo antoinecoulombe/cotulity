@@ -24,6 +24,7 @@ interface TaskOccurence {
   dueDate: Date;
   repeat: string;
   untilDate: Date | null;
+  important: boolean;
 }
 
 const getTasks = async (
@@ -37,7 +38,7 @@ const getTasks = async (
       where: {
         [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
       },
-      attributes: ['id', 'name', 'important', 'shared'],
+      attributes: ['id', 'name', 'shared'],
       include: [
         {
           model: db.TaskOccurence,
@@ -51,7 +52,13 @@ const getTasks = async (
                 ? [{ completedOn: { [Op.ne]: null } }]
                 : [{ completedOn: null }],
           },
-          attributes: ['id', 'dueDateTime', 'completedOn', 'deletedAt'],
+          attributes: [
+            'id',
+            'dueDateTime',
+            'completedOn',
+            'deletedAt',
+            'important',
+          ],
           include: {
             model: db.User,
             as: 'Users',
@@ -71,7 +78,6 @@ const getTasks = async (
     });
   } catch (e) {
     /* istanbul ignore next */
-    console.log((e as any).message);
     throw e;
   }
 };
@@ -356,6 +362,7 @@ Tasks.put('/:id', async (req: any, res: any) => {
         dueDate: dueDate,
         repeat: req.body.task.repeat,
         untilDate: untilDate,
+        important: task.important,
       };
       let taskOccurences = await createTaskOccurences(
         taskOccurence,
@@ -462,7 +469,6 @@ Tasks.post('/', async (req: any, res: any) => {
           ownerId: req.user.id,
           name: req.body.task.name,
           shared: req.body.task.shared,
-          important: req.body.task.important,
         },
         { transaction: t }
       );
@@ -473,6 +479,7 @@ Tasks.post('/', async (req: any, res: any) => {
         dueDate: dueDate,
         repeat: req.body.task.repeat,
         untilDate: untilDate,
+        important: req.body.task.important,
       };
       let taskOccurences = await createTaskOccurences(taskOccurence, t);
 
@@ -504,31 +511,32 @@ Tasks.delete('/:id', async (req: any, res: any) => {
     let task = tasks[0];
 
     return await db.sequelize.transaction(async (t: any) => {
-      // Delete task occurence users
-      await db.UserTask.destroy(
-        { where: { taskOccurenceId: req.params.id }, force: true },
-        { transaction: t }
-      );
+      // if deletedAt != null -> force delete
+      var deletedAt =
+        task.Occurences[0].deletedAt === null ? new Date().toUTCString() : null;
+      let force = deletedAt === null;
 
-      // Delete task occurence
-      var deletedAt = null;
-      if (task.Occurences[0].deletedAt == null) {
-        await db.TaskOccurence.destroy({
-          where: { id: req.params.id },
-        });
-        deletedAt = new Date().toUTCString();
-      } else {
-        await db.TaskOccurence.destroy({
-          where: { id: req.params.id },
-          force: true,
-        });
+      // Delete task occurence users
+      if (force) {
+        await db.UserTask.destroy(
+          { where: { taskOccurenceId: req.params.id }, force: true },
+          { transaction: t }
+        );
       }
 
-      // Delete task if no more occurences
-      let taskOccurenceCount = await db.TaskOccurence.count({
-        where: { taskId: task.id },
+      // Delete task occurence
+      await db.TaskOccurence.destroy({
+        where: { id: req.params.id },
+        force: force,
       });
-      if (taskOccurenceCount === 0) await task.destroy({ force: true });
+
+      if (force) {
+        // Delete task if no more occurences
+        let taskOccurenceCount = await db.TaskOccurence.count({
+          where: { taskId: task.id },
+        });
+        if (taskOccurenceCount === 0) await task.destroy({ force: true });
+      }
 
       return res.json({
         title: 'request.success',

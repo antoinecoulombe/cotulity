@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   TaskOccurence.init(
     {
+      important: DataTypes.BOOLEAN,
       dueDateTime: DataTypes.DATE,
       completedOn: DataTypes.DATE,
     },

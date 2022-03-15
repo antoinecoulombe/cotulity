@@ -67,6 +67,9 @@
 // TODO: Keep transactions (transfers, expenses) when a user is involved
 // TODO: Add slider for minutes, hours, days and months                       ->  6h
 //   -> Replace by dummy user?
+// TODO: Replace multiple responses in method by error throws + 1 response
+// TODO: Fix scrollbar height in .list
+//   -> So that popups don't disappear
 
 // #endregion
 

@@ -29,11 +29,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      important: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
-      },
       shared: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

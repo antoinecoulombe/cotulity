@@ -39,7 +39,6 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      important: DataTypes.BOOLEAN,
       shared: DataTypes.BOOLEAN,
     },
     {

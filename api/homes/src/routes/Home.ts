@@ -12,6 +12,7 @@ import {
 
 const Home = express.Router();
 const db = require('../../../shared/db/models');
+const { Op } = require('sequelize');
 
 // ########################################################
 // ##################### Middlewares ######################
@@ -85,14 +86,24 @@ Home.get('/', async (req: any, res: any) => {
 
 Home.get('/users', async (req: any, res: any) => {
   try {
-    const users = await res.locals.home.getMembers({
+    var inTwoWeeks = new Date();
+    inTwoWeeks.setDate(inTwoWeeks.getDate() + 14);
+
+    let users = await res.locals.home.getMembers({
       attributes: ['id', 'firstname', 'lastname'],
       include: [
         { model: db.Image, attributes: ['url'] },
         {
-          model: db.Task,
-          as: 'Tasks',
-          attributes: ['id', 'completedOn', 'deletedAt'],
+          model: db.TaskOccurence,
+          as: 'TaskOccurences',
+          where: {
+            [Op.and]: [
+              { dueDateTime: { [Op.gte]: new Date() } },
+              { dueDateTime: { [Op.gte]: inTwoWeeks } },
+            ],
+          },
+          attributes: ['taskId', 'deletedAt', 'completedOn', 'dueDateTime'],
+          order: ['dueDateTime', 'ASC'],
         },
       ],
       through: {

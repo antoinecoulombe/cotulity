@@ -25,30 +25,44 @@ import '../../assets/css/apps/tasks.css';
 export interface Task {
   id: number;
   name: string;
-  dueDateTime: string;
-  important: boolean;
   shared: boolean;
-  completedOn: string | null;
-  deletedAt: string | null;
   Owner?: HomeMember;
-  Users?: Array<{
-    id: number;
-    firstname: string;
-    lastname: string;
-    Image: { url: string } | null;
-  }>;
-  visible: boolean;
+  Occurences: TaskOccurence[];
 }
 
 export const initTask: Task = {
   id: -1,
   name: '',
-  dueDateTime: '/@:',
-  important: false,
   shared: true,
+  Occurences: [],
+};
+
+export interface TaskUser {
+  id: number;
+  firstname: string;
+  lastname: string;
+  Image: { url: string } | null;
+}
+
+export interface TaskOccurence {
+  id: number;
+  completedOn: string | null;
+  deletedAt: string | null;
+  dueDateTime: string;
+  Users?: TaskUser[];
+  important: boolean;
+  visible: boolean;
+  Task: Task;
+}
+
+export const initTaskOccurence: TaskOccurence = {
+  id: -1,
+  dueDateTime: '/@:',
   completedOn: null,
   deletedAt: null,
   visible: false,
+  important: false,
+  Task: initTask,
 };
 
 export interface HomeMember {
@@ -87,7 +101,7 @@ const AppTasks = (): JSX.Element => {
     setLoaded(true);
     let selected = getSelectedTab();
     handleTitle(selected);
-    handleTask(selected);
+    handleTask(selected, undefined, false);
   }, [sidebarTabs, subHeader]);
 
   useEffect(() => {
@@ -110,7 +124,7 @@ const AppTasks = (): JSX.Element => {
           {
             icon: 'star',
             name: 'myTasks',
-            action: (t: Task) =>
+            action: (t: TaskOccurence) =>
               !t
                 ? true
                 : t.Users?.find(
@@ -123,32 +137,33 @@ const AppTasks = (): JSX.Element => {
           {
             icon: 'calendar',
             name: 'upcoming',
-            action: (t: Task) =>
+            action: (t: TaskOccurence) =>
               !t ? true : t.completedOn == null && t.deletedAt == null,
           },
           {
             icon: 'lock',
             name: 'private',
-            action: (t: Task) =>
+            action: (t: TaskOccurence, shared: boolean) =>
               !t
                 ? true
                 : t.Users?.find(
                     (u) =>
                       u.id === parseInt(localStorage.getItem('userId') ?? '-2')
                   ) &&
-                  !t.shared &&
-                  t.deletedAt == null,
+                  !shared &&
+                  t.deletedAt == null &&
+                  t.completedOn === null,
           },
           {
             icon: 'history',
             name: 'history',
-            action: (t: Task) =>
-              !t ? true : t.completedOn !== null && t.deletedAt == null,
+            action: (t: TaskOccurence) =>
+              !t ? true : t.completedOn !== null && t.deletedAt === null,
           },
           {
             icon: 'trash',
             name: 'trash',
-            action: (t: Task) => (!t ? true : t.deletedAt != null),
+            action: (t: TaskOccurence) => (!t ? true : t.deletedAt != null),
           },
         ].map((t, i) => {
           return {
@@ -178,12 +193,13 @@ const AppTasks = (): JSX.Element => {
                   : m.firstname
               } ${m.lastname[0].toUpperCase()}.`,
               img: m.Image?.url,
-              count: m.Tasks.filter(
-                (t: Task) => t.deletedAt == null && t.completedOn == null
+              count: m.TaskOccurences.filter(
+                (t: TaskOccurence) =>
+                  t.deletedAt == null && t.completedOn == null
               ).length,
               isUser: true,
               handle: (tabs: SidebarTab[]) => handleSidebar(tabs),
-              action: (t: Task) =>
+              action: (t: TaskOccurence) =>
                 (t.Users?.filter((uT: any) => uT.id === m.id).length ?? -1) >
                   0 &&
                 t.deletedAt == null &&
@@ -199,6 +215,31 @@ const AppTasks = (): JSX.Element => {
       });
     // handleOpenAppResize(250); // use with .fill-height on content
   }, []);
+
+  const setSidebarCount = (newTasks?: Task[]) => {
+    let newSidebarTabs = [...sidebarTabs];
+
+    users.forEach((u) => {
+      let sidebarTab = newSidebarTabs.find((st) => st.id === u.id);
+      if (sidebarTab) {
+        let count: number = 0;
+        (newTasks ?? tasks).forEach((t) =>
+          t.Occurences.forEach(
+            (to) =>
+              (count +=
+                to.deletedAt == null &&
+                to.completedOn == null &&
+                (to.Users?.filter((tou: TaskUser) => tou.id === u.id).length ??
+                  -1) > 0
+                  ? 1
+                  : 0)
+          )
+        );
+        sidebarTab.count = count;
+      }
+    });
+    setSidebarTabs(newSidebarTabs);
+  };
 
   const handleSubHeader = (tab: string): void => {
     setSubHeader({ ...subHeader, tabs: switchSubHeaderTab(subHeader, tab) });
@@ -218,23 +259,30 @@ const AppTasks = (): JSX.Element => {
     setSidebarTabs(newTabs);
   };
 
-  const handleTask = (tab: SidebarTab, newTasks?: Task[]): void => {
+  const handleTask = (
+    tab: SidebarTab,
+    newTasks?: Task[],
+    updateSidebar?: boolean
+  ): void => {
     if (!newTasks) newTasks = [...tasks];
 
     let important =
       subHeader.tabs.find((ht) => ht.selected)?.name === 'important';
 
     newTasks.forEach((t) => {
-      t.visible = false;
+      t.Occurences?.forEach((to) => {
+        to.visible = false;
 
-      if (
-        (!important || (important && t.important)) &&
-        tab.action &&
-        (tab.action(t) as boolean)
-      )
-        t.visible = true;
+        if (
+          (!important || (important && to.important)) &&
+          tab.action &&
+          (tab.action(to) as boolean)
+        )
+          to.visible = true;
+      });
     });
     setTasks(newTasks);
+    if (updateSidebar === true) setSidebarCount(newTasks);
   };
 
   const getSelectedTab = (): SidebarTab =>
@@ -270,7 +318,7 @@ const AppTasks = (): JSX.Element => {
         }
 
         setPopup(nullJSX);
-        handleTask(getSelectedTab(), newTasks);
+        handleTask(getSelectedTab(), newTasks, true);
         setSuccessNotification(res.data);
       })
       .catch((err) => {
@@ -278,11 +326,12 @@ const AppTasks = (): JSX.Element => {
       });
   };
 
-  const showPopup = (task?: Task): void => {
+  const showPopup = (taskOccurence?: TaskOccurence): void => {
     setPopup(
       <EditPopup
         onCancel={() => setPopup(nullJSX)}
-        task={task}
+        taskOccurence={taskOccurence}
+        task={taskOccurence?.Task}
         users={users.map((u) => {
           return {
             id: u.id,
@@ -292,29 +341,42 @@ const AppTasks = (): JSX.Element => {
               (u.Image?.url ?? undefined) === undefined
                 ? 'user-circle'
                 : undefined,
-            selected: !task
+            selected: !taskOccurence
               ? false
-              : (task.Users?.find((tu) => tu.id === u.id) ?? null) != null,
+              : (taskOccurence.Users?.find((tu) => tu.id === u.id) ?? null) !=
+                null,
           } as DropdownOption;
         })}
         onSubmit={(task: Task) => handleSubmit(task)}
-        onDelete={task ? (id: number) => deleteTask(id, true) : undefined}
+        onDelete={
+          taskOccurence ? (id: number) => deleteTask(id, true) : undefined
+        }
       />
     );
   };
 
   const deleteTask = (id: number, closePopup?: boolean): void => {
     let newTasks = [...tasks];
-    let i = newTasks.findIndex((t) => t.id === id);
-    if (i >= 0) {
+    let taskOccIndex = -1;
+    let taskIndex = newTasks.findIndex((t) => {
+      if (t.Occurences) {
+        taskOccIndex = t.Occurences?.findIndex((to) => to.id === id);
+        return taskOccIndex !== -1;
+      }
+      return false;
+    });
+    if (taskIndex >= 0 && taskOccIndex >= 0) {
       axios
         .delete(`/tasks/${localStorage.getItem('currentHome')}/${id}`)
         .then((res: any) => {
-          if (res.data.deletedAt == null) newTasks.splice(i, 1);
-          else newTasks[i].deletedAt = res.data.deletedAt;
+          if (res.data.deletedAt == null)
+            newTasks[taskIndex].Occurences.splice(taskOccIndex, 1);
+          else
+            newTasks[taskIndex].Occurences[taskOccIndex].deletedAt =
+              res.data.deletedAt;
 
           if (closePopup) setPopup(nullJSX);
-          handleTask(getSelectedTab(), newTasks);
+          handleTask(getSelectedTab(), newTasks, true);
         })
         .catch((err) => {
           setNotification(err.response.data);
@@ -324,8 +386,16 @@ const AppTasks = (): JSX.Element => {
 
   const setCompletionTask = (id: number, done: boolean): void => {
     let newTasks = [...tasks];
-    let i = newTasks.findIndex((t) => t.id === id);
-    if (i >= 0) {
+    let taskOccIndex = -1;
+    let taskIndex = newTasks.findIndex((t) => {
+      if (t.Occurences) {
+        taskOccIndex = t.Occurences?.findIndex((to) => to.id === id);
+        return taskOccIndex !== -1;
+      }
+      return false;
+    });
+
+    if (taskIndex >= 0 && taskOccIndex >= 0) {
       axios
         .put(
           `/tasks/${localStorage.getItem('currentHome')}/${id}/${
@@ -333,8 +403,10 @@ const AppTasks = (): JSX.Element => {
           }`
         )
         .then((res: any) => {
-          newTasks[i].completedOn = res.data.completedOn;
-          handleTask(getSelectedTab(), newTasks);
+          newTasks[taskIndex].Occurences[taskOccIndex].completedOn =
+            res.data.completedOn;
+
+          handleTask(getSelectedTab(), newTasks, true);
         })
         .catch((err) => {
           setNotification(err.response.data);
@@ -342,16 +414,25 @@ const AppTasks = (): JSX.Element => {
     }
   };
 
-  const restoreTask = (task: Task): void => {
+  const restoreTask = (task: TaskOccurence): void => {
     axios({
       method: 'put',
       url: `/tasks/${localStorage.getItem('currentHome')}/${task.id}/restore`,
     })
       .then((res: any) => {
         let newTasks = [...tasks];
-        let i = newTasks.findIndex((t) => t.id === task.id);
-        if (i >= 0) newTasks[i].deletedAt = null;
 
+        let taskOccIndex = -1;
+        let taskIndex = newTasks.findIndex((t) => {
+          if (t.Occurences) {
+            taskOccIndex = t.Occurences?.findIndex((to) => to.id === task.id);
+            return taskOccIndex !== -1;
+          }
+          return false;
+        });
+
+        if (taskIndex >= 0 && taskOccIndex >= 0)
+          newTasks[taskIndex].Occurences[taskOccIndex].deletedAt = null;
         handleTask(getSelectedTab(), newTasks);
       })
       .catch((err) => {
@@ -372,6 +453,20 @@ const AppTasks = (): JSX.Element => {
     tooltipMultiplier: 10,
   };
 
+  const getVisibleTaskOccurences = () => {
+    let taskOccs: TaskOccurence[] = [];
+    tasks.forEach((t) => {
+      t.Occurences?.forEach((to) => {
+        if (to.visible)
+          taskOccs.push({ ...to, Task: { ...t, Occurences: [] } });
+      });
+    });
+
+    return taskOccs.sort((a, b) =>
+      new Date(a.dueDateTime) < new Date(b.dueDateTime) ? -1 : 1
+    );
+  };
+
   return (
     <AppContainer
       title={title}
@@ -382,120 +477,114 @@ const AppTasks = (): JSX.Element => {
       onAddClick={() => showPopup(undefined)}
     >
       <div className="content">
-        <List key={`task-list`}>
+        <List key={`task-list`} className="fill-height">
           {loaded ? (
-            tasks?.filter((t) => t.visible).length ? (
-              tasks
-                .filter((t) => t.visible)
-                .map((t) => (
-                  <ListItem key={`task-${t.id}`} uid={t.id}>
-                    <ListItemLeft>
-                      <div className="generic-input">
-                        <input
-                          id="c2"
-                          type="checkbox"
-                          onClick={() =>
-                            setCompletionTask(t.id, t.completedOn === null)
-                          }
-                          defaultChecked={t.completedOn !== null}
-                        />
-                      </div>
-                      <h3>{t.name}</h3>
-                      {t.important && (
-                        <IconToolTip
-                          className="icon"
-                          icon="exclamation-circle"
-                          error={true}
-                          style={{ iconWidth: 22, tooltipMultiplier: 5 }}
-                        >
-                          subHeader.important
-                        </IconToolTip>
-                      )}
-                    </ListItemLeft>
-                    <ListItemRight>
-                      {t.Users && (
-                        <>
-                          <div
-                            className="involved-users"
-                            id="involved-users-tasks"
-                            style={t.Users.length < 5 ? { width: 'auto' } : {}}
-                            onWheel={scrollHorizontal}
-                          >
-                            {t.Users.map((u) =>
-                              u.Image?.url ? (
-                                <img
-                                  key={`involved-${t.id}-${u.id}`}
-                                  src={`http://localhost:4000/images/public/${u.Image.url}`}
-                                  alt={`${u.firstname[0]}${u.lastname[0]}`.toUpperCase()}
-                                />
-                              ) : (
-                                <div
-                                  key={`involved-${t.id}-${u.id}`}
-                                  className="user-initials"
-                                >
-                                  {`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}
-                                </div>
-                              )
-                            )}
-                          </div>
-                          <div
-                            className={`tag ${
-                              t.completedOn !== null
-                                ? 'green'
-                                : getTagColor(t.dueDateTime)
-                            }`}
-                          >
-                            {getTranslatedMonthAndDay(t.dueDateTime)}
-                          </div>
-                        </>
-                      )}
-
-                      {getSelectedTab().value === 'trash' ? (
-                        <IconToolTip
-                          icon="trash-arrow-up"
-                          style={iconStyle}
-                          circled={{ value: true, multiplier: 0.45 }}
-                          onClick={() => restoreTask(t)}
-                        >
-                          {ReactDOMServer.renderToStaticMarkup(
-                            <Translate
-                              name="restore"
-                              prefix="actions."
-                            ></Translate>
-                          )}
-                        </IconToolTip>
-                      ) : (
-                        <IconToolTip
-                          icon="pen"
-                          style={iconStyle}
-                          circled={{ value: true, multiplier: 0.45 }}
-                          onClick={() => showPopup(t)}
-                        >
-                          {ReactDOMServer.renderToStaticMarkup(
-                            <Translate
-                              name="edit"
-                              prefix="actions."
-                            ></Translate>
-                          )}
-                        </IconToolTip>
-                      )}
-
+            tasks?.filter(
+              (t) => t.Occurences?.filter((to) => to.visible).length
+            ).length > 0 ? (
+              getVisibleTaskOccurences().map((to) => (
+                <ListItem key={`task-${to.id}`} uid={to.id}>
+                  <ListItemLeft>
+                    <div className="generic-input">
+                      <input
+                        id="c2"
+                        type="checkbox"
+                        onClick={() =>
+                          setCompletionTask(to.id, to.completedOn === null)
+                        }
+                        defaultChecked={to.completedOn !== null}
+                      />
+                    </div>
+                    <h3>{to.Task?.name}</h3>
+                    {to.important && (
                       <IconToolTip
-                        icon="times-circle"
-                        style={iconStyle}
+                        className="icon"
+                        icon="exclamation-circle"
                         error={true}
-                        onClick={(e) => deleteTask(t.id)}
+                        style={{ iconWidth: 22, tooltipMultiplier: 5 }}
+                      >
+                        subHeader.important
+                      </IconToolTip>
+                    )}
+                  </ListItemLeft>
+                  <ListItemRight>
+                    {to.Users && (
+                      <>
+                        <div
+                          className="involved-users"
+                          id="involved-users-tasks"
+                          style={to.Users.length < 5 ? { width: 'auto' } : {}}
+                          onWheel={scrollHorizontal}
+                        >
+                          {to.Users.map((u) =>
+                            u.Image?.url ? (
+                              <img
+                                key={`involved-${to.id}-${u.id}`}
+                                src={`http://localhost:4000/images/public/${u.Image.url}`}
+                                alt={`${u.firstname[0]}${u.lastname[0]}`.toUpperCase()}
+                              />
+                            ) : (
+                              <div
+                                key={`involved-${to.id}-${u.id}`}
+                                className="user-initials"
+                              >
+                                {`${u.firstname[0].toUpperCase()}${u.lastname[0].toUpperCase()}`}
+                              </div>
+                            )
+                          )}
+                        </div>
+                        <div
+                          className={`tag ${
+                            to.completedOn !== null
+                              ? 'green'
+                              : getTagColor(to.dueDateTime)
+                          }`}
+                        >
+                          {getTranslatedMonthAndDay(to.dueDateTime)}
+                        </div>
+                      </>
+                    )}
+
+                    {getSelectedTab().value === 'trash' ? (
+                      <IconToolTip
+                        icon="trash-arrow-up"
+                        style={iconStyle}
+                        circled={{ value: true, multiplier: 0.45 }}
+                        onClick={() => restoreTask(to)}
                       >
                         {ReactDOMServer.renderToStaticMarkup(
                           <Translate
-                            name="delete"
+                            name="restore"
                             prefix="actions."
                           ></Translate>
                         )}
                       </IconToolTip>
-                    </ListItemRight>
-                  </ListItem>
-                ))
+                    ) : (
+                      <IconToolTip
+                        icon="pen"
+                        style={iconStyle}
+                        circled={{ value: true, multiplier: 0.45 }}
+                        onClick={() => showPopup(to)}
+                      >
+                        {ReactDOMServer.renderToStaticMarkup(
+                          <Translate name="edit" prefix="actions."></Translate>
+                        )}
+                      </IconToolTip>
+                    )}
+
+                    <IconToolTip
+                      icon="times-circle"
+                      style={iconStyle}
+                      error={true}
+                      onClick={(e) => deleteTask(to.id)}
+                    >
+                      {ReactDOMServer.renderToStaticMarkup(
+                        <Translate name="delete" prefix="actions."></Translate>
+                      )}
+                    </IconToolTip>
+                  </ListItemRight>
+                </ListItem>
+              ))
             ) : (
               <h2>
                 <Translate name="noTasks" prefix="tasks." />
