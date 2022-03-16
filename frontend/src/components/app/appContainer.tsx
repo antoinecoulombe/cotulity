@@ -25,7 +25,7 @@ export const handleOpenAppResize = (bodyMinHeight?: number): void => {
       ($('.open-app-container')?.innerWidth() ?? 0)) *
       2;
 
-  if (appH) {
+  if (appH && $('.fill-height').length > 0) {
     appH -=
       $('.open-app-container > .headers > .header')?.outerHeight(true) ?? 0;
     appH -=
@@ -37,7 +37,8 @@ export const handleOpenAppResize = (bodyMinHeight?: number): void => {
     }
 
     let paddingTop = $('.open-app-container .fill-height').css('padding-top');
-    appH += parseInt(paddingTop.substring(0, paddingTop.length));
+    if (paddingTop)
+      appH += parseInt(paddingTop.substring(0, paddingTop.length));
 
     if ($('.headers > div:last-of-type').length > 0)
       $('.headers > div:last-of-type').css('margin-bottom', '10px');

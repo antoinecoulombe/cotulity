@@ -460,7 +460,7 @@ const AppTasks = (): JSX.Element => {
 
         if (taskIndex >= 0 && taskOccIndex >= 0)
           newTasks[taskIndex].Occurences[taskOccIndex].deletedAt = null;
-        handleTask(getSelectedTab(), newTasks);
+        handleTask(getSelectedTab(), newTasks, true);
       })
       .catch((err) => {
         setNotification(err.response.data);
