@@ -102,7 +102,7 @@ const DropdownMulti = (props: DropdownMultiProps): JSX.Element => {
           value={''}
           error={props.error}
           onChange={() => {}}
-          onFocus={() => setOpened(true)}
+          onFocus={() => setOpened(unselected.length > 0)}
           className={opened ? 'active' : ''}
           filled={selected.length > 0}
           before={

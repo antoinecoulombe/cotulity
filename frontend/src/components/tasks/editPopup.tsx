@@ -21,6 +21,7 @@ interface TaskEditErrors {
   name: boolean;
   participants: boolean;
   dueDate: boolean;
+  dueTime: boolean;
   untilDate: boolean;
 }
 
@@ -28,6 +29,7 @@ const initTaskEditErrors: TaskEditErrors = {
   name: false,
   participants: false,
   dueDate: false,
+  dueTime: false,
   untilDate: false,
 };
 
@@ -35,19 +37,13 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
   const { t } = useTranslation('common');
 
   // Input format: 2021-08-18T08:26:21.000Z
+  // Input format: Mon, 09 Jan 2023 05:00:00 GMT
+  // Output format: 'DD/MM@HH:mm'
   const handleDate = (date: string): string => {
-    let split = date.split('T');
-    let handledDate = '';
-    handledDate += split[0].substring(split[0].lastIndexOf('-') + 1) + '/';
-    handledDate +=
-      split[0].substring(split[0].indexOf('-') + 1, split[0].lastIndexOf('-')) +
-      '@';
-    handledDate += split[1].substring(0, split[1].indexOf(':')) + ':';
-    handledDate += split[1].substring(
-      split[1].indexOf(':') + 1,
-      split[1].lastIndexOf(':')
-    );
-    return handledDate;
+    let newDate = new Date(date);
+    return `${newDate.getUTCDate()}/${
+      newDate.getUTCMonth() + 1
+    }@${newDate.getUTCHours()}:${newDate.getUTCMinutes()}`;
   };
 
   const [taskOccurence, setTaskOccurence] = useState<TaskOccurence>(
@@ -55,11 +51,17 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
       ? {
           ...props.taskOccurence,
           dueDateTime: handleDate(props.taskOccurence.dueDateTime),
+          Task: {
+            ...props.taskOccurence.Task,
+            untilDate: handleDate(props.taskOccurence.Task.untilDate),
+          },
         }
       : initTaskOccurence
   );
 
-  const [errors, setErrors] = useState<TaskEditErrors>(initTaskEditErrors);
+  const [errors, setErrors] = useState<TaskEditErrors>({
+    ...initTaskEditErrors,
+  });
 
   useEffect(() => {}, []);
 
@@ -90,25 +92,29 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
   const onSubmit = (): void => {
     let newErrors = { ...initTaskEditErrors };
 
+    let untilD = getDateTime(taskOccurence.Task.untilDate);
+    let dueD = getDateTime(taskOccurence.dueDateTime);
+
     if (!taskOccurence.Task.name.length) newErrors.name = true;
     if (taskOccurence.Task.shared && !taskOccurence.Users?.length)
       newErrors.participants = true;
     if (
-      taskOccurence.Task.repeat !== 'none' &&
-      taskOccurence.Task.untilDate === '/@:'
+      (taskOccurence.Task.repeat !== 'none' && !untilD.day.length) ||
+      (taskOccurence.Task.repeat !== 'none' && !untilD.month.length)
     )
       newErrors.untilDate = true;
-    if (taskOccurence.dueDateTime === '/@:') newErrors.dueDate = true;
+    if (dueD.day.length == 0 || dueD.month.length == 0)
+      newErrors.dueDate = true;
+    if (
+      (dueD.hour.length == 0 && dueD.minute.length > 0) ||
+      (dueD.hour.length > 0 && dueD.minute.length == 0)
+    )
+      newErrors.dueTime = true;
 
     setErrors(newErrors);
 
-    if (
-      !newErrors.dueDate &&
-      !newErrors.name &&
-      !newErrors.participants &&
-      !newErrors.untilDate
-    )
-      props.onSubmit(taskOccurence);
+    for (const prop in newErrors) if (newErrors[prop]) return;
+    props.onSubmit(taskOccurence);
   };
 
   const getDateTime = (
@@ -119,65 +125,56 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     hour: string;
     minute: string;
   } => {
-    let split = dateTime.split('@');
-    var day: string, month: string, hour: string, minute: string;
-    if (split[0].length > 1) {
-      day = split[0].substring(0, split[0].indexOf('/'));
-      month = split[0].substring(split[0].indexOf('/') + 1);
-    } else {
-      day = '';
-      month = '';
-    }
+    try {
+      let split = dateTime.split('@');
+      var day: string, month: string, hour: string, minute: string;
+      if (split[0].length > 1) {
+        day = split[0].substring(0, split[0].indexOf('/'));
+        month = split[0].substring(split[0].indexOf('/') + 1);
+      } else {
+        day = '';
+        month = '';
+      }
 
-    if (split[1].length > 1) {
-      hour = split[1].substring(0, split[1].indexOf(':'));
-      minute = split[1].substring(split[1].indexOf(':') + 1);
-    } else {
-      hour = '';
-      minute = '';
+      if (split[1].length > 1) {
+        hour = split[1].substring(0, split[1].indexOf(':'));
+        minute = split[1].substring(split[1].indexOf(':') + 1);
+      } else {
+        hour = '';
+        minute = '';
+      }
+      return { day: day, month: month, hour: hour, minute: minute };
+    } catch (error) {
+      return { day: '', month: '', hour: '', minute: '' };
     }
-    return { day: day, month: month, hour: hour, minute: minute };
   };
 
-  const InputToDateTime = (e: any, field: string): string | null => {
+  const InputToDateTime = (
+    e: any,
+    field: string,
+    date: string
+  ): string | null => {
     var newDate: string = '';
     switch (field) {
       case 'day':
         if (e.target.value > 31) return null;
-        newDate =
-          e.target.value +
-          taskOccurence.dueDateTime.substring(
-            taskOccurence.dueDateTime.indexOf('/')
-          );
+        newDate = e.target.value + date.substring(date.indexOf('/'));
         break;
       case 'month':
         if (e.target.value > 12) return null;
-        newDate = taskOccurence.dueDateTime.substring(
-          0,
-          taskOccurence.dueDateTime.indexOf('/') + 1
-        );
+        newDate = date.substring(0, date.indexOf('/') + 1);
         newDate += e.target.value;
-        newDate += taskOccurence.dueDateTime.substring(
-          taskOccurence.dueDateTime.indexOf('@')
-        );
+        newDate += date.substring(date.indexOf('@'));
         break;
       case 'hour':
         if (e.target.value > 23) return null;
-        newDate = taskOccurence.dueDateTime.substring(
-          0,
-          taskOccurence.dueDateTime.indexOf('@') + 1
-        );
+        newDate = date.substring(0, date.indexOf('@') + 1);
         newDate += e.target.value;
-        newDate += taskOccurence.dueDateTime.substring(
-          taskOccurence.dueDateTime.indexOf(':')
-        );
+        newDate += date.substring(date.indexOf(':'));
         break;
       case 'minute':
         if (e.target.value > 59) return null;
-        newDate = taskOccurence.dueDateTime.substring(
-          0,
-          taskOccurence.dueDateTime.indexOf(':') + 1
-        );
+        newDate = date.substring(0, date.indexOf(':') + 1);
         newDate += e.target.value;
         break;
     }
@@ -186,7 +183,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
   const setDueDateTime = (e: any, field: string): boolean => {
     if (e.target.value.length > 2) return false;
-    let newDate = InputToDateTime(e, field);
+    let newDate = InputToDateTime(e, field, taskOccurence.dueDateTime);
     if (!newDate) return false;
     setTaskOccurence({ ...taskOccurence, dueDateTime: newDate });
     return true;
@@ -194,7 +191,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
   const setUntilDate = (e: any, field: string): boolean => {
     if (e.target.value.length > 2) return false;
-    let newDate = InputToDateTime(e, field);
+    let newDate = InputToDateTime(e, field, taskOccurence.Task.untilDate);
     if (!newDate) return false;
     setTaskOccurence({
       ...taskOccurence,
@@ -218,7 +215,6 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
   const handleRepeatSelect = (selected: DropdownMultiOption): void => {
     let newTask = { ...taskOccurence };
-    console.log(selected);
     newTask.Task.repeat = selected.altId ?? 'none';
     setTaskOccurence(newTask);
   };
@@ -360,6 +356,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             setDueDateTime(e, input === 1 ? 'hour' : 'minute')
           }
           className="in-popup half squared-inputs right"
+          error={errors.dueTime}
         ></DoubleInputTitle>
         <div className="switch">
           <h2>
@@ -397,18 +394,14 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
               tasks.tooltip.shared
             </IconToolTip>
           </h2>
-          <div className="input-toggle disabled">
-            <div className="generic-input disabled">
+          <div className="input-toggle">
+            <div className="generic-input">
               <input
                 id="theme-switch"
                 type="checkbox"
                 className="switch"
                 defaultChecked={taskOccurence.Task.shared}
-                disabled={
-                  taskOccurence.id !== -1 &&
-                  taskOccurence.Task.Owner?.id !==
-                    parseInt(localStorage.getItem('userId') ?? '-1')
-                }
+                disabled={taskOccurence.Task.id !== -1}
                 onClick={() => toggleSwitch('shared')}
               />
             </div>

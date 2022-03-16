@@ -154,7 +154,7 @@ const AppTasks = (): JSX.Element => {
                     (u) =>
                       u.id === parseInt(localStorage.getItem('userId') ?? '-2')
                   ) &&
-                  shared &&
+                  !shared &&
                   t.deletedAt == null &&
                   t.completedOn === null,
           },
@@ -312,11 +312,38 @@ const AppTasks = (): JSX.Element => {
     })
       .then((res: any) => {
         let newTasks = [...tasks];
-        if (task.id === -1) newTasks.push(res.data.task);
-        else {
-          let i = newTasks.findIndex((t) => t.id === task.id);
-          if (i >= 0) newTasks[i] = res.data.task;
-        }
+        if (task.id !== -1) {
+          res.data.deletedIds.forEach((id) => {
+            let taskOccIndex = -1;
+            let taskIndex = newTasks.findIndex((t) => {
+              if (t.Occurences) {
+                taskOccIndex = t.Occurences?.findIndex((to) => to.id === id);
+                return taskOccIndex !== -1;
+              }
+              return false;
+            });
+
+            if (taskIndex >= 0 && taskOccIndex >= 0)
+              newTasks[taskIndex].Occurences.splice(taskOccIndex, 1);
+
+            if (newTasks[taskIndex].Occurences.length === 0)
+              newTasks.splice(taskIndex, 1);
+          });
+
+          res.data.task.Occurences.forEach((to) => (to.completedOn = null));
+
+          let taskIndex = newTasks.findIndex((t) => t.id === res.data.task.id);
+          if (taskIndex < 0) newTasks.push(res.data.task);
+          else {
+            newTasks[taskIndex].name = res.data.task.name;
+            newTasks[taskIndex].repeat = res.data.task.repeat;
+            newTasks[taskIndex].shared = res.data.task.shared;
+            newTasks[taskIndex].untilDate = res.data.task.untilDate;
+            newTasks[taskIndex].Occurences = newTasks[
+              taskIndex
+            ].Occurences.concat(res.data.task.Occurences);
+          }
+        } else newTasks.push(res.data.task);
 
         setPopup(nullJSX);
         handleTask(getSelectedTab(), newTasks, true);

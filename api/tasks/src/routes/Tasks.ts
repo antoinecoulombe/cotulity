@@ -24,6 +24,8 @@ interface TaskOccurence {
   dueDate: Date;
   important: boolean;
   Task?: Task;
+  completedOn?: string | null;
+  deletedAt?: string | null;
 }
 
 interface Task {
@@ -43,7 +45,7 @@ const getTasks = async (
       where: {
         [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
       },
-      attributes: ['id', 'name', 'shared'],
+      attributes: ['id', 'name', 'shared', 'repeat', 'untilDate'],
       include: [
         {
           model: db.TaskOccurence,
@@ -89,7 +91,8 @@ const getTasks = async (
 
 const toDate = (dateString: string): Date | null => {
   try {
-    if (!dateString.includes('@')) dateString += '@23:59';
+    // if (dateString.endsWith('@:'))
+    //   dateString = dateString.substring(0, dateString.indexOf('@')) + '@23:59';
 
     // 09/08@20:42
     let dateSplit = dateString.split('@');
@@ -116,7 +119,7 @@ const toDate = (dateString: string): Date | null => {
 const getRepeatingDatesUntil = (
   dueDate: Date,
   repeat?: string,
-  untilDate?: Date
+  untilDate?: Date | null
 ): string[] => {
   let occurences: string[] = [];
   occurences.push(dueDate.toUTCString());
@@ -194,8 +197,9 @@ const respondIfErrors = (users: any[], repeat: string, res: any) => {
 
 const createTaskOccurences = async (
   taskOcc: TaskOccurence,
-  task: Task,
   transaction: any,
+  repeat: string,
+  untilDate?: Date | null,
   deleteOld?: number
 ) => {
   let firstDueDate = new Date(taskOcc.dueDate);
@@ -204,8 +208,8 @@ const createTaskOccurences = async (
 
   let taskOccurences: any[] = getRepeatingDatesUntil(
     taskOcc.dueDate,
-    task?.repeat,
-    task?.untilDate
+    repeat,
+    untilDate
   ).map((o) => {
     return { ...taskOccurence, dueDateTime: o };
   });
@@ -318,6 +322,16 @@ Tasks.get('/users', async (req: any, res: any) => {
               { dueDateTime: { [Op.gte]: inTwoWeeks } },
             ],
           },
+          include: [
+            {
+              model: db.Task,
+              as: 'Task',
+              attributes: ['shared'],
+              where: {
+                [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
+              },
+            },
+          ],
           attributes: ['taskId', 'deletedAt', 'completedOn', 'dueDateTime'],
           order: ['dueDateTime'],
         });
@@ -375,8 +389,8 @@ Tasks.get('/completed', async (req: any, res: any) => {
 Tasks.put('/:id', async (req: any, res: any) => {
   try {
     let dueDate = toDate(req.body.task.dueDateTime);
-    let untilDate = req.body.task.untilDateTime
-      ? toDate(req.body.task.untilDateTime)
+    let untilDate = req.body.task.Task.untilDate
+      ? toDate(req.body.task.Task.untilDate)
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {
@@ -393,12 +407,13 @@ Tasks.put('/:id', async (req: any, res: any) => {
 
       let task = taskDb[0];
 
-      task.name = req.body.task.name;
-      if (task.ownerId === req.user.id) task.shared = req.body.task.shared;
+      task.name = req.body.task.Task.name;
+      task.repeat = req.body.task.Task.repeat;
+      task.untilDate = untilDate;
 
       let taskUsers: any[] = await getUsers(req, res);
 
-      if (respondIfErrors(taskUsers, req.body.task.repeat, res)) return;
+      if (respondIfErrors(taskUsers, req.body.task.Task.repeat, res)) return;
 
       await task.save({ transaction: t });
 
@@ -407,18 +422,30 @@ Tasks.put('/:id', async (req: any, res: any) => {
         Users: taskUsers,
         dueDate: dueDate,
         important: req.body.task.important,
+        completedOn: null,
+        deletedAt: null,
       };
       let taskOccurences = await createTaskOccurences(
         taskOccurence,
-        task,
         t,
+        req.body.task.Task.repeat,
+        untilDate,
         req.params.id
       );
 
       return res.json({
         title: 'tasks.modified',
         msg: 'tasks.modified',
-        task: { ...task.dataValues, Occurences: taskOccurences },
+        task: {
+          ...task.dataValues,
+          name: req.body.task.Task.name,
+          repeat: req.body.task.Task.repeat,
+          untilDate: untilDate,
+          Occurences: taskOccurences.created,
+          completedOn: null,
+          deletedAt: null,
+        },
+        deletedIds: taskOccurences.deleted,
       });
     });
   } catch (error) {
@@ -494,8 +521,8 @@ Tasks.put('/:id/restore', async (req: any, res: any) => {
 Tasks.post('/', async (req: any, res: any) => {
   try {
     let dueDate = toDate(req.body.task.dueDateTime);
-    let untilDate = req.body.task.untilDateTime
-      ? toDate(req.body.task.untilDateTime)
+    let untilDate = req.body.task.Task.untilDate
+      ? toDate(req.body.task.Task.untilDate)
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {
@@ -525,13 +552,20 @@ Tasks.post('/', async (req: any, res: any) => {
         Users: taskUsers,
         dueDate: dueDate,
         important: req.body.task.important,
+        completedOn: null,
+        deletedAt: null,
       };
-      let taskOccurences = await createTaskOccurences(taskOccurence, task, t);
+      let taskOccurences = await createTaskOccurences(
+        taskOccurence,
+        t,
+        req.body.task.Task.repeat,
+        untilDate
+      );
 
       return res.json({
         title: 'tasks.created',
         msg: 'tasks.created',
-        task: { ...task.dataValues, Occurences: taskOccurences },
+        task: { ...task.dataValues, Occurences: taskOccurences.created },
       });
     });
   } catch (error) {
