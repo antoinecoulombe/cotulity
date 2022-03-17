@@ -25,7 +25,7 @@ import AppTasks from './apps/tasks';
 import AppGroceries from './apps/groceries';
 import AppSettings from './apps/settings';
 import AppHomes from './apps/homes';
-import AppFinances from './apps/finances';
+import AppAccounts from './apps/accounts';
 import AppConsole from './apps/console';
 
 // Font Awesome
@@ -153,7 +153,7 @@ const App = (): JSX.Element => {
       <Switch>
         <PrivateRoute exact path="/apps/homes/new" component={AppNewHome} />
         <PrivateRoute exact path="/apps/homes" component={AppHomes} />
-        {/* <PrivateRoute exact path="/apps/finances" component={AppFinances} /> */}
+        <PrivateRoute exact path="/apps/accounts" component={AppAccounts} />
         <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
         <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />
         <PrivateRoute exact path="/apps/console" component={AppConsole} />

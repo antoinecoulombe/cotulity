@@ -39,8 +39,8 @@ module.exports = {
         },
         {
           priority: 25,
-          name: 'finance',
-          online: false,
+          name: 'accounts',
+          online: true,
           image: 'file-invoice-dollar',
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),

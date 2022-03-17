@@ -12,9 +12,9 @@
       "name": "Groceries",
       "desc": "Note what's missing in your home here!"
     },
-    "finances": {
-      "name": "Finances",
-      "desc": "Manage your home's expenses."
+    "accounts": {
+      "name": "Accounts",
+      "desc": "Manage your home's accounts."
     },
     "calendar": {
       "name": "Calendar",
@@ -282,8 +282,8 @@
   "calendar": {
     "title": { "calendar": "Calendar" }
   },
-  "finances": {
-    "title": { "finances": "Finances" }
+  "accounts": {
+    "title": { "accounts": "Accounts" }
   },
   "console": {
     "title": { "console": "Console" }

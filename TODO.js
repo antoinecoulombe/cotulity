@@ -6,8 +6,8 @@
 //  -> Standardize colors (grey tones, opacities...)                        ->  3h
 //  -> Standardize font sizes and hX uses between apps                      ->  3h
 // DONE: Refactor api urls                                                  ->  4h
-// DONE: [ONGOING] Add type uniformity react                                ->  6h
-// DONE: [ONGOING] Add missing validations (React + API)                    ->  8h
+// DONE: Add type uniformity react                                          ->  6h
+// DONE: Add missing validations (React + API)                              ->  8h
 // DONE: Update README (mainly .less section)                               ->  1h
 // DONE: Rework TypeScript debug environment for vscode                     ->  6h
 
@@ -43,7 +43,7 @@
 
 // #endregion
 
-// #region Fixes                                                            ->  30h
+// #region Fixes                                                            -> 30h
 
 // TODO: Implement second chance                                            ->  8h
 // TODO: Fix height of popups inside open-app                               ->  4h
@@ -65,13 +65,46 @@
 // TODO: Add more descriptive images to notifications
 // TODO: Add phone number validation in user model
 // TODO: Keep transactions (transfers, expenses) when a user is involved
-// TODO: Add slider for minutes, hours, days and months                       ->  6h
+// TODO: Add slider for minutes, hours, days and months                     ->  6h
 //   -> Replace by dummy user?
 // TODO: Replace multiple responses in method by error throws + 1 response
 // TODO: Fix scrollbar height in .list
 //   -> So that popups don't disappear
+// TODO: Scrollbar on dropdown
 
 // #endregion
 
 // CPS + MPS + ProjeqTor                                                    ->   5h
 // Total                                                                    -> 270h
+
+/*
+
+settle debt to receiver
+remaining = substract due total to receiver from transfer amount
+
+if (remaining > 0)
+{
+  get debts to other home member
+  if (no other debts)
+    return; (receiving person will now oew money to sender)
+  else 
+  {
+    for each other user that sender owes money
+    {
+      check if they have debt to receiver
+      if (they have debt)
+      {
+        if (the remaining amount over the amount due to de receiver >= their debt to the receiver)
+        {
+          settle the debt
+          substract debt to remaining amount
+        }
+        
+        if (remaining == 0)
+          return;
+      }
+    }
+  }
+}
+
+*/

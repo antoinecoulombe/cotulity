@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
       Transfer.belongsTo(models.User, {
-        foreignKey: 'fromId',
+        foreignKey: 'fromUserId',
         targetKey: 'id',
         as: 'From',
         allowNull: false,
       });
       Transfer.belongsTo(models.User, {
-        foreignKey: 'toId',
+        foreignKey: 'toUserId',
         targetKey: 'id',
         as: 'To',
         allowNull: false,

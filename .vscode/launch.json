@@ -2,13 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Node: Nodemon",
-      "port": 9229,
-      "request": "attach",
-      "skipFiles": ["<node_internals>/**"],
-      "type": "pwa-node"
-    },
-    {
       "name": "Node: Auth - 9225",
       "port": 9225,
       "request": "attach",
@@ -49,8 +42,16 @@
       "restart": true
     },
     {
-      "name": "Node: Finances - 9230",
+      "name": "Node: Accounts - 9230",
       "port": 9230,
+      "request": "attach",
+      "type": "node",
+      "protocol": "inspector",
+      "restart": true
+    },
+    {
+      "name": "Node: Calendar - 9231",
+      "port": 9231,
       "request": "attach",
       "type": "node",
       "protocol": "inspector",

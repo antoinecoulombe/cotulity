@@ -25,7 +25,7 @@ module.exports = {
           key: 'id',
         },
       },
-      storeName: {
+      description: {
         allowNull: false,
         type: Sequelize.STRING,
       },
@@ -36,10 +36,6 @@ module.exports = {
       totalAmount: {
         allowNull: false,
         type: Sequelize.DECIMAL(19, 4),
-      },
-      description: {
-        allowNull: false,
-        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,

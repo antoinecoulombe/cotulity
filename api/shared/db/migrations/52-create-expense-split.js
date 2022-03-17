@@ -24,6 +24,11 @@ module.exports = {
           allowNull: false,
           type: Sequelize.DECIMAL(19, 4),
         },
+        settled: {
+          allowNull: false,
+          type: Sequelize.BOOLEAN,
+          defaultValue: false,
+        },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
@@ -42,7 +47,7 @@ module.exports = {
       .then(() =>
         queryInterface.addConstraint('ExpenseSplits', {
           type: 'primary key',
-          name: 'user_expense_pk',
+          name: 'user_expense_splits_pk',
           fields: ['userId', 'expenseId'],
         })
       );

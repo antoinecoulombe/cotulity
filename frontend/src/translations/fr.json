@@ -12,7 +12,7 @@
       "name": "Épicerie",
       "desc": "Notez ce qu'il manque dans votre maison ici!"
     },
-    "finances": {
+    "accounts": {
       "name": "Finances",
       "desc": "Gérez les dépenses de votre maison."
     },
@@ -282,8 +282,8 @@
   "calendar": {
     "title": { "calendar": "Calendrier" }
   },
-  "finances": {
-    "title": { "finances": "Finances" }
+  "accounts": {
+    "title": { "accounts": "Finances" }
   },
   "console": {
     "title": { "console": "Console" }

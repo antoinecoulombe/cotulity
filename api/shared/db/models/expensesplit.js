@@ -5,7 +5,16 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class ExpenseSplit extends Model {
     static associate(models) {
-      // define association here
+      ExpenseSplit.belongsTo(models.Expense, {
+        foreignKey: 'expenseId',
+        targetKey: 'id',
+        allowNull: false,
+      });
+      ExpenseSplit.belongsTo(models.User, {
+        foreignKey: 'userId',
+        targetKey: 'id',
+        allowNull: false,
+      });
     }
   }
   ExpenseSplit.init(
@@ -22,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'form.error.amount.valid',
           },
         },
+      },
+      settled: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     },
     {

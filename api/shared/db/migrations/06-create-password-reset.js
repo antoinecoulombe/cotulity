@@ -2,22 +2,14 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Transfers', {
+    await queryInterface.createTable('PasswordResets', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      homeId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Homes',
-          key: 'id',
-        },
-      },
-      fromUserId: {
+      userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -25,21 +17,14 @@ module.exports = {
           key: 'id',
         },
       },
-      toUserId: {
+      token: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      expirationDays: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
-        },
-      },
-      date: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
-      amount: {
-        allowNull: false,
-        type: Sequelize.DECIMAL(19, 4),
+        defaultValue: 3,
       },
       createdAt: {
         allowNull: false,
@@ -58,6 +43,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Transfers');
+    await queryInterface.dropTable('PasswordResets');
   },
 };
