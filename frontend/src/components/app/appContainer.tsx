@@ -69,7 +69,10 @@ const AppContainer = (props: AppContainerProps): JSX.Element => {
   }, []);
 
   const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef, () => history.push('/apps'));
+  useOutsideAlerter(wrapperRef, (event: any) => {
+    if (!event.target.classList.contains('popup-container'))
+      history.push('/apps');
+  });
 
   return (
     <div ref={wrapperRef} className={`open-app-container ${props.appName}`}>

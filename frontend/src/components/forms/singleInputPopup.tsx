@@ -14,6 +14,7 @@ const SingleInputPopup = (
       onCancel={props.onCancel}
       className={props.containerClassName}
       type="si"
+      style={props.popupStyle}
     >
       <SingleInputForm {...props} className="in-popup">
         {props.children}

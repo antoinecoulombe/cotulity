@@ -17,6 +17,10 @@ export interface SidebarTab {
   action?: (...attr: any) => any;
 }
 
+export interface SidebarModule {
+  id: number;
+}
+
 interface SidebarProps {
   tabs: Array<SidebarTab>;
 }

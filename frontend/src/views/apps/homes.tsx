@@ -31,6 +31,13 @@ export interface Home {
   UserHome: { nickname: string; accepted: boolean };
 }
 
+export interface HomeMember {
+  id: number;
+  firstname: string;
+  lastname: string;
+  Image: { url: string } | null;
+}
+
 const nullJSX: JSX.Element = <></>;
 
 const AppHomes = () => {
@@ -150,7 +157,7 @@ const AppHomes = () => {
             ? addMember(value, ref)
             : renameHome(value, ref)
         }
-        style={{ iconWidth: 32, tooltipMultiplier: 15, marginTop: 2 }}
+        iconStyle={{ iconWidth: 32, tooltipMultiplier: 15, marginTop: 2 }}
         error={error ?? false}
       >
         {getTranslateJSON(`homes.tooltip.${action}`, [home?.name ?? ''])}

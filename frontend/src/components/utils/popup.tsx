@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconToolTip from '../global/iconTooltip';
 import ReactDOMServer from 'react-dom/server';
 import Translate from './translate';
+import { useRef } from 'react';
+import { useOutsideAlerter } from './outsideClick';
 
 interface PopupProps {
   children: any;
@@ -9,15 +11,23 @@ interface PopupProps {
   popup?: JSX.Element;
   type: 'edit' | 'si' | 'warning';
   new?: boolean;
+  style?: any;
   onCancel(...attr: any): any;
   onSubmit?(...attr: any): any;
   onDelete?(...attr: any): any;
 }
 
 const Popup = (props: PopupProps): JSX.Element => {
+  const wrapperPopupRef = useRef(null);
+  useOutsideAlerter(wrapperPopupRef, props.onCancel);
+
   return (
     <div className={`popup-container ${props.className ?? ''}`}>
-      <div className={`popup ${props.type}`}>
+      <div
+        ref={wrapperPopupRef}
+        className={`popup ${props.type}`}
+        style={props.style}
+      >
         {props.popup}
         <div className="close">
           <FontAwesomeIcon

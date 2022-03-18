@@ -331,7 +331,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           type="text"
           required={true}
           parent={{ onChange: onChange }}
-          style={{ iconWidth: 36, tooltipMultiplier: 8 }}
+          iconStyle={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup"
           error={error}
         ></SingleInputForm>

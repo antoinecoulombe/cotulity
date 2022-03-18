@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { PrivateRoute, PublicRoute } from '../components/utils/routes';
-import {
-  jsonNotification,
-  useNotifications,
-} from '../contexts/NotificationsContext';
+import { useNotifications } from '../contexts/NotificationsContext';
 import { getNotifications, isAuthenticated } from '../utils/global';
+import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // CSS
 import '../assets/css/globals/theme.css';
@@ -17,6 +16,7 @@ import Notifications from '../components/global/notifications';
 // Pages
 import LoginPage from './login';
 import AppsPage from './apps/index';
+import PasswordEditPage from './passwordEdit';
 import NotFoundPage from './404';
 
 // Apps
@@ -70,8 +70,6 @@ import {
   faTrashArrowUp,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useTranslation } from 'react-i18next';
 
 library.add(
   faArrowAltCircleRight,
@@ -116,7 +114,8 @@ library.add(
 
 const App = (): JSX.Element => {
   const history = useHistory();
-  const { setNotificationArray, clearAllNotifications } = useNotifications();
+  const { setNotificationArray, setErrorNotification, clearAllNotifications } =
+    useNotifications();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const { i18n } = useTranslation('common');
 
@@ -194,6 +193,16 @@ const App = (): JSX.Element => {
               />
             )
           }
+        />
+        <Route
+          exact
+          path="/account/verify/:token"
+          component={PasswordEditPage}
+        />
+        <PublicRoute
+          exact
+          path="/account/newpassword/:token"
+          component={PasswordEditPage}
         />
         <Route exact path="/404" component={NotFoundPage} />
         <Redirect to="/404" />

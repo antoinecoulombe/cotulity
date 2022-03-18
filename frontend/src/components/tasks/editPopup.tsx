@@ -251,7 +251,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
                 Task: { ...taskOccurence.Task, name: e.target.value },
               }),
           }}
-          style={{ iconWidth: 36, tooltipMultiplier: 8 }}
+          iconStyle={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup"
           error={errors.name}
         ></SingleInputForm>

@@ -100,7 +100,7 @@ const AppNewHome = (): JSX.Element => {
           title={`newHome.${action}.title`}
           label={`newHome.${action}.label`}
           error={error}
-          style={{ iconWidth: 36, tooltipMultiplier: 5 }}
+          iconStyle={{ iconWidth: 36, tooltipMultiplier: 5 }}
           onSubmit={handleSubmit}
           onBack={handleBack}
         >{`newHome.${action}.tooltip`}</SingleInputForm>

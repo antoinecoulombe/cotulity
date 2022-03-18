@@ -6,11 +6,15 @@ import Title from './title';
 export interface SingleInputFormProps {
   name: string;
   title?: string;
-  style: {
+  iconStyle: {
     iconWidth: number;
     tooltipMultiplier: number;
     marginRight?: number;
     marginTop?: number;
+  };
+  popupStyle?: {
+    minWidth: number;
+    width: string;
   };
   type?: 'text' | 'password' | 'phone' | 'email';
   label?: string;
@@ -20,6 +24,7 @@ export interface SingleInputFormProps {
   required?: boolean;
   className?: string;
   parent?: { onChange: (e: any) => void };
+  errorCheck?: (input: string) => boolean;
   onSubmit?: (value: string) => void;
   onHelpClick?: (e: any) => void;
   onBack?: (e: any) => void;
@@ -27,14 +32,27 @@ export interface SingleInputFormProps {
 
 const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
   const [value, setValue] = useState<string>(props.value ?? '');
+  const [error, setError] = useState<boolean>(false);
 
   const handleKeyPress = (event: any): void => {
-    if (event.key === 'Enter') props.onSubmit?.(value);
+    if (event.key === 'Enter' && !hasErrors()) props.onSubmit?.(value);
   };
 
   const onChange = (event: any): void => {
     setValue(event.target.value);
     if (props.parent?.onChange) props.parent.onChange(event);
+  };
+
+  const hasErrors = () => {
+    if (!props.errorCheck) return false;
+
+    if (props.errorCheck(value)) {
+      setError(true);
+      return true;
+    }
+
+    if (error) setError(false);
+    return false;
   };
 
   return (
@@ -52,7 +70,7 @@ const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
         {props.onBack && (
           <IconToolTip
             icon="arrow-alt-circle-left"
-            style={props.style}
+            style={props.iconStyle}
             onClick={props.onBack}
           >
             nav.goBack
@@ -63,7 +81,7 @@ const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
           label={props.label}
           type={props.type ?? 'text'}
           value={props.value ?? value}
-          error={props.error}
+          error={props.error || error}
           onChange={onChange}
           onKeyPress={handleKeyPress}
           filled={(props.value?.length ?? 0) > 0}
@@ -71,9 +89,9 @@ const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
         {props.onSubmit && (
           <IconToolTip
             icon="arrow-alt-circle-right"
-            style={props.style}
+            style={props.iconStyle}
             onClick={() => {
-              props.onSubmit?.(value);
+              if (!hasErrors()) props.onSubmit?.(value);
             }}
             className="submit"
           >

@@ -261,13 +261,6 @@ Home.post('/invitations', async (req: any, res: any) => {
       token: token,
     });
 
-    if (req.body.fake && req.body.fake === true)
-      return res.json({
-        title: 'homes.invitationSent',
-        msg: 'homes.invitationSent',
-        token: token,
-      });
-
     const emailHtml = Global.format(
       await Global.readHtml(__dirname + '/_html/emailInvite.html'),
       [res.locals.home.name, token]

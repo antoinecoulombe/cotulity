@@ -6,11 +6,12 @@ export interface TitleProps {
   help?: string;
   required?: boolean;
   className?: string;
+  style?: any;
 }
 const Title = (props: TitleProps): JSX.Element => {
   return (
     <div className={`title ${props.className ?? ''}`}>
-      <h2>
+      <h2 style={props.style}>
         <Translate name={props.children}></Translate>
         {props.required ? <b className="input-required">*</b> : ''}
       </h2>

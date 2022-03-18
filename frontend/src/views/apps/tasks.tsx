@@ -9,6 +9,7 @@ import {
   SubHeaderProps,
   switchSubHeaderTab,
 } from '../../components/app/subHeader';
+import { HomeMember } from './homes';
 import AppContainer from '../../components/app/appContainer';
 import List from '../../components/utils/lists/list';
 import ListItem from '../../components/utils/lists/listItem';
@@ -28,7 +29,7 @@ export interface Task {
   shared: boolean;
   repeat: string;
   untilDate: string;
-  Owner?: HomeMember;
+  Owner?: TaskHomeMember;
   Occurences: TaskOccurence[];
 }
 
@@ -69,11 +70,7 @@ export const initTaskOccurence: TaskOccurence = {
   Task: initTask,
 };
 
-export interface HomeMember {
-  id: number;
-  firstname: string;
-  lastname: string;
-  Image: { url: string } | null;
+export interface TaskHomeMember extends HomeMember {
   Tasks?: Array<{ id: number }>;
   selected?: boolean;
 }
@@ -98,7 +95,7 @@ const AppTasks = (): JSX.Element => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setHeader] = useState<string>('sidebar.myTasks.title');
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [users, setUsers] = useState<HomeMember[]>([]);
+  const [users, setUsers] = useState<TaskHomeMember[]>([]);
 
   useEffect(() => {
     if (!sidebarTabs.length) return;

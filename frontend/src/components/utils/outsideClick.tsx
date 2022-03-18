@@ -13,7 +13,7 @@ export const useOutsideAlerter = (
         !event.target.classList.contains('logout') &&
         (!currentNotif.length || !currentNotif[0].contains(event.target))
       )
-        callback();
+        callback(event);
     };
 
     document.addEventListener('mousedown', handleClickOutside);

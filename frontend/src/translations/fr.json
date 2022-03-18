@@ -314,6 +314,15 @@
         "success": "Inscription réussie",
         "error": "Échec lors de l'inscription"
       },
+      "token": {
+        "notFound": "Jeton introuvable",
+        "invalid": "Jeton invalide",
+        "expired": "Jeton expiré"
+      },
+      "pwdReset": {
+        "failed": "Échec de la mise à jour du mot de passe",
+        "success": "Mot de passe mis à jour"
+      },
       "homes": {
         "memberLost": "{0} a perdu un membre!",
         "memberAdded": "{0} a un nouveau membre!",
@@ -358,7 +367,8 @@
         "notFound": "Image introuvable"
       },
       "user": {
-        "deleted": "Compte supprimé"
+        "deleted": "Compte supprimé",
+        "notFound": "Utilisateur introuvable"
       },
       "groceries": {
         "notFound": "Article introuvable",
@@ -395,6 +405,14 @@
       },
       "register": {
         "success": "Vous pouvez maintenant vous connecter."
+      },
+      "token": {
+        "notFound": "Le jeton spéficié est introuvable.",
+        "invalid": "Ce jeton est invalide.",
+        "expired": "Ce jeton est expiré. Vous pouvez en créer un autre en cliquant sur 'Mot de passe oublié' sur la page de connexion."
+      },
+      "pwdReset": {
+        "success": "Votre mot de passe à été mis à jour. Vous pouvez maintenant utiliser ce-dernier pour accéder à votre compte."
       },
       "form": {
         "error": {
@@ -483,7 +501,8 @@
         "imageDeleted": "La photo de profil a été supprimée.",
         "imageNotFound": "Vous n'avez pas de photo de profil.",
         "loggedOut": "Vous avez été déconnecté.",
-        "deleted": "Votre compte, ainsi que toutes vos données, a été supprimé."
+        "deleted": "Votre compte, ainsi que toutes vos données, a été supprimé.",
+        "notAssociatedToEmail": "Aucun utilisateur n'est associé à ce courriel."
       },
       "picture": {
         "unsupportedExtension": "L'extension de l'image n'est pas supportée. Les extensions supportées sont les suivantes: jpg, jpeg, png et gif.",

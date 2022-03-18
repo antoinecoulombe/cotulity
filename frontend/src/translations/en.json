@@ -314,6 +314,15 @@
         "success": "Registration completed!",
         "error": "Registration failed"
       },
+      "token": {
+        "notFound": "Token not found",
+        "invalid": "Invalid Token",
+        "expired": "Token expired"
+      },
+      "pwdReset": {
+        "failed": "Couldn't update password",
+        "success": "Password updated"
+      },
       "homes": {
         "memberLost": "{0} lost a member!",
         "memberAdded": "{0} has a new member!",
@@ -358,7 +367,8 @@
         "notFound": "Image not found"
       },
       "user": {
-        "deleted": "Account Deleted"
+        "deleted": "Account Deleted",
+        "notFound": "User not found"
       },
       "groceries": {
         "notFound": "Grocery not found",
@@ -396,6 +406,14 @@
       },
       "register": {
         "success": "You can now log in."
+      },
+      "token": {
+        "notFound": "This token couldn't be found.",
+        "expired": "This token has expired. You can create another one by clicking on 'Forgot password?' on the login page.",
+        "invalid": "This token is invalid."
+      },
+      "pwdReset": {
+        "success": "Your password has been updated. You can now use your new password to access your account."
       },
       "form": {
         "error": {
@@ -484,7 +502,8 @@
         "imageDeleted": "The profile picture has been deleted.",
         "imageNotFound": "You have no profile picture.",
         "loggedOut": "You have been logged out.",
-        "deleted": "Your account and data has been deleted."
+        "deleted": "Your account and data has been deleted.",
+        "notAssociatedToEmail": "No user is associated to that email address."
       },
       "picture": {
         "unsupportedExtension": "The image's extension is unsupported. Supported extensions are: jpg, jpeg, png and gif.",

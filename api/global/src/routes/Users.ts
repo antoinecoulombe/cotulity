@@ -1,11 +1,14 @@
 import express from 'express';
 import * as Image from '../../../shared/src/routes/Image';
+import * as Global from '../../../shared/src/routes/Global';
 import { notifyMembersExceptOwner } from '../../../shared/src/routes/Homes';
+import { email, sendEmail } from '../../../shared/src/routes/Email';
 
 const Users = express.Router();
 
 const db = require('../../../shared/db/models');
 const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 require('dotenv').config({ path: __dirname + '/./../../../shared/.env' });
 
 // ########################################################
@@ -57,6 +60,37 @@ Users.get('/current/picture/url', async (req: any, res: any) => {
   return await sendProfilePicture(req, res, false);
 });
 
+Users.get('/public/password/reset/:token', async (req, res) => {
+  try {
+    let pwdReset = await db.PasswordReset.findOne({
+      where: { token: req.params.token },
+    });
+    if (!pwdReset)
+      return res
+        .status(404)
+        .json({ title: 'token.notFound', msg: 'token.notFound' });
+
+    let tokenExpiration = new Date(pwdReset.createdAt);
+    tokenExpiration.setDate(
+      tokenExpiration.getDate() + pwdReset.expirationDays
+    );
+
+    if (tokenExpiration < new Date())
+      return res
+        .status(500)
+        .json({ title: 'token.expired', msg: 'token.expired' });
+
+    res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      token: req.params.token,
+    });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
 // ########################################################
 // ######################### PUT ##########################
 // ########################################################
@@ -76,6 +110,58 @@ Users.put('/current/picture', async (req: any, res: any) => {
     if (oldImgId) await Image.remove(oldImgId, true);
 
     res.json({ title: 'picture.updated', msg: 'user.imageUpdated' });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+Users.put('/public/password/reset/:token', async (req, res) => {
+  try {
+    let pwdReset = await db.PasswordReset.findOne({
+      where: { token: req.params.token },
+      include: [{ model: db.User, attributes: ['id', 'password'] }],
+    });
+    if (!pwdReset)
+      return res
+        .status(404)
+        .json({ title: 'token.notFound', msg: 'token.notFound' });
+
+    let tokenExpiration = new Date(pwdReset.createdAt);
+    tokenExpiration.setDate(
+      tokenExpiration.getDate() + pwdReset.expirationDays
+    );
+
+    if (tokenExpiration < new Date())
+      return res
+        .status(500)
+        .json({ title: 'token.expired', msg: 'token.expired' });
+
+    await db.sequelize.transaction(async (t: any) => {
+      let user = pwdReset.User;
+      const salt = bcrypt.genSaltSync(10);
+      const password = bcrypt.hashSync(req.body.password, salt);
+      user.password = password;
+      await user.save({ transaction: t });
+
+      await pwdReset.destroy({ force: true });
+    });
+
+    res.json({ title: 'pwdReset.success', msg: 'pwdReset.success' });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+Users.put('/public/verify/:token', async (req, res) => {
+  try {
+    let user = db.User.findOne({ where: { email: req.body.email } });
+    if (user.emailVerifiedAt !== null)
+      return res
+        .status(500)
+        .json({ title: 'user.alreadyVerified', msg: 'user.alreadyVerified' });
+    res.json({ token: req.params.token });
   } catch (error) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -129,14 +215,66 @@ Users.post('/register', async (req, res) => {
   }
 });
 
-// Users.post('/public/password/reset', async (req, res) => {
-//   try {
-//     // TODO: Reset password
-//   } catch (error) {
-//     /* istanbul ignore next */
-//     res.status(500).json({ title: 'request.error', msg: 'request.error' });
-//   }
-// });
+// Sends a password reset url to the specified email, if it exists
+Users.post('/public/password/reset', async (req, res) => {
+  try {
+    if (
+      !req.body.email ||
+      !req.body.email.length ||
+      !req.body.email.includes('@')
+    )
+      return res
+        .status(500)
+        .json({ title: 'form.email.error', msg: 'form.error.email.valid' });
+
+    let user = await db.User.findOne({ where: { email: req.body.email } });
+    if (!user)
+      return res
+        .status(404)
+        .json({ title: 'user.notFound', msg: 'user.notAssociatedToEmail' });
+
+    const token = Global.createToken(4);
+    const invite = await db.sequelize.transaction(async (t: any) => {
+      await db.PasswordReset.destroy(
+        {
+          where: { userId: user.id },
+          force: true,
+        },
+        { transaction: t }
+      );
+
+      return await db.PasswordReset.create(
+        {
+          userId: user.id,
+          token: token,
+        },
+        { transaction: t }
+      );
+    });
+
+    const emailHtml = Global.format(
+      await Global.readHtml(__dirname + '/_html/passwordReset.html'),
+      [token]
+    );
+
+    const mailRes = await sendEmail({
+      from: email.sender,
+      to: req.body.email,
+      subject: `Your Cotulity Password Reset Request`,
+      html: emailHtml,
+    });
+
+    if (!mailRes.success) {
+      await invite.destroy({ force: true });
+      return res.status(500).json({ ...mailRes, token: null });
+    }
+
+    res.json({ ...mailRes, token: token });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
 
 // ########################################################
 // ######################## DELETE ########################

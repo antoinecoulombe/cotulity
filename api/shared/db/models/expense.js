@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       Expense.belongsTo(models.User, {
         foreignKey: 'paidByUserId',
         targetKey: 'id',
+        as: 'PaidBy',
         allowNull: false,
       });
       Expense.belongsTo(models.Home, {

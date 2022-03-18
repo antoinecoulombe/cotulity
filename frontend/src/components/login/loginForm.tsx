@@ -40,7 +40,6 @@ const LoginForm = (): JSX.Element => {
     phone: false,
     firstname: false,
     lastname: false,
-    reset: false,
   };
 
   const nullJSX: JSX.Element = <></>;
@@ -50,20 +49,11 @@ const LoginForm = (): JSX.Element => {
   const [errors, setError] = useState(errorForm);
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
 
-  const handlePopupSubmit = (email: string): void => {
-    if (!email || !email.length) {
-      setError({ ...errorForm, reset: true });
-      setErrorNotification({
-        title: 'form.email.error',
-        msg: 'form.error.email.valid',
-      });
-      return;
-    }
-
-    setError({ ...errorForm, reset: false });
+  const handlePasswordResetPopup = (email: string): void => {
     axios
       .post('/users/public/password/reset', { email: email })
       .then(async (res) => {
+        setSuccessNotification(res.data);
         setPopup(nullJSX);
       })
       .catch((err) => {
@@ -71,15 +61,25 @@ const LoginForm = (): JSX.Element => {
       });
   };
 
-  const showPopup = (): void => {
+  const showPasswordResetPopup = (): void => {
     setPopup(
       <SingleInputPopup
         name={`login.pwd-reset.placeholder`}
         title="login.pwd-reset.title"
         onCancel={() => setPopup(nullJSX)}
-        onSubmit={(email: string) => handlePopupSubmit(email)}
-        style={{ iconWidth: 32, tooltipMultiplier: 15 }}
-        error={errorForm.reset}
+        onSubmit={(email: string) => handlePasswordResetPopup(email)}
+        iconStyle={{ iconWidth: 32, tooltipMultiplier: 15, marginTop: 2 }}
+        popupStyle={{ width: 'auto', minWidth: 400 }}
+        errorCheck={(email: string) => {
+          if (!email || !email.length || !email.includes('@')) {
+            setErrorNotification({
+              title: 'form.email.error',
+              msg: 'form.error.email.valid',
+            });
+            return true;
+          }
+          return false;
+        }}
         containerClassName="bg-light"
       />
     );
@@ -102,8 +102,26 @@ const LoginForm = (): JSX.Element => {
     }, 900);
   };
 
+  const setErrors = (): boolean => {
+    let newErrors = { ...errorForm };
+    newErrors.email =
+      !form.email || !form.email.length || !form.email.includes('@');
+    newErrors.password = !form.password || !form.password.length;
+    if (!isLogin) {
+      newErrors.firstname = !form.firstname || !form.firstname.length;
+      newErrors.lastname = !form.lastname || !form.lastname.length;
+      newErrors.cpassword = !form.cpassword || !form.cpassword.length;
+      newErrors.phone = !form.phone || form.phone.length < 7;
+    }
+
+    setError(newErrors);
+    for (const prop in newErrors) if (newErrors[prop]) return true;
+    return false;
+  };
+
   const login = async (): Promise<void> => {
     if (isAuthenticated()) return;
+    if (setErrors()) return;
 
     return await axios
       .post(`/auth/login`, form)
@@ -175,8 +193,7 @@ const LoginForm = (): JSX.Element => {
 
   const register = async (): Promise<void> => {
     if (isAuthenticated()) return;
-
-    setError({ ...errorForm });
+    if (setErrors()) return;
 
     if (form.cpassword !== form.password)
       return setValidationNotification(
@@ -269,8 +286,7 @@ const LoginForm = (): JSX.Element => {
         />
 
         <FormToggle login={isLogin} onClick={() => setLogin(!isLogin)} />
-        {/* TODO: CHANGE FOLLOWING TO SAME STYLE AS LOGIN FORM */}
-        <p className="pwd-reset" onClick={() => showPopup()}>
+        <p className="pwd-reset" onClick={() => showPasswordResetPopup()}>
           <Translate name="link" prefix="login.pwd-reset." />
         </p>
       </form>
