@@ -194,11 +194,6 @@ const App = (): JSX.Element => {
             )
           }
         />
-        <Route
-          exact
-          path="/account/verify/:token"
-          component={PasswordEditPage}
-        />
         <PublicRoute
           exact
           path="/account/newpassword/:token"

@@ -372,7 +372,8 @@
       },
       "user": {
         "deleted": "Account Deleted",
-        "notFound": "User not found"
+        "notFound": "User not found",
+        "notVerified": "Your email is not verified"
       },
       "groceries": {
         "notFound": "Grocery not found",
@@ -413,7 +414,8 @@
       },
       "token": {
         "notFound": "This token couldn't be found.",
-        "expired": "This token has expired. You can create another one by clicking on 'Forgot password?' on the login page.",
+        "expired": "This token has expired.",
+        "expiredPwd": "This token has expired. You can create another one by clicking on 'Forgot password?' on the login page.",
         "invalid": "This token is invalid."
       },
       "pwdReset": {

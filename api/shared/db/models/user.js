@@ -52,6 +52,18 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true,
       });
+      User.hasMany(models.PasswordReset, {
+        foreignKey: 'userId',
+        sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
+      });
+      User.hasMany(models.VerificationEmail, {
+        foreignKey: 'userId',
+        sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
+      });
       User.belongsTo(models.Image);
       User.belongsToMany(models.Expense, {
         through: models.ExpenseSplit,

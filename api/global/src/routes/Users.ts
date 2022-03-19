@@ -78,7 +78,7 @@ Users.get('/public/password/reset/:token', async (req, res) => {
     if (tokenExpiration < new Date())
       return res
         .status(500)
-        .json({ title: 'token.expired', msg: 'token.expired' });
+        .json({ title: 'token.expired', msg: 'token.expiredPwd' });
 
     res.json({
       title: 'request.success',
@@ -88,6 +88,85 @@ Users.get('/public/password/reset/:token', async (req, res) => {
   } catch (error) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// Verify a user account using token, then respond an html page
+Users.get('/public/verify/:token', async (req, res) => {
+  try {
+    let verifEmail = await db.VerificationEmail.findOne({
+      where: { token: req.params.token },
+      include: [{ model: db.User, attributes: ['id', 'emailVerifiedAt'] }],
+    });
+
+    const html = await Global.readHtml(__dirname + '/_html/responsePage.html');
+
+    // If the token is not associated to a verification email
+    if (!verifEmail)
+      return Global.respondHtml(
+        res,
+        Global.format(html, [
+          'Verification Token Not Found',
+          'No verification email is linked to that URL.',
+        ]),
+        404
+      );
+
+    // If user is already verified
+    if (verifEmail.User.emailVerifiedAt !== null)
+      return Global.respondHtml(
+        res,
+        Global.format(html, [
+          'Account Already Verified',
+          'The account associated to that verification URL is already verified.',
+        ]),
+        500
+      );
+
+    // If token is expired
+    var expirationDate = new Date(verifEmail.createdAt);
+    expirationDate.setDate(
+      expirationDate.getDate() + verifEmail.expirationDays
+    );
+    if (expirationDate < new Date())
+      return Global.respondHtml(
+        res,
+        Global.format(html, [
+          'Verification URL Expired',
+          'This verification url is expired. Try logging in again.',
+        ]),
+        500
+      );
+
+    let user = verifEmail.User;
+    user.emailVerifiedAt = new Date();
+    await user.save();
+
+    await db.VerificationEmail.destroy({
+      where: { userId: user.id },
+      force: true,
+    });
+
+    return Global.respondHtml(
+      res,
+      Global.format(html, ['Account Verified', 'You can close this page.']),
+      200
+    );
+  } catch (error) {
+    try {
+      const html = await Global.readHtml(
+        __dirname + '/_html/responsePage.html'
+      );
+
+      Global.respondHtml(
+        res,
+        Global.format(html, ['An error occured', 'Please try again.']),
+        500
+      );
+    } catch (error) {
+      /* istanbul ignore next */
+      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    }
   }
 });
 
@@ -141,7 +220,7 @@ Users.put('/public/password/reset/:token', async (req, res) => {
     if (tokenExpiration < new Date())
       return res
         .status(500)
-        .json({ title: 'token.expired', msg: 'token.expired' });
+        .json({ title: 'token.expired', msg: 'token.expiredPwd' });
 
     await db.sequelize.transaction(async (t: any) => {
       let user = pwdReset.User;
@@ -153,20 +232,6 @@ Users.put('/public/password/reset/:token', async (req, res) => {
     });
 
     res.json({ title: 'pwdReset.success', msg: 'pwdReset.success' });
-  } catch (error) {
-    /* istanbul ignore next */
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
-
-Users.put('/public/verify/:token', async (req, res) => {
-  try {
-    let user = db.User.findOne({ where: { email: req.body.email } });
-    if (user.emailVerifiedAt !== null)
-      return res
-        .status(500)
-        .json({ title: 'user.alreadyVerified', msg: 'user.alreadyVerified' });
-    res.json({ token: req.params.token });
   } catch (error) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });

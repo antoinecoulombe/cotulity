@@ -368,7 +368,8 @@
         "notFound": "Photo introuvable"
       },
       "image": {
-        "notFound": "Image introuvable"
+        "notFound": "Image introuvable",
+        "notVerified": "Votre courriel n'est pas vérifié"
       },
       "user": {
         "deleted": "Compte supprimé",
@@ -413,7 +414,8 @@
       "token": {
         "notFound": "Le jeton spéficié est introuvable.",
         "invalid": "Ce jeton est invalide.",
-        "expired": "Ce jeton est expiré. Vous pouvez en créer un autre en cliquant sur 'Mot de passe oublié' sur la page de connexion."
+        "expired": "Ce jeton est expiré.",
+        "expiredPwd": "Ce jeton est expiré. Vous pouvez en créer un autre en cliquant sur 'Mot de passe oublié' sur la page de connexion."
       },
       "pwdReset": {
         "success": "Votre mot de passe à été mis à jour. Vous pouvez maintenant utiliser ce-dernier pour accéder à votre compte."

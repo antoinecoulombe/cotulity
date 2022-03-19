@@ -35,8 +35,15 @@ Auth.get('/', async (req: any, res: any) => {
             title: 'request.denied',
             msg: 'request.unauthorized',
           });
-        } else
-          return res.json({ title: 'request.success', msg: 'request.success' });
+        }
+
+        if (!user.emailVerifiedAt)
+          return res.status(501).json({
+            title: 'user.notVerified',
+            msg: 'user.mustVerifyNoEmail',
+          });
+
+        return res.json({ title: 'request.success', msg: 'request.success' });
       }
     )(req, res);
   } catch (e) {

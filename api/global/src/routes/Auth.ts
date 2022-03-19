@@ -4,7 +4,10 @@ require('dotenv').config({
 });
 
 import express from 'express';
-import { sendEmail } from '../../../shared/src/routes/Email';
+import {
+  email as emailInfo,
+  sendEmail,
+} from '../../../shared/src/routes/Email';
 import * as Global from '../../../shared/src/routes/Global';
 
 const Router = express.Router();
@@ -90,7 +93,7 @@ Router.post('/login', async (req, res) => {
           );
 
           const mailRes = await sendEmail({
-            from: email.sender,
+            from: emailInfo.sender,
             to: req.body.email,
             subject: `Verify Your Cotulity Account`,
             html: emailHtml,
