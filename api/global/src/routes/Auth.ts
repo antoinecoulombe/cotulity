@@ -4,12 +4,15 @@ require('dotenv').config({
 });
 
 import express from 'express';
+import { sendEmail } from '../../../shared/src/routes/Email';
+import * as Global from '../../../shared/src/routes/Global';
 
 const Router = express.Router();
 
 const db = require('../../../shared/db/models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 
 // ########################################################
 // ##################### Middlewares ######################
@@ -45,12 +48,65 @@ Router.post('/login', async (req, res) => {
         });
       }
 
+      // If passwords match
       if (bcrypt.compareSync(password, user.password)) {
         let payload = { id: user.id };
 
         let token = jwt.sign(payload, process.env.JWT_SECRET, {
           expiresIn: '24h',
         });
+
+        // If user is not verified
+        if (!user.emailVerifiedAt) {
+          var yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+
+          // Get number of verification emails sent in the last day
+          let count = await db.VerificationEmail.count({
+            where: {
+              userId: user.id,
+              [Op.and]: [
+                { createdAt: { [Op.gte]: yesterday } },
+                { createdAt: { [Op.lte]: new Date() } },
+              ],
+            },
+          });
+
+          if (count >= 5)
+            return res.status(501).json({
+              title: 'user.notVerified',
+              msg: 'user.mustVerifyNoEmail',
+            });
+
+          const token = Global.createToken(4);
+          let verifEmail = await db.VerificationEmail.create({
+            userId: user.id,
+            token: token,
+          });
+
+          const emailHtml = Global.format(
+            await Global.readHtml(__dirname + '/_html/verifyEmail.html'),
+            [token]
+          );
+
+          const mailRes = await sendEmail({
+            from: email.sender,
+            to: req.body.email,
+            subject: `Verify Your Cotulity Account`,
+            html: emailHtml,
+          });
+
+          if (!mailRes.success) {
+            await verifEmail.destroy({ force: true });
+            return res
+              .status(500)
+              .json({ title: 'email.didNotSend', msg: 'email.didNotSend' });
+          }
+
+          return res
+            .status(501)
+            .json({ title: 'user.notVerified', msg: 'user.mustVerify' });
+        }
 
         res.json({
           title: 'login.success',

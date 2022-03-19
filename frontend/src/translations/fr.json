@@ -306,6 +306,10 @@
           "error": "Courriel invalide"
         }
       },
+      "email": {
+        "sent": "Courriel envoyé",
+        "didNotSend": "Erreur lors de l'envoi du courriel"
+      },
       "login": {
         "success": "Connexion réussie",
         "error": "Échec de la connexion"
@@ -465,6 +469,10 @@
           }
         }
       },
+      "email": {
+        "sent": "Le courriel devrait apparaitre d'ici quelques minutes dans votre boite courriel.",
+        "didNotSend": "Le courriel n'a pas pu être envoyé. Veuillez réessayer."
+      },
       "homes": {
         "memberExcluded": "{0} a été exclu de {1}.",
         "memberQuit": "{0} a quitté {1}.",
@@ -502,7 +510,9 @@
         "imageNotFound": "Vous n'avez pas de photo de profil.",
         "loggedOut": "Vous avez été déconnecté.",
         "deleted": "Votre compte, ainsi que toutes vos données, a été supprimé.",
-        "notAssociatedToEmail": "Aucun utilisateur n'est associé à ce courriel."
+        "notAssociatedToEmail": "Aucun utilisateur n'est associé à ce courriel.",
+        "mustVerify": "Vous devez vérifier votre compte pour utiliser Cotulity. Un courriel de vérification a été envoyé à votre adresse courriel.",
+        "mustVerifyNoEmail": "Vous devez vérifier votre compte pour utiliser Cotulity."
       },
       "picture": {
         "unsupportedExtension": "L'extension de l'image n'est pas supportée. Les extensions supportées sont les suivantes: jpg, jpeg, png et gif.",

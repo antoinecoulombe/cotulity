@@ -306,6 +306,10 @@
           "error": "Invalid Email"
         }
       },
+      "email": {
+        "sent": "Email Sent",
+        "didNotSend": "Couldn't send email"
+      },
       "login": {
         "success": "Connection successfull",
         "error": "Login failed"
@@ -466,6 +470,10 @@
           }
         }
       },
+      "email": {
+        "sent": "The email could take a few minute to show up in your mailbox.",
+        "didNotSend": "The email couldn't be sent. Please try again."
+      },
       "homes": {
         "memberExcluded": "{0} was excluded from {1}.",
         "memberQuit": "{0} has left {1}.",
@@ -503,7 +511,9 @@
         "imageNotFound": "You have no profile picture.",
         "loggedOut": "You have been logged out.",
         "deleted": "Your account and data has been deleted.",
-        "notAssociatedToEmail": "No user is associated to that email address."
+        "notAssociatedToEmail": "No user is associated to that email address.",
+        "mustVerify": "You must verify your account to use Cotulity. A new verification email has been sent to your email.",
+        "mustVerifyNoEmail": "You must verify your account to use Cotulity."
       },
       "picture": {
         "unsupportedExtension": "The image's extension is unsupported. Supported extensions are: jpg, jpeg, png and gif.",

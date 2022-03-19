@@ -116,8 +116,14 @@ Users.put('/current/picture', async (req: any, res: any) => {
   }
 });
 
+// Update user password associated to token
 Users.put('/public/password/reset/:token', async (req, res) => {
   try {
+    if (req.body.password !== req.body.cpassword)
+      return res
+        .status(500)
+        .json({ title: 'request.error', msg: 'request.error' });
+
     let pwdReset = await db.PasswordReset.findOne({
       where: { token: req.params.token },
       include: [{ model: db.User, attributes: ['id', 'password'] }],
@@ -143,8 +149,7 @@ Users.put('/public/password/reset/:token', async (req, res) => {
       const password = bcrypt.hashSync(req.body.password, salt);
       user.password = password;
       await user.save({ transaction: t });
-
-      await pwdReset.destroy({ force: true });
+      await pwdReset.destroy({ force: true }, { transaction: t });
     });
 
     res.json({ title: 'pwdReset.success', msg: 'pwdReset.success' });
@@ -234,7 +239,7 @@ Users.post('/public/password/reset', async (req, res) => {
         .json({ title: 'user.notFound', msg: 'user.notAssociatedToEmail' });
 
     const token = Global.createToken(4);
-    const invite = await db.sequelize.transaction(async (t: any) => {
+    const pwdReset = await db.sequelize.transaction(async (t: any) => {
       await db.PasswordReset.destroy(
         {
           where: { userId: user.id },
@@ -265,11 +270,13 @@ Users.post('/public/password/reset', async (req, res) => {
     });
 
     if (!mailRes.success) {
-      await invite.destroy({ force: true });
-      return res.status(500).json({ ...mailRes, token: null });
+      await pwdReset.destroy({ force: true });
+      return res
+        .status(500)
+        .json({ title: 'email.didNotSend', msg: 'email.didNotSend' });
     }
 
-    res.json({ ...mailRes, token: token });
+    res.json({ title: 'email.sent', msg: 'email.sent' });
   } catch (error) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });

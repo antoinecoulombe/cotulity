@@ -270,6 +270,8 @@ const createTaskOccurences = async (
 
   let userTasks: { userId: number; taskOccurenceId: number }[] = [];
   taskOccurences.forEach((t) => {
+    t.completedOn = null;
+    t.deletedAt = null;
     t.Users.forEach((u: any) =>
       userTasks.push({ userId: u.id, taskOccurenceId: t.id })
     );
@@ -319,7 +321,7 @@ Tasks.get('/users', async (req: any, res: any) => {
           where: {
             [Op.and]: [
               { dueDateTime: { [Op.gte]: new Date() } },
-              { dueDateTime: { [Op.gte]: inTwoWeeks } },
+              { dueDateTime: { [Op.lte]: inTwoWeeks } },
             ],
           },
           include: [

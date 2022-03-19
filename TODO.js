@@ -36,8 +36,7 @@
 // TODO: Develop Calendar app                                               -> 50h
 // TODO: Send verification email                                            ->  8h
 //  -> not needed if invited since link is only available to sent email
-// TODO: Password reset links                                               -> 10h
-// TODO: Host and convert website to HTTPS                                  -> 24h
+// DONE: Password reset links                                               -> 10h
 //  -> Vercel production environnement?
 //  -> Add "export HTTPS=true &&" at the beginning of start script in "frontend/package.json"
 
@@ -71,6 +70,7 @@
 // TODO: Fix scrollbar height in .list
 //   -> So that popups don't disappear
 // TODO: Scrollbar on dropdown
+// TODO: Host and convert website to HTTPS                                  -> 24h
 
 // #endregion
 
