@@ -60,7 +60,7 @@ Router.post('/login', async (req, res) => {
         });
 
         // If user is not verified
-        if (!user.emailVerifiedAt) {
+        if (!user.emailVerifiedAt && process.env.NODE_ENV !== 'test') {
           var yesterday = new Date();
           yesterday.setDate(yesterday.getDate() - 1);
 

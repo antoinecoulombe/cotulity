@@ -12,11 +12,11 @@
     "migrate:undo": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",
     "migrate:reset": "npm run migrate:undo && npm run migrate && npm run seed",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=30000 --detectOpenHandles",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=30000",
     "pretest": "  cross-env NODE_ENV=test npm run migrate:reset",
-    "test:one": " cross-env NODE_ENV=test npm run migrate:reset && jest $TEST --testTimeout=30000 --detectOpenHandles",
-    "test:noci": "cross-env NODE_ENV=test npm run migrate:reset && jest --testPathIgnorePatterns='.*(_noci_).*' --testTimeout=30000 --detectOpenHandles",
-    "coverage": " cross-env NODE_ENV=test npm run migrate:reset && jest --testTimeout=30000 --collectCoverage --detectOpenHandles"
+    "test:one": " cross-env NODE_ENV=test npm run migrate:reset && jest $TEST --testTimeout=30000",
+    "test:noci": "cross-env NODE_ENV=test npm run migrate:reset && jest --testPathIgnorePatterns='.*(_noci_).*' --testTimeout=30000",
+    "coverage": " cross-env NODE_ENV=test npm run migrate:reset && jest --testTimeout=30000 --collectCoverage"
   },
   "author": "coulombe.antoine@hotmail.com",
   "license": "ISC",

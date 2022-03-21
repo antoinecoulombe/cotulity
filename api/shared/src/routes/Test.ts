@@ -33,12 +33,15 @@ export const getTestUser = async (
 
 export const registerAndLogin = async (
   caller: string,
-  request: any
+  request: any,
+  skipEmailVerification?: boolean
 ): Promise<{ token: string; id: number }> => {
   try {
     let testUser = await getTestUser(caller);
     await request.post('/users/register').send(testUser);
-    await setEmailVerifiedAt(testUser.email);
+    if (skipEmailVerification !== true)
+      await setEmailVerifiedAt(testUser.email);
+
     let res = (
       await request.post('/auth/login').send(await getTestUser(caller, true))
     ).body;

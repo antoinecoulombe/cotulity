@@ -38,7 +38,7 @@ Auth.get('/', async (req: any, res: any) => {
         }
 
         if (!user.emailVerifiedAt)
-          return res.status(501).json({
+          return res.status(401).json({
             title: 'user.notVerified',
             msg: 'user.mustVerifyNoEmail',
           });

@@ -4,17 +4,12 @@ require('dotenv').config({ path: __dirname + '/./../../../shared/.env' });
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/Test';
+import { getTestUser, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest('http://127.0.0.1:4000');
-
-const sendMailMock = jest.fn();
-jest.mock('nodemailer');
-
-const nodemailer = require('nodemailer');
-nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+const reqGlobal = supertest('http://127.0.0.1:3000');
+const reqHomes = supertest('http://127.0.0.1:3002');
 
 describe('homes', () => {
   const CALLER = 'homes';
@@ -36,25 +31,12 @@ describe('homes', () => {
   };
 
   beforeAll(async () => {
-    // Create first user
-    await request.post('/users/register').send(await getTestUser(CALLER));
-    let res = (
-      await request.post('/auth/login').send(await getTestUser(CALLER, true))
-    ).body;
-    USER.token = res.token;
-    USER.id = res.userId;
-
-    // Create second user
-    await request.post('/users/register').send(await getTestUser('sender'));
-    let res2 = (
-      await request.post('/auth/login').send(await getTestUser('sender', true))
-    ).body;
-    USER2.token = res2.token;
-    USER2.id = res2.userId;
+    USER = await registerAndLogin(CALLER, reqGlobal);
+    USER2 = await registerAndLogin('sender', reqGlobal);
   });
 
   it('should create a home [USER]', async () => {
-    const res = await request
+    const res = await reqHomes
       .post(`/homes/home1`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -69,7 +51,7 @@ describe('homes', () => {
   });
 
   it('should get an empty array of homes [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/homes`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -80,7 +62,7 @@ describe('homes', () => {
   });
 
   it('should create another home [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .post(`/homes/home2`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -95,7 +77,7 @@ describe('homes', () => {
   });
 
   it('should ask to join a home [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/${homes[0]}/join`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -107,7 +89,7 @@ describe('homes', () => {
   });
 
   it('should fail a join request due to already sent request [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/${homes[0]}/join`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -119,7 +101,7 @@ describe('homes', () => {
   });
 
   it('should get one accepted home [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/homes/accepted`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -131,7 +113,7 @@ describe('homes', () => {
   });
 
   it('should get two homes [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/homes`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -143,7 +125,7 @@ describe('homes', () => {
   });
 
   it('should deny join request [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/home/${homes[0]}/requests/${USER2.id}/reject`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -155,7 +137,7 @@ describe('homes', () => {
   });
 
   it('should fail a join request due to already refused request [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/${homes[0]}/join`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -167,7 +149,7 @@ describe('homes', () => {
   });
 
   it('should get one accepted home [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/homes/accepted`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -179,7 +161,7 @@ describe('homes', () => {
   });
 
   it('should get one home [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/homes`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -203,7 +185,7 @@ describe('homes', () => {
       }
     );
 
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/${homes[0]}/join`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -215,7 +197,7 @@ describe('homes', () => {
   });
 
   it('should accept join request [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/home/${homes[0]}/requests/${USER2.id}/accept`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -227,7 +209,7 @@ describe('homes', () => {
   });
 
   it('should fail to accept join request due to user not in home [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/home/${homes[0]}/requests/999999/accept`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -240,7 +222,7 @@ describe('homes', () => {
 
   it('should fail to handle request due to invalid request action [USER1]', async () => {
     // url.../refuse is not a valid option
-    const res = await request
+    const res = await reqHomes
       .put(`/home/${homes[0]}/requests/${USER2.id}/refuse`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -252,7 +234,7 @@ describe('homes', () => {
   });
 
   it('should get two accepted homes [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/homes/accepted`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -264,7 +246,7 @@ describe('homes', () => {
   });
 
   it('should fail a join request due to user in home [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/${homes[0]}/join`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -276,7 +258,7 @@ describe('homes', () => {
   });
 
   it('should fail a join request due to invalid home [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/123456/join`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -288,7 +270,7 @@ describe('homes', () => {
   });
 
   it('should deny user removal due to him not being the owner [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/members/${USER2.id}/remove`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -300,7 +282,7 @@ describe('homes', () => {
   });
 
   it('should deny user removal due to owner wanting to delete himself [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/members/${USER.id}/remove`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -312,7 +294,7 @@ describe('homes', () => {
   });
 
   it('should deny user removal due to user not found [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/members/99999/remove`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -324,7 +306,7 @@ describe('homes', () => {
   });
 
   it('should fail to invite a user due to the invited user already being in home [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
@@ -340,7 +322,7 @@ describe('homes', () => {
   });
 
   it('should remove a user [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/members/${USER2.id}/remove`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -352,11 +334,7 @@ describe('homes', () => {
   });
 
   it('should invite a user and mock email [USER1]', async () => {
-    sendMailMock.mockReturnValue(Promise.resolve());
-    sendMailMock.mockClear();
-    nodemailer.createTransport.mockClear();
-
-    const res = await request
+    const res = await reqHomes
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
@@ -375,7 +353,7 @@ describe('homes', () => {
   });
 
   it('should fail to decline an invitation due to invalid token [USER2]', async () => {
-    const res = await request.get(
+    const res = await reqHomes.get(
       `/homes/public/invitations/${inviteToken}123/decline`
     );
 
@@ -383,7 +361,7 @@ describe('homes', () => {
   });
 
   it('should decline an invitation [USER2]', async () => {
-    const res = await request.get(
+    const res = await reqHomes.get(
       `/homes/public/invitations/${inviteToken}/decline`
     );
 
@@ -391,7 +369,7 @@ describe('homes', () => {
   });
 
   it('should fail to accept an invitation due to invalid token [USER2]', async () => {
-    const inviteRes = await request
+    const inviteRes = await reqHomes
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
@@ -400,7 +378,7 @@ describe('homes', () => {
       });
     inviteToken = inviteRes.body.token;
 
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/invitations/${inviteToken}123/accept`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -422,7 +400,7 @@ describe('homes', () => {
       accepted: true,
     });
 
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/invitations/${inviteToken}/accept`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -434,7 +412,7 @@ describe('homes', () => {
   });
 
   it('should quit a home [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/quit`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -446,7 +424,7 @@ describe('homes', () => {
   });
 
   it('should fail to quit a home due to owner requesting [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/quit`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -459,7 +437,7 @@ describe('homes', () => {
 
   it('should accept an invitation on user already in home but not accepted [USER2]', async () => {
     // Get another token while not in home
-    const inviteRes = await request
+    const inviteRes = await reqHomes
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
@@ -469,12 +447,12 @@ describe('homes', () => {
     inviteToken = inviteRes.body.token;
 
     // Ask to join home
-    await request
+    await reqHomes
       .put(`/homes/${homes[0]}/join`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
     // Accept invitation to join home
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/invitations/${inviteToken}/accept`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -493,7 +471,7 @@ describe('homes', () => {
     await db.UserHome.destroy({ where: { userId: USER2.id, homeId: homeId } });
 
     // Get another token while soft deleted from home
-    const inviteRes = await request
+    const inviteRes = await reqHomes
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
@@ -503,7 +481,7 @@ describe('homes', () => {
     inviteToken = inviteRes.body.token;
 
     // Accept invitation to join home
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/invitations/${inviteToken}/accept`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -525,7 +503,7 @@ describe('homes', () => {
     });
 
     // Get another token while hard deleted from home
-    const inviteRes = await request
+    const inviteRes = await reqHomes
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
@@ -535,7 +513,7 @@ describe('homes', () => {
     inviteToken = inviteRes.body.token;
 
     // Accept invitation to join home
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/invitations/${inviteToken}/accept`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -548,12 +526,12 @@ describe('homes', () => {
 
   it('should fail to accept an invitation due to passed expiration date [USER2]', async () => {
     // Quit home
-    await request
+    await reqHomes
       .delete(`/home/${homes[0]}/quit`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
     // Get another token
-    const inviteRes = await request
+    const inviteRes = await reqHomes
       .post(`/home/${homes[0]}/invitations`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({
@@ -572,7 +550,7 @@ describe('homes', () => {
     );
 
     // Accept invitation to join home
-    const res = await request
+    const res = await reqHomes
       .put(`/homes/invitations/${inviteToken}/accept`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -585,12 +563,12 @@ describe('homes', () => {
 
   it('should cancel a request [USER2]', async () => {
     // Ask to join home
-    await request
+    await reqHomes
       .put(`/homes/${homes[0]}/join`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
     // Cancel request to join home
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/requests/cancel`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -613,7 +591,7 @@ describe('homes', () => {
     });
 
     // Cancel request to join home
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/requests/cancel`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -625,7 +603,7 @@ describe('homes', () => {
   });
 
   it('should fail to get home information due to requester not being owner [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/home/${homes[0]}`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -637,7 +615,7 @@ describe('homes', () => {
   });
 
   it('should get home information [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/home/${homes[0]}`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -673,7 +651,7 @@ describe('homes', () => {
   });
 
   it('should get home users [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .get(`/home/${homes[0]}/users`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -688,7 +666,6 @@ describe('homes', () => {
           firstname: expect.toBeString(),
           lastname: expect.toBeString(),
           Image: expect.toBeOneOf([expect.toBeString(), null, undefined]),
-          Tasks: expect.toBeArrayOfSize(0),
           UserHome: {
             nickname: expect.toBeOneOf([expect.toBeString(), null, undefined]),
             accepted: expect.toBeBoolean(),
@@ -704,7 +681,7 @@ describe('homes', () => {
   });
 
   it('should rename home as participant [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/home/${homes[0]}/rename`)
       .set('Authorization', `Bearer ${USER2.token}`)
       .send({ nickname: 'newtest-nickname' });
@@ -717,7 +694,7 @@ describe('homes', () => {
   });
 
   it('should fail to rename home as owner due to missing nickname [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/home/${homes[0]}/rename`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({ nickname: '' });
@@ -730,7 +707,7 @@ describe('homes', () => {
   });
 
   it('should rename home as owner [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .put(`/home/${homes[0]}/rename`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({ nickname: 'newtest-name' });
@@ -743,7 +720,7 @@ describe('homes', () => {
   });
 
   it('should fail to delete home due to request not being the owner [USER2]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/delete`)
       .set('Authorization', `Bearer ${USER2.token}`);
 
@@ -755,7 +732,7 @@ describe('homes', () => {
   });
 
   it('should delete home [USER1]', async () => {
-    const res = await request
+    const res = await reqHomes
       .delete(`/home/${homes[0]}/delete`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -767,11 +744,11 @@ describe('homes', () => {
   });
 
   afterAll(async () => {
-    await request
+    await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
 
-    await request
+    await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER2.token}`);
   });

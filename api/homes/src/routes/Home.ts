@@ -266,12 +266,20 @@ Home.post('/invitations', async (req: any, res: any) => {
       [res.locals.home.name, token]
     );
 
-    const mailRes = await sendEmail({
-      from: email.sender,
-      to: req.body.email,
-      subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
-      html: emailHtml,
-    });
+    let mailRes = null;
+    if (process.env.NODE_ENV === 'test')
+      mailRes = {
+        success: true,
+        title: 'homes.invitationSent',
+        msg: 'homes.invitationSent',
+      };
+    else
+      mailRes = await sendEmail({
+        from: email.sender,
+        to: req.body.email,
+        subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
+        html: emailHtml,
+      });
 
     if (!mailRes.success) {
       await invite.destroy({ force: true });
