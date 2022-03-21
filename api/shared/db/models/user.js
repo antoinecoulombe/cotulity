@@ -32,14 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       });
       User.hasMany(models.Transfer, {
-        foreignKey: 'fromId',
+        foreignKey: 'fromUserId',
         sourceId: 'id',
         as: 'TransferSent',
         onDelete: 'cascade',
         hooks: true,
       });
       User.hasMany(models.Transfer, {
-        foreignKey: 'toId',
+        foreignKey: 'toUserId',
         sourceId: 'id',
         as: 'TransferReceived',
         onDelete: 'cascade',

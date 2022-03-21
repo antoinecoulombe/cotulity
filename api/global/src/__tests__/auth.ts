@@ -3,18 +3,22 @@ const faker = require('faker');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { TEST_USER, getTestUser } from '../../../shared/src/routes/Test';
+import {
+  TEST_USER,
+  getTestUser,
+  setEmailVerifiedAt,
+} from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest('http://127.0.0.1:4000');
+const reqGlobal = supertest('http://127.0.0.1:3000');
 
 describe('authentication', () => {
   const CALLER = 'auth';
   var TOKEN = '';
 
   it('should register the user', async () => {
-    const res = await request
+    const res = await reqGlobal
       .post('/users/register')
       .send(await getTestUser(CALLER));
 
@@ -23,10 +27,12 @@ describe('authentication', () => {
       title: 'register.success',
       msg: 'register.success',
     });
+
+    await setEmailVerifiedAt((await getTestUser(CALLER)).email);
   });
 
   it('should authenticate user and receive an authentication token', async () => {
-    const res = await request
+    const res = await reqGlobal
       .post('/auth/login')
       .send(await getTestUser(CALLER, true));
 
@@ -43,7 +49,7 @@ describe('authentication', () => {
   });
 
   it('should reject login due to user not found', async () => {
-    const res = await request
+    const res = await reqGlobal
       .post('/auth/login')
       .send({ email: 'coulombe.antoine@hotmail.com', password: '123123' });
 
@@ -55,7 +61,7 @@ describe('authentication', () => {
   });
 
   it('should fail to register due to missing field', async () => {
-    const res = await request.post('/users/register').send({
+    const res = await reqGlobal.post('/users/register').send({
       email: 'coulombe.antoine@hotmail.com',
       password: '123123',
       lastname: 'doe',
@@ -70,7 +76,7 @@ describe('authentication', () => {
   });
 
   it('should fail to register due to existing email', async () => {
-    const res = await request
+    const res = await reqGlobal
       .post('/users/register')
       .send(await getTestUser(CALLER));
 
@@ -83,7 +89,7 @@ describe('authentication', () => {
   });
 
   it('should reject login due to missing field', async () => {
-    const res = await request
+    const res = await reqGlobal
       .post('/auth/login')
       .send({ email: TEST_USER.email(CALLER) });
 
@@ -95,7 +101,7 @@ describe('authentication', () => {
   });
 
   it('should reject login due to wrong password', async () => {
-    const res = await request
+    const res = await reqGlobal
       .post('/auth/login')
       .send({ email: TEST_USER.email(CALLER), password: '123124' });
 
@@ -106,19 +112,8 @@ describe('authentication', () => {
     });
   });
 
-  it('should deny access due to invalid token', async () => {
-    const res = await request
-      .delete('/users/delete')
-      .set('Authorization', `Bearer ${TOKEN.substring(0, 132)}xxxxx`);
-
-    expect(res.statusCode).toEqual(401);
-    expect(res.text).toEqual(
-      '{"title":"request.denied","msg":"request.unauthorized"}'
-    );
-  });
-
   it('should delete the logged in user', async () => {
-    const res = await request
+    const res = await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${TOKEN}`);
 

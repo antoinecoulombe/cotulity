@@ -32,19 +32,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Expense.init(
     {
-      storeName: {
-        type: DataTypes.STRING,
-        allowNull: {
-          args: false,
-          msg: 'form.error.storeName.missing',
-        },
-        validate: {
-          notEmpty: {
-            args: true,
-            msg: 'form.error.storeName.missing',
-          },
-        },
-      },
       date: DataTypes.DATE,
       totalAmount: {
         type: DataTypes.DECIMAL(19, 4),

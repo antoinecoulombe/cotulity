@@ -38,9 +38,9 @@ app.use('/tasks/:refnumber', validateHome, Tasks);
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   /* istanbul ignore next */
-  res.status(500).json({
-    title: 'request.error',
-    msg: 'request.error',
+  res.status(err.statusCode || 500).json({
+    title: err.title || 'request.error',
+    msg: err.msg || 'request.error',
   });
 });
 

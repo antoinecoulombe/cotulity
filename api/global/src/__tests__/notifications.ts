@@ -4,11 +4,11 @@ import 'jest-extended';
 import 'jest-extended/all';
 import * as Global from '../../../shared/src/routes/Global';
 import * as Translate from '../../../shared/src/routes/Translate';
-import { getTestUser } from '../../../shared/src/routes/Test';
+import { registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest('http://127.0.0.1:4000');
+const reqGlobal = supertest('http://127.0.0.1:3000');
 
 describe('notifications', () => {
   const CALLER = 'notifications';
@@ -23,16 +23,11 @@ describe('notifications', () => {
   ];
 
   beforeAll(async () => {
-    await request.post('/users/register').send(await getTestUser(CALLER));
-    let res = (
-      await request.post('/auth/login').send(await getTestUser(CALLER, true))
-    ).body;
-    USER.token = res.token;
-    USER.id = res.userId;
+    USER = await registerAndLogin(CALLER, reqGlobal);
   });
 
   it('should retreive an empty notifications array', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/notifications`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -47,7 +42,7 @@ describe('notifications', () => {
       description: Translate.getJSON('msg.test', ['success']),
     });
 
-    const res = await request
+    const res = await reqGlobal
       .get(`/notifications`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -63,7 +58,7 @@ describe('notifications', () => {
   });
 
   it('should delete the notification', async () => {
-    const res = await request
+    const res = await reqGlobal
       .delete(`/notifications/delete/${notifications[0].id}`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -75,7 +70,7 @@ describe('notifications', () => {
   });
 
   it('should fail to delete a notification due to invalid id', async () => {
-    const res = await request
+    const res = await reqGlobal
       .delete(`/notifications/delete/999999`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -87,7 +82,7 @@ describe('notifications', () => {
   });
 
   afterAll(async () => {
-    await request
+    await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
   });

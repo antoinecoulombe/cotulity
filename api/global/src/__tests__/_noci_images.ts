@@ -3,34 +3,28 @@ var path = require('path');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/Test';
+import { getTestUser, registerAndLogin } from '../../../shared/src/routes/Test';
 import * as Image from '../../../shared/src/routes/Image';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest('http://127.0.0.1:4000');
+const reqGlobal = supertest('http://127.0.0.1:3000');
 
 describe('noci-images', () => {
   const CALLER = 'images';
-  var TOKEN = '';
+  var USER = { token: '', id: 0 };
   var URL = '';
 
   beforeAll(async () => {
-    // Register a new user
-    await request.post('/users/register').send(await getTestUser(CALLER));
-
-    // Get session token
-    TOKEN = (
-      await request.post('/auth/login').send(await getTestUser(CALLER, true))
-    ).body.token;
+    USER = await registerAndLogin(CALLER, reqGlobal);
   });
 
   // #region User Picture
 
   it('should fail to retrieve the user image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get('/users/current/picture')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(404);
     expect(res.body).toEqual({
@@ -40,9 +34,9 @@ describe('noci-images', () => {
   });
 
   it('should fail to retrieve the user image url', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get('/users/current/picture/url')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(404);
     expect(res.body).toEqual({
@@ -52,10 +46,10 @@ describe('noci-images', () => {
   });
 
   it('should upload a user image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .put('/users/current/picture')
       .attach('file', path.join(__dirname, 'assets', 'test_logo.png'))
-      .set('Authorization', `Bearer ${TOKEN}`)
+      .set('Authorization', `Bearer ${USER.token}`)
       .set('Content-Type', 'multipart/form-data');
 
     expect(res.statusCode).toEqual(200);
@@ -66,10 +60,10 @@ describe('noci-images', () => {
   });
 
   it('should upload a new user image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .put('/users/current/picture')
       .attach('file', path.join(__dirname, 'assets', 'test_logo_red.png'))
-      .set('Authorization', `Bearer ${TOKEN}`)
+      .set('Authorization', `Bearer ${USER.token}`)
       .set('Content-Type', 'multipart/form-data');
 
     expect(res.statusCode).toEqual(200);
@@ -80,17 +74,17 @@ describe('noci-images', () => {
   });
 
   it('should retrieve the user image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get('/users/current/picture')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(200);
   });
 
   it('should delete the user image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .delete('/users/current/picture')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
@@ -100,9 +94,9 @@ describe('noci-images', () => {
   });
 
   it('should fail to delete the user image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .delete('/users/current/picture')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(404);
     expect(res.body).toEqual({
@@ -112,10 +106,10 @@ describe('noci-images', () => {
   });
 
   it('should upload another user image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .put('/users/current/picture')
       .attach('file', path.join(__dirname, 'assets', 'test_logo.png'))
-      .set('Authorization', `Bearer ${TOKEN}`)
+      .set('Authorization', `Bearer ${USER.token}`)
       .set('Content-Type', 'multipart/form-data');
 
     expect(res.statusCode).toEqual(200);
@@ -126,10 +120,10 @@ describe('noci-images', () => {
   });
 
   it('should fail image upload due to unsupported extension', async () => {
-    const res = await request
+    const res = await reqGlobal
       .put('/users/current/picture')
       .attach('file', path.join(__dirname, 'assets', 'test_pdf.pdf'))
-      .set('Authorization', `Bearer ${TOKEN}`)
+      .set('Authorization', `Bearer ${USER.token}`)
       .set('Content-Type', 'multipart/form-data');
 
     expect(res.statusCode).toEqual(500);
@@ -141,9 +135,9 @@ describe('noci-images', () => {
   });
 
   it('should retrieve the user image url', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get('/users/current/picture/url')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({
@@ -156,9 +150,9 @@ describe('noci-images', () => {
   // #endregion
 
   it('should fail to retreive an image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/images/123456789`)
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(404);
     expect(res.body).toEqual({
@@ -168,15 +162,15 @@ describe('noci-images', () => {
   });
 
   it('should retreive an image', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/images/${URL}`)
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
 
     expect(res.statusCode).toEqual(200);
   });
 
   it('should retreive an image without auth', async () => {
-    const res = await request.get(`/images/public/${URL}`);
+    const res = await reqGlobal.get(`/images/public/${URL}`);
     expect(res.statusCode).toEqual(200);
   });
 
@@ -190,8 +184,8 @@ describe('noci-images', () => {
   });
 
   afterAll(async () => {
-    await request
+    await reqGlobal
       .delete('/users/delete')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
   });
 });

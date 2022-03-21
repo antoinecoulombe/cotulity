@@ -2,11 +2,13 @@ const app = require('../app.ts');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/Test';
+import { getTestUser, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest('http://127.0.0.1:4000');
+const reqGlobal = supertest('http://127.0.0.1:3000');
+const reqGroceries = supertest('http://127.0.0.1:3001');
+const reqHomes = supertest('http://127.0.0.1:3002');
 
 describe('groceries', () => {
   const CALLER = 'groceries';
@@ -15,22 +17,17 @@ describe('groceries', () => {
   var groceries: number[] = [];
 
   beforeAll(async () => {
-    await request.post('/users/register').send(await getTestUser(CALLER));
-    let res = (
-      await request.post('/auth/login').send(await getTestUser(CALLER, true))
-    ).body;
-    USER.token = res.token;
-    USER.id = res.userId;
+    USER = await registerAndLogin(CALLER, reqGlobal);
 
     homeRef = (
-      await request
+      await reqHomes
         .post(`/homes/groceriesTest`)
         .set('Authorization', `Bearer ${USER.token}`)
     ).body.refNumber;
   });
 
   it('should get an empty grocery list', async () => {
-    const res = await request
+    const res = await reqGroceries
       .get(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -43,7 +40,7 @@ describe('groceries', () => {
   });
 
   it('should fail to add an article to the grocery list due to invalid description', async () => {
-    const res = await request
+    const res = await reqGroceries
       .post(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({ description: '' });
@@ -56,7 +53,7 @@ describe('groceries', () => {
   });
 
   it('should add three articles to the grocery list', async () => {
-    const res = await request
+    const res = await reqGroceries
       .post(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({ description: 'pogos' });
@@ -72,13 +69,13 @@ describe('groceries', () => {
     });
     groceries.push(res.body.article.id);
 
-    const res2 = await request
+    const res2 = await reqGroceries
       .post(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({ description: 'salsa' });
     groceries.push(res2.body.article.id);
 
-    const res3 = await request
+    const res3 = await reqGroceries
       .post(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({ description: 'tacos' });
@@ -86,7 +83,7 @@ describe('groceries', () => {
   });
 
   it('should get 3 articles from the grocery list', async () => {
-    const res = await request
+    const res = await reqGroceries
       .get(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -105,7 +102,7 @@ describe('groceries', () => {
   });
 
   it('should fail to delete an article due to invalid id', async () => {
-    const res = await request
+    const res = await reqGroceries
       .delete(`/groceries/${homeRef}/9999999`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -117,7 +114,7 @@ describe('groceries', () => {
   });
 
   it('should delete an article', async () => {
-    const res = await request
+    const res = await reqGroceries
       .delete(`/groceries/${homeRef}/${groceries[0]}`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -131,7 +128,7 @@ describe('groceries', () => {
   });
 
   it('should fail to soft delete an article due to invalid action', async () => {
-    const res = await request
+    const res = await reqGroceries
       .put(`/groceries/${homeRef}/${groceries[0]}/notanaction`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -143,7 +140,7 @@ describe('groceries', () => {
   });
 
   it('should fail to soft delete an article due to invalid id', async () => {
-    const res = await request
+    const res = await reqGroceries
       .put(`/groceries/${homeRef}/999999/delete`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -155,7 +152,7 @@ describe('groceries', () => {
   });
 
   it('should soft delete an article', async () => {
-    const res = await request
+    const res = await reqGroceries
       .put(`/groceries/${homeRef}/${groceries[0]}/delete`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -172,7 +169,7 @@ describe('groceries', () => {
   });
 
   it('should soft delete the same article (no change should be made)', async () => {
-    const res = await request
+    const res = await reqGroceries
       .put(`/groceries/${homeRef}/${groceries[0]}/delete`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -189,7 +186,7 @@ describe('groceries', () => {
   });
 
   it('should restore an article', async () => {
-    const res = await request
+    const res = await reqGroceries
       .put(`/groceries/${homeRef}/${groceries[0]}/restore`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -206,7 +203,7 @@ describe('groceries', () => {
   });
 
   it('should restore the same article (no change should be made)', async () => {
-    const res = await request
+    const res = await reqGroceries
       .put(`/groceries/${homeRef}/${groceries[0]}/restore`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -223,7 +220,7 @@ describe('groceries', () => {
   });
 
   afterAll(async () => {
-    await request
+    await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
   });

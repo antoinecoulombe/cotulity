@@ -17,12 +17,12 @@ const db = require('../../../shared/db/models');
 // ########################################################
 
 // Validates application.
-Apps.get('/:appname/', validateApp, (req, res) => {
+Apps.get('/:appname', validateApp, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 
 // Validates application and home.
-Apps.get('/:appname/:refnumber/', validateApp, validateHome, (req, res) => {
+Apps.get('/:appname/:refnumber', validateApp, validateHome, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 

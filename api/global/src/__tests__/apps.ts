@@ -3,11 +3,12 @@ const db = require('../../../shared/db/models');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/Test';
+import { getTestUser, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest('http://127.0.0.1:4000');
+const reqGlobal = supertest('http://127.0.0.1:3000');
+const reqHomes = supertest('http://127.0.0.1:3002');
 
 describe('apps', () => {
   const CALLER = 'apps';
@@ -16,13 +17,7 @@ describe('apps', () => {
   var homeRef: string;
 
   beforeAll(async () => {
-    await request.post('/users/register').send(await getTestUser(CALLER));
-    let res = (
-      await request.post('/auth/login').send(await getTestUser(CALLER, true))
-    ).body;
-    USER.token = res.token;
-    USER.id = res.userId;
-
+    USER = await registerAndLogin(CALLER, reqGlobal);
     await db.App.create({
       priority: 99999,
       name: 'test',
@@ -30,14 +25,14 @@ describe('apps', () => {
     });
 
     homeRef = (
-      await request
+      await reqHomes
         .post(`/homes/appsTest`)
         .set('Authorization', `Bearer ${USER.token}`)
     ).body.refNumber;
   });
 
   it('should get all online apps', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/apps`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -57,7 +52,7 @@ describe('apps', () => {
   });
 
   it('should authorize an application access', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/apps/${apps[0].name}`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -66,7 +61,7 @@ describe('apps', () => {
   });
 
   it('should authorize an application access requiring a specific home', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/apps/${apps[0].name}/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -75,7 +70,7 @@ describe('apps', () => {
   });
 
   it('should deny an application access due to invalid name', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/apps/abcdefg`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -87,7 +82,7 @@ describe('apps', () => {
   });
 
   it('should deny an application access due to it being offline', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/apps/test`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -99,7 +94,7 @@ describe('apps', () => {
   });
 
   it('should deny an application access due to invalid home reference number', async () => {
-    const res = await request
+    const res = await reqGlobal
       .get(`/apps/${apps[0].name}/123456`)
       .set('Authorization', `Bearer ${USER.token}`);
 
@@ -111,7 +106,7 @@ describe('apps', () => {
   });
 
   afterAll(async () => {
-    await request
+    await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
   });
