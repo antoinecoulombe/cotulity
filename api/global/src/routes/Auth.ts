@@ -60,7 +60,7 @@ Router.post('/login', async (req, res) => {
         });
 
         // If user is not verified
-        if (!user.emailVerifiedAt && process.env.NODE_ENV !== 'test') {
+        if (!user.emailVerifiedAt) {
           var yesterday = new Date();
           yesterday.setDate(yesterday.getDate() - 1);
 
@@ -81,15 +81,15 @@ Router.post('/login', async (req, res) => {
               msg: 'user.mustVerifyNoEmail',
             });
 
-          const token = Global.createToken(4);
+          const emailToken = Global.createToken(4);
           let verifEmail = await db.VerificationEmail.create({
             userId: user.id,
-            token: token,
+            token: emailToken,
           });
 
           const emailHtml = Global.format(
             await Global.readHtml(__dirname + '/_html/verifyEmail.html'),
-            [token]
+            [emailToken]
           );
 
           const mailRes = await sendEmail({

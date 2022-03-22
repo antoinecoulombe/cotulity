@@ -2,21 +2,18 @@ const app = require('../app.ts');
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { getTestUser } from '../../../shared/src/routes/Test';
+import { registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const request = supertest('http://127.0.0.1:4000');
+const reqGlobal = supertest('http://127.0.0.1:3000');
 
 describe('users', () => {
   const CALLER = 'users';
-  var TOKEN = '';
+  var USER = { token: '', id: 0 };
 
   beforeAll(async () => {
-    await request.post('/users/register').send(await getTestUser(CALLER));
-    TOKEN = (
-      await request.post('/auth/login').send(await getTestUser(CALLER, true))
-    ).body.token;
+    USER = await registerAndLogin(CALLER, reqGlobal);
   });
 
   // TODO: delete when adding another test
@@ -25,8 +22,8 @@ describe('users', () => {
   });
 
   afterAll(async () => {
-    await request
+    await reqGlobal
       .delete('/users/delete')
-      .set('Authorization', `Bearer ${TOKEN}`);
+      .set('Authorization', `Bearer ${USER.token}`);
   });
 });

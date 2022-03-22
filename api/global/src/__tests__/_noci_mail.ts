@@ -25,7 +25,8 @@ describe('noci-mail', () => {
           user: 'cotulity.invitations@outlook.com',
           pass: '123456',
         },
-      }
+      },
+      true
     );
 
     expect(res).toEqual({
