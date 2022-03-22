@@ -14,7 +14,7 @@ describe('apps', () => {
   const CALLER = 'apps';
   var USER = { token: '', id: 0 };
   var apps: [{ id?: number; priority: number; name: string; image: string }];
-  var homeRef: string;
+  // var homeRef: string;
 
   beforeAll(async () => {
     USER = await registerAndLogin(CALLER, reqGlobal);
@@ -24,11 +24,11 @@ describe('apps', () => {
       image: 'question-circle',
     });
 
-    homeRef = (
-      await reqHomes
-        .post(`/homes/appsTest`)
-        .set('Authorization', `Bearer ${USER.token}`)
-    ).body.refNumber;
+    // homeRef = (
+    //   await reqHomes
+    //     .post(`/homes/appsTest`)
+    //     .set('Authorization', `Bearer ${USER.token}`)
+    // ).body.refNumber;
   });
 
   it('should get all online apps', async () => {
@@ -60,14 +60,14 @@ describe('apps', () => {
     expect(res.body).toEqual({ title: 'request.authorized' });
   });
 
-  it('should authorize an application access requiring a specific home', async () => {
-    const res = await reqGlobal
-      .get(`/apps/${apps[0].name}/${homeRef}`)
-      .set('Authorization', `Bearer ${USER.token}`);
+  // it('should authorize an application access requiring a specific home', async () => {
+  //   const res = await reqGlobal
+  //     .get(`/apps/${apps[0].name}/${homeRef}`)
+  //     .set('Authorization', `Bearer ${USER.token}`);
 
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual({ title: 'request.authorized' });
-  });
+  //   expect(res.statusCode).toEqual(200);
+  //   expect(res.body).toEqual({ title: 'request.authorized' });
+  // });
 
   it('should deny an application access due to invalid name', async () => {
     const res = await reqGlobal

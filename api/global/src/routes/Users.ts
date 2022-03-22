@@ -263,8 +263,6 @@ Users.post('/register', async (req, res) => {
     });
 
     if (user) {
-      // TODO: Send verification email
-
       return res.json({
         title: 'register.success',
         msg: 'register.success',

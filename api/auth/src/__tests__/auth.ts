@@ -46,7 +46,12 @@ describe('passport auth', () => {
   });
 
   it('should deny user login due to user id not found in token', async () => {
+    await db.VerificationEmail.destroy({
+      where: { userId: USER2.id },
+      force: true,
+    });
     await db.User.destroy({ where: { id: USER2.id }, force: true });
+
     const res = await reqAuth
       .get(`/auth`)
       .set('Authorization', `Bearer ${USER2.token}`);
