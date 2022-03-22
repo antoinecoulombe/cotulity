@@ -1,0 +1,17 @@
+a00a43894ad7be11a8648079f5d59d0c53d599b7 1025 docker-compose.yml
+3fca1faa2eea7c64e5b6fed7e817849f2c1d4cc7 1009 docker-compose.yml
+726c37d7ca6e9f05a8cbacdb756281c0c6dc05ba 1577 docker-compose.yml
+0a4e8dff35e89146c61def6154974cdf258ce234 3050 docker-compose.yml
+4d4bc29f8da49cfa4e86baa4d8231bd3a0ab7b70 1450 docker-compose.yml
+8833b78f1c5b603f7776108ba4dd143b58635a4e 1029 docker-compose.yml
+be59094a0e061a0e4279642a08662f193c1a34b7 3221 docker-compose.yml
+c3a3cf8410ae576e950e747ae7a1368c3e9a5ec5 1830 docker-compose.yml
+067c79de4e81203f22dfb150a1e65d7d90df109a 757 docker-compose.yml
+882821e4faeee209311ed548369d319dd60a0179 1436 docker-compose.yml
+40d4f21ebd28c40e1081b2f6c6016cf6c1505040 3193 docker-compose.yml
+b4e7fa270a34f1786d5d8cb30e5490315b88f16f 3047 docker-compose.yml
+389c7dadd2ec646c8851199fb74e25424266d061 1379 docker-compose.yml
+dc3b1722ee1ae34a4c9d2eb5371a184de58eccde 3971 docker-compose.yml
+0cae93f2a53bcce77248b11b3752863eb79b7f50 1416 docker-compose.yml
+f579f93f843513ba2e1e4dd6c7e314cc4943466c 1661 docker-compose.yml
+716dd8a5a0e10d9a3128b362b114d59b5ab1664d 1416 docker-compose.yml

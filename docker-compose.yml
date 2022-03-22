@@ -1,0 +1,241 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: nginx/
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: always
+    ports:
+      - 4000:4000
+    expose:
+      - 4000
+    networks:
+      - backend
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_groceries
+      - api_homes
+      - api_tasks
+
+  db:
+    image: mariadb:10.2
+    container_name: db
+    restart: always
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - backend
+    env_file:
+      - ./api/shared/.env
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db
+      PMA_PORT: 3306
+
+  api_auth:
+    build:
+      context: api/
+      dockerfile: auth/Dockerfile
+    container_name: api-auth
+    restart: always
+    ports:
+      - 2999:2999
+    expose:
+      - 2999
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      PORT: 2999
+      DB_HOST: db
+
+  api_global:
+    build:
+      context: api/
+      dockerfile: global/Dockerfile
+    container_name: api-global
+    restart: always
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+    environment:
+      PORT: 3000
+      DB_HOST: db
+
+  api_groceries:
+    build:
+      context: api/
+      dockerfile: groceries/Dockerfile
+    container_name: api-groceries
+    restart: always
+    ports:
+      - 3001:3001
+    expose:
+      - 3001
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_homes
+    environment:
+      PORT: 3001
+      DB_HOST: db
+
+  api_homes:
+    build:
+      context: api/
+      dockerfile: homes/Dockerfile
+    container_name: api-homes
+    restart: always
+    ports:
+      - 3002:3002
+    expose:
+      - 3002
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+    environment:
+      PORT: 3002
+      DB_HOST: db
+
+  api_tasks:
+    build:
+      context: api/
+      dockerfile: tasks/Dockerfile
+    container_name: api-tasks
+    restart: always
+    ports:
+      - 3003:3003
+    expose:
+      - 3003
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_homes
+    environment:
+      PORT: 3003
+      DB_HOST: db
+
+  api_accounts:
+    build:
+      context: api/
+      dockerfile: accounts/Dockerfile
+    container_name: api-accounts
+    restart: always
+    ports:
+      - 3004:3004
+    expose:
+      - 3004
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_homes
+    environment:
+      PORT: 3004
+      DB_HOST: db
+
+  api_calendar:
+    build:
+      context: api/
+      dockerfile: calendar/Dockerfile
+    container_name: api-calendar
+    restart: always
+    ports:
+      - 3005:3005
+    expose:
+      - 3005
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_homes
+    environment:
+      PORT: 3005
+      DB_HOST: db
+
+  frontend:
+    build:
+      context: frontend/
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - 5101:5101
+    expose:
+      - 5101
+    volumes:
+      - ./frontend/src:/app/src
+    networks:
+      - backend
+    # links:
+    #   - api_global
+    # depends_on:
+    #   - db
+    #   - api_auth
+    #   - api_global
+    environment:
+      PORT: 5101
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
