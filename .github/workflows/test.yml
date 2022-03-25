@@ -18,7 +18,7 @@ jobs:
       #   run: docker login -u $DOCKER_USER -p $DOCKER_PWD
 
       - name: Build docker images
-        run: docker-compose -f docker-compose-test.yml build
+        run: docker-compose -f docker-compose-test-git.yml build
         env:
           DB_TEST: ${{ secrets.DB_TEST }}
           DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
@@ -34,7 +34,7 @@ jobs:
           PORT_CALENDAR: '3005'
 
       - name: Run tests
-        run: docker-compose -f docker-compose-test.yml up --abort-on-container-exit
+        run: docker-compose -f docker-compose-test-git.yml up --abort-on-container-exit
         env:
           DB_TEST: ${{ secrets.DB_TEST }}
           DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
