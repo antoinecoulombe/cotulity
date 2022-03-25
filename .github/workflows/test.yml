@@ -1,11 +1,11 @@
 name: Node.js CI
 
-jobs:
-  on:
-    pull_request:
-    push:
-      branches: [main, dev-antoine]
+on:
+  pull_request:
+  push:
+    branches: [main, dev-antoine]
 
+jobs:
   test:
     name: Run test suite
     runs-on: ubuntu-latest
