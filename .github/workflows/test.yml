@@ -10,7 +10,7 @@ jobs:
     name: Run test suite
     runs-on: ubuntu-latest
     env:
-      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: true
+      MARIADB_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
       DB_TEST: ${{ secrets.DB_TEST }}
       DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
       DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
