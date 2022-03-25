@@ -19,16 +19,11 @@ services:
       - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
     networks:
       - backend
-    healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '--silent']
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    env:
-      MYSQL_USER: $${{ secrets.DB_TEST_USER }}
-      MYSQL_PASSWORD: $${{ secrets.DB_TEST_PWD }}
-      MYSQL_DATABASE: $${{ secrets.DB_TEST }}
-      MYSQL_ROOT_PASSWORD: $${{ secrets.DB_ROOT_PWD }}
+    # healthcheck:
+    #   test: ['CMD', 'mysqladmin', 'ping', '--silent']
+    #   interval: 5s
+    #   timeout: 3s
+    #   retries: 10
 
   api_auth:
     build:
@@ -241,7 +236,7 @@ services:
       - db_test
     depends_on:
       db_test:
-        condition: service_healthy
+        condition: service_started
       api_auth:
         condition: service_started
       api_global:
