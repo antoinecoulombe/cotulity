@@ -33,8 +33,8 @@ jobs:
       - name: Build microservices and test containers
         run: docker-compose -f docker-compose-test-git.yml build
 
-      - name: List docker containers
-        run: docker container ls
-
       - name: Start microservices, then run tests
         run: docker-compose -f docker-compose-test-git.yml up --abort-on-container-exit
+
+      - name: List docker containers
+        run: docker container ls
