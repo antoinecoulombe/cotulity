@@ -299,7 +299,9 @@
         "missingField": "Champ manquant"
       },
       "apps": {
-        "error": "Erreur lors du chargement des applications"
+        "error": "Erreur lors du chargement des applications",
+        "online": "Application en ligne",
+        "ping": "Application 'pinged'"
       },
       "form": {
         "email": {
@@ -402,7 +404,9 @@
         "timeout": "La requête a dépassée le délai d'attente maximal. Veuillez réessayer."
       },
       "apps": {
-        "offline": "Cette application est actuellement hors-ligne."
+        "offline": "Cette application est actuellement hors-ligne.",
+        "online": "Cette application est en ligne.",
+        "pingable": "Cette application peut recevoir des requêtes."
       },
       "login": {
         "success": "Vous êtes maintenant connecté.",

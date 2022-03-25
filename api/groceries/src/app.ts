@@ -35,6 +35,11 @@ app.use(async (req: any, res: any, next) => {
 import Groceries from './routes/Groceries';
 app.use('/groceries/:refnumber', validateHome, Groceries);
 
+// Ping Handler
+app.get('/', (req: any, res: any) =>
+  res.json({ title: 'apps.ping', msg: 'apps.pingable' })
+);
+
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   /* istanbul ignore next */

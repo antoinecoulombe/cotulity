@@ -2,6 +2,8 @@ FROM node:lts-slim
 
 LABEL maintainer="Antoine Coulombe"
 
+RUN apt-get update && apt-get install curl -y
+
 WORKDIR /app
 
 COPY global/package*.json .
@@ -21,4 +23,5 @@ COPY shared/ .
 
 WORKDIR /app
 
-CMD ["npm", "start"]
+ENTRYPOINT ["npm"]
+CMD ["start"]

@@ -1,17 +1,18 @@
 FROM node:lts-slim
 
 LABEL maintainer="Antoine Coulombe"
+ENV CI=true
 
 RUN apt-get update && apt-get install curl -y
 
 WORKDIR /app
 
-COPY calendar/package*.json .
+COPY test/package*.json .
 
 RUN npm install
 RUN npm install -g sequelize-cli
 
-COPY calendar/ .
+COPY test/ .
 
 WORKDIR /shared
 

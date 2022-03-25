@@ -48,6 +48,11 @@ app.use('/apps', Apps);
 import Settings from './routes/Settings';
 app.use('/settings', Settings);
 
+// Ping Handler
+app.get('/', (req: any, res: any) =>
+  res.json({ title: 'apps.ping', msg: 'apps.pingable' })
+);
+
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   /* istanbul ignore next */

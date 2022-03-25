@@ -26,6 +26,11 @@ app.use(
 import Auth from './routes/Auth';
 app.use('/auth', Auth);
 
+// Ping Handler
+app.get('/', (req: any, res: any) =>
+  res.json({ title: 'apps.ping', msg: 'apps.pingable' })
+);
+
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   /* istanbul ignore next */

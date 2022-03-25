@@ -38,6 +38,11 @@ app.use('/home/:refnumber', validateHome, Home);
 import Homes from './routes/Homes';
 app.use('/homes', Homes);
 
+// Ping Handler
+app.get('/', (req: any, res: any) =>
+  res.json({ title: 'apps.ping', msg: 'apps.pingable' })
+);
+
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
   /* istanbul ignore next */

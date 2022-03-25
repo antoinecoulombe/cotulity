@@ -299,7 +299,9 @@
         "missingField": "Missing field"
       },
       "apps": {
-        "error": "Applications could not be loaded"
+        "error": "Applications could not be loaded",
+        "online": "Application Online",
+        "ping": "Application pinged"
       },
       "form": {
         "email": {
@@ -403,7 +405,9 @@
         "timeout": "The request timed out. Please try again."
       },
       "apps": {
-        "offline": "This app is currently offline."
+        "offline": "This app is currently offline.",
+        "online": "This app is online.",
+        "pingable": "This app is ready to receive requests."
       },
       "login": {
         "success": "You are now logged in.",

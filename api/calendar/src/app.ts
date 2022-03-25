@@ -26,14 +26,19 @@ app.use(
 // Middlewares
 
 app.use(async (req: any, res: any, next) => {
-  if (await AddUserToRequest(req)) next();
-  else next({ title: 'request.error', msg: 'request.error' });
+  await AddUserToRequest(req);
+  next();
 });
 
 // Routes
 
 import Calendar from './routes/Calendar';
 app.use('/calendar/:refnumber', validateHome, Calendar);
+
+// Ping Handler
+app.get('/', (req: any, res: any) =>
+  res.json({ title: 'apps.ping', msg: 'apps.pingable' })
+);
 
 // Generic Error Handler
 app.use((err: any, req: any, res: any, next: any) => {
