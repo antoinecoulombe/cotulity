@@ -10,10 +10,7 @@ jobs:
     name: Run test suite
     runs-on: ubuntu-latest
     env:
-      MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
-      MYSQL_USER: ${{ secrets.DB_TEST_USER }}
-      MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
-      MYSQL_DATABASE: ${{ secrets.DB_TEST }}
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: true
       DB_TEST: ${{ secrets.DB_TEST }}
       DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
       DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
