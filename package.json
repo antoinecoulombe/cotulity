@@ -1,4 +1,17 @@
 {
+  "name": "cotulity",
+  "version": "1.0.0",
+  "description": "Cotulity Application",
+  "author": "coulombe.antoine@hotmail.com",
+  "license": "ISC",
+  "scripts": {
+    "build": "docker-compose -f docker-compose.yml -p cotulity build",
+    "build:test": "docker-compose -f docker-compose-test.yml -p cotulity_test build",
+    "up": "docker-compose -f docker-compose.yml -p cotulity up",
+    "up:test": "docker-compose -f docker-compose-test.yml -p cotulity_test up --abort-on-container-exit",
+    "recreate": "docker-compose up -d --force-recreate --no-deps --build $SERVICE-test",
+    "prune": "docker system prune -a"
+  },
   "dependencies": {
     "gulp": "^4.0.2",
     "gulp-less": "^5.0.0"

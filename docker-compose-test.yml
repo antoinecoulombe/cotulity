@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  db:
+  db_test:
     image: mariadb:10.2
-    container_name: db
+    container_name: db-test
     restart: always
     ports:
       - 3306:3306
@@ -32,7 +32,7 @@ services:
       context: api/
       dockerfile: auth/Dockerfile
     command: 'run start:test'
-    container_name: api-auth
+    container_name: api-auth-test
     restart: always
     ports:
       - 2999:2999
@@ -41,12 +41,12 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
     environment:
       PORT: 2999
-      DB_HOST: db
+      DB_HOST: db_test
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:2999']
       interval: 5s
@@ -58,7 +58,7 @@ services:
       context: api/
       dockerfile: global/Dockerfile
     command: 'run start:test'
-    container_name: api-global
+    container_name: api-global-test
     restart: always
     ports:
       - 3000:3000
@@ -67,13 +67,13 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
       - api_auth
     environment:
       PORT: 3000
-      DB_HOST: db
+      DB_HOST: db_test
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:3000']
       interval: 5s
@@ -85,7 +85,7 @@ services:
       context: api/
       dockerfile: groceries/Dockerfile
     command: 'run start:test'
-    container_name: api-groceries
+    container_name: api-groceries-test
     restart: always
     ports:
       - 3001:3001
@@ -94,15 +94,15 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
       - api_auth
       - api_global
       - api_homes
     environment:
       PORT: 3001
-      DB_HOST: db
+      DB_HOST: db_test
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:3001']
       interval: 5s
@@ -114,7 +114,7 @@ services:
       context: api/
       dockerfile: homes/Dockerfile
     command: 'run start:test'
-    container_name: api-homes
+    container_name: api-homes-test
     restart: always
     ports:
       - 3002:3002
@@ -123,14 +123,14 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
       - api_auth
       - api_global
     environment:
       PORT: 3002
-      DB_HOST: db
+      DB_HOST: db_test
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:3002']
       interval: 5s
@@ -142,7 +142,7 @@ services:
       context: api/
       dockerfile: tasks/Dockerfile
     command: 'run start:test'
-    container_name: api-tasks
+    container_name: api-tasks-test
     restart: always
     ports:
       - 3003:3003
@@ -151,15 +151,15 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
       - api_auth
       - api_global
       - api_homes
     environment:
       PORT: 3003
-      DB_HOST: db
+      DB_HOST: db_test
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:3003']
       interval: 5s
@@ -171,7 +171,7 @@ services:
       context: api/
       dockerfile: accounts/Dockerfile
     command: 'run start:test'
-    container_name: api-accounts
+    container_name: api-accounts-test
     restart: always
     ports:
       - 3004:3004
@@ -180,15 +180,15 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
       - api_auth
       - api_global
       - api_homes
     environment:
       PORT: 3004
-      DB_HOST: db
+      DB_HOST: db_test
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:3004']
       interval: 5s
@@ -200,7 +200,7 @@ services:
       context: api/
       dockerfile: calendar/Dockerfile
     command: 'run start:test'
-    container_name: api-calendar
+    container_name: api-calendar-test
     restart: always
     ports:
       - 3005:3005
@@ -209,15 +209,15 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      - db
+      - db_test
       - api_auth
       - api_global
       - api_homes
     environment:
       PORT: 3005
-      DB_HOST: db
+      DB_HOST: db_test
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:3005']
       interval: 5s
@@ -236,9 +236,9 @@ services:
     networks:
       - backend
     links:
-      - db
+      - db_test
     depends_on:
-      db:
+      db_test:
         condition: service_healthy
       api_auth:
         condition: service_healthy
@@ -256,10 +256,17 @@ services:
         condition: service_healthy
     environment:
       PORT: 3099
-      DB_HOST: db
+      DB_HOST: db_test
+      IP_AUTH: api_auth
+      IP_GLOBAL: api_global
+      IP_GROCERIES: api_groceries
+      IP_HOMES: api_homes
+      IP_TASKS: api_tasks
+      IP_ACCOUNTS: api_accounts
+      IP_CALENDAR: api_calendar
 
 volumes:
-  db:
+  db_test:
     driver: local
 
 networks:

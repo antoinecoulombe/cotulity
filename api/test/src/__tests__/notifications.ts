@@ -3,11 +3,11 @@ import 'jest-extended';
 import 'jest-extended/all';
 import * as Global from '../../../shared/src/routes/Global';
 import * as Translate from '../../../shared/src/routes/Translate';
-import { registerAndLogin } from '../../../shared/src/routes/Test';
+import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest('http://127.0.0.1:3000');
+const reqGlobal = supertest(getIp('global'));
 
 describe('notifications', () => {
   const CALLER = 'notifications';

@@ -5,11 +5,12 @@ import {
   TEST_USER,
   getTestUser,
   setEmailVerifiedAt,
+  getIp,
 } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest('http://127.0.0.1:3000');
+const reqGlobal = supertest(getIp('global'));
 
 describe('connection', () => {
   const CALLER = 'auth';

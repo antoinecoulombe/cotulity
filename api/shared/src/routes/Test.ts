@@ -1,3 +1,5 @@
+require('dotenv').config({ path: '../../.env' });
+
 const faker = require('faker');
 const db = require('../../db/models');
 
@@ -59,5 +61,26 @@ export const setEmailVerifiedAt = async (email: string) => {
     );
   } catch (error) {
     return false;
+  }
+};
+
+export const getIp = (service: string) => {
+  switch (service) {
+    case 'auth':
+      return process.env.IP_AUTH + ':' + process.env.PORT_AUTH;
+    case 'global':
+      return process.env.IP_GLOBAL + ':' + process.env.PORT_GLOBAL;
+    case 'groceries':
+      return process.env.IP_GROCERIES + ':' + process.env.PORT_GROCERIES;
+    case 'homes':
+      return process.env.IP_HOMES + ':' + process.env.PORT_HOMES;
+    case 'tasks':
+      return process.env.IP_TASKS + ':' + process.env.PORT_TASKS;
+    case 'accounts':
+      return process.env.IP_ACCOUNTS + ':' + process.env.PORT_ACCOUNTS;
+    case 'calendar':
+      return process.env.IP_CALENDAR + ':' + process.env.PORT_CALENDAR;
+    default:
+      return '127.0.0.1';
   }
 };

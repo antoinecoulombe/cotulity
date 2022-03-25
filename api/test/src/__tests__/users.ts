@@ -1,11 +1,11 @@
 import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
-import { registerAndLogin } from '../../../shared/src/routes/Test';
+import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest('http://127.0.0.1:3000');
+const reqGlobal = supertest(getIp('global'));
 
 describe('users', () => {
   const CALLER = 'users';
