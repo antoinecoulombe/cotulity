@@ -46,7 +46,7 @@ services:
       PORT: 2999
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:2999']
+      test: ['CMD', 'curl', '--fail', 'api_auth:2999']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -73,7 +73,7 @@ services:
       PORT: 3000
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:3000']
+      test: ['CMD', 'curl', '--fail', 'api_global:3000']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -102,7 +102,7 @@ services:
       PORT: 3001
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:3001']
+      test: ['CMD', 'curl', '--fail', 'api_groceries:3001']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -130,7 +130,7 @@ services:
       PORT: 3002
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:3002']
+      test: ['CMD', 'curl', '--fail', 'api_homes:3002']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -159,7 +159,7 @@ services:
       PORT: 3003
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:3003']
+      test: ['CMD', 'curl', '--fail', 'api_tasks:3003']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -188,7 +188,7 @@ services:
       PORT: 3004
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:3004']
+      test: ['CMD', 'curl', '--fail', 'api_accounts:3004']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -217,7 +217,7 @@ services:
       PORT: 3005
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:3005']
+      test: ['CMD', 'curl', '--fail', 'api_calendar:3005']
       interval: 5s
       timeout: 3s
       retries: 10
