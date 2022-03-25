@@ -30,16 +30,24 @@ jobs:
       - name: Build microservices and test containers
         run: docker-compose -f docker-compose-test-git.yml build
 
-      - name: Start microservices
+      - name: Start test microservice
         run: docker-compose -f docker-compose-test-git.yml up db_test
+
+      - name: Start auth microservice
         run: docker-compose -f docker-compose-test-git.yml up api_auth
+
+      - name: Start global microservice
         run: docker-compose -f docker-compose-test-git.yml up api_global
+
+      - name: Start groceries microservice
         run: docker-compose -f docker-compose-test-git.yml up api_groceries
+
+      - name: Start homes microservice
         run: docker-compose -f docker-compose-test-git.yml up api_homes
 
       - name: Sleep for 30 seconds
         run: sleep 30s
         shell: bash
-        
+
       - name: Run Tests
         run: docker-compose -f docker-compose-test-git.yml up api_test --abort-on-container-exit
