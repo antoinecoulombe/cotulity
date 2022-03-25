@@ -35,6 +35,12 @@ app.use(async (req: any, res: any, next) => {
 import Accounts from './routes/Accounts';
 app.use('/accounts/:refnumber', validateHome, Accounts);
 
+import Transfers from './routes/Transfers';
+app.use('/accounts/:refnumber/transfers', validateHome, Transfers);
+
+import Expenses from './routes/Expenses';
+app.use('/accounts/:refnumber/expenses', validateHome, Expenses);
+
 // Ping Handler
 app.get('/', (req: any, res: any) =>
   res.json({ title: 'apps.ping', msg: 'apps.pingable' })

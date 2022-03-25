@@ -1,58 +1,5 @@
 # name: Node.js CI
 
-# on:
-#   push:
-#     branches: [main, dev-antoine]
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     services:
-#       db:
-#         image: mariadb:10.2
-#         ports:
-#           - 3306:3306
-#         env:
-#           MYSQL_USER: ${{ secrets.DB_TEST_USER }}
-#           MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
-#           MYSQL_DATABASE: ${{ secrets.DB_TEST }}
-#           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
-#           DB_HOST: db
-#         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
-
-#     strategy:
-#       matrix:
-#         node-version: [14.x]
-
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2
-#       - name: Use Node.js v${{ matrix.node-version }}
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: ${{ matrix.node-version }}
-#       - name: Verify MariaDB connection
-#         env:
-#           PORT: ${{ job.services.db.ports[3306] }}
-#         run: |
-#           while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
-#             sleep 1
-#           done
-#       - name: GLOBAL - Install packages
-#         working-directory: ./api/global
-#         run: npm install
-#       - name: GLOBAL - Run tests
-#         working-directory: ./api/global
-#         run: npm run dev:test
-#         env:
-#           DB_TEST: ${{ secrets.DB_TEST }}
-#           DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
-#           DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
-#           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
-# name: Node.js CI
-
 # jobs:
 #   on:
 #     pull_request:

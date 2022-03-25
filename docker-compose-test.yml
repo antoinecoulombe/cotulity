@@ -27,23 +27,6 @@ services:
       timeout: 3s
       retries: 10
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    restart: always
-    ports:
-      - 8080:80
-    networks:
-      - backend
-    links:
-      - db
-    depends_on:
-      - db
-    environment:
-      PMA_ARBITRARY: 1
-      PMA_HOST: db
-      PMA_PORT: 3306
-
   api_auth:
     build:
       context: api/
@@ -154,92 +137,92 @@ services:
       timeout: 3s
       retries: 10
 
-  # api_tasks:
-  #   build:
-  #     context: api/
-  #     dockerfile: tasks/Dockerfile
-  #   command: 'run start:test'
-  #   container_name: api-tasks
-  #   restart: always
-  #   ports:
-  #     - 3003:3003
-  #   expose:
-  #     - 3003
-  #   networks:
-  #     - backend
-  #   links:
-  #     - db
-  #   depends_on:
-  #     - db
-  #     - api_auth
-  #     - api_global
-  #     - api_homes
-  #   environment:
-  #     PORT: 3003
-  #     DB_HOST: db
-  #   healthcheck:
-  #     test: ['CMD', 'curl', '--fail', 'http://localhost:3003']
-  #     interval: 5s
-  #     timeout: 3s
-  #     retries: 10
+  api_tasks:
+    build:
+      context: api/
+      dockerfile: tasks/Dockerfile
+    command: 'run start:test'
+    container_name: api-tasks
+    restart: always
+    ports:
+      - 3003:3003
+    expose:
+      - 3003
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_homes
+    environment:
+      PORT: 3003
+      DB_HOST: db
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', 'http://localhost:3003']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
-  # api_accounts:
-  #   build:
-  #     context: api/
-  #     dockerfile: accounts/Dockerfile
-  #   command: 'run start:test'
-  #   container_name: api-accounts
-  #   restart: always
-  #   ports:
-  #     - 3004:3004
-  #   expose:
-  #     - 3004
-  #   networks:
-  #     - backend
-  #   links:
-  #     - db
-  #   depends_on:
-  #     - db
-  #     - api_auth
-  #     - api_global
-  #     - api_homes
-  #   environment:
-  #     PORT: 3004
-  #     DB_HOST: db
-  #   healthcheck:
-  #     test: ['CMD', 'curl', '--fail', 'http://localhost:3004']
-  #     interval: 5s
-  #     timeout: 3s
-  #     retries: 10
+  api_accounts:
+    build:
+      context: api/
+      dockerfile: accounts/Dockerfile
+    command: 'run start:test'
+    container_name: api-accounts
+    restart: always
+    ports:
+      - 3004:3004
+    expose:
+      - 3004
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_homes
+    environment:
+      PORT: 3004
+      DB_HOST: db
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', 'http://localhost:3004']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
-  # api_calendar:
-  #   build:
-  #     context: api/
-  #     dockerfile: calendar/Dockerfile
-  #   command: 'run start:test'
-  #   container_name: api-calendar
-  #   restart: always
-  #   ports:
-  #     - 3005:3005
-  #   expose:
-  #     - 3005
-  #   networks:
-  #     - backend
-  #   links:
-  #     - db
-  #   depends_on:
-  #     - db
-  #     - api_auth
-  #     - api_global
-  #     - api_homes
-  #   environment:
-  #     PORT: 3005
-  #     DB_HOST: db
-  #   healthcheck:
-  #     test: ['CMD', 'curl', '--fail', 'http://localhost:3005']
-  #     interval: 5s
-  #     timeout: 3s
-  #     retries: 10
+  api_calendar:
+    build:
+      context: api/
+      dockerfile: calendar/Dockerfile
+    command: 'run start:test'
+    container_name: api-calendar
+    restart: always
+    ports:
+      - 3005:3005
+    expose:
+      - 3005
+    networks:
+      - backend
+    links:
+      - db
+    depends_on:
+      - db
+      - api_auth
+      - api_global
+      - api_homes
+    environment:
+      PORT: 3005
+      DB_HOST: db
+    healthcheck:
+      test: ['CMD', 'curl', '--fail', 'http://localhost:3005']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   api_test:
     build:
@@ -263,14 +246,14 @@ services:
         condition: service_healthy
       api_homes:
         condition: service_healthy
-      # api_tasks:
-      #   condition: service_healthy
+      api_tasks:
+        condition: service_healthy
       api_groceries:
         condition: service_healthy
-      # api_calendar:
-      #   condition: service_healthy
-      # api_accounts:
-      #   condition: service_healthy
+      api_calendar:
+        condition: service_healthy
+      api_accounts:
+        condition: service_healthy
     environment:
       PORT: 3099
       DB_HOST: db

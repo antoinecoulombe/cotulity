@@ -22,13 +22,47 @@ Accounts.use(async (req: any, res, next) => {
 // ######################### GET ##########################
 // ########################################################
 
-// Temporary placeholder get method
-Accounts.get('/', async (req: any, res: any) => {
+// Get all home users with expenses and transfers
+Accounts.get('/users', async (req: any, res: any) => {
   try {
-    return res.status(501).json({
-      title: 'request.notImplemented',
-      msg: 'request.notImplemented',
-      reached: 'accounts',
+    let users = await res.locals.home.getMembers({
+      attributes: ['id', 'firstname', 'lastname'],
+      include: [
+        { model: db.Image, attributes: ['url'] },
+        {
+          model: db.Expense,
+          attributes: ['totalAmount'],
+          include: [
+            {
+              model: db.User,
+              as: 'SplittedWith',
+              attributes: ['id'],
+              through: {
+                attributes: ['amount', 'settled'],
+              },
+            },
+          ],
+        },
+        {
+          model: db.Transfer,
+          as: 'TransferSent',
+          attributes: ['amount', 'toUserId'],
+        },
+        {
+          model: db.Transfer,
+          as: 'TransferReceived',
+          attributes: ['amount', 'fromUserId'],
+        },
+      ],
+      through: {
+        where: { accepted: true },
+      },
+    });
+
+    return res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      users: users,
     });
   } catch (error) {
     /* istanbul ignore next */
