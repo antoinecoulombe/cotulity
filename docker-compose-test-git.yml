@@ -19,11 +19,11 @@ services:
       - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
     networks:
       - backend
-    healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '--silent']
-      interval: 5s
-      timeout: 3s
-      retries: 10
+    # healthcheck:
+    #   test: ['CMD', 'mysqladmin', 'ping', '--silent']
+    #   interval: 5s
+    #   timeout: 3s
+    #   retries: 10
 
   api_auth:
     build:
@@ -46,7 +46,7 @@ services:
       PORT: 2999
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'api_auth:2999']
+      test: ['CMD', 'curl', '--fail', '127.0.0.1:2999']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -73,7 +73,7 @@ services:
       PORT: 3000
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'api_global:3000']
+      test: ['CMD', 'curl', '--fail', '127.0.0.1:3000']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -102,7 +102,7 @@ services:
       PORT: 3001
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'api_groceries:3001']
+      test: ['CMD', 'curl', '--fail', '127.0.0.1:3001']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -130,97 +130,97 @@ services:
       PORT: 3002
       DB_HOST: db_test
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'api_homes:3002']
+      test: ['CMD', 'curl', '--fail', '127.0.0.1:3002']
       interval: 5s
       timeout: 3s
       retries: 10
 
-  api_tasks:
-    build:
-      context: api/
-      dockerfile: tasks/Dockerfile
-    command: 'run start:test'
-    container_name: api-tasks-test
-    restart: always
-    ports:
-      - 3003:3003
-    expose:
-      - 3003
-    networks:
-      - backend
-    links:
-      - db_test
-    depends_on:
-      - db_test
-      - api_auth
-      - api_global
-      - api_homes
-    environment:
-      PORT: 3003
-      DB_HOST: db_test
-    healthcheck:
-      test: ['CMD', 'curl', '--fail', 'api_tasks:3003']
-      interval: 5s
-      timeout: 3s
-      retries: 10
+  # api_tasks:
+  #   build:
+  #     context: api/
+  #     dockerfile: tasks/Dockerfile
+  #   command: 'run start:test'
+  #   container_name: api-tasks-test
+  #   restart: always
+  #   ports:
+  #     - 3003:3003
+  #   expose:
+  #     - 3003
+  #   networks:
+  #     - backend
+  #   links:
+  #     - db_test
+  #   depends_on:
+  #     - db_test
+  #     - api_auth
+  #     - api_global
+  #     - api_homes
+  #   environment:
+  #     PORT: 3003
+  #     DB_HOST: db_test
+  #   healthcheck:
+  #     test: ['CMD', 'curl', '--fail', 'api_tasks:3003']
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 10
 
-  api_accounts:
-    build:
-      context: api/
-      dockerfile: accounts/Dockerfile
-    command: 'run start:test'
-    container_name: api-accounts-test
-    restart: always
-    ports:
-      - 3004:3004
-    expose:
-      - 3004
-    networks:
-      - backend
-    links:
-      - db_test
-    depends_on:
-      - db_test
-      - api_auth
-      - api_global
-      - api_homes
-    environment:
-      PORT: 3004
-      DB_HOST: db_test
-    healthcheck:
-      test: ['CMD', 'curl', '--fail', 'api_accounts:3004']
-      interval: 5s
-      timeout: 3s
-      retries: 10
+  # api_accounts:
+  #   build:
+  #     context: api/
+  #     dockerfile: accounts/Dockerfile
+  #   command: 'run start:test'
+  #   container_name: api-accounts-test
+  #   restart: always
+  #   ports:
+  #     - 3004:3004
+  #   expose:
+  #     - 3004
+  #   networks:
+  #     - backend
+  #   links:
+  #     - db_test
+  #   depends_on:
+  #     - db_test
+  #     - api_auth
+  #     - api_global
+  #     - api_homes
+  #   environment:
+  #     PORT: 3004
+  #     DB_HOST: db_test
+  #   healthcheck:
+  #     test: ['CMD', 'curl', '--fail', 'api_accounts:3004']
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 10
 
-  api_calendar:
-    build:
-      context: api/
-      dockerfile: calendar/Dockerfile
-    command: 'run start:test'
-    container_name: api-calendar-test
-    restart: always
-    ports:
-      - 3005:3005
-    expose:
-      - 3005
-    networks:
-      - backend
-    links:
-      - db_test
-    depends_on:
-      - db_test
-      - api_auth
-      - api_global
-      - api_homes
-    environment:
-      PORT: 3005
-      DB_HOST: db_test
-    healthcheck:
-      test: ['CMD', 'curl', '--fail', 'api_calendar:3005']
-      interval: 5s
-      timeout: 3s
-      retries: 10
+  # api_calendar:
+  #   build:
+  #     context: api/
+  #     dockerfile: calendar/Dockerfile
+  #   command: 'run start:test'
+  #   container_name: api-calendar-test
+  #   restart: always
+  #   ports:
+  #     - 3005:3005
+  #   expose:
+  #     - 3005
+  #   networks:
+  #     - backend
+  #   links:
+  #     - db_test
+  #   depends_on:
+  #     - db_test
+  #     - api_auth
+  #     - api_global
+  #     - api_homes
+  #   environment:
+  #     PORT: 3005
+  #     DB_HOST: db_test
+  #   healthcheck:
+  #     test: ['CMD', 'curl', '--fail', 'api_calendar:3005']
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 10
 
   api_test:
     build:
@@ -237,21 +237,21 @@ services:
       - db_test
     depends_on:
       db_test:
-        condition: service_healthy
+        condition: service_started
       api_auth:
         condition: service_healthy
       api_global:
         condition: service_healthy
       api_homes:
         condition: service_healthy
-      api_tasks:
-        condition: service_healthy
       api_groceries:
         condition: service_healthy
-      api_calendar:
-        condition: service_healthy
-      api_accounts:
-        condition: service_healthy
+      # api_tasks:
+      #   condition: service_healthy
+      # api_calendar:
+      #   condition: service_healthy
+      # api_accounts:
+      #   condition: service_healthy
     environment:
       PORT: 3099
       DB_HOST: db_test
@@ -259,9 +259,9 @@ services:
       IP_GLOBAL: api_global
       IP_GROCERIES: api_groceries
       IP_HOMES: api_homes
-      IP_TASKS: api_tasks
-      IP_ACCOUNTS: api_accounts
-      IP_CALENDAR: api_calendar
+      # IP_TASKS: api_tasks
+      # IP_ACCOUNTS: api_accounts
+      # IP_CALENDAR: api_calendar
 
 volumes:
   db_test:
