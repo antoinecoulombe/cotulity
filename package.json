@@ -10,7 +10,9 @@
     "up": "docker-compose -f docker-compose.yml -p cotulity up",
     "up:test": "docker-compose -f docker-compose-test.yml -p cotulity_test up --abort-on-container-exit",
     "recreate": "docker-compose up -d --force-recreate --no-deps --build $SERVICE-test",
-    "prune": "docker system prune -a"
+    "prune": "docker system prune -a",
+    "dev": "npm run build && npm run up",
+    "test": "npm run build:test && npm run up:test"
   },
   "dependencies": {
     "gulp": "^4.0.2",

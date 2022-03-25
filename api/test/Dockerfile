@@ -24,5 +24,4 @@ COPY shared/ .
 
 WORKDIR /app
 
-ENTRYPOINT ["npm"]
-CMD ["start"]
+CMD ["npm", "start"]

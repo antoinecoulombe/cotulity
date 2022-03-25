@@ -1,53 +1,31 @@
 name: Node.js CI
 
-jobs:
-  on:
-    pull_request:
-    push:
-      branches: [main, dev-antoine]
+on:
+  pull_request:
+  push:
+    branches: [main, dev-antoine]
 
+jobs:
   test:
     name: Run test suite
     runs-on: ubuntu-latest
     env:
-      DOCKER_USER: ${{ secrets.DOCKER_USER }}
-      DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
+      MYSQL_USER: ${{ secrets.DB_TEST_USER }}
+      MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
+      MYSQL_DATABASE: ${{ secrets.DB_TEST }}
+      DB_TEST: ${{ secrets.DB_TEST }}
+      DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
+      DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Login to DockerHub
-        run: docker login -u $DOCKER_USER -p $DOCKER_PWD
+      - name: Build microservices and test containers
+        run: docker-compose -f docker-compose-test-git.yml build
 
-      - name: Build docker images
-        run: docker-compose -f docker-compose-test.yml build
-        env:
-          DB_TEST: ${{ secrets.DB_TEST }}
-          DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
-          DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-          PORT_AUTH: '2999'
-          PORT_GLOBAL: '3000'
-          PORT_GROCERIES: '3001'
-          PORT_HOMES: '3002'
-          PORT_TASKS: '3003'
-          PORT_ACCOUNTS: '3004'
-          PORT_CALENDAR: '3005'
-
-      - name: Run tests
-        run: docker-compose -f docker-compose-test.yml up --abort-on-container-exit
-        env:
-          DB_TEST: ${{ secrets.DB_TEST }}
-          DB_TEST_PWD: ${{ secrets.DB_TEST_PWD }}
-          DB_TEST_USER: ${{ secrets.DB_TEST_USER }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-          PORT_AUTH: '2999'
-          PORT_GLOBAL: '3000'
-          PORT_GROCERIES: '3001'
-          PORT_HOMES: '3002'
-          PORT_TASKS: '3003'
-          PORT_ACCOUNTS: '3004'
-          PORT_CALENDAR: '3005'
+      - name: Start microservices, then run tests
+        run: docker-compose -f docker-compose-test-git.yml up --abort-on-container-exit
