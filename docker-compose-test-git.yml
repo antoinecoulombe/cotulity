@@ -24,6 +24,11 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    env:
+      MYSQL_USER: ${{ secrets.DB_TEST_USER }}
+      MYSQL_PASSWORD: ${{ secrets.DB_TEST_PWD }}
+      MYSQL_DATABASE: ${{ secrets.DB_TEST }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PWD }}
 
   api_auth:
     build:
