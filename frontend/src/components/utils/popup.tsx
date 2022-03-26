@@ -2,8 +2,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconToolTip from '../global/iconTooltip';
 import ReactDOMServer from 'react-dom/server';
 import Translate from './translate';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useOutsideAlerter } from './outsideClick';
+import $ from 'jquery';
 
 interface PopupProps {
   children: any;
@@ -20,6 +21,24 @@ interface PopupProps {
 const Popup = (props: PopupProps): JSX.Element => {
   const wrapperPopupRef = useRef(null);
   useOutsideAlerter(wrapperPopupRef, props.onCancel);
+
+  const handleResize = (): void => {
+    let winHeight = $(window).height();
+    if (winHeight) {
+      let popupHeight = parseInt(winHeight.toString()) - 120;
+      $('.popup').css({ maxHeight: popupHeight });
+      $('.popup > .form').css({ maxHeight: popupHeight - 60 });
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className={`popup-container ${props.className ?? ''}`}>
