@@ -19,6 +19,11 @@ services:
       - ./docker/provision/mysql/init:/docker-entrypoint-initdb.d
     networks:
       - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     # healthcheck:
     #   test: ['CMD', 'mysqladmin', 'ping', '--silent']
     #   interval: 5s
@@ -45,6 +50,11 @@ services:
     environment:
       PORT: 2999
       DB_HOST: db_test
+      DB_TEST: ${DB_TEST}
+      DB_TEST_PWD: ${DB_TEST_PWD}
+      DB_TEST_USER: ${DB_TEST_USER}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
     # healthcheck:
     #   test: ['CMD', 'curl', '--fail', '127.0.0.1:2999']
     #   interval: 5s
@@ -72,6 +82,11 @@ services:
     environment:
       PORT: 3000
       DB_HOST: db_test
+      DB_TEST: ${DB_TEST}
+      DB_TEST_PWD: ${DB_TEST_PWD}
+      DB_TEST_USER: ${DB_TEST_USER}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
     # healthcheck:
     #   test: ['CMD', 'curl', '--fail', '127.0.0.1:3000']
     #   interval: 5s
@@ -101,6 +116,10 @@ services:
     environment:
       PORT: 3001
       DB_HOST: db_test
+      DB_TEST: ${DB_TEST}
+      DB_TEST_PWD: ${DB_TEST_PWD}
+      DB_TEST_USER: ${DB_TEST_USER}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     # healthcheck:
     #   test: ['CMD', 'curl', '--fail', '127.0.0.1:3001']
     #   interval: 5s
@@ -129,6 +148,10 @@ services:
     environment:
       PORT: 3002
       DB_HOST: db_test
+      DB_TEST: ${DB_TEST}
+      DB_TEST_PWD: ${DB_TEST_PWD}
+      DB_TEST_USER: ${DB_TEST_USER}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
 
   # api_tasks:
   #   build:
@@ -258,6 +281,14 @@ services:
       IP_GLOBAL: api_global
       IP_GROCERIES: api_groceries
       IP_HOMES: api_homes
+      PORT_AUTH: '2999'
+      PORT_GLOBAL: '3000'
+      PORT_GROCERIES: '3001'
+      PORT_HOMES: '3002'
+      PORT_TASKS: '3003'
+      PORT_ACCOUNTS: '3004'
+      PORT_CALENDAR: '3005'
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
       # IP_TASKS: api_tasks
       # IP_ACCOUNTS: api_accounts
       # IP_CALENDAR: api_calendar
