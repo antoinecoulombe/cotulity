@@ -65,3 +65,5 @@ package-lock\.json
 /docker/provision/mysql/init/*
 
 bfg.jar
+
+.DS_Store
