@@ -30,128 +30,189 @@ services:
     #   timeout: 3s
     #   retries: 10
 
-  api_auth:
+  api_test:
     build:
       context: api/
-      dockerfile: auth/Dockerfile
-    command: 'run start:test'
-    container_name: api-auth-test
-    restart: always
+      dockerfile: test/Dockerfile
+    command:
+      - '/bin/sh'
+      - '-c'
+      - '/bin/sleep 30 && npm start'
+    container_name: api-test
     ports:
-      - 2999:2999
+      - 3099:3099
     expose:
-      - 2999
+      - 3099
     networks:
       - backend
     links:
       - db_test
-    depends_on:
-      - db_test
+    # depends_on:
+    #   db_test:
+    #     condition: service_started
+    #   api_auth:
+    #     condition: service_started
+    #   api_global:
+    #     condition: service_started
+    #   api_homes:
+    #     condition: service_started
+    #   api_groceries:
+    #     condition: service_started
+    # api_tasks:
+    #   condition: service_healthy
+    # api_calendar:
+    #   condition: service_healthy
+    # api_accounts:
+    #   condition: service_healthy
     environment:
-      PORT: 2999
+      PORT: 3099
       DB_HOST: db_test
-      DB_TEST: ${DB_TEST}
-      DB_TEST_PWD: ${DB_TEST_PWD}
-      DB_TEST_USER: ${DB_TEST_USER}
+      IP_AUTH: api_auth
+      IP_GLOBAL: api_global
+      IP_GROCERIES: api_groceries
+      IP_HOMES: api_homes
+      PORT_AUTH: '2999'
+      PORT_GLOBAL: '3000'
+      PORT_GROCERIES: '3001'
+      PORT_HOMES: '3002'
+      PORT_TASKS: '3003'
+      PORT_ACCOUNTS: '3004'
+      PORT_CALENDAR: '3005'
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-      JWT_SECRET: ${JWT_SECRET}
-    # healthcheck:
-    #   test: ['CMD', 'curl', '--fail', '127.0.0.1:2999']
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 10
+      # IP_TASKS: api_tasks
+      # IP_ACCOUNTS: api_accounts
+      # IP_CALENDAR: api_calendar
 
-  api_global:
-    build:
-      context: api/
-      dockerfile: global/Dockerfile
-    command: 'run start:test'
-    container_name: api-global-test
-    restart: always
-    ports:
-      - 3000:3000
-    expose:
-      - 3000
-    networks:
-      - backend
-    links:
-      - db_test
-    depends_on:
-      - db_test
-      - api_auth
-    environment:
-      PORT: 3000
-      DB_HOST: db_test
-      DB_TEST: ${DB_TEST}
-      DB_TEST_PWD: ${DB_TEST_PWD}
-      DB_TEST_USER: ${DB_TEST_USER}
-      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-      JWT_SECRET: ${JWT_SECRET}
-    # healthcheck:
-    #   test: ['CMD', 'curl', '--fail', '127.0.0.1:3000']
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 10
+volumes:
+  db_test:
+    driver: local
 
-  api_groceries:
-    build:
-      context: api/
-      dockerfile: groceries/Dockerfile
-    command: 'run start:test'
-    container_name: api-groceries-test
-    restart: always
-    ports:
-      - 3001:3001
-    expose:
-      - 3001
-    networks:
-      - backend
-    links:
-      - db_test
-    depends_on:
-      - db_test
-      - api_auth
-      - api_global
-      - api_homes
-    environment:
-      PORT: 3001
-      DB_HOST: db_test
-      DB_TEST: ${DB_TEST}
-      DB_TEST_PWD: ${DB_TEST_PWD}
-      DB_TEST_USER: ${DB_TEST_USER}
-      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-    # healthcheck:
-    #   test: ['CMD', 'curl', '--fail', '127.0.0.1:3001']
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 10
+networks:
+  backend:
+    driver: bridge
 
-  api_homes:
-    build:
-      context: api/
-      dockerfile: homes/Dockerfile
-    command: 'run start:test'
-    container_name: api-homes-test
-    restart: always
-    ports:
-      - 3002:3002
-    expose:
-      - 3002
-    networks:
-      - backend
-    links:
-      - db_test
-    depends_on:
-      - db_test
-      - api_auth
-      - api_global
-    environment:
-      PORT: 3002
-      DB_HOST: db_test
-      DB_TEST: ${DB_TEST}
-      DB_TEST_PWD: ${DB_TEST_PWD}
-      DB_TEST_USER: ${DB_TEST_USER}
-      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+  # api_auth:
+  #   build:
+  #     context: api/
+  #     dockerfile: auth/Dockerfile
+  #   command: 'run start:test'
+  #   container_name: api-auth-test
+  #   restart: always
+  #   ports:
+  #     - 2999:2999
+  #   expose:
+  #     - 2999
+  #   networks:
+  #     - backend
+  #   links:
+  #     - db_test
+  #   depends_on:
+  #     - db_test
+  #   environment:
+  #     PORT: 2999
+  #     DB_HOST: db_test
+  #     DB_TEST: ${DB_TEST}
+  #     DB_TEST_PWD: ${DB_TEST_PWD}
+  #     DB_TEST_USER: ${DB_TEST_USER}
+  #     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+  #     JWT_SECRET: ${JWT_SECRET}
+  #   # healthcheck:
+  #   #   test: ['CMD', 'curl', '--fail', '127.0.0.1:2999']
+  #   #   interval: 5s
+  #   #   timeout: 3s
+  #   #   retries: 10
+
+  # api_global:
+  #   build:
+  #     context: api/
+  #     dockerfile: global/Dockerfile
+  #   command: 'run start:test'
+  #   container_name: api-global-test
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   expose:
+  #     - 3000
+  #   networks:
+  #     - backend
+  #   links:
+  #     - db_test
+  #   depends_on:
+  #     - db_test
+  #     - api_auth
+  #   environment:
+  #     PORT: 3000
+  #     DB_HOST: db_test
+  #     DB_TEST: ${DB_TEST}
+  #     DB_TEST_PWD: ${DB_TEST_PWD}
+  #     DB_TEST_USER: ${DB_TEST_USER}
+  #     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+  #     JWT_SECRET: ${JWT_SECRET}
+  #   # healthcheck:
+  #   #   test: ['CMD', 'curl', '--fail', '127.0.0.1:3000']
+  #   #   interval: 5s
+  #   #   timeout: 3s
+  #   #   retries: 10
+
+  # api_groceries:
+  #   build:
+  #     context: api/
+  #     dockerfile: groceries/Dockerfile
+  #   command: 'run start:test'
+  #   container_name: api-groceries-test
+  #   restart: always
+  #   ports:
+  #     - 3001:3001
+  #   expose:
+  #     - 3001
+  #   networks:
+  #     - backend
+  #   links:
+  #     - db_test
+  #   depends_on:
+  #     - db_test
+  #     - api_auth
+  #     - api_global
+  #     - api_homes
+  #   environment:
+  #     PORT: 3001
+  #     DB_HOST: db_test
+  #     DB_TEST: ${DB_TEST}
+  #     DB_TEST_PWD: ${DB_TEST_PWD}
+  #     DB_TEST_USER: ${DB_TEST_USER}
+  #     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+  #   # healthcheck:
+  #   #   test: ['CMD', 'curl', '--fail', '127.0.0.1:3001']
+  #   #   interval: 5s
+  #   #   timeout: 3s
+  #   #   retries: 10
+
+  # api_homes:
+  #   build:
+  #     context: api/
+  #     dockerfile: homes/Dockerfile
+  #   command: 'run start:test'
+  #   container_name: api-homes-test
+  #   restart: always
+  #   ports:
+  #     - 3002:3002
+  #   expose:
+  #     - 3002
+  #   networks:
+  #     - backend
+  #   links:
+  #     - db_test
+  #   depends_on:
+  #     - db_test
+  #     - api_auth
+  #     - api_global
+  #   environment:
+  #     PORT: 3002
+  #     DB_HOST: db_test
+  #     DB_TEST: ${DB_TEST}
+  #     DB_TEST_PWD: ${DB_TEST_PWD}
+  #     DB_TEST_USER: ${DB_TEST_USER}
+  #     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
 
   # api_tasks:
   #   build:
@@ -239,64 +300,3 @@ services:
   #     interval: 5s
   #     timeout: 3s
   #     retries: 10
-
-  api_test:
-    build:
-      context: api/
-      dockerfile: test/Dockerfile
-    command:
-      - '/bin/sh'
-      - '-c'
-      - '/bin/sleep 30 && npm start'
-    container_name: api-test
-    ports:
-      - 3099:3099
-    expose:
-      - 3099
-    networks:
-      - backend
-    links:
-      - db_test
-    depends_on:
-      db_test:
-        condition: service_started
-      api_auth:
-        condition: service_started
-      api_global:
-        condition: service_started
-      api_homes:
-        condition: service_started
-      api_groceries:
-        condition: service_started
-      # api_tasks:
-      #   condition: service_healthy
-      # api_calendar:
-      #   condition: service_healthy
-      # api_accounts:
-      #   condition: service_healthy
-    environment:
-      PORT: 3099
-      DB_HOST: db_test
-      IP_AUTH: api_auth
-      IP_GLOBAL: api_global
-      IP_GROCERIES: api_groceries
-      IP_HOMES: api_homes
-      PORT_AUTH: '2999'
-      PORT_GLOBAL: '3000'
-      PORT_GROCERIES: '3001'
-      PORT_HOMES: '3002'
-      PORT_TASKS: '3003'
-      PORT_ACCOUNTS: '3004'
-      PORT_CALENDAR: '3005'
-      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-      # IP_TASKS: api_tasks
-      # IP_ACCOUNTS: api_accounts
-      # IP_CALENDAR: api_calendar
-
-volumes:
-  db_test:
-    driver: local
-
-networks:
-  backend:
-    driver: bridge
