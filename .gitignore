@@ -63,3 +63,5 @@ typings/
 package-lock\.json
 
 01-databases.sql
+
+bfg.jar
