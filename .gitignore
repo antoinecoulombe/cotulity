@@ -62,6 +62,6 @@ typings/
 
 package-lock\.json
 
-01-databases.sql
+/docker/provision/mysql/init/*
 
 bfg.jar
