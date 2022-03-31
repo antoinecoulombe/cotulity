@@ -61,3 +61,27 @@ export const createTokenAsync = async (
     token += Math.random().toString(36).substring(2, 15);
   return token;
 };
+
+export const InputsToDate = (dateString: string): Date | null => {
+  try {
+    // 09/08@20:42
+    let dateSplit = dateString.split('@');
+    let dayMonth: number[] = dateSplit[0].split('/').map((x) => +x);
+    let hourMinute: number[] = dateSplit[1].split(':').map((x) => +x);
+
+    let now = new Date();
+    let month = dayMonth[1] - 1;
+    return new Date(
+      month < now.getMonth() ||
+      (month == now.getMonth() && dayMonth[0] < now.getDay())
+        ? now.getFullYear() + 1
+        : now.getFullYear(),
+      month,
+      dayMonth[0],
+      hourMinute[0],
+      hourMinute[1]
+    );
+  } catch (e) {
+    return null;
+  }
+};

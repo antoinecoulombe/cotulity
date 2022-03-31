@@ -274,6 +274,31 @@
       "countZero": "DONE"
     }
   },
+  "transfers": {
+    "title": {
+      "transfers": "Transfers",
+      "subheaders": {
+        "all": "All",
+        "compound": "Compound",
+        "fromMe": "From me",
+        "toMe": "To me",
+        "byMe": "By me",
+        "splittedWith": "Splitted with me"
+      },
+      "sidebar": {
+        "expenses": { "value": "Expenses", "title": "Expenses" },
+        "transfers": { "value": "Transfers", "title": "Transfers" },
+        "debts": { "value": "Debts", "title": "Debts" },
+        "history": { "value": "History", "title": "History" },
+        "modules": {
+          "totalSpent": "Total Spent",
+          "balance": "Balance",
+          "youOwe": "You Owe",
+          "othersOwe": "Others Owe You"
+        }
+      }
+    }
+  },
   "groceries": {
     "title": { "groceries": "Grocery List" },
     "new": "Add Article",
@@ -377,6 +402,15 @@
         "notFound": "User not found",
         "notVerified": "Your email is not verified"
       },
+      "account": {
+        "loggedOut": "You have been logged out",
+        "verificationEmail": {
+          "notFound": "Verification Token not found",
+          "alreadyVerified": "Account Already Verified",
+          "expired": "Verification URL Expired",
+          "verified": "Account Verified"
+        }
+      },
       "groceries": {
         "notFound": "Grocery not found",
         "error": {
@@ -391,6 +425,9 @@
         "modified": "Task Updated",
         "notFound": "Task not found",
         "noUsers": "Task has no users"
+      },
+      "transfers": {
+        "invalidAmount": "The transfer amount is invalid."
       }
     },
     "msg": {
@@ -521,6 +558,15 @@
         "mustVerify": "You must verify your account to use Cotulity. A new verification email has been sent to your email.",
         "mustVerifyNoEmail": "You must verify your account to use Cotulity."
       },
+      "account": {
+        "verificationEmail": {
+          "loggedOut": "Email verifications log you out automatically.",
+          "notFound": "No verification email is linked to that URL.",
+          "alreadyVerified": "The account associated to that verification URL is already verified.",
+          "expired": "This verification url is expired. Try logging in again to send another verification email.",
+          "verified": "You can now log in."
+        }
+      },
       "picture": {
         "unsupportedExtension": "The image's extension is unsupported. Supported extensions are: jpg, jpeg, png and gif.",
         "notFound": "We couldn't find the image."
@@ -536,6 +582,10 @@
         "modified": "The task has been updated.",
         "notFound": "We couldn't find a task associated to that identifier.",
         "noUsers": "Please add users to the task."
+      },
+      "transfers": {
+        "userNotFound": "We couldn't find the destination user.",
+        "amountOverZero": "The minimum transfer amount is $0.01."
       }
     }
   }

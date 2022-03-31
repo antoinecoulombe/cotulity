@@ -24,6 +24,11 @@ module.exports = {
           allowNull: false,
           type: Sequelize.DECIMAL(19, 4),
         },
+        settledAmount: {
+          allowNull: false,
+          type: Sequelize.DECIMAL(19, 4),
+          defaultValue: 0,
+        },
         settled: {
           allowNull: false,
           type: Sequelize.BOOLEAN,

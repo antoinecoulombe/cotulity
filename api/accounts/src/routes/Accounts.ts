@@ -18,6 +18,14 @@ Accounts.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
+export const getUsers = async (res: any) => {
+  return await res.locals.home.getMembers({
+    attributes: ['id', 'firstname', 'lastname'],
+    include: [{ model: db.Image, attributes: ['url'] }],
+    through: { where: { accepted: true } },
+  });
+};
+
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
@@ -31,14 +39,14 @@ Accounts.get('/users', async (req: any, res: any) => {
         { model: db.Image, attributes: ['url'] },
         {
           model: db.Expense,
-          attributes: ['totalAmount'],
+          attributes: ['description', 'date', 'totalAmount'],
           include: [
             {
               model: db.User,
               as: 'SplittedWith',
               attributes: ['id'],
               through: {
-                attributes: ['amount', 'settled'],
+                attributes: ['amount', 'settledAmount', 'settled'],
               },
             },
           ],
@@ -46,12 +54,12 @@ Accounts.get('/users', async (req: any, res: any) => {
         {
           model: db.Transfer,
           as: 'TransferSent',
-          attributes: ['amount', 'toUserId'],
+          attributes: ['date', 'amount', 'toUserId', 'correction'],
         },
         {
           model: db.Transfer,
           as: 'TransferReceived',
-          attributes: ['amount', 'fromUserId'],
+          attributes: ['date', 'amount', 'fromUserId', 'correction'],
         },
       ],
       through: {

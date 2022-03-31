@@ -1,5 +1,6 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
+import { InputsToDate } from '../../../shared/src/routes/Global';
 
 const Tasks = express.Router();
 const db = require('../../../shared/db/models');
@@ -86,33 +87,6 @@ const getTasks = async (
   } catch (e) {
     /* istanbul ignore next */
     throw e;
-  }
-};
-
-const toDate = (dateString: string): Date | null => {
-  try {
-    // if (dateString.endsWith('@:'))
-    //   dateString = dateString.substring(0, dateString.indexOf('@')) + '@23:59';
-
-    // 09/08@20:42
-    let dateSplit = dateString.split('@');
-    let dayMonth: number[] = dateSplit[0].split('/').map((x) => +x);
-    let hourMinute: number[] = dateSplit[1].split(':').map((x) => +x);
-
-    let now = new Date();
-    let month = dayMonth[1] - 1;
-    return new Date(
-      month < now.getMonth() ||
-      (month == now.getMonth() && dayMonth[0] < now.getDay())
-        ? now.getFullYear() + 1
-        : now.getFullYear(),
-      month,
-      dayMonth[0],
-      hourMinute[0],
-      hourMinute[1]
-    );
-  } catch (e) {
-    return null;
   }
 };
 
@@ -390,9 +364,9 @@ Tasks.get('/completed', async (req: any, res: any) => {
 // Modifies a task and its taskOccurences.
 Tasks.put('/:id', async (req: any, res: any) => {
   try {
-    let dueDate = toDate(req.body.task.dueDateTime);
+    let dueDate = InputsToDate(req.body.task.dueDateTime);
     let untilDate = req.body.task.Task.untilDate
-      ? toDate(req.body.task.Task.untilDate)
+      ? InputsToDate(req.body.task.Task.untilDate)
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {
@@ -522,9 +496,9 @@ Tasks.put('/:id/restore', async (req: any, res: any) => {
 // Creates a new task.
 Tasks.post('/', async (req: any, res: any) => {
   try {
-    let dueDate = toDate(req.body.task.dueDateTime);
+    let dueDate = InputsToDate(req.body.task.dueDateTime);
     let untilDate = req.body.task.Task.untilDate
-      ? toDate(req.body.task.Task.untilDate)
+      ? InputsToDate(req.body.task.Task.untilDate)
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {

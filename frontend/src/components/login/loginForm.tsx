@@ -14,7 +14,8 @@ import Translate from '../utils/translate';
 import SingleInputPopup from '../forms/singleInputPopup';
 
 const LoginForm = (): JSX.Element => {
-  let { token } = useParams<{ token: string }>();
+  let { token: inviteToken } = useParams<{ token: string }>();
+  let { verifyToken } = useParams<{ verifyToken: string }>();
 
   const {
     setNotification,
@@ -87,6 +88,17 @@ const LoginForm = (): JSX.Element => {
 
   useEffect(() => {
     handleLoad();
+
+    if (verifyToken) {
+      axios
+        .put(`/users/public/verify/${verifyToken}`)
+        .then(async (res) => {
+          setSuccessNotification(res.data);
+        })
+        .catch((err) => {
+          setErrorNotification(err.response.data);
+        });
+    }
   }, []);
 
   const handleLoad = (): void => {
@@ -133,9 +145,9 @@ const LoginForm = (): JSX.Element => {
         );
         localStorage.setItem('userId', res.data.userId);
 
-        if (token) {
+        if (inviteToken) {
           return axios
-            .put(`/homes/invitations/${token}/accept`)
+            .put(`/homes/invitations/${inviteToken}/accept`)
             .then(async (res) => {
               history.push('/apps');
 

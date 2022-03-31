@@ -1,5 +1,6 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
+import { getUsers } from './Accounts';
 
 const Expenses = express.Router();
 const db = require('../../../shared/db/models');
@@ -18,6 +19,19 @@ Expenses.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
+const getExpenses = async (res: any) => {
+  return await res.locals.home.getExpenses({
+    attributes: ['id', 'paidByUserId', 'description', 'date', 'totalAmount'],
+    include: [
+      {
+        model: db.ExpenseSplit,
+        as: 'SplittedWith',
+        attributes: ['userId', 'amount', 'settledAmount', 'settled'],
+      },
+    ],
+  });
+};
+
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
@@ -25,10 +39,11 @@ Expenses.use(async (req: any, res, next) => {
 // Get all expenses
 Expenses.get('/', async (req: any, res: any) => {
   try {
-    return res.status(501).json({
-      title: 'request.notImplemented',
-      msg: 'request.notImplemented',
-      reached: 'accounts',
+    return res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      expenses: await getExpenses(res),
+      users: await getUsers(res),
     });
   } catch (error) {
     /* istanbul ignore next */
@@ -39,20 +54,6 @@ Expenses.get('/', async (req: any, res: any) => {
 // ########################################################
 // ######################### PUT ##########################
 // ########################################################
-
-// Modify an expense
-Expenses.put('/:id', async (req: any, res: any) => {
-  try {
-    return res.status(501).json({
-      title: 'request.notImplemented',
-      msg: 'request.notImplemented',
-      reached: 'accounts',
-    });
-  } catch (error) {
-    /* istanbul ignore next */
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
 
 // ########################################################
 // ######################### POST #########################
@@ -76,17 +77,4 @@ Expenses.post('/', async (req: any, res: any) => {
 // ######################## DELETE ########################
 // ########################################################
 
-// Delete an expense
-Expenses.delete('/:id', async (req: any, res: any) => {
-  try {
-    return res.status(501).json({
-      title: 'request.notImplemented',
-      msg: 'request.notImplemented',
-      reached: 'accounts',
-    });
-  } catch (error) {
-    /* istanbul ignore next */
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
-  }
-});
 export default Expenses;

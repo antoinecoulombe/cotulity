@@ -274,6 +274,31 @@
       "countZero": "terminé"
     }
   },
+  "transfers": {
+    "title": {
+      "transfers": "Versements",
+      "subheaders": {
+        "all": "Tout",
+        "compound": "Simplifié",
+        "fromMe": "Envoyé",
+        "toMe": "Reçus",
+        "byMe": "Payé par moi",
+        "splittedWith": "Séparé avec moi"
+      },
+      "sidebar": {
+        "expenses": { "value": "Dépenses", "title": "Dépenses" },
+        "transfers": { "value": "Versements", "title": "Versements" },
+        "debts": { "value": "Dettes", "title": "Dettes" },
+        "history": { "value": "Historique", "title": "Historique" },
+        "modules": {
+          "totalSpent": "Total dépensé",
+          "balance": "Balance",
+          "youOwe": "Vous devez",
+          "othersOwe": "Ils vous doivent"
+        }
+      }
+    }
+  },
   "groceries": {
     "title": { "groceries": "Liste d'épicerie" },
     "new": "Ajouter un article",
@@ -377,6 +402,15 @@
         "deleted": "Compte supprimé",
         "notFound": "Utilisateur introuvable"
       },
+      "account": {
+        "loggedOut": "Vous avez été déconnecté",
+        "verificationEmail": {
+          "notFound": "Code introuvable",
+          "alreadyVerified": "Compte déjà vérifié",
+          "expired": "Code expiré",
+          "verified": "Compte vérifié"
+        }
+      },
       "groceries": {
         "notFound": "Article introuvable",
         "error": {
@@ -391,6 +425,9 @@
         "modified": "Tâche modifiée",
         "notFound": "Tâche introuvable",
         "noUsers": "La tâche n'a pas d'utilisateurs"
+      },
+      "transfers": {
+        "invalidAmount": "Le montant du versement est invalide."
       }
     },
     "msg": {
@@ -470,8 +507,8 @@
             "missing": "Veuillez entrer un nom de tâche."
           },
           "transferAmount": {
-            "missing": "Veuillez entrer un montant de transfer.",
-            "valid": "Veuillez entrer un montant de transfer valide."
+            "missing": "Veuillez entrer un montant de versement.",
+            "valid": "Veuillez entrer un montant de versement valide."
           }
         }
       },
@@ -520,6 +557,15 @@
         "mustVerify": "Vous devez vérifier votre compte pour utiliser Cotulity. Un courriel de vérification a été envoyé à votre adresse courriel.",
         "mustVerifyNoEmail": "Vous devez vérifier votre compte pour utiliser Cotulity."
       },
+      "account": {
+        "verificationEmail": {
+          "loggedOut": "Une demande de vérification de compte vous déconnecte automatiquement.",
+          "notFound": "Aucun courriel de vérification n'est lié à ce code.",
+          "alreadyVerified": "Le compte associé à ce code de vérification est déjà vérifié.",
+          "expired": "Ce code de vérification est expiré. Tentez de vous connecter pour en envoyer un autre.",
+          "verified": "Vous pouvez maintenant vous connecter."
+        }
+      },
       "picture": {
         "unsupportedExtension": "L'extension de l'image n'est pas supportée. Les extensions supportées sont les suivantes: jpg, jpeg, png et gif.",
         "notFound": "L'image est introuvable."
@@ -535,6 +581,10 @@
         "modified": "La tâche a été modifiée.",
         "notFound": "Auncune tâche n'est associée à cet identifiant.",
         "noUsers": "Veuillez ajouter des utilisateurs à la tâche."
+      },
+      "transfers": {
+        "userNotFound": "Le destinataire du versement est introuvable.",
+        "amountOverZero": "Le montant minimal d'un versement est de 0.01$."
       }
     }
   }

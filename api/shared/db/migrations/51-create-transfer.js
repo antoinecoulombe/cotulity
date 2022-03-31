@@ -41,6 +41,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DECIMAL(19, 4),
       },
+      correction: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -64,6 +64,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true,
       });
+      User.hasOne(models.UserRecord);
       User.belongsTo(models.Image);
       User.belongsToMany(models.Expense, {
         through: models.ExpenseSplit,

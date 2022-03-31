@@ -114,7 +114,7 @@ library.add(
 
 const App = (): JSX.Element => {
   const history = useHistory();
-  const { setNotificationArray, setErrorNotification, clearAllNotifications } =
+  const { setNotificationArray, setInfoNotification, clearAllNotifications } =
     useNotifications();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const { i18n } = useTranslation('common');
@@ -176,6 +176,20 @@ const App = (): JSX.Element => {
           component={AppsPage}
         />
         <PublicRoute exact path="/" component={LoginPage} />
+        <Route
+          exact
+          path="/login/verify/:verifyToken"
+          render={(props) => {
+            if (isAuthenticated() === true) {
+              setInfoNotification({
+                title: 'account.loggedOut',
+                msg: 'account.verificationEmail.loggedOut',
+              });
+              logout();
+            }
+            return <LoginPage />;
+          }}
+        />
         <Route
           exact
           path="/login/:token?"

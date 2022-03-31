@@ -42,7 +42,7 @@ export const registerAndLogin = async (
     let testUser = await getTestUser(caller);
     await request.post('/users/register').send(testUser);
     if (skipEmailVerification !== true)
-      await setEmailVerifiedAt(testUser.email);
+      await setEmailVerifiedAt(caller, request);
 
     let res = (
       await request.post('/auth/login').send(await getTestUser(caller, true))
@@ -53,14 +53,39 @@ export const registerAndLogin = async (
   }
 };
 
-export const setEmailVerifiedAt = async (email: string) => {
+export const setEmailVerifiedAt = async (
+  caller: string,
+  request: any
+): Promise<{ res: any; token: string | null }> => {
   try {
-    await db.User.update(
-      { emailVerifiedAt: new Date() },
-      { where: { email: email } }
-    );
+    // Get user with caller email
+    let user = await db.User.findOne({
+      where: { email: (await getTestUser(caller)).email },
+    });
+    if (!user)
+      return { res: 'setEmailVerifiedAt: User not found', token: null };
+
+    // Try logging in to 'send' verification email
+    await request.post('/auth/login').send(await getTestUser(caller, true));
+
+    // Get verification email
+    let verifEmail = await db.VerificationEmail.findOne({
+      where: { userId: user.id },
+      order: [['createdAt', 'DESC']],
+    });
+    if (!verifEmail)
+      return {
+        res: 'setEmailVerifiedAt: Verification Email not found',
+        token: null,
+      };
+
+    // Verify user with token from verification email
+    return {
+      res: await request.put(`/users/public/verify/${verifEmail.token}`).send(),
+      token: verifEmail.token,
+    };
   } catch (error) {
-    return false;
+    return { res: 'setEmailVerifiedAt: An error occured', token: null };
   }
 };
 

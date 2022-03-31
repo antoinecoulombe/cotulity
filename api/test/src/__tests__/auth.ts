@@ -17,7 +17,7 @@ describe('passport auth', () => {
 
   beforeAll(async () => {
     USER = await registerAndLogin(CALLER, reqGlobal);
-    USER2 = await registerAndLogin(CALLER + '2', reqGlobal, true);
+    USER2 = await registerAndLogin(CALLER + '2', reqGlobal);
   });
 
   it('should accept user login', async () => {
@@ -33,6 +33,11 @@ describe('passport auth', () => {
   });
 
   it('should deny user login due to unverified email', async () => {
+    await db.User.update(
+      { emailVerifiedAt: null },
+      { where: { id: USER2.id } }
+    );
+
     const res = await reqAuth
       .get(`/auth`)
       .set('Authorization', `Bearer ${USER2.token}`);
@@ -45,11 +50,9 @@ describe('passport auth', () => {
   });
 
   it('should deny user login due to user id not found in token', async () => {
-    await db.VerificationEmail.destroy({
-      where: { userId: USER2.id },
-      force: true,
-    });
-    await db.User.destroy({ where: { id: USER2.id }, force: true });
+    await reqGlobal
+      .delete('/users/delete')
+      .set('Authorization', `Bearer ${USER2.token}`);
 
     const res = await reqAuth
       .get(`/auth`)

@@ -6,6 +6,7 @@ module.exports = {
     password: process.env.DB_DEV_PWD,
     database: process.env.DB_DEV,
     host: process.env.DB_HOST, // docker = 'db', local = '127.0.0.1'
+    port: process.env.DB_PORT || 3306,
     dialect: 'mariadb',
     dialectOptions: { autoJsonmap: false },
   },
@@ -14,6 +15,7 @@ module.exports = {
     password: process.env.DB_TEST_PWD,
     database: process.env.DB_TEST,
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
     dialect: 'mariadb',
     dialectOptions: { autoJsonmap: false },
     logging: false,
@@ -23,6 +25,7 @@ module.exports = {
     password: process.env.DB_PROD_PWD,
     database: process.env.DB_PROD,
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
     dialect: 'mariadb',
     dialectOptions: { autoJsonmap: false },
   },

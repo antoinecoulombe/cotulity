@@ -106,11 +106,9 @@ Router.post('/login', async (req, res) => {
               .json({ title: 'email.didNotSend', msg: 'email.didNotSend' });
           }
 
-          if (process.env.NODE_ENV !== 'test') {
-            return res
-              .status(501)
-              .json({ title: 'user.notVerified', msg: 'user.mustVerify' });
-          }
+          return res
+            .status(501)
+            .json({ title: 'user.notVerified', msg: 'user.mustVerify' });
         }
 
         res.json({

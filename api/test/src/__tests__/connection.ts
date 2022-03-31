@@ -15,6 +15,7 @@ const reqGlobal = supertest(getIp('global'));
 describe('connection', () => {
   const CALLER = 'auth';
   var TOKEN = '';
+  var verificationToken = '';
 
   it('should register the user', async () => {
     const res = await reqGlobal
@@ -26,8 +27,51 @@ describe('connection', () => {
       title: 'register.success',
       msg: 'register.success',
     });
+  });
 
-    await setEmailVerifiedAt((await getTestUser(CALLER)).email);
+  it('should deny user login due to email not verified', async () => {
+    const res = await reqGlobal
+      .post('/auth/login')
+      .send(await getTestUser(CALLER, true));
+
+    expect(res.statusCode).toEqual(501);
+    expect(res.body).toEqual({
+      title: 'user.notVerified',
+      msg: 'user.mustVerify',
+    });
+  });
+
+  it('should fail to verify the user due to token not found', async () => {
+    const res = await reqGlobal.put(`/users/public/verify/123456`).send();
+
+    expect(res.statusCode).toEqual(404);
+    expect(res.body).toEqual({
+      title: 'account.verificationEmail.notFound',
+      msg: 'account.verificationEmail.notFound',
+    });
+  });
+
+  it('should verify the user', async () => {
+    const result = await setEmailVerifiedAt(CALLER, reqGlobal);
+    verificationToken = result.token || '';
+
+    expect(result.res?.statusCode).toEqual(200);
+    expect(result.res?.body).toEqual({
+      title: 'account.verificationEmail.verified',
+      msg: 'account.verificationEmail.verified',
+    });
+  });
+
+  it('should fail to verify the user due to email already verified', async () => {
+    const res = await reqGlobal
+      .put(`/users/public/verify/${verificationToken}`)
+      .send();
+
+    expect(res.statusCode).toEqual(500);
+    expect(res.body).toEqual({
+      title: 'account.verificationEmail.alreadyVerified',
+      msg: 'account.verificationEmail.alreadyVerified',
+    });
   });
 
   it('should authenticate user and receive an authentication token', async () => {

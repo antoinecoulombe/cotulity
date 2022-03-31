@@ -12,7 +12,8 @@
     "recreate": "docker-compose up -d --force-recreate --no-deps --build $SERVICE-test",
     "prune": "docker system prune -a",
     "dev": "npm run build && npm run up",
-    "test": "npm run build:test && npm run up:test"
+    "test": "npm run build:test && npm run up:test",
+    "dev:test": "npm --prefix ./api/auth run dev:test & npm --prefix ./api/global run dev:test & npm --prefix ./api/homes run dev:test & npm --prefix ./api/groceries run dev:test"
   },
   "dependencies": {
     "gulp": "^4.0.2",
