@@ -11,10 +11,11 @@ import {
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest(getIp('global'));
-const reqHomes = supertest(getIp('homes'));
 
 describe('homes', () => {
+  const reqGlobal = supertest(getIp('global'));
+  const reqHomes = supertest(getIp('homes'));
+
   const CALLER = 'homes';
   var USER = { token: '', id: 0 };
   var USER2 = { token: '', id: 0 };
@@ -746,13 +747,27 @@ describe('homes', () => {
     });
   });
 
-  afterAll(async () => {
-    await reqGlobal
+  it('should delete the first logged in user', async () => {
+    const res = await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
 
-    await reqGlobal
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      title: 'user.deleted',
+      msg: 'user.deleted',
+    });
+  });
+
+  it('should delete the second logged in user', async () => {
+    const res = await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER2.token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      title: 'user.deleted',
+      msg: 'user.deleted',
+    });
   });
 });

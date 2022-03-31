@@ -7,10 +7,11 @@ import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest(getIp('global'));
-const reqAuth = supertest(getIp('auth'));
 
 describe('passport auth', () => {
+  const reqGlobal = supertest(getIp('global'));
+  const reqAuth = supertest(getIp('auth'));
+
   const CALLER = 'passport-auth';
   var USER = { token: '', id: 0 };
   var USER2 = { token: '', id: 0 };
@@ -65,9 +66,15 @@ describe('passport auth', () => {
     });
   });
 
-  afterAll(async () => {
-    await reqGlobal
+  it('should delete the logged in user', async () => {
+    const res = await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      title: 'user.deleted',
+      msg: 'user.deleted',
+    });
   });
 });

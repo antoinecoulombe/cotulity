@@ -10,9 +10,10 @@ import {
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest(getIp('global'));
 
 describe('connection', () => {
+  const reqGlobal = supertest(getIp('global'));
+
   const CALLER = 'auth';
   var TOKEN = '';
   var verificationToken = '';

@@ -8,9 +8,10 @@ import * as Image from '../../../shared/src/routes/Image';
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest(getIp('global'));
 
 describe('noci-images', () => {
+  const reqGlobal = supertest(getIp('global'));
+
   const CALLER = 'images';
   var USER = { token: '', id: 0 };
   var URL = '';

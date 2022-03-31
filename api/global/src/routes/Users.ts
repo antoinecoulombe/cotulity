@@ -356,7 +356,9 @@ Users.delete('/current/picture', async (req: any, res: any) => {
 Users.delete('/delete', async (req: any, res: any) => {
   try {
     if (!req.user)
-      res.status(500).json({ title: 'request.error', msg: 'request.error' });
+      return res
+        .status(500)
+        .json({ title: 'request.error', msg: 'request.error' });
 
     await db.sequelize.transaction(async (t: any) => {
       // Delete all owned homes and send notifications
@@ -371,29 +373,133 @@ Users.delete('/delete', async (req: any, res: any) => {
       await db.HomeInvitation.destroy(
         { where: { homeId: homeIds }, force: true },
         { transaction: t }
-      );
+      )
+        .then(async () => {
+          // Delete notifications
+          await db.Notification.destroy(
+            {
+              where: { toId: req.user.id },
+              force: true,
+            },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete homes groceries
+          await db.Grocery.destroy(
+            { where: { homeId: homeIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete homes task users
+          let userTasks = db.UserTask.findAll({
+            include: [
+              {
+                model: db.taskOccurence,
+                include: [{ model: db.Task, where: { homeId: homeIds } }],
+              },
+            ],
+          });
 
-      // Delete homes
-      await db.Home.destroy(
-        { where: { id: homeIds }, force: true },
-        { transaction: t }
-      );
+          if (userTasks?.length)
+            await db.UserTask.destroy(
+              {
+                where: { id: userTasks.map((ut: any) => ut.id) },
+                force: true,
+              },
+              { transaction: t }
+            );
+        })
+        .then(async () => {
+          // Delete homes task occurences
+          let taskOccurences = db.TaskOccurence.findAll({
+            include: [{ model: db.Task, where: { homeId: homeIds } }],
+          });
 
-      // Remove user id from user record, but keep firstname and lastname
-      let userRecord = await db.UserRecord.findOne({
-        where: { userId: req.user.id },
-      });
+          if (taskOccurences?.length)
+            await db.TaskOccurence.destroy(
+              {
+                where: { id: taskOccurences.map((to: any) => to.id) },
+                force: true,
+              },
+              { transaction: t }
+            );
+        })
+        .then(async () => {
+          // Delete homes tasks
+          await db.Task.destroy(
+            { where: { homeId: homeIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete homes expenses splits
+          let expenseSplits = db.ExpenseSplit.findAll({
+            include: [{ model: db.Expense, where: { homeId: homeIds } }],
+          });
 
-      if (userRecord) {
-        userRecord.userId = null;
-        await userRecord.save();
-      }
+          if (expenseSplits?.length)
+            await db.ExpenseSplit.destroy(
+              {
+                where: { id: expenseSplits.map((es: any) => es.id) },
+                force: true,
+              },
+              { transaction: t }
+            );
+        })
+        .then(async () => {
+          // Delete homes expenses
+          await db.Expense.destroy(
+            { where: { homeId: homeIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete homes transfers
+          await db.Transfer.destroy(
+            { where: { homeId: homeIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete homes users
+          await db.UserHome.destroy(
+            {
+              where: { homeId: homeIds },
+              force: true,
+            },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete homes
+          await db.Home.destroy(
+            { where: { id: homeIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Remove user id from user record, but keep firstname and lastname
+          let userRecord = await db.UserRecord.findOne(
+            {
+              where: { userId: req.user.id },
+            },
+            { transaction: t }
+          );
 
-      // Delete user
-      await req.user.destroy(
-        { force: true },
-        { transaction: t, individualHooks: true }
-      );
+          if (userRecord) {
+            userRecord.userId = null;
+            await userRecord.save();
+          }
+        })
+        .then(async () => {
+          // Delete user
+          await req.user.destroy(
+            { force: true },
+            { transaction: t, individualHooks: true }
+          );
+        });
 
       // Delete user image, if the user has one
       if (req.user.ImageId) {

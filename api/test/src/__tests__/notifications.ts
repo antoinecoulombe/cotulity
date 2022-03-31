@@ -7,9 +7,10 @@ import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest(getIp('global'));
 
 describe('notifications', () => {
+  const reqGlobal = supertest(getIp('global'));
+
   const CALLER = 'notifications';
   var USER = { token: '', id: 0 };
   var notifications: [
@@ -80,9 +81,15 @@ describe('notifications', () => {
     });
   });
 
-  afterAll(async () => {
-    await reqGlobal
+  it('should delete the logged in user', async () => {
+    const res = await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      title: 'user.deleted',
+      msg: 'user.deleted',
+    });
   });
 });

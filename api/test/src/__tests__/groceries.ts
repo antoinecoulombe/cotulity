@@ -5,11 +5,12 @@ import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
 
 // Supertest
 import supertest from 'supertest';
-const reqGlobal = supertest(getIp('global'));
-const reqGroceries = supertest(getIp('groceries'));
-const reqHomes = supertest(getIp('homes'));
 
 describe('groceries', () => {
+  const reqGlobal = supertest(getIp('global'));
+  const reqGroceries = supertest(getIp('groceries'));
+  const reqHomes = supertest(getIp('homes'));
+
   const CALLER = 'groceries';
   var USER = { token: '', id: 0 };
   var homeRef: string;
@@ -218,9 +219,15 @@ describe('groceries', () => {
     });
   });
 
-  afterAll(async () => {
-    await reqGlobal
+  it('should delete the logged in user', async () => {
+    const res = await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER.token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual({
+      title: 'user.deleted',
+      msg: 'user.deleted',
+    });
   });
 });
