@@ -6,7 +6,7 @@ services:
     container_name: db-test
     restart: always
     ports:
-      - 4306:3306
+      - 5306:3306
     expose:
       - 3306
     command:
@@ -35,9 +35,9 @@ services:
     container_name: api-auth-test
     restart: always
     ports:
-      - 4007:4007
+      - 5201:5201
     expose:
-      - 4007
+      - 5201
     networks:
       - backend
     links:
@@ -45,11 +45,11 @@ services:
     depends_on:
       - db_test
     environment:
-      PORT: 4007
+      PORT: 5201
       DB_HOST: db_test
       DB_PORT: 3306
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:4007']
+      test: ['CMD', 'curl', '--fail', 'http://localhost:5201']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -62,9 +62,9 @@ services:
     container_name: api-global-test
     restart: always
     ports:
-      - 4006:4006
+      - 5202:5202
     expose:
-      - 4006
+      - 5202
     networks:
       - backend
     links:
@@ -73,11 +73,11 @@ services:
       - db_test
       - api_auth
     environment:
-      PORT: 4006
+      PORT: 5202
       DB_HOST: db_test
       DB_PORT: 3306
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:4006']
+      test: ['CMD', 'curl', '--fail', 'http://localhost:5202']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -90,9 +90,9 @@ services:
     container_name: api-groceries-test
     restart: always
     ports:
-      - 4001:4001
+      - 5203:5203
     expose:
-      - 4001
+      - 5203
     networks:
       - backend
     links:
@@ -103,11 +103,11 @@ services:
       - api_global
       - api_homes
     environment:
-      PORT: 4001
+      PORT: 5203
       DB_HOST: db_test
       DB_PORT: 3306
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:4001']
+      test: ['CMD', 'curl', '--fail', 'http://localhost:5203']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -120,9 +120,9 @@ services:
     container_name: api-homes-test
     restart: always
     ports:
-      - 4002:4002
+      - 5204:5204
     expose:
-      - 4002
+      - 5204
     networks:
       - backend
     links:
@@ -132,11 +132,11 @@ services:
       - api_auth
       - api_global
     environment:
-      PORT: 4002
+      PORT: 5204
       DB_HOST: db_test
       DB_PORT: 3306
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:4002']
+      test: ['CMD', 'curl', '--fail', 'http://localhost:5204']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -149,9 +149,9 @@ services:
     container_name: api-tasks-test
     restart: always
     ports:
-      - 4003:4003
+      - 5205:5205
     expose:
-      - 4003
+      - 5205
     networks:
       - backend
     links:
@@ -162,11 +162,11 @@ services:
       - api_global
       - api_homes
     environment:
-      PORT: 4003
+      PORT: 5205
       DB_HOST: db_test
       DB_PORT: 3306
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:4003']
+      test: ['CMD', 'curl', '--fail', 'http://localhost:5205']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -179,9 +179,9 @@ services:
     container_name: api-accounts-test
     restart: always
     ports:
-      - 4004:4004
+      - 5206:5206
     expose:
-      - 4004
+      - 5206
     networks:
       - backend
     links:
@@ -192,11 +192,11 @@ services:
       - api_global
       - api_homes
     environment:
-      PORT: 4004
+      PORT: 5206
       DB_HOST: db_test
       DB_PORT: 3306
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:4004']
+      test: ['CMD', 'curl', '--fail', 'http://localhost:5206']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -209,9 +209,9 @@ services:
     container_name: api-calendar-test
     restart: always
     ports:
-      - 4005:4005
+      - 5207:5207
     expose:
-      - 4005
+      - 5207
     networks:
       - backend
     links:
@@ -222,11 +222,11 @@ services:
       - api_global
       - api_homes
     environment:
-      PORT: 4005
+      PORT: 5207
       DB_HOST: db_test
       DB_PORT: 3306
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:4005']
+      test: ['CMD', 'curl', '--fail', 'http://localhost:5207']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -237,9 +237,9 @@ services:
       dockerfile: test/Dockerfile
     container_name: api-test
     ports:
-      - 4099:4099
+      - 5219:5219
     expose:
-      - 4099
+      - 5219
     networks:
       - backend
     links:
@@ -262,23 +262,23 @@ services:
       api_accounts:
         condition: service_healthy
     environment:
-      PORT: 4099
+      PORT: 5219
       DB_HOST: db_test
       DB_PORT: 3306
       IP_AUTH: api_auth
-      PORT_AUTH: 4007
+      PORT_AUTH: 5201
       IP_GLOBAL: api_global
-      PORT_GLOBAL: 4006
+      PORT_GLOBAL: 5202
       IP_GROCERIES: api_groceries
-      PORT_GROCERIES: 4001
+      PORT_GROCERIES: 5203
       IP_HOMES: api_homes
-      PORT_HOMES: 4002
+      PORT_HOMES: 5204
       IP_TASKS: api_tasks
-      PORT_TASKS: 4003
+      PORT_TASKS: 5205
       IP_ACCOUNTS: api_accounts
-      PORT_ACCOUNTS: 4004
+      PORT_ACCOUNTS: 5206
       IP_CALENDAR: api_calendar
-      PORT_CALENDAR: 4005
+      PORT_CALENDAR: 5207
 
 volumes:
   db_test:

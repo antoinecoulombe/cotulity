@@ -392,29 +392,11 @@ Users.delete('/delete', async (req: any, res: any) => {
           );
         })
         .then(async () => {
-          // Delete homes task users
-          let userTasks = db.UserTask.findAll({
-            include: [
-              {
-                model: db.taskOccurence,
-                include: [{ model: db.Task, where: { homeId: homeIds } }],
-              },
-            ],
-          });
-
-          if (userTasks?.length)
-            await db.UserTask.destroy(
-              {
-                where: { id: userTasks.map((ut: any) => ut.id) },
-                force: true,
-              },
-              { transaction: t }
-            );
-        })
-        .then(async () => {
           // Delete homes task occurences
           let taskOccurences = db.TaskOccurence.findAll({
-            include: [{ model: db.Task, where: { homeId: homeIds } }],
+            include: [
+              { model: db.Task, as: 'Task', where: { homeId: homeIds } },
+            ],
           });
 
           if (taskOccurences?.length)
