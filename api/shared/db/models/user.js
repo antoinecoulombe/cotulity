@@ -45,6 +45,20 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true,
       });
+      User.hasMany(models.HomeDebt, {
+        foreignKey: 'fromId',
+        sourceId: 'id',
+        as: 'fromDebt',
+        onDelete: 'cascade',
+        hooks: true,
+      });
+      User.hasMany(models.HomeDebt, {
+        foreignKey: 'toId',
+        sourceId: 'id',
+        as: 'toDebt',
+        onDelete: 'cascade',
+        hooks: true,
+      });
       User.hasMany(models.Grocery, {
         foreignKey: 'ownerId',
         sourceId: 'id',
@@ -73,13 +87,13 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: 'expenseId',
       });
       User.belongsToMany(models.Home, {
-        through: models.UserHome,
+        through: models.HomeUser,
         as: 'Homes',
         foreignKey: 'userId',
         otherKey: 'homeId',
       });
       User.belongsToMany(models.TaskOccurence, {
-        through: models.UserTask,
+        through: models.TaskUser,
         as: 'TaskOccurences',
         foreignKey: 'userId',
         otherKey: 'taskOccurenceId',

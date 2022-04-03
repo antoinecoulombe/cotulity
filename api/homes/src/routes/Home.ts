@@ -146,8 +146,8 @@ Home.put('/rename', async (req: any, res: any) => {
 
       if (res.headersSent) return;
     } else {
-      home.UserHome.nickname = nickname && nickname.length ? nickname : null;
-      home.UserHome.save({ fields: ['nickname'] });
+      home.HomeUser.nickname = nickname && nickname.length ? nickname : null;
+      home.HomeUser.save({ fields: ['nickname'] });
     }
 
     return res.json({
@@ -176,19 +176,19 @@ Home.put('/requests/:id/:action', async (req: any, res: any) => {
     if (await denyIfNotOwner(req, res)) return;
 
     return await db.sequelize.transaction(async (t: any) => {
-      let userHome = await db.UserHome.findOne({
+      let homeUser = await db.HomeUser.findOne({
         where: { userId: req.params.id, homeId: res.locals.home.id },
         include: [db.Home, db.User],
       });
 
-      if (!userHome)
+      if (!homeUser)
         return res
           .status(404)
           .json({ title: 'request.notFound', msg: 'request.notFound' });
 
       if (action == 'accept') {
-        userHome.accepted = true;
-        await userHome.save({ transaction: t });
+        homeUser.accepted = true;
+        await homeUser.save({ transaction: t });
 
         await Global.sendNotifications(
           (
@@ -196,15 +196,15 @@ Home.put('/requests/:id/:action', async (req: any, res: any) => {
           ).filter((id: number) => id != req.params.id),
           {
             typeId: 2,
-            title: Translate.getJSON('homes.memberAdded', [userHome.Home.name]),
+            title: Translate.getJSON('homes.memberAdded', [homeUser.Home.name]),
             description: Translate.getJSON('memberRequestApproved', [
-              userHome.User.firstname,
+              homeUser.User.firstname,
             ]),
           },
           t
         );
       } else if (action == 'reject') {
-        await userHome.destroy({ transaction: t });
+        await homeUser.destroy({ transaction: t });
       }
 
       await db.Notification.create(
@@ -302,13 +302,13 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
         .json({ title: 'request.denied', msg: 'request.unauthorized' });
 
     return await db.sequelize.transaction(async (t: any) => {
-      let userHome = await db.UserHome.findOne({
+      let homeUser = await db.HomeUser.findOne({
         where: { userId: req.params.id, homeId: res.locals.home.id },
         include: [db.Home, db.User],
       });
 
       // If no user is found in home
-      if (!userHome)
+      if (!homeUser)
         return res
           .status(404)
           .json({ title: 'request.notFound', msg: 'request.notFound' });
@@ -319,10 +319,10 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
         ).filter((id: number) => id != req.params.id),
         {
           typeId: 2,
-          title: Translate.getJSON('homes.memberLost', [userHome.Home.name]),
+          title: Translate.getJSON('homes.memberLost', [homeUser.Home.name]),
           description: Translate.getJSON('homes.memberExcluded', [
-            userHome.User.firstname,
-            userHome.Home.name,
+            homeUser.User.firstname,
+            homeUser.Home.name,
           ]),
         },
         t
@@ -333,14 +333,14 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
           typeId: 3,
           toId: req.params.id,
           title: Translate.getJSON('homes.excludedByOwner', [
-            userHome.Home.name,
+            homeUser.Home.name,
           ]),
           description: 'homes.excludedByOwner',
         },
         { transaction: t }
       );
 
-      await userHome.destroy({ force: true }, { transaction: t });
+      await homeUser.destroy({ force: true }, { transaction: t });
 
       return res.json({ title: 'request.success', msg: 'request.success' });
     });
@@ -387,7 +387,7 @@ Home.delete('/quit', async (req: any, res: any) => {
         },
         t
       );
-      await res.locals.home.UserHome.destroy(
+      await res.locals.home.HomeUser.destroy(
         { force: true },
         { transaction: t }
       );
@@ -407,13 +407,13 @@ Home.delete('/quit', async (req: any, res: any) => {
 Home.delete('/requests/cancel', async (req: any, res: any) => {
   try {
     let home = res.locals.home;
-    if (home.UserHome.accepted)
+    if (home.HomeUser.accepted)
       return res.status(501).json({
         title: 'homes.couldNotCancelRequest',
         msg: 'homes.alreadyInHome',
       });
 
-    await home.UserHome.destroy({ force: true });
+    await home.HomeUser.destroy({ force: true });
 
     res.json({
       title: 'homes.requestCancelled',

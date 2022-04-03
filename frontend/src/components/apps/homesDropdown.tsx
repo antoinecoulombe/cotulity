@@ -46,7 +46,7 @@ const HomesDropdown = (props: HomesDropdownProps): JSX.Element => {
         <div className="homes selected">
           <div className={`home ${props.homes.length <= 1 ? 'alone' : ''}`}>
             <h1 onClick={handleClick}>
-              {props.homes[0].UserHome.nickname ?? props.homes[0].name}
+              {props.homes[0].HomeUser.nickname ?? props.homes[0].name}
             </h1>
             {props.homes.length > 1 && (
               <>
@@ -82,7 +82,7 @@ const HomesDropdown = (props: HomesDropdownProps): JSX.Element => {
                   key={home.id}
                   onClick={handleChange}
                 >
-                  <h1>{home.UserHome.nickname ?? home.name}</h1>
+                  <h1>{home.HomeUser.nickname ?? home.name}</h1>
                   <FontAwesomeIcon
                     icon="arrow-alt-circle-right"
                     className="icon"

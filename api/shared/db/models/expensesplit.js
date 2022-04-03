@@ -32,16 +32,6 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      settledAmount: {
-        allowNull: false,
-        type: DataTypes.DECIMAL(19, 4),
-        defaultValue: 0,
-      },
-      settled: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
     },
     {
       timestamps: true,

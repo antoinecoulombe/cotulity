@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface
-      .createTable('UserHomes', {
+      .createTable('TaskUsers', {
         userId: {
           allowNull: false,
           type: Sequelize.INTEGER,
@@ -12,21 +12,13 @@ module.exports = {
             key: 'id',
           },
         },
-        homeId: {
+        taskOccurenceId: {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: 'Homes',
+            model: 'TaskOccurences',
             key: 'id',
           },
-        },
-        nickname: {
-          type: Sequelize.STRING,
-        },
-        accepted: {
-          allowNull: false,
-          type: Sequelize.BOOLEAN,
-          defaultValue: false,
         },
         createdAt: {
           allowNull: false,
@@ -44,14 +36,14 @@ module.exports = {
         },
       })
       .then(() =>
-        queryInterface.addConstraint('UserHomes', {
+        queryInterface.addConstraint('TaskUsers', {
           type: 'primary key',
-          name: 'user_home_pk',
-          fields: ['userId', 'homeId'],
+          name: 'user_task_pk',
+          fields: ['userId', 'taskOccurenceId'],
         })
       );
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('UserHomes');
+    await queryInterface.dropTable('TaskUsers');
   },
 };

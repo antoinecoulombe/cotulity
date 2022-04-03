@@ -446,7 +446,7 @@ Users.delete('/delete', async (req: any, res: any) => {
         })
         .then(async () => {
           // Delete homes users
-          await db.UserHome.destroy(
+          await db.HomeUser.destroy(
             {
               where: { homeId: homeIds },
               force: true,

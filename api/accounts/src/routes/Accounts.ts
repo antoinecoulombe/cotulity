@@ -26,6 +26,38 @@ export const getUsers = async (res: any) => {
   });
 };
 
+const orderHomeDebt = (
+  from: number,
+  to: number,
+  amount: number
+): { fromId: number; toId: number; amount: number } => {
+  if (from < to) return { fromId: from, toId: to, amount: -amount };
+  return { fromId: to, toId: from, amount: amount };
+};
+
+export const settleHomeDebt = async (
+  from: number,
+  to: number,
+  amount: number,
+  homeId: number,
+  t?: any
+): Promise<void> => {
+  let hd = orderHomeDebt(from, to, amount);
+  let homeDebt = await db.HomeDebt.findOne({
+    where: { homeId: homeId, fromId: hd.fromId, toId: hd.toId },
+  });
+
+  if (!homeDebt)
+    await db.HomeDebt.create(
+      { ...hd, homeId: homeId },
+      t ? { transaction: t } : {}
+    );
+  else {
+    homeDebt.amount += hd.amount;
+    await homeDebt.save(t ? { transaction: t } : {});
+  }
+};
+
 // ########################################################
 // ######################### GET ##########################
 // ########################################################
@@ -71,6 +103,21 @@ Accounts.get('/users', async (req: any, res: any) => {
       title: 'request.success',
       msg: 'request.success',
       users: users,
+    });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+// Get all home debts
+Accounts.get('/debts', async (req: any, res: any) => {
+  try {
+    return res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      debts: await res.locals.home.getHomeDebts(),
+      users: await getUsers(res),
     });
   } catch (error) {
     /* istanbul ignore next */

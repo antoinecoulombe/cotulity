@@ -21,7 +21,7 @@ interface HomeMember {
   firstname: string;
   lastname: string;
   image?: string;
-  UserHome: { nickname?: string; accepted: boolean };
+  HomeUser: { nickname?: string; accepted: boolean };
 }
 
 interface EditPopupProps {
@@ -51,7 +51,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
   useEffect(() => {
     setTabs(getTabs(members));
-    const count = members.filter((m) => m.UserHome.accepted).length;
+    const count = members.filter((m) => m.HomeUser.accepted).length;
     if (count > 0) props.updateMemberCount(props.home.refNumber, count);
   }, [setErrorNotification, props, members]);
 
@@ -77,7 +77,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
         body: (
           <List>
             {homeMembers
-              .filter((m) => m.UserHome.accepted)
+              .filter((m) => m.HomeUser.accepted)
               .map((m, i) => (
                 <ListItem key={`m-${i}`} uid={m.id}>
                   <ListItemLeft key={`ml-${i}`}>
@@ -140,14 +140,14 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
         name: 'requests',
         prefix: 'homes.list.',
         active: false,
-        body: !homeMembers.filter((m) => !m.UserHome.accepted).length ? (
+        body: !homeMembers.filter((m) => !m.HomeUser.accepted).length ? (
           <div className="no-requests">
             <Translate name="noRequests" prefix="homes.list." />
           </div>
         ) : (
           <List>
             {homeMembers
-              .filter((m) => !m.UserHome.accepted)
+              .filter((m) => !m.HomeUser.accepted)
               .map((m, i) => (
                 <ListItem key={`r-${i}`} uid={m.id}>
                   <ListItemLeft key={`rl-${i}`}>
@@ -238,7 +238,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
   const acceptMemberState = (id: number): void => {
     let m = getCopyIndex(members, (m: HomeMember) => m.id === id);
     if (m && m.i >= 0) {
-      m.cp[m.i].UserHome.accepted = true;
+      m.cp[m.i].HomeUser.accepted = true;
       setMembers(m.cp);
     }
   };
@@ -324,7 +324,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
       type="edit"
     >
       <div className="form">
-        <h1>Manage {props.home.UserHome.nickname ?? props.home.name}</h1>
+        <h1>Manage {props.home.HomeUser.nickname ?? props.home.name}</h1>
         <SingleInputForm
           name="homes.name.renameHome"
           title="form.name"

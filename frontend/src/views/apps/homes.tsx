@@ -28,7 +28,7 @@ export interface Home {
   refNumber: number;
   name: string;
   memberCount?: number;
-  UserHome: { nickname: string; accepted: boolean };
+  HomeUser: { nickname: string; accepted: boolean };
 }
 
 export interface HomeMember {
@@ -93,7 +93,7 @@ const AppHomes = () => {
     setPopup(
       <WarningPopup
         title={getTranslateJSON(`homes.${action}.text.title`, [
-          home?.UserHome.nickname ?? home?.name ?? '',
+          home?.HomeUser.nickname ?? home?.name ?? '',
         ])}
         desc={`homes.${action}.text.desc`}
         yesText={`homes.${action}.buttons.yes`}
@@ -149,7 +149,7 @@ const AppHomes = () => {
       <SingleInputPopup
         name={`homes.name.${action}`}
         title={getTranslateJSON(`homes.title.${action}`, [
-          home?.UserHome.nickname ?? home?.name ?? '',
+          home?.HomeUser.nickname ?? home?.name ?? '',
         ])}
         onCancel={closePopup}
         onSubmit={(value: string) =>
@@ -180,7 +180,7 @@ const AppHomes = () => {
         if (h && h.i >= 0) {
           if (localStorage.getItem('userId') == h.cp[h.i].ownerId.toString())
             h.cp[h.i].name = value;
-          else h.cp[h.i].UserHome.nickname = value;
+          else h.cp[h.i].HomeUser.nickname = value;
           setHomes(h.cp);
         }
       })
@@ -279,7 +279,7 @@ const AppHomes = () => {
           <ListItem key={home.id} uid={home.refNumber}>
             <ListItemLeft style={{ height: iconStyle.iconWidth }}>
               <h2 className="onHover">#{home.refNumber}</h2>
-              <h3>{home.UserHome.nickname ?? home.name}</h3>
+              <h3>{home.HomeUser.nickname ?? home.name}</h3>
               <p>
                 - {home.memberCount}{' '}
                 <Translate name="member" prefix="homes.list."></Translate>
@@ -287,7 +287,7 @@ const AppHomes = () => {
               </p>
             </ListItemLeft>
             <ListItemRight>
-              {!home.UserHome.accepted && (
+              {!home.HomeUser.accepted && (
                 <>
                   <div className="tag red">
                     <Translate
@@ -311,7 +311,7 @@ const AppHomes = () => {
                 </>
               )}
               {localStorage.getItem('userId') === home.ownerId.toString() &&
-                home.UserHome.accepted && (
+                home.HomeUser.accepted && (
                   <>
                     <IconToolTip
                       icon="user-plus"
@@ -355,7 +355,7 @@ const AppHomes = () => {
                   </>
                 )}
               {!(localStorage.getItem('userId') === home.ownerId.toString()) &&
-                home.UserHome.accepted && (
+                home.HomeUser.accepted && (
                   <>
                     <IconToolTip
                       icon="pen"

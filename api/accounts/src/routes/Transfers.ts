@@ -1,7 +1,7 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
 import { InputsToDate } from '../../../shared/src/routes/Global';
-import { getUsers } from './Accounts';
+import { getUsers, settleHomeDebt } from './Accounts';
 
 const Transfers = express.Router();
 const db = require('../../../shared/db/models');
@@ -43,32 +43,6 @@ const getTransfers = async (res: any, withCorrections?: boolean) => {
     where: { correction: withCorrections ? { [Op.or]: [true, false] } : false },
     attributes: ['id', 'fromUserId', 'toUserId', 'date', 'amount'],
   });
-};
-
-const distributeAmount = async (
-  expenses: ExpenseSplit[],
-  toDistribute: number
-): Promise<number> => {
-  if (!expenses || !expenses.length) return toDistribute;
-
-  for (let i = 0; i < expenses.length; ++i) {
-    if (toDistribute <= 0) break;
-
-    let e = expenses[i];
-    let toSettle = e.amount - e.settledAmount;
-    if (toDistribute >= toSettle) {
-      e.settledAmount = e.amount;
-      e.settled = true;
-      toDistribute -= toSettle;
-      await e.save();
-    } else {
-      e.settledAmount += toDistribute;
-      await e.save();
-      return 0;
-    }
-  }
-
-  return toDistribute;
 };
 
 // ########################################################
@@ -130,41 +104,32 @@ Transfers.post('/', async (req: any, res: any) => {
         .status(404)
         .json({ title: 'users.notFound', msg: 'transfers.userNotFound' });
 
-    await db.Transfer.create({
-      homeId: res.locals.home,
-      fromUserId: req.user.id,
-      toUserId: req.body.userId,
-      amount: req.body.amount,
-    });
-
-    // TODO: Settle expenses
-
-    let notSettled = db.ExpenseSplit.findAll({
-      where: { userId: req.body.userId, settled: false },
-      include: [
+    let transfer = await db.sequelize.transaction(async (t: any) => {
+      let transferDb = await db.Transfer.create(
         {
-          model: db.Expense,
-          attributes: ['id', 'paidByUserId', 'totalAmount'],
+          homeId: res.locals.home.id,
+          fromUserId: req.user.id,
+          toUserId: req.body.userId,
+          amount: req.body.amount,
         },
-      ],
-    });
+        { transaction: t }
+      );
 
-    let byRequester = notSettled.filter((e: ExpenseSplit) => {
-      e.Expense.paidByUserId === req.user.id;
-    });
-    let notByRequester = notSettled.filter((e: ExpenseSplit) => {
-      e.Expense.paidByUserId !== req.user.id;
-    });
+      await settleHomeDebt(
+        req.user.id,
+        req.body.userId,
+        req.body.amount,
+        res.locals.home.id,
+        t
+      );
 
-    let toDistribute = await distributeAmount(byRequester, req.body.amount);
-    toDistribute -= await distributeAmount(notByRequester, toDistribute);
-
-    // settle expenses byRequester first
-    // then, while amount > 0, settle expenses by other members
+      return transferDb;
+    });
 
     return res.status(501).json({
       title: 'transfers.created',
       msg: 'transfers.created',
+      transfer: transfer,
     });
   } catch (error) {
     /* istanbul ignore next */

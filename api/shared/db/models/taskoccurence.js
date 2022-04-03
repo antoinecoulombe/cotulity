@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'Task',
         allowNull: false,
       });
-      TaskOccurence.hasMany(models.UserTask, {
+      TaskOccurence.hasMany(models.TaskUser, {
         foreignKey: 'taskOccurenceId',
         as: 'userRelation',
         sourceId: 'id',
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       });
       TaskOccurence.belongsToMany(models.User, {
-        through: models.UserTask,
+        through: models.TaskUser,
         as: 'Users',
         foreignKey: 'taskOccurenceId',
         otherKey: 'userId',

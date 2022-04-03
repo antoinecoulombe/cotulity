@@ -206,7 +206,7 @@ const createTaskOccurences = async (
 
     oldIds = oldTaskOccurences.map((oto: any) => oto.id);
 
-    await db.UserTask.destroy(
+    await db.TaskUser.destroy(
       {
         where: { taskOccurenceId: oldIds },
         force: true,
@@ -242,17 +242,17 @@ const createTaskOccurences = async (
     return { ...t, id: taskOcc.id };
   });
 
-  let userTasks: { userId: number; taskOccurenceId: number }[] = [];
+  let taskUsers: { userId: number; taskOccurenceId: number }[] = [];
   taskOccurences.forEach((t) => {
     t.completedOn = null;
     t.deletedAt = null;
     t.Users.forEach((u: any) =>
-      userTasks.push({ userId: u.id, taskOccurenceId: t.id })
+      taskUsers.push({ userId: u.id, taskOccurenceId: t.id })
     );
   });
 
   // Create users for each of those task occurences
-  await db.UserTask.bulkCreate(userTasks, { transaction: transaction });
+  await db.TaskUser.bulkCreate(taskUsers, { transaction: transaction });
 
   return { created: taskOccurences, deleted: oldIds };
 };
@@ -573,7 +573,7 @@ Tasks.delete('/:id', async (req: any, res: any) => {
 
       // Delete task occurence users
       if (force) {
-        await db.UserTask.destroy(
+        await db.TaskUser.destroy(
           { where: { taskOccurenceId: req.params.id }, force: true },
           { transaction: t }
         );

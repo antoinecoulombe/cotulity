@@ -3,29 +3,31 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class UserTask extends Model {
+  class HomeUser extends Model {
     static associate(models) {
-      UserTask.belongsTo(models.TaskOccurence, {
-        foreignKey: 'taskOccurenceId',
+      HomeUser.belongsTo(models.Home, {
+        foreignKey: 'homeId',
         targetKey: 'id',
         allowNull: false,
-        hooks: true,
       });
-      UserTask.belongsTo(models.User, {
+      HomeUser.belongsTo(models.User, {
         foreignKey: 'userId',
         targetKey: 'id',
         allowNull: false,
       });
     }
   }
-  UserTask.init(
-    {},
+  HomeUser.init(
+    {
+      nickname: DataTypes.STRING,
+      accepted: DataTypes.BOOLEAN,
+    },
     {
       timestamps: true,
       paranoid: true,
-      tableName: 'UserTasks',
+      tableName: 'HomeUsers',
       sequelize,
     }
   );
-  return UserTask;
+  return HomeUser;
 };

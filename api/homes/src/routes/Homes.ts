@@ -61,7 +61,7 @@ const getHomes = async (req: any, res: any, all: boolean): Promise<void> => {
           'refNumber',
           'name',
           'memberCount',
-          'UserHome',
+          'HomeUser',
           'nickname',
           'accepted',
         ])
@@ -161,7 +161,7 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
         });
       }
 
-      const userInHome = await db.UserHome.findOne({
+      const userInHome = await db.HomeUser.findOne({
         where: { homeId: invite.Home.id, userId: req.user.id, accepted: true },
       });
 
@@ -198,24 +198,24 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
         t
       );
 
-      const userHome = await db.UserHome.findOne({
+      const homeUser = await db.HomeUser.findOne({
         where: { homeId: invite.Home.id, userId: req.user.id },
         paranoid: false,
       });
 
       // If user is in home
-      if (userHome) {
+      if (homeUser) {
         // If he is not accepted
-        if (!userHome.accepted) {
-          userHome.accepted = true;
-          await userHome.save({ transaction: t });
+        if (!homeUser.accepted) {
+          homeUser.accepted = true;
+          await homeUser.save({ transaction: t });
         }
         // If he is deleted
-        if (userHome.deletedAt != null)
-          await userHome.restore({ transaction: t });
+        if (homeUser.deletedAt != null)
+          await homeUser.restore({ transaction: t });
       } else {
         // If he is not in home
-        await db.UserHome.create(
+        await db.HomeUser.create(
           {
             homeId: invite.Home.id,
             userId: req.user.id,
@@ -241,23 +241,23 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
 // [ANY] Create a request to join the specified home.
 Homes.put('/:refnumber/join', async (req: any, res) => {
   try {
-    const userHome = await req.user.getHomes({
+    const homeDb = await req.user.getHomes({
       where: { refNumber: req.params.refnumber },
       through: { paranoid: false },
     });
 
-    if (userHome.length !== 0) {
-      if (userHome[0].UserHome.deletedAt != null) {
+    if (homeDb.length !== 0) {
+      if (homeDb[0].HomeUser.deletedAt != null) {
         if (
           new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) <
-          userHome[0].UserHome.deletedAt
+          homeDb[0].HomeUser.deletedAt
         )
           return res.status(500).json({
             title: 'homes.requestAlreadyDenied',
             msg: 'homes.waitWeek',
           });
       } else {
-        if (userHome[0].UserHome.accepted)
+        if (homeDb[0].HomeUser.accepted)
           return res.status(500).json({
             title: 'homes.couldNotJoin',
             msg: 'homes.alreadyInHome',
@@ -293,8 +293,8 @@ Homes.put('/:refnumber/join', async (req: any, res) => {
         { transaction: t }
       );
 
-      if (userHome[0]?.UserHome?.deletedAt != null)
-        return userHome[0].UserHome.restore({}, { transaction: t });
+      if (homeDb[0]?.HomeUser?.deletedAt != null)
+        return homeDb[0].HomeUser.restore({}, { transaction: t });
       else return req.user.addHomes(home.id, { transaction: t });
     });
 
@@ -336,7 +336,7 @@ Homes.post('/:homename', async (req: any, res) => {
         { transaction: t }
       );
 
-      await db.UserHome.create(
+      await db.HomeUser.create(
         {
           userId: req.user.id,
           homeId: home.id,

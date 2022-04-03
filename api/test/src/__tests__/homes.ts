@@ -28,7 +28,7 @@ describe('homes', () => {
     refNumber: expect.toBeString(),
     name: expect.toBeString(),
     memberCount: expect.toBeNumber(),
-    UserHome: {
+    HomeUser: {
       nickname: expect.toBeOneOf([expect.toBeString(), undefined, null]),
       accepted: expect.toBeBoolean(),
     },
@@ -181,7 +181,7 @@ describe('homes', () => {
     d.setMonth(d.getMonth() - 1);
 
     // manually change request date to 1 month ago
-    await db.UserHome.update(
+    await db.HomeUser.update(
       { deletedAt: d.toJSON().slice(0, 19).replace('T', ' ') },
       {
         where: { userId: USER2.id, accepted: false },
@@ -398,7 +398,7 @@ describe('homes', () => {
     let homeId = (await db.Home.findOne({ where: { refNumber: homes[0] } })).id;
 
     // Add second user to the home
-    await db.UserHome.create({
+    await db.HomeUser.create({
       userId: USER2.id,
       homeId: homeId,
       accepted: true,
@@ -472,7 +472,7 @@ describe('homes', () => {
     let homeId = (await db.Home.findOne({ where: { refNumber: homes[0] } })).id;
 
     // delete user from home
-    await db.UserHome.destroy({ where: { userId: USER2.id, homeId: homeId } });
+    await db.HomeUser.destroy({ where: { userId: USER2.id, homeId: homeId } });
 
     // Get another token while soft deleted from home
     const inviteRes = await reqHomes
@@ -501,7 +501,7 @@ describe('homes', () => {
     let homeId = (await db.Home.findOne({ where: { refNumber: homes[0] } })).id;
 
     // Hard delete user from home
-    await db.UserHome.destroy({
+    await db.HomeUser.destroy({
       where: { userId: USER2.id, homeId: homeId },
       force: true,
     });
@@ -588,7 +588,7 @@ describe('homes', () => {
     let homeId = (await db.Home.findOne({ where: { refNumber: homes[0] } })).id;
 
     // Add second user to the home
-    await db.UserHome.create({
+    await db.HomeUser.create({
       userId: USER2.id,
       homeId: homeId,
       accepted: true,
@@ -635,14 +635,14 @@ describe('homes', () => {
           firstname: expect.toBeString(),
           lastname: expect.toBeString(),
           Image: expect.toBeOneOf([expect.toBeString(), null, undefined]),
-          UserHome: {
+          HomeUser: {
             nickname: expect.toBeOneOf([expect.toBeString(), null, undefined]),
             accepted: expect.toBeBoolean(),
             deletedAt: expect.toBeOneOf([expect.toBeString(), null, undefined]),
           },
         }),
       ]),
-      UserHome: {
+      HomeUser: {
         nickname: expect.toBeOneOf([expect.toBeString(), null, undefined]),
         accepted: expect.toBeBoolean(),
         createdAt: expect.toBeString(),
@@ -670,7 +670,7 @@ describe('homes', () => {
           firstname: expect.toBeString(),
           lastname: expect.toBeString(),
           Image: expect.toBeOneOf([expect.toBeString(), null, undefined]),
-          UserHome: {
+          HomeUser: {
             nickname: expect.toBeOneOf([expect.toBeString(), null, undefined]),
             accepted: expect.toBeBoolean(),
             createdAt: expect.toBeString(),
