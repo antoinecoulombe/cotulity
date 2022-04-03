@@ -25,7 +25,11 @@ export const handleOpenAppResize = (bodyMinHeight?: number): void => {
       ($('.open-app-container')?.innerWidth() ?? 0)) *
       2;
 
-  if (appH && $('.fill-height').length > 0) {
+  if (
+    appH &&
+    $('.fill-height').length > 0 &&
+    !$('.open-app-container').hasClass('groceries')
+  ) {
     appH -=
       $('.open-app-container > .headers > .header')?.outerHeight(true) ?? 0;
     appH -=

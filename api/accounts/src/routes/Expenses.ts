@@ -26,8 +26,7 @@ const getExpenses = async (res: any) => {
     include: [
       {
         model: db.ExpenseSplit,
-        as: 'SplittedWith',
-        attributes: ['userId', 'amount', 'settledAmount', 'settled'],
+        attributes: ['userId', 'amount'],
       },
     ],
   });
