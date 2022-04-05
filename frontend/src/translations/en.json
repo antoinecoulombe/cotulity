@@ -46,7 +46,13 @@
     "all": "All",
     "important": "Important",
     "orderBy": "Order By",
-    "filters": "Filters"
+    "filters": "Filters",
+    "compound": "Compound",
+    "fromMe": "From me",
+    "toMe": "To me",
+    "byMe": "By me",
+    "includingMe": "Including Me",
+    "splittedWith": "Splitted with me"
   },
   "nav": {
     "next": "Next",
@@ -276,15 +282,20 @@
   },
   "transfers": {
     "title": {
-      "transfers": "Transfers",
-      "subheaders": {
-        "all": "All",
-        "compound": "Compound",
-        "fromMe": "From me",
-        "toMe": "To me",
-        "byMe": "By me",
-        "splittedWith": "Splitted with me"
-      },
+      "transfers": "Transfers"
+    }
+  },
+  "groceries": {
+    "title": { "groceries": "Grocery List" },
+    "new": "Add Article",
+    "empty": "Your grocery list is empty."
+  },
+  "calendar": {
+    "title": { "calendar": "Calendar" }
+  },
+  "accounts": {
+    "title": {
+      "accounts": "Accounts",
       "sidebar": {
         "expenses": { "value": "Expenses", "title": "Expenses" },
         "transfers": { "value": "Transfers", "title": "Transfers" },
@@ -298,17 +309,6 @@
         }
       }
     }
-  },
-  "groceries": {
-    "title": { "groceries": "Grocery List" },
-    "new": "Add Article",
-    "empty": "Your grocery list is empty."
-  },
-  "calendar": {
-    "title": { "calendar": "Calendar" }
-  },
-  "accounts": {
-    "title": { "accounts": "Accounts" }
   },
   "console": {
     "title": { "console": "Console" }

@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useTranslation } from 'react-i18next';
 import { SidebarTab, SidebarModule } from '../../components/app/sidebar';
-import {
-  SubHeaderProps,
-  switchSubHeaderTab,
-} from '../../components/app/subHeader';
+import { SubHeaderProps, SubHeaderTab } from '../../components/app/subHeader';
 import { HomeMember } from './homes';
 import { getTranslateJSON } from '../../utils/global';
 import AppContainer from '../../components/app/appContainer';
@@ -45,16 +42,23 @@ const AppAccounts = (): JSX.Element => {
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [sidebarTabs, setSidebarTabs] = useState<SidebarTab[]>([]);
   const [sidebarModules, setSidebarModules] = useState<SidebarModule[]>([]);
-  const [subHeader, setSubHeader] = useState<SubHeaderProps>({
-    tabs: [
-      {
-        name: 'all',
-        action: () => handleSubHeader('all'),
-        selected: true,
-      },
-      { name: 'important', action: () => handleSubHeader('important') },
-    ],
-  });
+  const [subHeaderTabs, setSubHeaderTabs] = useState<SubHeaderTab[]>([
+    {
+      name: 'all',
+      action: () => handleSubHeader('all'),
+      selected: true,
+    },
+    {
+      name: 'byMe',
+      action: () => handleSubHeader('byMe'),
+      selected: false,
+    },
+    {
+      name: 'splittedWith',
+      action: () => handleSubHeader('splittedWith'),
+      selected: false,
+    },
+  ]);
   const [title, setHeader] = useState<string>('sidebar.myTasks.title');
   const [loaded, setLoaded] = useState<boolean>(false);
   const [users, setUsers] = useState<HomeMember[]>([]);
@@ -67,11 +71,11 @@ const AppAccounts = (): JSX.Element => {
     setLoaded(true);
     let selected = getSelectedTab();
     handleTitle(selected);
-  }, [sidebarTabs, subHeader]);
+  }, [sidebarTabs, subHeaderTabs]);
 
   useEffect(() => {
     axios
-      .get(`/groceries/${localStorage.getItem('currentHome')}/users`)
+      .get(`/accounts/${localStorage.getItem('currentHome')}/users`)
       .then(async (res: any) => {
         setUsers(res.data.users);
       })
@@ -81,16 +85,30 @@ const AppAccounts = (): JSX.Element => {
 
     let tabs: SidebarTab[] = [
       {
-        icon: 'star',
-        name: 'myTasks',
+        icon: 'receipt',
+        name: 'expenses',
+        action: (t: Expense | Transfer) => (!t ? true : false),
+      },
+      {
+        icon: 'exchange-alt',
+        name: 'transfers',
+        action: (t: Expense | Transfer) => (!t ? true : false),
+      },
+      {
+        icon: 'people-arrows',
+        name: 'debts',
+        action: (t: Expense | Transfer) => (!t ? true : false),
+      },
+      {
+        icon: 'history',
+        name: 'history',
         action: (t: Expense | Transfer) => (!t ? true : false),
       },
     ].map((t, i) => {
       return {
         id: -i - 1,
         value: t.name,
-        title: '',
-        prefix: 'groceries.title.sidebar.',
+        prefix: 'accounts.title.sidebar.',
         suffix: '.value',
         img: t.icon,
         handle: (tabs: SidebarTab[]) => {
@@ -116,15 +134,95 @@ const AppAccounts = (): JSX.Element => {
   };
 
   const handleSubHeader = (tab: string): void => {
-    setSubHeader({ ...subHeader, tabs: switchSubHeaderTab(subHeader, tab) });
+    // setSubHeaderTabs(switchSubHeaderTab(subHeaderTabs, tab));
   };
 
   const handleSidebar = (newTabs: SidebarTab[]): void => {
+    let selected = newTabs.find((x) => x.selected) ?? newTabs[0];
+    let newSubHeaderTabs: SubHeaderTab[] = [];
+
+    switch (selected.value) {
+      case 'expenses':
+        newSubHeaderTabs = [
+          {
+            name: 'all',
+            action: () => handleSubHeader('all'),
+            selected: true,
+          },
+          {
+            name: 'byMe',
+            action: () => handleSubHeader('byMe'),
+            selected: false,
+          },
+          {
+            name: 'splittedWith',
+            action: () => handleSubHeader('splittedWith'),
+            selected: false,
+          },
+        ];
+        break;
+      case 'transfers':
+        newSubHeaderTabs = [
+          {
+            name: 'all',
+            action: () => handleSubHeader('all'),
+            selected: true,
+          },
+          {
+            name: 'fromMe',
+            action: () => handleSubHeader('fromMe'),
+            selected: false,
+          },
+          {
+            name: 'toMe',
+            action: () => handleSubHeader('toMe'),
+            selected: false,
+          },
+        ];
+        break;
+      case 'debts':
+        newSubHeaderTabs = [
+          {
+            name: 'all',
+            action: () => handleSubHeader('all'),
+            selected: true,
+          },
+          {
+            name: 'compound',
+            action: () => handleSubHeader('compound'),
+            selected: false,
+          },
+        ];
+        break;
+      case 'history':
+        newSubHeaderTabs = [
+          {
+            name: 'all',
+            action: () => handleSubHeader('all'),
+            selected: true,
+          },
+          {
+            name: 'includingMe',
+            action: () => handleSubHeader('includingMe'),
+            selected: false,
+          },
+        ];
+        break;
+    }
     setSidebarTabs(newTabs);
+    setSubHeaderTabs(newSubHeaderTabs);
   };
 
   return (
-    <AppContainer title="accounts" appName="accounts">
+    <AppContainer
+      title={title}
+      appName="accounts"
+      sidebar={sidebarTabs}
+      subHeader={{
+        tabs: subHeaderTabs,
+        tabHandler: (tabs: SubHeaderTab[]) => setSubHeaderTabs(tabs),
+      }}
+    >
       <></>
     </AppContainer>
   );

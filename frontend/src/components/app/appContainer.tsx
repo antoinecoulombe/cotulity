@@ -91,8 +91,9 @@ const AppContainer = (props: AppContainerProps): JSX.Element => {
         {props.subHeader && (
           <SubHeader
             tabs={props.subHeader.tabs}
-            orderBy={props.subHeader.orderBy}
-            filters={props.subHeader.filters}
+            tabHandler={props.subHeader.tabHandler}
+            // orderBy={props.subHeader.orderBy}
+            // filters={props.subHeader.filters}
           ></SubHeader>
         )}
       </div>

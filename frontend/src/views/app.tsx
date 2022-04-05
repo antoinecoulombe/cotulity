@@ -69,6 +69,9 @@ import {
   faTerminal,
   faTrashArrowUp,
   faStar,
+  faReceipt,
+  faExchangeAlt,
+  faPeopleArrows,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -109,7 +112,10 @@ library.add(
   faHistory,
   faPlus,
   faTerminal,
-  faTrashArrowUp
+  faTrashArrowUp,
+  faReceipt,
+  faExchangeAlt,
+  faPeopleArrows
 );
 
 const App = (): JSX.Element => {

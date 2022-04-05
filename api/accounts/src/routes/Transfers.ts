@@ -38,9 +38,8 @@ interface ExpenseSplit {
 // ################### Getters / Globals ##################
 // ########################################################
 
-const getTransfers = async (res: any, withCorrections?: boolean) => {
+const getTransfers = async (res: any) => {
   return await res.locals.home.getTransfers({
-    where: { correction: withCorrections ? { [Op.or]: [true, false] } : false },
     attributes: ['id', 'fromUserId', 'toUserId', 'date', 'amount'],
   });
 };

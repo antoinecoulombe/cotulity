@@ -116,24 +116,53 @@
 .open-app-container > .sidebar > .tabs > .tab.selected svg {
   color: var(--clickable-accent-bg-hover);
 }
-.open-app-container.compact > .sidebar:not(.hovered) {
+.open-app-container.compact > .padding-bg {
+  display: none;
+  position: relative;
+  float: left;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: red;
+  z-index: 0;
+}
+.open-app-container.compact > .padding-bg.hovered {
+  display: flex;
+}
+.open-app-container.compact > .padding-bg.with-users {
+  width: 91px;
+}
+.open-app-container.compact > .padding-bg:not(.with-users) {
+  width: 77px;
+}
+.open-app-container.compact > .sidebar {
   width: auto;
+}
+.open-app-container.compact > .sidebar:not(.hovered) {
   padding: 60px 30px 60px 30px;
 }
-.open-app-container.compact > .sidebar:not(.hovered) > .tabs.top svg {
-  padding-left: 7px;
+.open-app-container.compact > .sidebar:not(.hovered) > .tabs.top > .tab > .left {
+  height: 21px !important;
 }
 .open-app-container.compact > .sidebar:not(.hovered) > .tabs > .tab > .left {
-  height: 21px;
   width: auto;
 }
 .open-app-container.compact > .sidebar:not(.hovered) > .tabs > .tab > .right,
 .open-app-container.compact > .sidebar:not(.hovered) > .tabs > .tab h4 {
   display: none;
 }
+.open-app-container.compact > .sidebar:not(.hovered).with-users > .tabs.top svg {
+  padding-left: 7px;
+}
 .open-app-container.compact > .sidebar.hovered {
   position: absolute;
   top: 0;
   left: 0;
   height: calc(100% - 60px * 2);
+}
+.open-app-container.compact > .sidebar.hovered:not(.with-users) {
+  width: 140px;
+}
+.open-app-container.compact > .sidebar.hovered.with-users {
+  width: 210px;
 }

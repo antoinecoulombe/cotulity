@@ -78,7 +78,7 @@ Accounts.get('/users', async (req: any, res: any) => {
               as: 'SplittedWith',
               attributes: ['id'],
               through: {
-                attributes: ['amount', 'settledAmount', 'settled'],
+                attributes: ['amount'],
               },
             },
           ],
@@ -86,12 +86,12 @@ Accounts.get('/users', async (req: any, res: any) => {
         {
           model: db.Transfer,
           as: 'TransferSent',
-          attributes: ['date', 'amount', 'toUserId', 'correction'],
+          attributes: ['date', 'amount', 'toUserId'],
         },
         {
           model: db.Transfer,
           as: 'TransferReceived',
-          attributes: ['date', 'amount', 'fromUserId', 'correction'],
+          attributes: ['date', 'amount', 'fromUserId'],
         },
       ],
       through: {

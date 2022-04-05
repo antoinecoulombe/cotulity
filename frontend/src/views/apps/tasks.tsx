@@ -5,10 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getTranslateJSON } from '../../utils/global';
 import { DropdownMultiOption } from '../../components/forms/dropdownMulti';
 import { scrollHorizontal } from '../../hooks/window';
-import {
-  SubHeaderProps,
-  switchSubHeaderTab,
-} from '../../components/app/subHeader';
+import { SubHeaderProps, SubHeaderTab } from '../../components/app/subHeader';
 import { HomeMember } from './homes';
 import AppContainer from '../../components/app/appContainer';
 import List from '../../components/utils/lists/list';
@@ -82,16 +79,14 @@ const AppTasks = (): JSX.Element => {
   const { setNotification, setSuccessNotification } = useNotifications();
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [sidebarTabs, setSidebarTabs] = useState<SidebarTab[]>([]);
-  const [subHeader, setSubHeader] = useState<SubHeaderProps>({
-    tabs: [
-      {
-        name: 'all',
-        action: () => handleSubHeader('all'),
-        selected: true,
-      },
-      { name: 'important', action: () => handleSubHeader('important') },
-    ],
-  });
+  const [subHeaderTabs, setSubHeaderTabs] = useState<SubHeaderTab[]>([
+    {
+      name: 'all',
+      action: () => {},
+      selected: true,
+    },
+    { name: 'important', action: () => {} },
+  ]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setHeader] = useState<string>('sidebar.myTasks.title');
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -103,7 +98,7 @@ const AppTasks = (): JSX.Element => {
     let selected = getSelectedTab();
     handleTitle(selected);
     handleTask(selected, undefined, false);
-  }, [sidebarTabs, subHeader]);
+  }, [sidebarTabs, subHeaderTabs]);
 
   useEffect(() => {
     // get home users for sidebar
@@ -242,10 +237,6 @@ const AppTasks = (): JSX.Element => {
     setSidebarTabs(newSidebarTabs);
   };
 
-  const handleSubHeader = (tab: string): void => {
-    setSubHeader({ ...subHeader, tabs: switchSubHeaderTab(subHeader, tab) });
-  };
-
   const handleTitle = (tab: SidebarTab): void => {
     if (!sidebarTabs.length) return;
     if (!tab.value) setHeader('tasks');
@@ -268,7 +259,7 @@ const AppTasks = (): JSX.Element => {
     if (!newTasks) newTasks = [...tasks];
 
     let important =
-      subHeader.tabs.find((ht) => ht.selected)?.name === 'important';
+      subHeaderTabs.find((ht) => ht.selected)?.name === 'important';
 
     newTasks.forEach((t) => {
       t.Occurences?.forEach((to) => {
@@ -495,7 +486,10 @@ const AppTasks = (): JSX.Element => {
     <AppContainer
       title={title}
       appName="tasks"
-      subHeader={subHeader}
+      subHeader={{
+        tabs: subHeaderTabs,
+        tabHandler: (tabs: SubHeaderTab[]) => setSubHeaderTabs(tabs),
+      }}
       sidebar={sidebarTabs}
       popup={popup}
       onAddClick={() => showPopup(undefined)}

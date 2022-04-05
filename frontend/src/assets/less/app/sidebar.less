@@ -136,19 +136,42 @@
   }
 
   &.compact {
+    > .padding-bg {
+      display: none;
+      position: relative;
+      float: left;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background-color: red;
+      z-index: 0;
+
+      &.hovered {
+        display: flex;
+      }
+
+      &.with-users {
+        width: 91px;
+      }
+
+      &:not(.with-users) {
+        width: 77px;
+      }
+    }
+
     > .sidebar {
+      width: auto;
+
       &:not(.hovered) {
-        width: auto;
         padding: 60px 30px 60px 30px;
 
         > .tabs {
-          &.top svg {
-            padding-left: 7px;
+          &.top > .tab > .left {
+            height: 21px !important;
           }
 
           > .tab {
             > .left {
-              height: 21px;
               width: auto;
             }
 
@@ -158,6 +181,12 @@
             }
           }
         }
+
+        &.with-users {
+          > .tabs.top svg {
+            padding-left: 7px;
+          }
+        }
       }
 
       &.hovered {
@@ -165,6 +194,14 @@
         top: 0;
         left: 0;
         height: calc(100% - @app[padding] * 2);
+
+        &:not(.with-users) {
+          width: 140px;
+        }
+
+        &.with-users {
+          width: 210px;
+        }
       }
     }
   }

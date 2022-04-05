@@ -43,92 +43,101 @@ const Sidebar = (props: SidebarProps): JSX.Element => {
   };
 
   return props.tabs ? (
-    <div
-      className={`${hovered ? 'hovered ' : ''}sidebar`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="tabs top">
-        {props.tabs.filter((t) => !t.isUser).length ? (
-          props.tabs
-            .filter((t) => !t.isUser)
-            .map((t) => (
-              <div
-                key={`tab-${t.id}`}
-                className={`tab${t.selected ? ' selected' : ''}`}
-                onClick={() => handleClick(t.id)}
-              >
-                <div className="left">
-                  <FontAwesomeIcon
-                    icon={['fas', (t.img ?? 'plus') as IconName]}
-                    className="icon"
-                  />
-                  <h4>
-                    <Translate
-                      name={t.value}
-                      prefix={t.prefix}
-                      suffix={t.suffix}
+    <>
+      <div
+        className={`${hovered ? 'hovered ' : ''}${
+          props.tabs.filter((t) => t.isUser).length ? 'with-users ' : ''
+        }padding-bg`}
+      ></div>
+      <div
+        className={`${hovered ? 'hovered ' : ''}${
+          props.tabs.filter((t) => t.isUser).length ? 'with-users ' : ''
+        }sidebar`}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <div className="tabs top">
+          {props.tabs.filter((t) => !t.isUser).length ? (
+            props.tabs
+              .filter((t) => !t.isUser)
+              .map((t) => (
+                <div
+                  key={`tab-${t.id}`}
+                  className={`tab${t.selected ? ' selected' : ''}`}
+                  onClick={() => handleClick(t.id)}
+                >
+                  <div className="left">
+                    <FontAwesomeIcon
+                      icon={['fas', (t.img ?? 'plus') as IconName]}
+                      className="icon"
                     />
-                  </h4>
+                    <h4>
+                      <Translate
+                        name={t.value}
+                        prefix={t.prefix}
+                        suffix={t.suffix}
+                      />
+                    </h4>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))
+          ) : (
+            <></>
+          )}
+        </div>
+        {props.tabs.filter((t) => t.isUser).length ? (
+          <div className="tabs bottom">
+            {props.tabs
+              .filter((t) => t.isUser)
+              .map((ut) => (
+                <div
+                  key={`utab-${ut.id}`}
+                  className={`tab user${ut.selected ? ' selected' : ''}`}
+                  onClick={() => handleClick(ut.id)}
+                >
+                  <div className="left">
+                    {ut.img ? (
+                      <img
+                        src={`http://localhost:4000/images/public/${ut.img}`}
+                        alt={`${ut.value[0]}${
+                          ut.value[ut.value.length - 2]
+                        }`.toUpperCase()}
+                      />
+                    ) : (
+                      <FontAwesomeIcon icon="user-circle" />
+                    )}
+                    <h4>{ut.value}</h4>
+                  </div>
+                  {(ut.count ?? -1) >= 0 && (
+                    <div className="right">
+                      <div
+                        className={`counter${
+                          (ut.count ?? -1) == 0 ? ' done' : ''
+                        }`}
+                      >
+                        <p>
+                          {(ut.count ?? 0) > 9 ? (
+                            '9+'
+                          ) : ut.count === 0 ? (
+                            <Translate
+                              name={'countZero'}
+                              prefix={'tasks.sidebar.'}
+                            />
+                          ) : (
+                            ut.count
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+          </div>
         ) : (
           <></>
         )}
       </div>
-      {props.tabs.filter((t) => t.isUser).length ? (
-        <div className="tabs bottom">
-          {props.tabs
-            .filter((t) => t.isUser)
-            .map((ut) => (
-              <div
-                key={`utab-${ut.id}`}
-                className={`tab user${ut.selected ? ' selected' : ''}`}
-                onClick={() => handleClick(ut.id)}
-              >
-                <div className="left">
-                  {ut.img ? (
-                    <img
-                      src={`http://localhost:4000/images/public/${ut.img}`}
-                      alt={`${ut.value[0]}${
-                        ut.value[ut.value.length - 2]
-                      }`.toUpperCase()}
-                    />
-                  ) : (
-                    <FontAwesomeIcon icon="user-circle" />
-                  )}
-                  <h4>{ut.value}</h4>
-                </div>
-                {(ut.count ?? -1) >= 0 && (
-                  <div className="right">
-                    <div
-                      className={`counter${
-                        (ut.count ?? -1) == 0 ? ' done' : ''
-                      }`}
-                    >
-                      <p>
-                        {(ut.count ?? 0) > 9 ? (
-                          '9+'
-                        ) : ut.count === 0 ? (
-                          <Translate
-                            name={'countZero'}
-                            prefix={'tasks.sidebar.'}
-                          />
-                        ) : (
-                          ut.count
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-        </div>
-      ) : (
-        <></>
-      )}
-    </div>
+    </>
   ) : (
     <></>
   );

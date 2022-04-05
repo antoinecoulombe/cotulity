@@ -349,7 +349,7 @@ button:hover {
   width: 100%;
   overflow-y: scroll;
   padding-right: 20px;
-  margin-left: 20px;
+  padding-left: 20px;
 }
 .popup-container > .popup.edit > .form > h1 {
   font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;

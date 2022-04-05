@@ -46,7 +46,13 @@
     "all": "Tout",
     "important": "Important",
     "orderBy": "Trier par",
-    "filters": "Filtrer"
+    "filters": "Filtrer",
+    "compound": "Simplifié",
+    "fromMe": "Envoyé",
+    "toMe": "Reçus",
+    "byMe": "Payé par moi",
+    "includingMe": "M'incluant",
+    "splittedWith": "Séparé avec moi"
   },
   "nav": {
     "next": "Suivant",
@@ -276,15 +282,20 @@
   },
   "transfers": {
     "title": {
-      "transfers": "Versements",
-      "subheaders": {
-        "all": "Tout",
-        "compound": "Simplifié",
-        "fromMe": "Envoyé",
-        "toMe": "Reçus",
-        "byMe": "Payé par moi",
-        "splittedWith": "Séparé avec moi"
-      },
+      "transfers": "Versements"
+    }
+  },
+  "groceries": {
+    "title": { "groceries": "Liste d'épicerie" },
+    "new": "Ajouter un article",
+    "empty": "Votre liste d'épicerie est vide."
+  },
+  "calendar": {
+    "title": { "calendar": "Calendrier" }
+  },
+  "accounts": {
+    "title": {
+      "accounts": "Finances",
       "sidebar": {
         "expenses": { "value": "Dépenses", "title": "Dépenses" },
         "transfers": { "value": "Versements", "title": "Versements" },
@@ -298,17 +309,6 @@
         }
       }
     }
-  },
-  "groceries": {
-    "title": { "groceries": "Liste d'épicerie" },
-    "new": "Ajouter un article",
-    "empty": "Votre liste d'épicerie est vide."
-  },
-  "calendar": {
-    "title": { "calendar": "Calendrier" }
-  },
-  "accounts": {
-    "title": { "accounts": "Finances" }
   },
   "console": {
     "title": { "console": "Console" }

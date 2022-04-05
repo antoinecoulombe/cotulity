@@ -177,7 +177,11 @@ const createTaskOccurences = async (
   deleteOld?: number
 ) => {
   let firstDueDate = new Date(taskOcc.dueDate);
-  let taskOccurence = { taskId: taskOcc.taskId, Users: taskOcc.Users };
+  let taskOccurence = {
+    taskId: taskOcc.taskId,
+    Users: taskOcc.Users,
+    important: taskOcc.important,
+  };
   let oldIds: number[] = [];
 
   let taskOccurences: any[] = getRepeatingDatesUntil(
