@@ -18,6 +18,11 @@ const { Op } = require('sequelize');
 // ################### Getters / Globals ##################
 // ########################################################
 
+/**
+ * Gets all home transfers.
+ * @param res The HTTP response.
+ * @returns An array containing all home transfers.
+ */
 const getTransfers = async (res: any) => {
   return await res.locals.home.getTransfers({
     attributes: ['id', 'fromUserId', 'toUserId', 'date', 'amount'],
@@ -28,7 +33,9 @@ const getTransfers = async (res: any) => {
 // ######################### GET ##########################
 // ########################################################
 
-// Get all transfers
+/**
+ * Gets all transfers.
+ */
 Transfers.get('/', async (req: any, res: any) => {
   try {
     return res.json({
@@ -51,22 +58,27 @@ Transfers.get('/', async (req: any, res: any) => {
 // ######################### POST #########################
 // ########################################################
 
-// Create a new transfer
+/**
+ * Creates a new transfer and settles debts.
+ */
 Transfers.post('/', async (req: any, res: any) => {
   try {
     let date = InputsToDate(req.body.date + '@12:00');
 
+    // Check if the receiver id, date and amount are valid
     if (!req.body.userId || !date || !req.body.amount)
       return res
         .status(500)
         .json({ title: 'request.missingField', msg: 'request.missingField' });
 
+    // Check if the amount is a positive number
     if (isNaN(req.body.amount) || req.body.amount < 0.01)
       return res.status(500).json({
         title: 'transfers.invalidAmount',
         msg: 'transfers.amountOverZero',
       });
 
+    // Get all home members
     let members = await res.locals.home.getMembers({
       attributes: ['id', 'firstname', 'lastname'],
       include: [
@@ -78,11 +90,13 @@ Transfers.post('/', async (req: any, res: any) => {
       ],
     });
 
+    // Check if the receiver is in home
     if (members.filter((m: any) => m.id === req.body.userId).length() === 0)
       return res
         .status(404)
         .json({ title: 'users.notFound', msg: 'transfers.userNotFound' });
 
+    // Create transfer and settle debts
     let transfer = await db.sequelize.transaction(async (t: any) => {
       let transferDb = await db.Transfer.create(
         {

@@ -18,7 +18,9 @@ const { Op } = require('sequelize');
 // ##################### Middlewares ######################
 // ########################################################
 
-// Validates application and paths.
+/**
+ * Verifies that the app is online.
+ */
 Home.use(async (req: any, res, next) => {
   req.params.appname = 'homes';
   validateApp(req, res, next);
@@ -28,7 +30,12 @@ Home.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
-// deletes a home
+/**
+ * Deletes a home and notifies the members.
+ * @param home A sequelize home object.
+ * @param transaction A sequelize transaction object.
+ * @returns A promise to return an object containing the result of the home deletion.
+ */
 export const deleteHome = async (
   home: any,
   transaction: any
@@ -53,12 +60,14 @@ export const deleteHome = async (
 // ######################### GET ##########################
 // ########################################################
 
-// [ANY] Get home associated to specified reference number.
+/**
+ * [OWNER] Gets home associated to specified reference number.
+ */
 Home.get('/', async (req: any, res: any) => {
   try {
     if (await denyIfNotOwner(req, res)) return;
 
-    const home = await req.user.getHomes({
+    const homes = await req.user.getHomes({
       where: { refNumber: res.locals.home.refNumber },
       attributes: ['ownerId', 'refNumber', 'name'],
       include: [
@@ -72,23 +81,24 @@ Home.get('/', async (req: any, res: any) => {
       ],
     });
 
-    if (!home)
+    // Check if home exists
+    if (!homes || !homes.length)
       return res
         .status(404)
         .json({ title: 'homes.notFound', msg: 'homes.notFound' });
 
-    res.json(home[0]);
+    res.json(homes[0]);
   } catch (e) {
     /* istanbul ignore next */
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
   }
 });
 
+/**
+ * Gets accepted home users.
+ */
 Home.get('/users', async (req: any, res: any) => {
   try {
-    var inTwoWeeks = new Date();
-    inTwoWeeks.setDate(inTwoWeeks.getDate() + 14);
-
     let users = await res.locals.home.getMembers({
       attributes: ['id', 'firstname', 'lastname'],
       include: [{ model: db.Image, attributes: ['url'] }],
@@ -112,21 +122,26 @@ Home.get('/users', async (req: any, res: any) => {
 // ######################### PUT ##########################
 // ########################################################
 
-// [OWNER/MEMBER] Rename specified home.
+/**
+ * [OWNER/MEMBER] Renames the specified home.
+ */
 Home.put('/rename', async (req: any, res: any) => {
   try {
     const nickname = req.body.nickname;
     let home = res.locals.home;
     let originalName = home.name;
 
+    // If the connected user is the owner, rename the home directly
     if (home.ownerId === req.user.id) {
       await db.sequelize.transaction(async (t: any) => {
+        // Check if the nickname is valid
         if (!nickname || !nickname.length)
           return res.status(500).json({
             title: 'homes.couldNotRename',
             msg: 'homes.nameUndefined',
           });
 
+        // Notify other members of change
         await Global.sendNotifications(
           await getMembersExceptOwner(res.locals.home),
           {
@@ -140,12 +155,14 @@ Home.put('/rename', async (req: any, res: any) => {
           t
         );
 
+        // Update home
         home.name = nickname;
         await home.save({ transaction: t });
       });
 
       if (res.headersSent) return;
     } else {
+      // Otherwise, update the home nickname in join table (HomeUser)
       home.HomeUser.nickname = nickname && nickname.length ? nickname : null;
       home.HomeUser.save({ fields: ['nickname'] });
     }
@@ -163,11 +180,15 @@ Home.put('/rename', async (req: any, res: any) => {
   }
 });
 
-// [OWNER] Accept or decline a request to join the specified home.
+/**
+ * [OWNER] Accepts or declines a request to join the specified home.
+ */
 Home.put('/requests/:id/:action', async (req: any, res: any) => {
   try {
     const actions = ['accept', 'reject'];
     const action = req.params.action;
+
+    // Check if action is valid
     if (!action || !actions.includes(action))
       return res
         .status(404)
@@ -176,20 +197,24 @@ Home.put('/requests/:id/:action', async (req: any, res: any) => {
     if (await denyIfNotOwner(req, res)) return;
 
     return await db.sequelize.transaction(async (t: any) => {
+      // Get join table row (home user)
       let homeUser = await db.HomeUser.findOne({
         where: { userId: req.params.id, homeId: res.locals.home.id },
         include: [db.Home, db.User],
       });
 
+      // Check if user exists in home
       if (!homeUser)
         return res
           .status(404)
           .json({ title: 'request.notFound', msg: 'request.notFound' });
 
+      // Accept the user
       if (action == 'accept') {
         homeUser.accepted = true;
         await homeUser.save({ transaction: t });
 
+        // Notify other members
         await Global.sendNotifications(
           (
             await getMembersExceptOwner(res.locals.home)
@@ -204,9 +229,11 @@ Home.put('/requests/:id/:action', async (req: any, res: any) => {
           t
         );
       } else if (action == 'reject') {
+        // Deny the user, and soft delete it
         await homeUser.destroy({ transaction: t });
       }
 
+      // Notify the concerned user (home join requester)
       await db.Notification.create(
         {
           typeId: action == 'accept' ? 2 : 3,
@@ -233,20 +260,29 @@ Home.put('/requests/:id/:action', async (req: any, res: any) => {
 // ######################### POST #########################
 // ########################################################
 
-// [OWNER] Invite a new member into the specified home.
+/**
+ * [OWNER] Invites a new member into the specified home.
+ */
 Home.post('/invitations', async (req: any, res: any) => {
   try {
     if (await denyIfNotOwner(req, res)) return;
 
-    if (!req.body.email)
+    // Check if email is valid
+    if (
+      !req.body.email ||
+      !req.body.email.length ||
+      !req.body.email.includes('@')
+    )
       return res
         .status(500)
         .json({ title: 'homes.couldNotSendInvite', msg: 'form.email.error' });
 
+    // Get home member with email
     const member = await res.locals.home.getMembers({
       where: { email: req.body.email },
     });
 
+    // Check if the user with email is already part of the home
     if (member.length)
       return res.status(500).json({
         title: 'homes.couldNotSendInvite',
@@ -255,12 +291,14 @@ Home.post('/invitations', async (req: any, res: any) => {
 
     const token = Global.createToken();
 
+    // Create home invitation
     const invite = await db.HomeInvitation.create({
       homeId: res.locals.home.id,
       email: req.body.email,
       token: token,
     });
 
+    // Read and format the HTML to be sent via email
     const emailHTML = await Global.readHTML(
       __dirname + '/_html/emailInvite.html'
     );
@@ -271,6 +309,7 @@ Home.post('/invitations', async (req: any, res: any) => {
       token,
     ]);
 
+    // Send the email
     const mailRes = await sendEmail({
       from: email.sender,
       to: req.body.email,
@@ -278,6 +317,7 @@ Home.post('/invitations', async (req: any, res: any) => {
       html: formattedEmailHTML,
     });
 
+    // Check if the email was sent
     if (!mailRes.success) {
       await invite.destroy({ force: true });
       return res.status(500).json({ ...mailRes, token: null });
@@ -294,7 +334,9 @@ Home.post('/invitations', async (req: any, res: any) => {
 // ######################## DELETE ########################
 // ########################################################
 
-// [OWNER] Remove a member from the specified home.
+/**
+ * [OWNER] Removes a member from the specified home.
+ */
 Home.delete('/members/:id/remove', async (req: any, res: any) => {
   try {
     // Refuse removal if requester is not the owner
@@ -312,12 +354,13 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
         include: [db.Home, db.User],
       });
 
-      // If no user is found in home
+      // Check if the user exists in home
       if (!homeUser)
         return res
           .status(404)
           .json({ title: 'request.notFound', msg: 'request.notFound' });
 
+      // Notify the other members
       await Global.sendNotifications(
         (
           await getMembersExceptOwner(res.locals.home)
@@ -333,6 +376,7 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
         t
       );
 
+      // Notify the excluded user
       await db.Notification.create(
         {
           typeId: 3,
@@ -345,6 +389,7 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
         { transaction: t }
       );
 
+      // Delete the user from home
       await homeUser.destroy({ force: true }, { transaction: t });
 
       return res.json({ title: 'request.success', msg: 'request.success' });
@@ -355,7 +400,9 @@ Home.delete('/members/:id/remove', async (req: any, res: any) => {
   }
 });
 
-// [OWNER] Delete the specified home.
+/**
+ * [OWNER] Deletes the specified home.
+ */
 Home.delete('/delete', async (req: any, res: any) => {
   try {
     // Refuse access if requester is not the owner
@@ -370,7 +417,9 @@ Home.delete('/delete', async (req: any, res: any) => {
   }
 });
 
-// [MEMBER] Quit the specified home.
+/**
+ * [MEMBER] Quits the specified home.
+ */
 Home.delete('/quit', async (req: any, res: any) => {
   try {
     // Refuse quit because owner can't quit
@@ -380,6 +429,7 @@ Home.delete('/quit', async (req: any, res: any) => {
         .json({ title: 'request.denied', msg: 'request.unauthorized' });
 
     return await db.sequelize.transaction(async (t: any) => {
+      // Notify the other members
       await Global.sendNotifications(
         await getMembersExceptRequester(req, res),
         {
@@ -392,6 +442,8 @@ Home.delete('/quit', async (req: any, res: any) => {
         },
         t
       );
+
+      // Delete user from home
       await res.locals.home.HomeUser.destroy(
         { force: true },
         { transaction: t }
@@ -408,10 +460,14 @@ Home.delete('/quit', async (req: any, res: any) => {
   }
 });
 
-// [REQUEST] Cancel the request to the specified home.
+/**
+ * [REQUEST] Cancels the request to the specified home.
+ */
 Home.delete('/requests/cancel', async (req: any, res: any) => {
   try {
     let home = res.locals.home;
+
+    // Check if the connected user is already accepted
     if (home.HomeUser.accepted)
       return res.status(501).json({
         title: 'homes.couldNotCancelRequest',

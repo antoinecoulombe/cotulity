@@ -41,7 +41,7 @@ export function format(input: string, substitutions: string[]): string {
 
 /**
  * Reads an HTML file.
- * @param filePath Path of HTML file to read.
+ * @param filePath The path of HTML file to read.
  * @returns A promise to return a the HTML file as a string.
  */
 export const readHTML = async (filePath: string): Promise<string | null> => {
@@ -54,7 +54,7 @@ export const readHTML = async (filePath: string): Promise<string | null> => {
 
 /**
  * Sends HTML to the client.
- * @param res The client response header.
+ * @param res The HTTP response.
  * @param html The HTML code to send to the client.
  * @param statusCode The response status code. If not specified, 200 is sent.
  * @returns A boolean indicating if the response has been sent.
@@ -91,8 +91,8 @@ export const createToken = (relativeLength?: number): string => {
 };
 
 /**
- * Converts a datetime as recieved from frontend's double input date to a Date object.
- * @param dateString Inputs value formatted as follow: 'DD/MM@HH:mm'. ie: '09/08@20:42'.
+ * Converts a datetime as received from frontend's double input date to a Date object.
+ * @param dateString The inputs value formatted as follow: 'DD/MM@HH:mm'. ie: '09/08@20:42'.
  * @returns A Date object at the input's value date.
  */
 export const InputsToDate = (dateString: string): Date | null => {

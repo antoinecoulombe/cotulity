@@ -17,6 +17,9 @@ require('../config/passport');
 // ######################### GET ##########################
 // ########################################################
 
+/**
+ * Authenticates a user.
+ */
 Auth.get('/', async (req: any, res: any) => {
   try {
     passport.authenticate(
@@ -25,11 +28,13 @@ Auth.get('/', async (req: any, res: any) => {
         session: false,
       },
       function (err: any, user: any, info: any) {
+        // Check if an error was received from authentication
         if (err)
           return res
             .status(401)
             .json({ title: 'request.denied', msg: 'request.unauthorized' });
 
+        // Check if a user was received from authentication
         if (!user) {
           return res.status(401).json({
             title: 'request.denied',
@@ -37,6 +42,7 @@ Auth.get('/', async (req: any, res: any) => {
           });
         }
 
+        // Check if the user has a verified email address
         if (!user.emailVerifiedAt)
           return res.status(401).json({
             title: 'user.notVerified',

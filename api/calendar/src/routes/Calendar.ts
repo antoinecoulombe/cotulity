@@ -9,6 +9,9 @@ const { Op } = require('sequelize');
 // ##################### Middlewares ######################
 // ########################################################
 
+/**
+ * Verifies that the app is online.
+ */
 Calendar.use(async (req: any, res, next) => {
   req.params.appname = 'calendar';
   validateApp(req, res, next);
@@ -22,7 +25,9 @@ Calendar.use(async (req: any, res, next) => {
 // ######################### GET ##########################
 // ########################################################
 
-// Temporary placeholder get method
+/**
+ * Temporary placeholder get method.
+ */
 Calendar.get('/', async (req: any, res: any) => {
   try {
     return res.status(501).json({

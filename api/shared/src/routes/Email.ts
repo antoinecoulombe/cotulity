@@ -13,14 +13,21 @@ export const email = {
   },
 };
 
+/**
+ * Sends an email.
+ * @param sendMailOptions Email options to be passed to the 'sendMail' method of nodemailer.
+ * @param transportConfig Email configuration to be passed to the 'createTransport' method of nodemailer.
+ * @param forceSend Boolean indicating if the method should still send email while in test environment.
+ * @returns A promise to return an object indicating whether the email was sent or not.
+ */
 export const sendEmail = async (
-  mailOptions: {
+  sendMailOptions: {
     from: string;
     to: string | string[];
     subject: string;
     html: string;
   },
-  config?: any,
+  transportConfig?: any,
   forceSend?: boolean
 ): Promise<{ success: boolean; title: string; msg: string }> => {
   let success = {
@@ -32,8 +39,8 @@ export const sendEmail = async (
   if (process.env.NODE_ENV === 'test' && forceSend !== true) return success;
 
   return await nodemailer
-    .createTransport(sgTransport(config ?? email.defaultConfig))
-    .sendMail(mailOptions)
+    .createTransport(sgTransport(transportConfig ?? email.defaultConfig))
+    .sendMail(sendMailOptions)
     .then(() => {
       return success;
     })

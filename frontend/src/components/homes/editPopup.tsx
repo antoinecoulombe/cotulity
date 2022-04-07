@@ -114,9 +114,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
                         {getFormattedMemberName(m.firstname, m.lastname)}
                       </h3>
                     </div>
-                  </ListItemLeft>
-                  {props.home.ownerId === m.id && (
-                    <ListItemRight key={`mr-${i}`}>
+                    {props.home.ownerId === m.id && (
                       <IconToolTip
                         icon="crown"
                         style={{ iconWidth: 16, tooltipMultiplier: 10 }}
@@ -129,8 +127,8 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
                           ></Translate>
                         )}
                       </IconToolTip>
-                    </ListItemRight>
-                  )}
+                    )}
+                  </ListItemLeft>
                 </ListItem>
               ))}
           </List>

@@ -1,4 +1,3 @@
-import { rejects } from 'assert';
 import path from 'path';
 import * as Global from './Global';
 
@@ -12,12 +11,19 @@ const genericError = {
   msg: 'request.error',
 };
 
+/**
+ * Removes the image with the specified id.
+ * @param imageId The image id.
+ * @param forceDelete A boolean indicating if the image should be soft or hard deleted.
+ * If not specified, the image is soft deleted.
+ * @returns A promise to return an object indicating whether the picture was deleted or not.
+ */
 export const remove = async (
-  id: number,
-  force?: boolean
+  imageId: number,
+  forceDelete?: boolean
 ): Promise<{ success: boolean; title: string; msg?: string }> => {
   try {
-    const img = await db.Image.findOne({ where: { id: id } });
+    const img = await db.Image.findOne({ where: { id: imageId } });
     if (!img)
       return {
         success: false,
@@ -29,7 +35,7 @@ export const remove = async (
       fs.unlink(img.filePath, async (err: any) => {
         if (err) reject(genericError);
 
-        await img.destroy({ force: force ?? false });
+        await img.destroy({ force: forceDelete ?? false });
         resolve({ success: true, title: 'request.success' });
       });
     });
@@ -38,27 +44,37 @@ export const remove = async (
   }
 };
 
+/**
+ * Saves an image received from an HTTP request and save it in the database.
+ * @param req The HTTP request.
+ * @param destPath The destination path.
+ * @returns A promise to return an object indicating whether the picture was saved or not.
+ * If it was saved, the sequelize image object is also returned.
+ */
 export const save = async (
   req: any,
-  destination: string
+  destPath: string
 ): Promise<{ success: boolean; title: string; msg?: string; image?: any }> => {
   try {
-    if (!fs.existsSync(destination))
+    // Check if the path exists
+    if (!fs.existsSync(destPath))
       return {
         success: false,
         title: 'picture.couldNotUpload',
         msg: 'path.invalid',
       };
 
+    // Create a random file name.
     var filename = Global.createToken();
 
     var form = new formidable.IncomingForm();
     await new Promise<void>((resolve, reject) => {
       form.parse(req, (err: any, fields: any, files: any) => {
-        const file = files.file;
-        const ext = path.extname(file.name);
-        filename += ext;
+        const file = files.file; // Get the image from form files
+        const ext = path.extname(file.name); // Get the file extension
+        filename += ext; // Add the extension to the random file name
 
+        // Check if the extension is supported.
         const authorizedExtension = ['.jpg', '.jpeg', '.png', '.gif'];
         if (!authorizedExtension.includes(ext))
           return reject({
@@ -67,7 +83,8 @@ export const save = async (
             msg: 'picture.unsupportedExtension',
           });
 
-        var newpath = path.join(destination, filename);
+        // Write the image
+        var newpath = path.join(destPath, filename);
         fs.rename(file.path, newpath, (err: any) => {
           if (err) throw genericError;
         });
@@ -75,8 +92,9 @@ export const save = async (
       });
     });
 
+    // Insert image in the database
     const img = await db.Image.create({
-      filePath: path.join(destination, filename),
+      filePath: path.join(destPath, filename),
       url: Global.createToken(),
     });
 

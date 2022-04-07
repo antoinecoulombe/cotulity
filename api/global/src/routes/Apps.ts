@@ -16,17 +16,23 @@ const db = require('../../../shared/db/models');
 // ######################### GET ##########################
 // ########################################################
 
-// Validates application.
+/**
+ * Validates an application.
+ */
 Apps.get('/:appname', validateApp, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 
-// Validates application and home.
+/**
+ * Validates an application and a home.
+ */
 Apps.get('/:appname/:refnumber', validateApp, validateHome, (req, res) => {
   res.json({ title: 'request.authorized' });
 });
 
-// Get all online apps.
+/**
+ * Gets all online apps.
+ */
 Apps.get('/', async (req, res) => {
   try {
     const apps = await db.App.findAll({

@@ -11,6 +11,11 @@ const db = require('../../../shared/db/models');
 // ################### Getters / Globals ##################
 // ########################################################
 
+/**
+ * Sends the image with the specified URL via the HTTP response.
+ * @param res The HTTP response.
+ * @param url The image url.
+ */
 const respondImage = async (res: any, url: string): Promise<void> => {
   try {
     const img = await db.Image.findOne({ where: { url: url } });
@@ -30,10 +35,16 @@ const respondImage = async (res: any, url: string): Promise<void> => {
 // ######################### GET ##########################
 // ########################################################
 
+/**
+ * Sends an image without authenticating user.
+ */
 Images.get('/public/:url', async (req: any, res: any) => {
   respondImage(res, req.params.url);
 });
 
+/**
+ * Sends an image.
+ */
 Images.get('/:url', async (req: any, res: any) => {
   respondImage(res, req.params.url);
 });

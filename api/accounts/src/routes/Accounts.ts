@@ -8,10 +8,17 @@ const db = require('../../../shared/db/models');
 // ##################### Middlewares ######################
 // ########################################################
 
+/**
+ * Verifies that the app is online.
+ */
 Accounts.use(async (req: any, res, next) => {
   req.params.appname = 'accounts';
   validateApp(req, res, next);
 });
+
+// ########################################################
+// ####################### Imports ########################
+// ########################################################
 
 import Transfers from './Transfers';
 Accounts.use('/transfers', Transfers);
@@ -27,6 +34,11 @@ Accounts.use('/expenses', Expenses);
 // ################### Getters / Globals ##################
 // ########################################################
 
+/**
+ * Gets the current home users.
+ * @param res The HTTP response.
+ * @returns An array containing the home users.
+ */
 export const getUsers = async (res: any) => {
   return await res.locals.home.getMembers({
     attributes: ['id', 'firstname', 'lastname'],
@@ -35,6 +47,15 @@ export const getUsers = async (res: any) => {
   });
 };
 
+/**
+ * Reorders the sender and receiver of an amount to avoid duplicated in database.
+ * @param from The sender of the amount.
+ * @param to The receiver of the amount.
+ * @param amount The amount to be sent.
+ * @returns An object containing the sender and receiver id, as well as the amount.
+ * If the sender id (from) is bigger than the receiver id (to), they are switched and the amount
+ * is reversed (ie: 50 becomes -50).
+ */
 const orderHomeDebt = (
   from: number,
   to: number,
@@ -44,26 +65,37 @@ const orderHomeDebt = (
   return { fromId: to, toId: from, amount: amount };
 };
 
+/**
+ * Adjusts debt between members by the specified amount.
+ * @param from The sender of the amount.
+ * @param to The receiver of the amount.
+ * @param amount The amount to be sent.
+ * @param homeId The home id by which the home debt should be found.
+ * @param transaction A sequelize transaction object.
+ */
 export const settleHomeDebt = async (
   from: number,
   to: number,
   amount: number,
   homeId: number,
-  t?: any
+  transaction?: any
 ): Promise<void> => {
-  let hd = orderHomeDebt(from, to, amount);
+  let hd = orderHomeDebt(from, to, amount); // Reverse sender and receiver if needed
+
+  // Find the home debt between the two members
   let homeDebt = await db.HomeDebt.findOne({
     where: { homeId: homeId, fromId: hd.fromId, toId: hd.toId },
   });
 
+  // If no debt between the two member is found, create one
   if (!homeDebt)
     await db.HomeDebt.create(
       { ...hd, homeId: homeId },
-      t ? { transaction: t } : {}
+      transaction ? { transaction: transaction } : {}
     );
   else {
-    homeDebt.amount += hd.amount;
-    await homeDebt.save(t ? { transaction: t } : {});
+    homeDebt.amount += hd.amount; // Add the amount to the debt
+    await homeDebt.save(transaction ? { transaction: transaction } : {});
   }
 };
 
@@ -71,7 +103,9 @@ export const settleHomeDebt = async (
 // ######################### GET ##########################
 // ########################################################
 
-// Get all home users with expenses and transfers
+/**
+ * Gets all home users with expenses and transfers.
+ */
 Accounts.get('/users', async (req: any, res: any) => {
   try {
     let users = await res.locals.home.getMembers({
@@ -119,7 +153,9 @@ Accounts.get('/users', async (req: any, res: any) => {
   }
 });
 
-// Get all home debts
+/**
+ * Gets all home debts.
+ */
 Accounts.get('/debts', async (req: any, res: any) => {
   try {
     return res.json({

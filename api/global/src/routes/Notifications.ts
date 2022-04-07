@@ -15,7 +15,9 @@ const db = require('../../../shared/db/models');
 // ######################### GET ##########################
 // ########################################################
 
-// Get all notifications linked to the connected user.
+/**
+ * Gets all notifications linked to the connected user.
+ */
 Notifications.get('/', async (req: any, res: any) => {
   try {
     const notifications = await db.Notification.findAll({
@@ -30,6 +32,8 @@ Notifications.get('/', async (req: any, res: any) => {
       },
     });
 
+    // Add a key to each notification indicating that it comes from the database
+    // (and should therefore be deleted after being shown)
     await notifications.forEach((n: any) => (n.dataValues.db = true));
     res.json(notifications);
   } catch (error) {
@@ -50,7 +54,9 @@ Notifications.get('/', async (req: any, res: any) => {
 // ######################## DELETE ########################
 // ########################################################
 
-// Deletes the notification with the specified id.
+/**
+ * Deletes the notification with the specified id.
+ */
 Notifications.delete('/delete/:id', async (req: any, res: any) => {
   try {
     const notification = await db.Notification.findOne({

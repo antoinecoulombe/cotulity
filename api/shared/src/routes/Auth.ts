@@ -1,5 +1,10 @@
 const atob = require('atob');
 
+/**
+ * Parses a JWT token.
+ * @param token The JWT token.
+ * @returns An object containing the decoded JWT token information.
+ */
 export function parseJwt(token: string | null): any {
   if (!token) return null;
   var base64Url = token.split('.')[1];
@@ -16,14 +21,21 @@ export function parseJwt(token: string | null): any {
   return JSON.parse(jsonPayload);
 }
 
+/**
+ * Extracts the bearer or query token from the request.
+ * @param req The HTTP request.
+ * @returns If a token is present, the token as a string. Otherwise, null.
+ */
 export function extractToken(req: any): string | null {
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.split(' ')[0] === 'Bearer'
-  ) {
-    return req.headers.authorization.split(' ')[1];
-  } else if (req.query && req.query.token) {
-    return req.query.token;
-  }
+  try {
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.split(' ')[0] === 'Bearer'
+    ) {
+      return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.token) {
+      return req.query.token;
+    }
+  } catch (error) {}
   return null;
 }

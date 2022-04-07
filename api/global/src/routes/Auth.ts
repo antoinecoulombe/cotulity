@@ -37,7 +37,9 @@ const { Op } = require('sequelize');
 // ######################### POST #########################
 // ########################################################
 
-// Log in a user.
+/**
+ * Logs a user in.
+ */
 Router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -51,7 +53,7 @@ Router.post('/login', async (req, res) => {
         });
       }
 
-      // If passwords match
+      // Check if passwords match
       if (bcrypt.compareSync(password, user.password)) {
         let payload = { id: user.id };
 
@@ -59,7 +61,7 @@ Router.post('/login', async (req, res) => {
           expiresIn: '24h',
         });
 
-        // If user is not verified
+        // Check if user is verified
         if (!user.emailVerifiedAt) {
           var yesterday = new Date();
           yesterday.setDate(yesterday.getDate() - 1);
@@ -75,18 +77,21 @@ Router.post('/login', async (req, res) => {
             },
           });
 
+          // If more than 4 emails has been sent in the last day, cancel send
           if (count >= 5)
             return res.status(501).json({
               title: 'user.notVerified',
               msg: 'user.mustVerifyNoEmail',
             });
 
+          // Create a verification email
           const emailToken = Global.createToken(4);
           let verifEmail = await db.VerificationEmail.create({
             userId: user.id,
             token: emailToken,
           });
 
+          // Read and format the HTML to be sent by email
           const emailHTML = await Global.readHTML(
             __dirname + '/_html/verifyEmail.html'
           );
@@ -94,6 +99,7 @@ Router.post('/login', async (req, res) => {
 
           const formattedEmailHTML = Global.format(emailHTML, [emailToken]);
 
+          // Send the email
           const mailRes = await sendEmail({
             from: emailInfo.sender,
             to: req.body.email,
@@ -101,6 +107,7 @@ Router.post('/login', async (req, res) => {
             html: formattedEmailHTML,
           });
 
+          // Check if the email was sent
           if (!mailRes.success) {
             await verifEmail.destroy({ force: true });
             return res
@@ -108,6 +115,7 @@ Router.post('/login', async (req, res) => {
               .json({ title: 'email.didNotSend', msg: 'email.didNotSend' });
           }
 
+          // Reject login
           return res
             .status(501)
             .json({ title: 'user.notVerified', msg: 'user.mustVerify' });

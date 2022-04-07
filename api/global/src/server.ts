@@ -1,6 +1,8 @@
 var app = require('./app');
 
-// Express Start
+/**
+ * Starts Express
+ */
 app.listen(app.get('port'), () => {
   return console.log(
     `GLOBAL: server is listening on port ${app.get('port')} (${

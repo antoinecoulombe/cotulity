@@ -25,6 +25,11 @@ interface ExpenseUser {
 // ################### Getters / Globals ##################
 // ########################################################
 
+/**
+ * Gets all home expenses.
+ * @param res The HTTP response.
+ * @returns An array containing the home expenses.
+ */
 const getExpenses = async (res: any) => {
   return await res.locals.home.getExpenses({
     attributes: ['id', 'paidByUserId', 'description', 'date', 'totalAmount'],
@@ -41,7 +46,9 @@ const getExpenses = async (res: any) => {
 // ######################### GET ##########################
 // ########################################################
 
-// Get all expenses
+/**
+ * Gets all expenses.
+ */
 Expenses.get('/', async (req: any, res: any) => {
   try {
     return res.json({
@@ -56,12 +63,16 @@ Expenses.get('/', async (req: any, res: any) => {
   }
 });
 
-// Get all expenses
+/**
+ * Gets the expenses total amount, for the past year.
+ */
 Expenses.get('/total/year', async (req: any, res: any) => {
   try {
+    // Get the date from one year ago
     let oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
+    // Sum all expenses amount since then
     let total = await db.Expense.sum('totalAmount', {
       where: { homeId: res.locals.home.id, date: { [Op.gte]: oneYearAgo } },
     });
@@ -85,33 +96,40 @@ Expenses.get('/total/year', async (req: any, res: any) => {
 // ######################### POST #########################
 // ########################################################
 
-// Create a new expense
+/**
+ * Creates a new expense and settles debts.
+ */
 Expenses.post('/', async (req: any, res: any) => {
   try {
     let date = InputsToDate(req.body.date);
 
+    // Check if the description and date are valid
     if (!req.body.description || !date)
       return res
         .status(500)
         .json({ title: 'request.missingField', msg: 'request.missingField' });
 
+    // Check if the amount is valid
     if (isNaN(req.body.amount) || req.body.amount < 0.01)
       return res.status(500).json({
         title: 'expenses.invalidAmount',
         msg: 'expenses.amountOverZero',
       });
 
+    // Check if the expense has users
     if (!req.body.Users || !Array.isArray(req.body.Users))
       return res
         .status(500)
         .json({ title: 'expenses.noUsers', msg: 'expenses.noUsers' });
 
+    // Get the ids of all home members
     let membersIds = (
       await res.locals.home.getMembers({
         attributes: ['id'],
       })
     ).map((m: any) => m.id);
 
+    // Check if all expense users are home members
     if (
       req.body.Users.filter((u: any) => !membersIds.includes(u.id)).length > 0
     )
@@ -132,23 +150,16 @@ Expenses.post('/', async (req: any, res: any) => {
         { transaction: t }
       );
 
-      let amountEach = req.body.amount / (req.body.Users.length + 1);
-      let splits = req.body.Users.map((u: ExpenseUser) => {
-        return { expenseId: expense.id, amount: amountEach, userId: u.id };
-      });
+      // Create an expense split for each expense user
+      let amountEach = req.body.amount / req.body.Users.length;
+      await db.ExpenseSplit.createBulk(
+        req.body.Users.map((u: ExpenseUser) => {
+          return { expenseId: expense.id, amount: amountEach, userId: u.id };
+        }),
+        { transaction: t }
+      );
 
-      if (
-        req.body.Users.filter((u: ExpenseUser) => u.id === req.user.id)
-          .length === 0
-      )
-        splits.push({
-          expenseId: expense.id,
-          amount: amountEach,
-          userId: req.user.id,
-        });
-
-      await db.ExpenseSplit.createBulk(splits, { transaction: t });
-
+      // Settle home debts for all expense users
       await req.body.Users.forEach(async (u: ExpenseUser) => {
         await settleHomeDebt(
           req.user.id,

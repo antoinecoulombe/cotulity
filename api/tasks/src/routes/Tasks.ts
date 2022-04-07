@@ -10,6 +10,9 @@ const { Op } = require('sequelize');
 // ##################### Middlewares ######################
 // ########################################################
 
+/**
+ * Verifies that the app is online.
+ */
 Tasks.use(async (req: any, res, next) => {
   req.params.appname = 'tasks';
   validateApp(req, res, next);

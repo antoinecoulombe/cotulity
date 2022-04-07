@@ -14,6 +14,7 @@
     "prune": "docker system prune -a",
     "dev": "npm run build && npm run up",
     "test": "npm run build:test && npm run up:test",
+    "dev:local": "npm --prefix ./api/auth run dev & npm --prefix ./api/global run dev & npm --prefix ./api/homes run dev & npm --prefix ./api/groceries run dev",
     "dev:test": "npm run t:auth & npm run t:global & npm run t:homes & npm run t:groceries",
     "t:auth": "npm --prefix ./api/auth run dev:test",
     "t:global": "npm --prefix ./api/global run dev:test",

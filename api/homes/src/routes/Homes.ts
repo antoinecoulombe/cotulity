@@ -10,7 +10,9 @@ const db = require('../../../shared/db/models');
 // ##################### Middlewares ######################
 // ########################################################
 
-// Validates application and paths.
+/**
+ * Verifies that the app is online.
+ */
 Homes.use(async (req: any, res, next) => {
   if (req.path.startsWith('/public')) return next();
 
@@ -22,7 +24,13 @@ Homes.use(async (req: any, res, next) => {
 // ################### Getters / Globals ##################
 // ########################################################
 
-// Get home list.
+/**
+ * Gets the homes the connected user is part of.
+ * @param req The HTTP request.
+ * @param res The HTTP response.
+ * @param all A boolean indicating whether the method should also retrieve
+ * the homes where the connected user is not accepted. By default, this is set to false.
+ */
 const getHomes = async (req: any, res: any, all: boolean): Promise<void> => {
   try {
     const dbHomes = await req.user.getHomes({

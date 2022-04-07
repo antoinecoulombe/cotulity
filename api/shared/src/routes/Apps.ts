@@ -1,6 +1,12 @@
 const db = require('../../db/models');
 
-// Verifies that the requested home is valid and accessible by the user.
+/**
+ * Verifies that the requested home is valid and accessible by the user, and then adds it to the response locals.
+ * @param req The HTTP request.
+ * @param res The HTTP response.
+ * @param next The method used to forward the request.
+ * @returns If the house is found and accessible, a forward without errors. Otherwise, one with the corresponding error.
+ */
 export const validateHome = async (req: any, res: any, next: any) => {
   try {
     if (!req.params.refnumber)
@@ -21,7 +27,13 @@ export const validateHome = async (req: any, res: any, next: any) => {
   }
 };
 
-// Verifies that the requested application is valid and online.
+/**
+ * Verifies that the requested app is valid and online.
+ * @param req The HTTP request.
+ * @param res The HTTP response.
+ * @param next The method used to forward the request.
+ * @returns If the app is valid and online, a forward without errors. Otherwise, one with the corresponding error.
+ */
 export const validateApp = async (req: any, res: any, next: any) => {
   try {
     if (!req.params.appname)

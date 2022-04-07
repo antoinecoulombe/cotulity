@@ -173,19 +173,23 @@
       }
     },
     "kickMember": {
-      "desc": "",
-      "title": "",
+      "text": {
+        "title": "Are you sure?",
+        "desc": "This action cannot be undone."
+      },
       "buttons": {
         "yes": "Yes, exclude '{0}'",
         "no": "No, keep '{0}'"
       }
     },
     "rejectRequest": {
-      "desc": "",
-      "title": "",
+      "text": {
+        "title": "Are you sure?",
+        "desc": "This action cannot be undone."
+      },
       "buttons": {
-        "yes": "Yes, refuse '{0}'",
-        "no": "No, take me back"
+        "yes": "Yes, Reject Request",
+        "no": "No, Take Me Back"
       }
     }
   },

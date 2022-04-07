@@ -95,27 +95,30 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
           filled={false}
           neverFocused={true}
           beforeImg={
-            <>
-              {options.find((o) => o.selected)?.img && (
-                <img
-                  src={`http://localhost:4000/images/public/${
-                    options.find((o) => o.selected)?.img
-                  }`}
-                  alt={`${options.find((o) => o.selected)?.value[0]}${
-                    options.find((o) => o.selected)?.value.split(' ')[1][0]
-                  }`.toUpperCase()}
-                />
-              )}
-              {options.find((o) => o.selected)?.icon && (
-                <FontAwesomeIcon
-                  icon={[
-                    'fas',
-                    options.find((o) => o.selected)?.icon as IconName,
-                  ]}
-                  className="icon"
-                />
-              )}
-            </>
+            options.find((o) => o.selected)?.img ||
+            options.find((o) => o.selected)?.icon ? (
+              <>
+                {options.find((o) => o.selected)?.img && (
+                  <img
+                    src={`http://localhost:4000/images/public/${
+                      options.find((o) => o.selected)?.img
+                    }`}
+                    alt={`${options.find((o) => o.selected)?.value[0]}${
+                      options.find((o) => o.selected)?.value.split(' ')[1][0]
+                    }`.toUpperCase()}
+                  />
+                )}
+                {options.find((o) => o.selected)?.icon && (
+                  <FontAwesomeIcon
+                    icon={[
+                      'fas',
+                      options.find((o) => o.selected)?.icon as IconName,
+                    ]}
+                    className="icon"
+                  />
+                )}
+              </>
+            ) : undefined
           }
           after={
             opened ? (
