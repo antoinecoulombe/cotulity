@@ -3,7 +3,6 @@ import { validateApp } from '../../../shared/src/routes/Apps';
 
 const Accounts = express.Router();
 const db = require('../../../shared/db/models');
-const { Op } = require('sequelize');
 
 // ########################################################
 // ##################### Middlewares ######################
@@ -13,6 +12,16 @@ Accounts.use(async (req: any, res, next) => {
   req.params.appname = 'accounts';
   validateApp(req, res, next);
 });
+
+import Transfers from './Transfers';
+Accounts.use('/transfers', Transfers);
+
+import Expenses from './Expenses';
+Accounts.use('/expenses', Expenses);
+
+// ########################################################
+// ###################### Interfaces ######################
+// ########################################################
 
 // ########################################################
 // ################### Getters / Globals ##################

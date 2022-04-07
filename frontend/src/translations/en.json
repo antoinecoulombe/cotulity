@@ -280,11 +280,6 @@
       "countZero": "DONE"
     }
   },
-  "transfers": {
-    "title": {
-      "transfers": "Transfers"
-    }
-  },
   "groceries": {
     "title": { "groceries": "Grocery List" },
     "new": "Add Article",
@@ -308,6 +303,40 @@
           "othersOwe": "Others Owe You"
         }
       }
+    },
+    "disabled": "Disabled because there is only one person in this home"
+  },
+  "expenses": {
+    "title": {
+      "create": "Create Expense",
+      "date": "Date",
+      "description": "Description",
+      "splittedWith": "Splitted With",
+      "amount": "Amount"
+    },
+    "name": {
+      "amount": "Price Paid",
+      "description": "Items bought, brands, etc.",
+      "splittedWith": "Select members with whom to equally split this expense"
+    },
+    "tooltip": {
+      "add": "Add Expense"
+    }
+  },
+  "transfers": {
+    "title": {
+      "create": "Create Transfer",
+      "transfers": "Transfers",
+      "date": "Date",
+      "amount": "Amount",
+      "recipient": "Recipient"
+    },
+    "name": {
+      "amount": "Amount sent",
+      "recipient": "Select the recipient of this transfer"
+    },
+    "tooltip": {
+      "add": "Add Transfer"
     }
   },
   "console": {

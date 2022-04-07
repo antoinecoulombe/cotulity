@@ -15,6 +15,17 @@
   width: 176px;
   height: 176px;
   margin: 9px;
+}
+#apps-container > #apps > .app-container.disabled {
+  cursor: default;
+}
+#apps-container > #apps > .app-container.disabled > .app {
+  opacity: 0.8;
+}
+#apps-container > #apps > .app-container.disabled:hover > .app {
+  color: var(--error-color) !important;
+}
+#apps-container > #apps > .app-container:not(.disabled) {
   cursor: pointer;
 }
 #apps-container > #apps > .app-container > .app {

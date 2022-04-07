@@ -2,11 +2,13 @@
   position: relative;
   display: block;
   float: left;
-  width: 100%;
+}
+.list:not(.homes) {
   padding: 50px 50px 0 50px;
   left: -50px;
   overflow-y: scroll;
   overflow-x: hidden;
+  width: 100%;
 }
 .list > .list-item {
   position: relative;

@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       token: DataTypes.STRING,
+      accepted: DataTypes.BOOLEAN,
       expirationDays: {
         type: DataTypes.INTEGER,
         validate: {

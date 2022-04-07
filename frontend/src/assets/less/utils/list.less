@@ -7,13 +7,15 @@
   position: relative;
   display: block;
   float: left;
-  width: 100%;
 
   // Scrollbar settings
-  padding: 50px 50px 0 50px;
-  left: -50px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  &:not(.homes) {
+    padding: 50px 50px 0 50px;
+    left: -50px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+  }
 
   > .list-item {
     position: relative;

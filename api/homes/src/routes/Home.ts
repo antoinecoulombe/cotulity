@@ -253,7 +253,7 @@ Home.post('/invitations', async (req: any, res: any) => {
         msg: 'homes.emailAlreadyInHome',
       });
 
-    const token = Global.createToken(4);
+    const token = Global.createToken();
 
     const invite = await db.HomeInvitation.create({
       homeId: res.locals.home.id,
@@ -261,16 +261,21 @@ Home.post('/invitations', async (req: any, res: any) => {
       token: token,
     });
 
-    const emailHtml = Global.format(
-      await Global.readHtml(__dirname + '/_html/emailInvite.html'),
-      [res.locals.home.name, token]
+    const emailHTML = await Global.readHTML(
+      __dirname + '/_html/emailInvite.html'
     );
+    if (!emailHTML) throw 'Could not read HTML.';
+
+    const formattedEmailHTML = Global.format(emailHTML, [
+      res.locals.home.name,
+      token,
+    ]);
 
     const mailRes = await sendEmail({
       from: email.sender,
       to: req.body.email,
       subject: `You have been invited to join '${res.locals.home.name}' on Cotulity!`,
-      html: emailHtml,
+      html: formattedEmailHTML,
     });
 
     if (!mailRes.success) {

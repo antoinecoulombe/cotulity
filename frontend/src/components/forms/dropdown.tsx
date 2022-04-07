@@ -41,6 +41,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
 
   useEffect(() => {
     let newOptions = [...props.options];
+    if (!newOptions.length) return;
     if (!newOptions.find((o) => o.selected)) {
       newOptions[0].selected = true;
       setOptions(newOptions);
@@ -63,6 +64,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
   };
 
   const getSelectedValue = () => {
+    if (!options.length) return '';
     let selected = options.find((o) => o.selected);
     return !selected ? options[0].value : selected.value;
   };
@@ -88,10 +90,33 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
           value={getSelectedValue()}
           error={props.error}
           onChange={() => {}}
-          onFocus={() => setOpened(true)}
+          onFocus={() => setOpened(options.length > 1)}
           className={opened ? 'active' : ''}
           filled={false}
           neverFocused={true}
+          beforeImg={
+            <>
+              {options.find((o) => o.selected)?.img && (
+                <img
+                  src={`http://localhost:4000/images/public/${
+                    options.find((o) => o.selected)?.img
+                  }`}
+                  alt={`${options.find((o) => o.selected)?.value[0]}${
+                    options.find((o) => o.selected)?.value.split(' ')[1][0]
+                  }`.toUpperCase()}
+                />
+              )}
+              {options.find((o) => o.selected)?.icon && (
+                <FontAwesomeIcon
+                  icon={[
+                    'fas',
+                    options.find((o) => o.selected)?.icon as IconName,
+                  ]}
+                  className="icon"
+                />
+              )}
+            </>
+          }
           after={
             opened ? (
               <div className="dropdown-unselected">

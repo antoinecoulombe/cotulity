@@ -96,12 +96,14 @@ Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
         include: db.Home,
       });
 
-      const html = await Global.readHtml(
+      const html = await Global.readHTML(
         __dirname + '/_html/responsePage.html'
       );
+      if (!html) throw 'Could not read HTML file.';
 
+      // If invitation is not found
       if (!invite) {
-        return Global.respondHtml(
+        return Global.sendHTML(
           res,
           Global.format(html, [
             'Invitation not found',
@@ -111,6 +113,25 @@ Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
         );
       }
 
+      // If invitation has been accepted or denied
+      if (invite.accepted !== null) {
+        return Global.sendHTML(
+          res,
+          Global.format(html, [
+            `Invitation Already ${invite.accepted ? 'Accepted' : 'Denied'}`,
+            `This invitation has already been ${
+              invite.accepted ? 'accepted' : 'denied'
+            }.`,
+          ]),
+          500
+        );
+      }
+
+      // Reject invitation for records
+      invite.accepted = false;
+      await invite.save();
+
+      // Soft delete invitation
       await invite.destroy({ transaction: t });
 
       await db.Notification.create(
@@ -126,7 +147,7 @@ Homes.get('/public/invitations/:token/decline', async (req: any, res: any) => {
         { transaction: t }
       );
 
-      return Global.respondHtml(
+      return Global.sendHTML(
         res,
         Global.format(html, [
           'Invitation declined',
@@ -152,6 +173,7 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
       const invite = await db.HomeInvitation.findOne({
         where: { token: req.params.token },
         include: db.Home,
+        paranoid: false,
       });
 
       if (!invite) {
@@ -160,6 +182,12 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
           msg: 'homes.inviteNotFound',
         });
       }
+
+      if (invite.accepted !== null)
+        return res.status(500).json({
+          title: `homes.already${invite.accepted ? 'Accepted' : 'Denied'}`,
+          msg: `homes.already${invite.accepted ? 'Accepted' : 'Denied'}`,
+        });
 
       const userInHome = await db.HomeUser.findOne({
         where: { homeId: invite.Home.id, userId: req.user.id, accepted: true },

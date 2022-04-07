@@ -145,31 +145,10 @@ const LoginForm = (): JSX.Element => {
         );
         localStorage.setItem('userId', res.data.userId);
 
-        if (inviteToken) {
-          return axios
-            .put(`/homes/invitations/${inviteToken}/accept`)
-            .then(async (res) => {
-              history.push('/apps');
+        if (inviteToken) history.push(`/apps/invitations/${inviteToken}`);
+        else history.push('/apps');
 
-              setNotificationArray(
-                (
-                  [
-                    {
-                      title: res.data.title,
-                      msg: res.data.msg,
-                      type: { name: 'success' },
-                    },
-                  ] as jsonNotification[]
-                ).concat(await getNotifications())
-              );
-            })
-            .catch((err) => {
-              setNotification(err.response.data);
-            });
-        } else {
-          history.push('/apps');
-          setNotificationArray(await getNotifications());
-        }
+        setNotificationArray(await getNotifications());
       })
       .catch((err) => {
         if (err.response?.data) setNotification(err.response.data);

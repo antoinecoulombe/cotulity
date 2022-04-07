@@ -15,6 +15,7 @@ interface AppContainerProps {
   sidebar?: SidebarTab[];
   popup?: JSX.Element;
   bodyMinHeight?: number;
+  onAddTooltip?: string;
   onAddClick?: (e: any) => void;
 }
 
@@ -87,6 +88,7 @@ const AppContainer = (props: AppContainerProps): JSX.Element => {
           appName={props.appName}
           title={props.title}
           onAddClick={props.onAddClick}
+          onAddTooltip={props.onAddTooltip}
         ></Header>
         {props.subHeader && (
           <SubHeader

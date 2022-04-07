@@ -5,6 +5,7 @@ import '../../assets/css/app/header.css';
 interface HeaderProps {
   appName: string;
   title: string;
+  onAddTooltip?: string;
   onAddClick?: (e: any) => void;
 }
 
@@ -29,7 +30,7 @@ const Header = (props: HeaderProps): JSX.Element => {
           className="add-btn"
           onClick={props.onAddClick}
         >
-          {`${props.appName}.tooltip.add`}
+          {props.onAddTooltip ?? `${props.appName}.tooltip.add`}
         </IconToolTip>
       )}
     </div>

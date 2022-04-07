@@ -58,6 +58,18 @@
     }
   }
 
+  > .input-before-img {
+    > svg,
+    img {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      margin-left: 15px;
+      margin-top: 12px;
+      z-index: 2;
+    }
+  }
+
   > input {
     .font();
 
@@ -92,6 +104,10 @@
       &:-webkit-autofill + label {
         .label-filled();
       }
+    }
+
+    &.with-image + label {
+      padding-left: 55px;
     }
   }
 

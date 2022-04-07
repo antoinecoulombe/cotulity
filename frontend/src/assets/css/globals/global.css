@@ -789,7 +789,7 @@ button:hover {
   float: left;
 }
 .si-form.double.squared-inputs {
-  width: calc(50px * 2 + 20px) !important;
+  width: calc(50px * 2 + 15px) !important;
 }
 .si-form.double.squared-inputs .form-input {
   width: 50px !important;
@@ -801,7 +801,7 @@ button:hover {
   margin-left: 20px;
 }
 .si-form.double.with-d-squared {
-  width: calc(100% - 145px) !important;
+  width: calc(100% - 135px) !important;
 }
 .si-form.double.with-d-squared .form-input {
   width: 100% !important;
@@ -865,6 +865,15 @@ button:hover {
   line-height: 26px;
   height: 26px;
 }
+.form-input > .input-before-img > svg,
+.form-input > .input-before-img img {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  margin-left: 15px;
+  margin-top: 12px;
+  z-index: 2;
+}
 .form-input > input {
   font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 400;
@@ -901,6 +910,9 @@ button:hover {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
+}
+.form-input > input.with-image + label {
+  padding-left: 55px;
 }
 .form-input.error > label {
   color: var(--error-color) !important;

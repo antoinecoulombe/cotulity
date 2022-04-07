@@ -25,6 +25,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      accepted: {
+        allowNull: true,
+        type: Sequelize.BOOLEAN,
+      },
       expirationDays: {
         allowNull: false,
         type: Sequelize.INTEGER,

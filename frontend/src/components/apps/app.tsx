@@ -10,6 +10,7 @@ interface AppProps {
   id?: number;
   name: string;
   icon: string;
+  disabled?: { value: boolean; tooltip: string };
   onClick?: (name: string) => void;
 }
 
@@ -33,17 +34,27 @@ const App = (props: AppProps): JSX.Element => {
 
   return (
     <div
-      className="app-container"
+      className={`app-container${
+        props.disabled?.value === true ? ' disabled' : ''
+      }`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={handleClick}
+      onClick={props.disabled?.value === true ? undefined : handleClick}
     >
-      <Tooltip
-        hovered={hovered}
-        over={true}
-      >{`apps.${props.name}.name`}</Tooltip>
+      <Tooltip hovered={hovered} over={true}>
+        {props.disabled?.value === true
+          ? props.disabled.tooltip
+          : `apps.${props.name}.name`}
+      </Tooltip>
       <div className={`app ${props.name}`}>
-        <FontAwesomeIcon icon={['fas', props.icon as IconName]} />
+        <FontAwesomeIcon
+          icon={[
+            'fas',
+            (props.disabled?.value === true && hovered
+              ? 'ban'
+              : props.icon) as IconName,
+          ]}
+        />
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ interface InputProps {
   label?: string;
   className?: string;
   before?: JSX.Element;
+  beforeImg?: JSX.Element;
   after?: JSX.Element;
   filled?: boolean;
   neverFocused?: boolean;
@@ -43,6 +44,9 @@ const Input = (props: InputProps): JSX.Element => {
       }`}
     >
       {props.before}
+      {props.beforeImg && (
+        <div className="input-before-img">{props.beforeImg}</div>
+      )}
       <input
         id={props.name}
         name={props.name}
@@ -53,13 +57,13 @@ const Input = (props: InputProps): JSX.Element => {
         onKeyPress={props.onKeyPress}
         onClick={props.onClick}
         onFocus={props.onFocus}
-        className={
+        className={`${
           props.neverFocused === true
             ? 'never-focused'
             : props.filled
             ? 'filled'
             : ''
-        }
+        }${props.beforeImg ? ' with-image' : ''}`}
       ></input>
       <label
         htmlFor={props.name}

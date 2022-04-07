@@ -1,5 +1,4 @@
 import express from 'express';
-import { validateApp } from '../../../shared/src/routes/Apps';
 import { InputsToDate } from '../../../shared/src/routes/Global';
 import { getUsers, settleHomeDebt } from './Accounts';
 
@@ -11,10 +10,16 @@ const { Op } = require('sequelize');
 // ##################### Middlewares ######################
 // ########################################################
 
-Expenses.use(async (req: any, res, next) => {
-  req.params.appname = 'accounts';
-  validateApp(req, res, next);
-});
+// ########################################################
+// ###################### Interfaces ######################
+// ########################################################
+
+interface ExpenseUser {
+  id: number;
+  firstname: string;
+  lastname: string;
+  img: null | { url: string };
+}
 
 // ########################################################
 // ################### Getters / Globals ##################
@@ -96,7 +101,7 @@ Expenses.post('/', async (req: any, res: any) => {
         msg: 'expenses.amountOverZero',
       });
 
-    if (!req.body.ids || !Array.isArray(req.body.ids))
+    if (!req.body.Users || !Array.isArray(req.body.Users))
       return res
         .status(500)
         .json({ title: 'expenses.noUsers', msg: 'expenses.noUsers' });
@@ -108,7 +113,7 @@ Expenses.post('/', async (req: any, res: any) => {
     ).map((m: any) => m.id);
 
     if (
-      req.body.ids.filter((id: number) => !membersIds.includes(id)).length > 0
+      req.body.Users.filter((u: any) => !membersIds.includes(u.id)).length > 0
     )
       return res.status(500).json({
         title: 'expenses.userNotInHome',
@@ -127,18 +132,27 @@ Expenses.post('/', async (req: any, res: any) => {
         { transaction: t }
       );
 
-      let amountEach = req.body.amount / req.body.ids;
-      await db.ExpenseSplit.createBulk(
-        req.body.ids.map((id: number) => {
-          return { expenseId: expense.id, amount: amountEach, userId: id };
-        }),
-        { transaction: t }
-      );
+      let amountEach = req.body.amount / (req.body.Users.length + 1);
+      let splits = req.body.Users.map((u: ExpenseUser) => {
+        return { expenseId: expense.id, amount: amountEach, userId: u.id };
+      });
 
-      await req.body.ids.forEach(async (id: number) => {
+      if (
+        req.body.Users.filter((u: ExpenseUser) => u.id === req.user.id)
+          .length === 0
+      )
+        splits.push({
+          expenseId: expense.id,
+          amount: amountEach,
+          userId: req.user.id,
+        });
+
+      await db.ExpenseSplit.createBulk(splits, { transaction: t });
+
+      await req.body.Users.forEach(async (u: ExpenseUser) => {
         await settleHomeDebt(
           req.user.id,
-          id,
+          u.id,
           -amountEach,
           res.locals.home.id,
           t
@@ -148,7 +162,7 @@ Expenses.post('/', async (req: any, res: any) => {
       return res.json({
         title: 'expenses.created',
         msg: 'expenses.created',
-        expense: { ...expense, ExpenseSplits: req.body.ids },
+        expense: { ...expense, ExpenseSplits: req.body.Users },
       });
     });
   } catch (error) {

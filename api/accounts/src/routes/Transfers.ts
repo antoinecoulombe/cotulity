@@ -1,5 +1,4 @@
 import express from 'express';
-import { validateApp } from '../../../shared/src/routes/Apps';
 import { InputsToDate } from '../../../shared/src/routes/Global';
 import { getUsers, settleHomeDebt } from './Accounts';
 
@@ -11,28 +10,9 @@ const { Op } = require('sequelize');
 // ##################### Middlewares ######################
 // ########################################################
 
-Transfers.use(async (req: any, res, next) => {
-  req.params.appname = 'accounts';
-  validateApp(req, res, next);
-});
-
 // ########################################################
 // ##################### Interfaces #######################
 // ########################################################
-
-interface ExpenseSplit {
-  ExpenseId: number;
-  userId: number;
-  amount: number;
-  settledAmount: number;
-  settled: boolean;
-  Expense: {
-    id: number;
-    paidByUserId: number;
-    totalAmount: number;
-  };
-  save: () => any;
-}
 
 // ########################################################
 // ################### Getters / Globals ##################

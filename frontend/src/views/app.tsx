@@ -72,6 +72,7 @@ import {
   faReceipt,
   faExchangeAlt,
   faPeopleArrows,
+  faBan,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -115,7 +116,8 @@ library.add(
   faTrashArrowUp,
   faReceipt,
   faExchangeAlt,
-  faPeopleArrows
+  faPeopleArrows,
+  faBan
 );
 
 const App = (): JSX.Element => {

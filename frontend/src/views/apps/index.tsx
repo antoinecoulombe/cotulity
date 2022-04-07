@@ -39,6 +39,7 @@ const AppsPage = (): JSX.Element => {
       const i = homes.findIndex((h) => h.refNumber === home.refNumber);
       newHomes.unshift(newHomes.splice(i, 1)[0]);
     }
+
     setHomes(newHomes);
   };
 
@@ -96,7 +97,7 @@ const AppsPage = (): JSX.Element => {
             .put(`/homes/invitations/${token}/accept`)
             .then((res) => {
               setSuccessNotification(res.data);
-              history.push('/apps');
+              getHomes();
             })
             .catch((err) => {
               setNotification(err.response.data);
@@ -131,6 +132,16 @@ const AppsPage = (): JSX.Element => {
               id={app.id}
               name={app.name}
               key={app.id}
+              disabled={
+                app.name === 'accounts' &&
+                homes.find(
+                  (h) =>
+                    h.refNumber.toString() ===
+                    localStorage.getItem('currentHome')
+                )?.memberCount === 1
+                  ? { value: true, tooltip: 'accounts.disabled' }
+                  : undefined
+              }
             ></App>
           ))}
         </div>

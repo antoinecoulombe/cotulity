@@ -280,11 +280,6 @@
       "countZero": "terminé"
     }
   },
-  "transfers": {
-    "title": {
-      "transfers": "Versements"
-    }
-  },
   "groceries": {
     "title": { "groceries": "Liste d'épicerie" },
     "new": "Ajouter un article",
@@ -308,6 +303,39 @@
           "othersOwe": "Ils vous doivent"
         }
       }
+    }
+  },
+  "expenses": {
+    "title": {
+      "create": "Créer une nouvelle dépense",
+      "date": "Date",
+      "description": "Description",
+      "splittedWith": "Distribué parmis",
+      "amount": "Montant"
+    },
+    "name": {
+      "amount": "Montant payé",
+      "description": "Marques, endroits, etc.",
+      "splittedWith": "Le montant sera divisé également parmis ces membres."
+    },
+    "tooltip": {
+      "add": "Ajouter une dépense"
+    }
+  },
+  "transfers": {
+    "title": {
+      "transfers": "Versements",
+      "create": "Créer un nouveau versement",
+      "date": "Date",
+      "amount": "Montant",
+      "recipient": "Destinataire"
+    },
+    "name": {
+      "amount": "Montant envoyé",
+      "recipient": "Sélectionnez le destinataire de ce versement."
+    },
+    "tooltip": {
+      "add": "Ajouter un versement"
     }
   },
   "console": {

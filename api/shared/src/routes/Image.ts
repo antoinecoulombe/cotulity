@@ -50,7 +50,7 @@ export const save = async (
         msg: 'path.invalid',
       };
 
-    var filename = await Global.createTokenAsync(4);
+    var filename = Global.createToken();
 
     var form = new formidable.IncomingForm();
     await new Promise<void>((resolve, reject) => {
@@ -77,7 +77,7 @@ export const save = async (
 
     const img = await db.Image.create({
       filePath: path.join(destination, filename),
-      url: Global.createToken(4),
+      url: Global.createToken(),
     });
 
     return { success: true, title: 'request.success', image: img };

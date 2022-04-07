@@ -203,6 +203,7 @@ const AppTasks = (): JSX.Element => {
             };
           })
         );
+
         setSidebarTabs(tabs);
         setUsers(res.data.users);
       })

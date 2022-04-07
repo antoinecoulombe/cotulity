@@ -23,6 +23,7 @@ export interface SingleInputFormProps {
   error?: boolean;
   required?: boolean;
   className?: string;
+  onlyNumbers?: boolean;
   parent?: { onChange: (e: any) => void };
   errorCheck?: (input: string) => boolean;
   onSubmit?: (value: string) => void;
@@ -38,9 +39,18 @@ const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
     if (event.key === 'Enter' && !hasErrors()) props.onSubmit?.(value);
   };
 
-  const onChange = (event: any): void => {
-    setValue(event.target.value);
-    if (props.parent?.onChange) props.parent.onChange(event);
+  const cancelChange = (e: any): boolean => {
+    if (!props.onlyNumbers || !e.target.value.length) return false;
+    if (props.onlyNumbers === true && isNaN(e.target.value)) return true;
+    if ((e.target.value.match(/\./g) || []).length > 1) return true;
+    return false;
+  };
+
+  const onChange = (e: any): void => {
+    if (cancelChange(e)) return;
+
+    setValue(e.target.value);
+    if (props.parent?.onChange) props.parent.onChange(e);
   };
 
   const hasErrors = () => {

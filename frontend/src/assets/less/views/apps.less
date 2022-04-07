@@ -19,7 +19,24 @@
       width: @app-size;
       height: @app-size;
       margin: @margin;
-      cursor: pointer;
+
+      &.disabled {
+        cursor: default;
+
+        > .app {
+          opacity: 0.8;
+        }
+
+        &:hover {
+          > .app {
+            color: var(--error-color) !important;
+          }
+        }
+      }
+
+      &:not(.disabled) {
+        cursor: pointer;
+      }
 
       > .app {
         display: flex;

@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useTranslation } from 'react-i18next';
 import { SidebarTab, SidebarModule } from '../../components/app/sidebar';
-import { SubHeaderProps, SubHeaderTab } from '../../components/app/subHeader';
+import { SubHeaderTab } from '../../components/app/subHeader';
+import { default as ExpenseEditPopup } from '../../components/expenses/editPopup';
+import { default as TransferEditPopup } from '../../components/transfers/editPopup';
 import { HomeMember } from './homes';
 import { getTranslateJSON } from '../../utils/global';
 import AppContainer from '../../components/app/appContainer';
@@ -13,6 +15,8 @@ import ListItemRight from '../../components/utils/lists/listRight';
 import IconToolTip from '../../components/global/iconTooltip';
 import axios from '../../utils/fetchClient';
 import '../../assets/css/apps/accounts.css';
+import { DropdownMultiOption } from '../../components/forms/dropdownMulti';
+import Translate from '../../components/utils/translate';
 
 const nullJSX: JSX.Element = <></>;
 
@@ -35,6 +39,8 @@ interface Transfer {
   fromUserId: number;
   toUserId: number;
 }
+
+interface AccountHomeMember extends HomeMember {}
 
 const AppAccounts = (): JSX.Element => {
   const { t } = useTranslation('common');
@@ -71,18 +77,10 @@ const AppAccounts = (): JSX.Element => {
     setLoaded(true);
     let selected = getSelectedTab();
     handleTitle(selected);
+    //handle expenses and transfers
   }, [sidebarTabs, subHeaderTabs]);
 
   useEffect(() => {
-    axios
-      .get(`/accounts/${localStorage.getItem('currentHome')}/users`)
-      .then(async (res: any) => {
-        setUsers(res.data.users);
-      })
-      .catch((err) => {
-        setNotification(err.response.data);
-      });
-
     let tabs: SidebarTab[] = [
       {
         icon: 'receipt',
@@ -121,6 +119,15 @@ const AppAccounts = (): JSX.Element => {
     });
 
     setSidebarTabs(tabs);
+
+    axios
+      .get(`/accounts/${localStorage.getItem('currentHome')}/users`)
+      .then(async (res: any) => {
+        setUsers([...res.data.users]);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   }, []);
 
   const handleTitle = (tab: SidebarTab): void => {
@@ -213,6 +220,75 @@ const AppAccounts = (): JSX.Element => {
     setSubHeaderTabs(newSubHeaderTabs);
   };
 
+  const handleExpenseSubmit = (expense: any) => {
+    console.log(expense);
+    // axios({
+    //   method: 'post',
+    //   url: `/accounts/${localStorage.getItem('currentHome')}/expenses`,
+    //   data: {
+    //     expense,
+    //   },
+    // })
+    //   .then((res: any) => {
+    //     // res.data
+    //   })
+    //   .catch((err: any) => {
+    //     setNotification(err.response.data);
+    //   });
+  };
+
+  const handleTransferSubmit = (transfer: any) => {
+    console.log(transfer);
+    // axios({
+    //   method: 'post',
+    //   url: `/accounts/${localStorage.getItem('currentHome')}/transfers`,
+    //   data: {
+    //     transfer,
+    //   },
+    // })
+    //   .then((res: any) => {
+    //     // res.data
+    //   })
+    //   .catch((err: any) => {
+    //     setNotification(err.response.data);
+    //   });
+  };
+
+  const showExpensePopup = () => {
+    setPopup(
+      <ExpenseEditPopup
+        onCancel={() => setPopup(nullJSX)}
+        users={users
+          .filter((u) => u.id.toString() !== localStorage.getItem('userId'))
+          .map((u) => {
+            return {
+              id: u.id,
+              value: `${u.firstname} ${u.lastname}`,
+              img: u.Image?.url ?? undefined,
+              icon:
+                (u.Image?.url ?? undefined) === undefined
+                  ? 'user-circle'
+                  : undefined,
+              selected: false,
+            } as DropdownMultiOption;
+          })}
+        onSubmit={(expense: any) => handleExpenseSubmit(expense)}
+      />
+    );
+  };
+
+  const showTransferPopup = () => {
+    setPopup(
+      <TransferEditPopup
+        onCancel={() => setPopup(nullJSX)}
+        users={users.filter(
+          (u) => u.id.toString() !== localStorage.getItem('userId')
+        )}
+        onSubmit={(transfer: any) => handleTransferSubmit(transfer)}
+      />
+    );
+  };
+
   return (
     <AppContainer
       title={title}
@@ -222,8 +298,27 @@ const AppAccounts = (): JSX.Element => {
         tabs: subHeaderTabs,
         tabHandler: (tabs: SubHeaderTab[]) => setSubHeaderTabs(tabs),
       }}
+      popup={popup}
+      onAddClick={
+        title === 'sidebar.expenses.title'
+          ? () => showExpensePopup()
+          : () => showTransferPopup()
+      }
+      onAddTooltip={`${
+        title === 'sidebar.expenses.title' ? 'expenses' : 'transfers'
+      }.tooltip.add`}
     >
-      <></>
+      <div className="content">
+        <List key={`expense-list`} className="fill-height">
+          {loaded ? (
+            <ListItem key={`expense-1`} uid={1}>
+              <></>
+            </ListItem>
+          ) : (
+            <></>
+          )}
+        </List>
+      </div>
     </AppContainer>
   );
 };

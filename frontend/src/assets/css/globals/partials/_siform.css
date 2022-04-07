@@ -220,7 +220,7 @@
   float: left;
 }
 .si-form.double.squared-inputs {
-  width: calc(50px * 2 + 20px) !important;
+  width: calc(50px * 2 + 15px) !important;
 }
 .si-form.double.squared-inputs .form-input {
   width: 50px !important;
@@ -232,7 +232,7 @@
   margin-left: 20px;
 }
 .si-form.double.with-d-squared {
-  width: calc(100% - 145px) !important;
+  width: calc(100% - 135px) !important;
 }
 .si-form.double.with-d-squared .form-input {
   width: 100% !important;
