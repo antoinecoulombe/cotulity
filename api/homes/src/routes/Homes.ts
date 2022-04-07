@@ -253,6 +253,8 @@ Homes.put('/invitations/:token/accept', async (req: any, res: any) => {
         );
       }
 
+      invite.accepted = true;
+      await invite.save({ transaction: t });
       await invite.destroy({ transaction: t });
 
       return res.json({

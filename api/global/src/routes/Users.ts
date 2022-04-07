@@ -242,16 +242,18 @@ Users.post('/public/password/reset', async (req, res) => {
       );
     });
 
-    const emailHtml = Global.format(
-      await Global.readHtml(__dirname + '/_html/passwordReset.html'),
-      [token]
+    const emailHTML = await Global.readHTML(
+      __dirname + '/_html/passwordReset.html'
     );
+    if (!emailHTML) throw 'Could not read HTML.';
+
+    const formattedEmailHTML = Global.format(emailHTML, [token]);
 
     const mailRes = await sendEmail({
       from: email.sender,
       to: req.body.email,
       subject: `Your Cotulity Password Reset Request`,
-      html: emailHtml,
+      html: formattedEmailHTML,
     });
 
     if (!mailRes.success) {

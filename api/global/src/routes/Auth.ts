@@ -87,16 +87,18 @@ Router.post('/login', async (req, res) => {
             token: emailToken,
           });
 
-          const emailHtml = Global.format(
-            await Global.readHtml(__dirname + '/_html/verifyEmail.html'),
-            [emailToken]
+          const emailHTML = await Global.readHTML(
+            __dirname + '/_html/verifyEmail.html'
           );
+          if (!emailHTML) throw 'Could not read HTML.';
+
+          const formattedEmailHTML = Global.format(emailHTML, [emailToken]);
 
           const mailRes = await sendEmail({
             from: emailInfo.sender,
             to: req.body.email,
             subject: `Verify Your Cotulity Account`,
-            html: emailHtml,
+            html: formattedEmailHTML,
           });
 
           if (!mailRes.success) {
