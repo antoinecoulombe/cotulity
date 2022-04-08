@@ -2,8 +2,6 @@ import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
 import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
-
-// Supertest
 import supertest from 'supertest';
 
 describe('groceries', () => {
@@ -17,8 +15,10 @@ describe('groceries', () => {
   var groceries: number[] = [];
 
   beforeAll(async () => {
+    // Create test user
     USER = await registerAndLogin(CALLER, reqGlobal);
 
+    // Create home and store its reference number
     homeRef = (
       await reqHomes
         .post(`/homes/groceriesTest`)
@@ -53,6 +53,7 @@ describe('groceries', () => {
   });
 
   it('should add three articles to the grocery list', async () => {
+    // Create a grocery item and verify the response status
     const res = await reqGroceries
       .post(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`)
@@ -69,12 +70,14 @@ describe('groceries', () => {
     });
     groceries.push(res.body.article.id);
 
+    // Create another grocery item, but skip verification
     const res2 = await reqGroceries
       .post(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`)
       .send({ description: 'salsa' });
     groceries.push(res2.body.article.id);
 
+    // Create a third grocery item, and skip verification
     const res3 = await reqGroceries
       .post(`/groceries/${homeRef}`)
       .set('Authorization', `Bearer ${USER.token}`)

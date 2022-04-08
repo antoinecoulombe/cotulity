@@ -321,7 +321,7 @@
     "name": {
       "amount": "Price Paid",
       "description": "Items bought, brands, etc.",
-      "splittedWith": "Select members with whom to equally split this expense"
+      "splittedWith": "Members with whom to equally split this expense"
     },
     "tooltip": {
       "add": "Add Expense"

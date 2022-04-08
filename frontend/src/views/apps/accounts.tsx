@@ -258,20 +258,18 @@ const AppAccounts = (): JSX.Element => {
     setPopup(
       <ExpenseEditPopup
         onCancel={() => setPopup(nullJSX)}
-        users={users
-          .filter((u) => u.id.toString() !== localStorage.getItem('userId'))
-          .map((u) => {
-            return {
-              id: u.id,
-              value: `${u.firstname} ${u.lastname}`,
-              img: u.Image?.url ?? undefined,
-              icon:
-                (u.Image?.url ?? undefined) === undefined
-                  ? 'user-circle'
-                  : undefined,
-              selected: false,
-            } as DropdownMultiOption;
-          })}
+        users={users.map((u) => {
+          return {
+            id: u.id,
+            value: `${u.firstname} ${u.lastname}`,
+            img: u.Image?.url ?? undefined,
+            icon:
+              (u.Image?.url ?? undefined) === undefined
+                ? 'user-circle'
+                : undefined,
+            selected: false,
+          } as DropdownMultiOption;
+        })}
         onSubmit={(expense: any) => handleExpenseSubmit(expense)}
       />
     );

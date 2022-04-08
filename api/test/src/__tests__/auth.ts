@@ -4,8 +4,6 @@ import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
 import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
-
-// Supertest
 import supertest from 'supertest';
 
 describe('passport auth', () => {
@@ -17,6 +15,7 @@ describe('passport auth', () => {
   var USER2 = { token: '', id: 0 };
 
   beforeAll(async () => {
+    // Create two test users
     USER = await registerAndLogin(CALLER, reqGlobal);
     USER2 = await registerAndLogin(CALLER + '2', reqGlobal);
   });
@@ -34,6 +33,7 @@ describe('passport auth', () => {
   });
 
   it('should deny user login due to unverified email', async () => {
+    // Verify email manually
     await db.User.update(
       { emailVerifiedAt: null },
       { where: { id: USER2.id } }
@@ -51,6 +51,7 @@ describe('passport auth', () => {
   });
 
   it('should deny user login due to user id not found in token', async () => {
+    // Delete second test user
     await reqGlobal
       .delete('/users/delete')
       .set('Authorization', `Bearer ${USER2.token}`);

@@ -173,16 +173,20 @@
       }
     },
     "kickMember": {
-      "desc": "",
-      "title": "",
+      "text": {
+        "title": "Êtes-vous sûr?",
+        "desc": "Cette action est irréversible."
+      },
       "buttons": {
         "yes": "Oui, exclure '{0}'",
         "no": "Non, conserver '{0}'"
       }
     },
     "rejectRequest": {
-      "desc": "",
-      "title": "",
+      "text": {
+        "title": "Êtes-vous sûr?",
+        "desc": "Cette action est irréversible."
+      },
       "buttons": {
         "yes": "Oui, refuser '{0}'",
         "no": "Non, conserver la demande"

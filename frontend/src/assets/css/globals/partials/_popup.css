@@ -52,6 +52,9 @@
 .popup-container > .popup .form-input > input {
   background-color: var(--popup-input-bg-color);
 }
+.popup-container > .popup.si {
+  width: 50%;
+}
 .popup-container > .popup.si > .si-form {
   width: 100%;
 }

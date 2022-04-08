@@ -7,8 +7,6 @@ import {
   setEmailVerifiedAt,
   getIp,
 } from '../../../shared/src/routes/Test';
-
-// Supertest
 import supertest from 'supertest';
 
 describe('connection', () => {

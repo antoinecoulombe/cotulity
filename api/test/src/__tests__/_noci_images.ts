@@ -5,8 +5,6 @@ import 'jest-extended';
 import 'jest-extended/all';
 import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
 import * as Image from '../../../shared/src/routes/Image';
-
-// Supertest
 import supertest from 'supertest';
 
 describe('noci-images', () => {

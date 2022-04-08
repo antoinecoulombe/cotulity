@@ -51,6 +51,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
     let date = getDate(expense.date);
 
+    if (!expense.Users?.length) newErrors.users = true;
     if (!expense.description?.length) newErrors.description = true;
     if (!expense.amount || isNaN(expense.amount)) newErrors.amount = true;
     if (date.day.length == 0 || date.month.length == 0) newErrors.date = true;

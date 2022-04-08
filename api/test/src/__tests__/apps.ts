@@ -4,8 +4,6 @@ import 'jest';
 import 'jest-extended';
 import 'jest-extended/all';
 import { getIp, registerAndLogin } from '../../../shared/src/routes/Test';
-
-// Supertest
 import supertest from 'supertest';
 
 describe('apps', () => {
@@ -18,13 +16,17 @@ describe('apps', () => {
   var homeRef: string;
 
   beforeAll(async () => {
+    // Create test user
     USER = await registerAndLogin(CALLER, reqGlobal);
+
+    // Create test app
     await db.App.create({
       priority: 99999,
       name: 'test',
       image: 'question-circle',
     });
 
+    // create home and store its reference number
     homeRef = (
       await reqHomes
         .post(`/homes/appsTest`)

@@ -23,6 +23,7 @@ describe('notifications', () => {
   ];
 
   beforeAll(async () => {
+    // Create test user
     USER = await registerAndLogin(CALLER, reqGlobal);
   });
 

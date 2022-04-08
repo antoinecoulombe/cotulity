@@ -337,6 +337,9 @@ button:hover {
 .popup-container > .popup .form-input > input {
   background-color: var(--popup-input-bg-color);
 }
+.popup-container > .popup.si {
+  width: 50%;
+}
 .popup-container > .popup.si > .si-form {
   width: 100%;
 }
@@ -876,6 +879,10 @@ button:hover {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
+}
+.form-input > label > svg {
+  position: relative;
+  top: 1px;
 }
 .form-input > .input-before-img > svg,
 .form-input > .input-before-img img {

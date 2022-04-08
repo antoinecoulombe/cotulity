@@ -57,6 +57,10 @@
   line-height: 26px;
   height: 26px;
 }
+.form-input > label > svg {
+  position: relative;
+  top: 1px;
+}
 .form-input > .input-before-img > svg,
 .form-input > .input-before-img img {
   position: absolute;

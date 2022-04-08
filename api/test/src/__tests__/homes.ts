@@ -35,6 +35,7 @@ describe('homes', () => {
   };
 
   beforeAll(async () => {
+    // Create two test users
     USER = await registerAndLogin(CALLER, reqGlobal);
     USER2 = await registerAndLogin('sender', reqGlobal);
   });

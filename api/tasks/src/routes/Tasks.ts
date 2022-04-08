@@ -38,6 +38,16 @@ interface Task {
   untilDate?: Date;
 }
 
+/**
+ * Gets all home tasks.
+ * @param req The HTTP request.
+ * @param res The HTTP response.
+ * @param when Either 'all', 'completed' or 'upcoming'. Represents which
+ * tasks should be returned.
+ * @param occurenceId If specified, gets the task associated with the task
+ * occurence with this id.
+ * @returns A promise to return an array of tasks.
+ */
 const getTasks = async (
   req: any,
   res: any,
@@ -93,6 +103,13 @@ const getTasks = async (
   }
 };
 
+/**
+ * Gets all occurences of a Date until 'untilDate'.
+ * @param dueDate The date of the first task occurence.
+ * @param repeat The task frequency. Either 'day', 'week', 'twoweek' or 'month'.
+ * @param untilDate The date of the last task occurence.
+ * @returns A string array containing the task occurences, as UTC string.
+ */
 const getRepeatingDatesUntil = (
   dueDate: Date,
   repeat?: string,
@@ -101,11 +118,13 @@ const getRepeatingDatesUntil = (
   let occurences: string[] = [];
   occurences.push(dueDate.toUTCString());
 
+  // Check if task repeats
   if (repeat && untilDate && repeat !== 'none') {
     let valid: boolean = true;
     let untilMilliseconds = untilDate.getTime();
     let dueMilliseconds = dueDate.getTime();
 
+    // While task occurence is before 'untilDate', with a limit of 50 occurences
     while (dueMilliseconds <= untilMilliseconds && occurences.length < 50) {
       switch (repeat) {
         case 'day':
@@ -126,6 +145,8 @@ const getRepeatingDatesUntil = (
       }
 
       dueMilliseconds = dueDate.getTime();
+
+      // Make sure the task occurence is before 'untilDate'
       if (!valid || dueMilliseconds > untilMilliseconds) break;
 
       occurences.push(dueDate.toUTCString());
@@ -135,6 +156,12 @@ const getRepeatingDatesUntil = (
   return occurences;
 };
 
+/**
+ * Gets the task users.
+ * @param req The HTTP request.
+ * @param res The HTTP response.
+ * @returns An array containing the task users.
+ */
 const getUsers = async (req: any, res: any) => {
   let members = await res.locals.home.getMembers({
     attributes: ['id', 'firstname', 'lastname'],
@@ -147,9 +174,11 @@ const getUsers = async (req: any, res: any) => {
     ],
   });
 
+  // If the task isn't shared, return only the requester id
   if (req.body.task.Task.shared == false)
     return members.filter((m: any) => m.id === req.user.id);
   else {
+    // Otherwise, return all users in request intersecting with home members
     return members.filter(
       (m: any) =>
         req.body.task.Users.filter((u: any) => u.id === m.id).length > 0
@@ -157,12 +186,21 @@ const getUsers = async (req: any, res: any) => {
   }
 };
 
-const respondIfErrors = (users: any[], repeat: string, res: any) => {
+/**
+ * Sends an error response if conditions aren't met
+ * @param users The task users.
+ * @param repeat The task repeat frequency string.
+ * @param res The HTTP response.
+ * @returns A boolean indicating whether or not an error response was sent.
+ */
+const respondIfErrors = (users: any[], repeat: string, res: any): boolean => {
+  // Check if task has users
   if (!users.length) {
     res.status(500).json({ title: 'tasks.noUsers', msg: 'tasks.noUsers' });
     return true;
   }
 
+  // Check if the repeat string is valid
   let repeatOptions: string[] = ['none', 'day', 'week', 'twoweek', 'month'];
   if (!repeatOptions.includes(repeat)) {
     res.status(500).json({ title: 'request.error', msg: 'request.error' });
@@ -172,14 +210,27 @@ const respondIfErrors = (users: any[], repeat: string, res: any) => {
   return false;
 };
 
+/**
+ * Creates and inserts the task occurences and their users in the database, at each 'repeat' until 'untilDate'.
+ * @param taskOcc The task occurence.
+ * @param transaction The sequelize transaction object.
+ * @param repeat The repeat frequency string.
+ * @param untilDate The repeat frequency end date.
+ * @param deleteOld A boolean indicating whether or not the old task occurences
+ * associated to a task should be deleted.
+ * @returns A promise to return an object containing created and deleted task occurences, with their users.
+ */
 const createTaskOccurences = async (
   taskOcc: TaskOccurence,
   transaction: any,
   repeat: string,
   untilDate?: Date | null,
   deleteOld?: number
-) => {
+): Promise<{ created: any[]; deleted: number[] }> => {
+  // Get first task occurence date
   let firstDueDate = new Date(taskOcc.dueDate);
+
+  // Init task occurence
   let taskOccurence = {
     taskId: taskOcc.taskId,
     Users: taskOcc.Users,
@@ -187,6 +238,7 @@ const createTaskOccurences = async (
   };
   let oldIds: number[] = [];
 
+  // Get all occurences
   let taskOccurences: any[] = getRepeatingDatesUntil(
     taskOcc.dueDate,
     repeat,
@@ -195,24 +247,27 @@ const createTaskOccurences = async (
     return { ...taskOccurence, dueDateTime: o };
   });
 
+  // Delete previous occurences
   if (deleteOld) {
-    let oldTaskOccurences = await db.TaskOccurence.findAll(
-      {
-        where: {
-          taskId: taskOcc.taskId,
-          [Op.or]: {
-            id: { [Op.gte]: deleteOld },
-            dueDateTime: {
-              [Op.gte]: firstDueDate,
+    // Get ids of all previous occurences
+    let oldIds = (
+      await db.TaskOccurence.findAll(
+        {
+          where: {
+            taskId: taskOcc.taskId,
+            [Op.or]: {
+              id: { [Op.gte]: deleteOld },
+              dueDateTime: {
+                [Op.gte]: firstDueDate,
+              },
             },
           },
         },
-      },
-      { transaction: transaction }
-    );
+        { transaction: transaction }
+      )
+    ).map((oto: any) => oto.id);
 
-    oldIds = oldTaskOccurences.map((oto: any) => oto.id);
-
+    // Delete users associated to all previous task occurence ids
     await db.TaskUser.destroy(
       {
         where: { taskOccurenceId: oldIds },
@@ -221,6 +276,7 @@ const createTaskOccurences = async (
       { transaction: transaction }
     );
 
+    // Delete all previous task occurences
     await db.TaskOccurence.destroy(
       {
         where: { id: oldIds },
@@ -230,26 +286,34 @@ const createTaskOccurences = async (
     );
   }
 
-  // Create task occurences
+  // Create new task occurences
   let taskOccurencesDb = await db.TaskOccurence.bulkCreate(taskOccurences, {
     transaction: transaction,
   });
 
+  // Get ids from inserted task occurences and associate them with corresponding local task occurences
   taskOccurences = taskOccurences.map((t: any) => {
+    // Get local task occurence date string
     let tDate: string = new Date(t.dueDateTime).toUTCString();
+
+    // Find the inserted task occurence with the same date
     let taskOcc = taskOccurencesDb.find(
       (tDb: any) => new Date(tDb.dueDateTime).toUTCString() == tDate
     );
 
+    // Check if a task occurence is found
     if (!taskOcc)
       throw new Error(
         `Couldn't find taskOccurence with date equal to '${tDate}'`
       );
 
+    // Merge the local task occurence with the found task occurence id
     return { ...t, id: taskOcc.id };
   });
 
   let taskUsers: { userId: number; taskOccurenceId: number }[] = [];
+
+  // Get users for each task occurence and push them to an array for bulk insertion
   taskOccurences.forEach((t) => {
     t.completedOn = null;
     t.deletedAt = null;
@@ -268,7 +332,9 @@ const createTaskOccurences = async (
 // ######################### GET ##########################
 // ########################################################
 
-// Get all tasks
+/**
+ * Gets all home tasks.
+ */
 Tasks.get('/', async (req: any, res: any) => {
   try {
     let tasks = await getTasks(req, res, 'all');
@@ -283,11 +349,16 @@ Tasks.get('/', async (req: any, res: any) => {
   }
 });
 
+/**
+ * Gets all home users.
+ */
 Tasks.get('/users', async (req: any, res: any) => {
   try {
+    // Create a Date object two weeks from now
     var inTwoWeeks = new Date();
     inTwoWeeks.setDate(inTwoWeeks.getDate() + 14);
 
+    // Get all accepted home users
     let users = await res.locals.home.getMembers({
       attributes: ['id', 'firstname', 'lastname'],
       include: [{ model: db.Image, attributes: ['url'] }],
@@ -296,6 +367,7 @@ Tasks.get('/users', async (req: any, res: any) => {
       },
     });
 
+    // Get all task occurences associated to each user
     let usersWithTasks = await Promise.all(
       users.map(async (u: any) => {
         let taskOccurences = await u.getTaskOccurences({
@@ -319,6 +391,7 @@ Tasks.get('/users', async (req: any, res: any) => {
           order: ['dueDateTime'],
         });
 
+        // Merge the user sequelize object with its task occurences
         return { ...u.dataValues, TaskOccurences: taskOccurences };
       })
     );
@@ -334,7 +407,9 @@ Tasks.get('/users', async (req: any, res: any) => {
   }
 });
 
-// Get all upcoming tasks
+/**
+ * Gets all upcoming tasks.
+ */
 Tasks.get('/upcoming', async (req: any, res: any) => {
   try {
     let tasks = await getTasks(req, res, 'upcoming');
@@ -349,7 +424,9 @@ Tasks.get('/upcoming', async (req: any, res: any) => {
   }
 });
 
-// Get all completed tasks.
+/**
+ * Gets all completed tasks.
+ */
 Tasks.get('/completed', async (req: any, res: any) => {
   try {
     let tasks = await getTasks(req, res, 'completed');
@@ -368,38 +445,46 @@ Tasks.get('/completed', async (req: any, res: any) => {
 // ######################### PUT ##########################
 // ########################################################
 
-// Modifies a task and its taskOccurences.
+/**
+ * Modifies a task and its taskOccurences.
+ */
 Tasks.put('/:id', async (req: any, res: any) => {
   try {
+    // Convert input strings to Date objects
     let dueDate = InputsToDate(req.body.task.dueDateTime);
     let untilDate = req.body.task.Task.untilDate
       ? InputsToDate(req.body.task.Task.untilDate)
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {
+      // Check if dueDate is valid
       if (dueDate === null)
         return res
           .status(500)
           .json({ title: 'task.invalidDate', msg: 'task.invalidDate' });
 
+      // Get task that has a certain task occurence id associated to it
       let taskDb = await getTasks(req, res, 'all', req.params.id);
       if (!taskDb?.length)
         return res
           .status(404)
           .json({ title: 'task.notFound', msg: 'task.notFound' });
 
+      // Get first found task (should be only one), and modify it
       let task = taskDb[0];
-
       task.name = req.body.task.Task.name;
       task.repeat = req.body.task.Task.repeat;
       task.untilDate = untilDate;
 
+      // Get all task users
       let taskUsers: any[] = await getUsers(req, res);
 
+      // Send an error if errors are found
       if (respondIfErrors(taskUsers, req.body.task.Task.repeat, res)) return;
 
       await task.save({ transaction: t });
 
+      // Create base task occurence
       let taskOccurence: TaskOccurence = {
         taskId: task.id,
         Users: taskUsers,
@@ -408,6 +493,8 @@ Tasks.put('/:id', async (req: any, res: any) => {
         completedOn: null,
         deletedAt: null,
       };
+
+      // Create all task occurences from base task occurence
       let taskOccurences = await createTaskOccurences(
         taskOccurence,
         t,
@@ -437,21 +524,34 @@ Tasks.put('/:id', async (req: any, res: any) => {
   }
 });
 
-const editCompletion = async (req: any, res: any, done: boolean) => {
+/**
+ *
+ * @param req The HTTP request.
+ * @param res The HTTP response.
+ * @param toComplete A boolean indicating whether or not the task should be completed
+ * (if set to 'true', means that the task is currently not completed and will be after this method).
+ */
+const editCompletion = async (req: any, res: any, toComplete: boolean) => {
   try {
+    // Search upcoming tasks (not completed) if 'toComplete' is true. Otherwise, search completed tasks
     let tasks = await getTasks(
       req,
       res,
-      done ? 'upcoming' : 'completed',
+      toComplete ? 'upcoming' : 'completed',
       req.params.id
     );
+
+    // Check if task exists
     if (!tasks.length)
       return res
         .status(404)
         .json({ title: 'task.notFound', msg: 'task.notFound' });
 
+    // Get first occurence of first task (should be only one in both case)
     let taskOccurence = tasks[0].Occurences[0];
-    taskOccurence.completedOn = done ? new Date() : null;
+
+    // Set completion
+    taskOccurence.completedOn = toComplete ? new Date() : null;
     await taskOccurence.save();
 
     res.json({
@@ -465,25 +565,35 @@ const editCompletion = async (req: any, res: any, done: boolean) => {
   }
 };
 
-// Completes a task.
+/**
+ * Completes a task.
+ */
 Tasks.put('/:id/do', async (req: any, res: any) =>
   editCompletion(req, res, true)
 );
 
-// Uncompletes a task.
+/**
+ * Uncompletes a task.
+ */
 Tasks.put('/:id/undo', async (req: any, res: any) =>
   editCompletion(req, res, false)
 );
 
-// Restores a task occurence.
+/**
+ * Restores a task occurence.
+ */
 Tasks.put('/:id/restore', async (req: any, res: any) => {
   try {
+    // Get task associated with task occurence id
     let tasks = await getTasks(req, res, 'all', req.params.id);
-    if (tasks.length == 0)
+
+    // Check if task exists
+    if (!tasks.length)
       return res
         .status(404)
         .json({ title: 'task.notFound', msg: 'task.notFound' });
 
+    // Restore task occurence
     await tasks[0].Occurences[0].restore();
 
     res.json({
@@ -500,24 +610,31 @@ Tasks.put('/:id/restore', async (req: any, res: any) => {
 // ######################### POST #########################
 // ########################################################
 
-// Creates a new task.
+/**
+ * Creates a new task.
+ */
 Tasks.post('/', async (req: any, res: any) => {
   try {
+    // Convert input strings to Date objects
     let dueDate = InputsToDate(req.body.task.dueDateTime);
     let untilDate = req.body.task.Task.untilDate
       ? InputsToDate(req.body.task.Task.untilDate)
       : null;
 
     return await db.sequelize.transaction(async (t: any) => {
+      // Check if dueDate is valid
       if (dueDate === null)
         return res
           .status(500)
           .json({ title: 'task.invalidDate', msg: 'task.invalidDate' });
 
+      // Get all task users
       let taskUsers: any[] = await getUsers(req, res);
 
+      // Send an error if errors are found
       if (respondIfErrors(taskUsers, req.body.task.Task.repeat, res)) return;
 
+      // Create Task
       let task = await db.Task.create(
         {
           homeId: res.locals.home.id,
@@ -530,6 +647,7 @@ Tasks.post('/', async (req: any, res: any) => {
         { transaction: t }
       );
 
+      // Create base task occurence
       let taskOccurence: TaskOccurence = {
         taskId: task.id,
         Users: taskUsers,
@@ -538,6 +656,8 @@ Tasks.post('/', async (req: any, res: any) => {
         completedOn: null,
         deletedAt: null,
       };
+
+      // Create all task occurences from base task occurence
       let taskOccurences = await createTaskOccurences(
         taskOccurence,
         t,
@@ -561,19 +681,25 @@ Tasks.post('/', async (req: any, res: any) => {
 // ######################## DELETE ########################
 // ########################################################
 
-// Deletes the task occurence with the specified id.
+/**
+ * Deletes the task occurence with the specified id.
+ */
 Tasks.delete('/:id', async (req: any, res: any) => {
   try {
+    // Get task associated with task occurence id
     let tasks = await getTasks(req, res, 'all', req.params.id);
-    if (tasks.length == 0)
+
+    // Check if task exists
+    if (!tasks.length)
       return res
         .status(404)
         .json({ title: 'task.notFound', msg: 'task.notFound' });
 
+    // Get first found task (should be only one)
     let task = tasks[0];
 
     return await db.sequelize.transaction(async (t: any) => {
-      // if deletedAt != null -> force delete
+      // if task occurence is already soft deleted, hard delete it (force = true)
       var deletedAt =
         task.Occurences[0].deletedAt === null ? new Date().toUTCString() : null;
       let force = deletedAt === null;
