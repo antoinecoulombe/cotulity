@@ -2,7 +2,7 @@ require('dotenv').config({
   path: require('path').resolve(__dirname, '../../../shared/.env'),
 });
 
-var db = require('../../../shared/db/models');
+const dbPassport = require('../../../shared/db/models');
 var passport = require('passport');
 var passportJWT = require('passport-jwt');
 
@@ -21,7 +21,7 @@ passport.use(
       if (!jwt_payload.id) next(null, false);
 
       // Get user from database
-      let user = await db.User.findOne({
+      let user = await dbPassport.User.findOne({
         where: { id: jwt_payload.id },
       });
 

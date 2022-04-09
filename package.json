@@ -23,9 +23,19 @@
     "t:groceries": "npm --prefix ./api/groceries run dev:test",
     "t:accounts": "npm --prefix ./api/accounts run dev:test",
     "t:calendar": "npm --prefix ./api/calendar run dev:test",
-    "t:start": "npm --prefix ./api/test start"
+    "t:start": "npm --prefix ./api/test start",
+    "coverage": "cross-env NODE_ENV=test npm --prefix ./api/shared run migrate:reset && jest --runInBand"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/supertest": "^2.0.12",
+    "jest": "^27.5.1",
+    "jest-extended": "^2.0.0",
+    "supertest": "^6.2.2",
+    "ts-jest": "^27.1.4"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "gulp": "^4.0.2",
     "gulp-less": "^5.0.0"
   }
