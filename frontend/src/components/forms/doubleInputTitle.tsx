@@ -16,6 +16,7 @@ export interface DoubleInputFormProps {
     second?: string;
   };
   onlyNumbers?: boolean;
+  onlyPositives?: boolean;
   onChange: (e: any, input: number) => boolean;
 }
 
@@ -32,7 +33,10 @@ const DoubleInputForm = (props: DoubleInputFormProps): JSX.Element => {
 
   const cancelChange = (e: any): boolean => {
     if (!props.onlyNumbers || !e.target.value.length) return false;
-    if (props.onlyNumbers === true && isNaN(e.target.value)) return true;
+    if (props.onlyNumbers === true) {
+      if (isNaN(e.target.value)) return true;
+      if (props.onlyPositives === true && e.target.value <= 0) return true;
+    }
     if ((e.target.value.match(/\./g) || []).length) return true;
     return false;
   };

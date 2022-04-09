@@ -101,23 +101,29 @@ Expenses.get('/total/year', async (req: any, res: any) => {
  */
 Expenses.post('/', async (req: any, res: any) => {
   try {
-    let date = InputsToDate(req.body.date);
+    let reqExpense = req.body.expense;
+    if (!reqExpense)
+      return res
+        .status(500)
+        .json({ title: 'request.error', msg: 'request.error' });
+
+    let date = InputsToDate(reqExpense.date + '@12:00', true);
 
     // Check if the description and date are valid
-    if (!req.body.description || !date)
+    if (!reqExpense.description || !date)
       return res
         .status(500)
         .json({ title: 'request.missingField', msg: 'request.missingField' });
 
     // Check if the amount is valid
-    if (isNaN(req.body.amount) || req.body.amount < 0.01)
+    if (isNaN(reqExpense.amount) || reqExpense.amount < 0.01)
       return res.status(500).json({
         title: 'expenses.invalidAmount',
         msg: 'expenses.amountOverZero',
       });
 
     // Check if the expense has users
-    if (!req.body.Users || !Array.isArray(req.body.Users))
+    if (!reqExpense.Users || !Array.isArray(reqExpense.Users))
       return res
         .status(500)
         .json({ title: 'expenses.noUsers', msg: 'expenses.noUsers' });
@@ -131,7 +137,7 @@ Expenses.post('/', async (req: any, res: any) => {
 
     // Check if all expense users are home members
     if (
-      req.body.Users.filter((u: any) => !membersIds.includes(u.id)).length > 0
+      reqExpense.Users.filter((u: any) => !membersIds.includes(u.id)).length > 0
     )
       return res.status(500).json({
         title: 'expenses.userNotInHome',
@@ -139,28 +145,28 @@ Expenses.post('/', async (req: any, res: any) => {
       });
 
     return await db.sequelize.transaction(async (t: any) => {
-      let expense = db.Expense.create(
+      let expenseDb = await db.Expense.create(
         {
           homeId: res.locals.home.id,
           paidByUserId: req.user.id,
-          description: req.body.description,
+          description: reqExpense.description,
           date: date,
-          totalAmount: req.body.amount,
+          totalAmount: reqExpense.amount,
         },
         { transaction: t }
       );
 
       // Create an expense split for each expense user
-      let amountEach = req.body.amount / req.body.Users.length;
-      await db.ExpenseSplit.createBulk(
-        req.body.Users.map((u: ExpenseUser) => {
-          return { expenseId: expense.id, amount: amountEach, userId: u.id };
+      let amountEach = reqExpense.amount / reqExpense.Users.length;
+      await db.ExpenseSplit.bulkCreate(
+        reqExpense.Users.map((u: ExpenseUser) => {
+          return { expenseId: expenseDb.id, amount: amountEach, userId: u.id };
         }),
         { transaction: t }
       );
 
       // Settle home debts for all expense users
-      await req.body.Users.forEach(async (u: ExpenseUser) => {
+      await reqExpense.Users.forEach(async (u: ExpenseUser) => {
         await settleHomeDebt(
           req.user.id,
           u.id,
@@ -173,7 +179,7 @@ Expenses.post('/', async (req: any, res: any) => {
       return res.json({
         title: 'expenses.created',
         msg: 'expenses.created',
-        expense: { ...expense, ExpenseSplits: req.body.Users },
+        expense: { ...expenseDb, ExpenseSplits: reqExpense.Users },
       });
     });
   } catch (error) {

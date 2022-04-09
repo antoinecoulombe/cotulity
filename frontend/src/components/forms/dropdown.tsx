@@ -19,7 +19,6 @@ export interface DropdownProps {
     first?: string;
     second?: string;
   };
-  onSelectTransform?: (value: string) => string;
   onSelect: (selected: DropdownOption) => void;
 }
 
@@ -45,6 +44,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
     if (!newOptions.find((o) => o.selected)) {
       newOptions[0].selected = true;
       setOptions(newOptions);
+      props.onSelect?.(newOptions[0]);
     }
   }, []);
 

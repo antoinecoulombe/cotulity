@@ -63,16 +63,22 @@ Transfers.get('/', async (req: any, res: any) => {
  */
 Transfers.post('/', async (req: any, res: any) => {
   try {
-    let date = InputsToDate(req.body.date + '@12:00');
+    let reqTransfer = req.body.transfer;
+    if (!reqTransfer)
+      return res
+        .status(500)
+        .json({ title: 'request.error', msg: 'request.error' });
+
+    let date = InputsToDate(reqTransfer.date + '@12:00', true);
 
     // Check if the receiver id, date and amount are valid
-    if (!req.body.userId || !date || !req.body.amount)
+    if (!reqTransfer.User?.id || !date || !reqTransfer.amount)
       return res
         .status(500)
         .json({ title: 'request.missingField', msg: 'request.missingField' });
 
     // Check if the amount is a positive number
-    if (isNaN(req.body.amount) || req.body.amount < 0.01)
+    if (isNaN(reqTransfer.amount) || reqTransfer.amount < 0.01)
       return res.status(500).json({
         title: 'transfers.invalidAmount',
         msg: 'transfers.amountOverZero',
@@ -91,7 +97,7 @@ Transfers.post('/', async (req: any, res: any) => {
     });
 
     // Check if the receiver is in home
-    if (members.filter((m: any) => m.id === req.body.userId).length() === 0)
+    if (members.filter((m: any) => m.id === reqTransfer.User.id).length === 0)
       return res
         .status(404)
         .json({ title: 'users.notFound', msg: 'transfers.userNotFound' });
@@ -102,16 +108,17 @@ Transfers.post('/', async (req: any, res: any) => {
         {
           homeId: res.locals.home.id,
           fromUserId: req.user.id,
-          toUserId: req.body.userId,
-          amount: req.body.amount,
+          toUserId: reqTransfer.User.id,
+          amount: reqTransfer.amount,
+          date: date,
         },
         { transaction: t }
       );
 
       await settleHomeDebt(
         req.user.id,
-        req.body.userId,
-        req.body.amount,
+        reqTransfer.User.id,
+        reqTransfer.amount,
         res.locals.home.id,
         t
       );
@@ -119,10 +126,10 @@ Transfers.post('/', async (req: any, res: any) => {
       return transferDb;
     });
 
-    return res.status(501).json({
+    return res.json({
       title: 'transfers.created',
       msg: 'transfers.created',
-      transfer: transfer,
+      transfer: reqTransfer,
     });
   } catch (error) {
     /* istanbul ignore next */

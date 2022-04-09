@@ -28,6 +28,12 @@ interface TransferErrors {
   User: boolean;
 }
 
+const initTransfer: Transfer = {
+  amount: undefined,
+  date: '/',
+  User: undefined,
+};
+
 const initTransferErrors: TransferErrors = {
   amount: false,
   date: false,
@@ -35,9 +41,7 @@ const initTransferErrors: TransferErrors = {
 };
 
 const EditPopup = (props: EditPopupProps): JSX.Element => {
-  const { t } = useTranslation('common');
-
-  const [transfer, setTransfer] = useState<Transfer>({ date: '/' });
+  const [transfer, setTransfer] = useState<Transfer>({ ...initTransfer });
 
   const [errors, setErrors] = useState<TransferErrors>(initTransferErrors);
 
@@ -49,7 +53,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     let date = getDate(transfer.date);
 
     if (!transfer.amount || isNaN(transfer.amount)) newErrors.amount = true;
-    if (!transfer.User) newErrors.date = true;
+    if (!transfer.User) newErrors.User = true;
     if (date.day.length == 0 || date.month.length == 0) newErrors.date = true;
 
     setErrors(newErrors);
@@ -107,7 +111,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
   const handleRecipient = (selected: DropdownOption): void => {
     let newTransfer = { ...transfer };
-    transfer.User = props.users.find((u) => u.id === selected.id);
+    newTransfer.User = props.users.find((u) => u.id === selected.id);
     setTransfer(newTransfer);
   };
 

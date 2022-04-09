@@ -24,6 +24,7 @@ export interface SingleInputFormProps {
   required?: boolean;
   className?: string;
   onlyNumbers?: boolean;
+  onlyPositives?: boolean;
   parent?: { onChange: (e: any) => void };
   errorCheck?: (input: string) => boolean;
   onSubmit?: (value: string) => void;
@@ -41,7 +42,10 @@ const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
 
   const cancelChange = (e: any): boolean => {
     if (!props.onlyNumbers || !e.target.value.length) return false;
-    if (props.onlyNumbers === true && isNaN(e.target.value)) return true;
+    if (props.onlyNumbers === true) {
+      if (isNaN(e.target.value)) return true;
+      if (props.onlyPositives === true && e.target.value <= 0) return true;
+    }
     if ((e.target.value.match(/\./g) || []).length > 1) return true;
     return false;
   };

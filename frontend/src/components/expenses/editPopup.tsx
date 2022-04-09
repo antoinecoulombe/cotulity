@@ -156,6 +156,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             onChange: (e: any) => handleAmount(e),
           }}
           onlyNumbers={true}
+          onlyPositives={true}
           iconStyle={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup half double with-d-squared"
           error={errors.amount}
@@ -173,6 +174,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             setDate(e, input === 1 ? 'day' : 'month')
           }
           onlyNumbers={true}
+          onlyPositives={true}
           className="in-popup half squared-inputs right"
           error={errors.date}
         ></DoubleInputTitle>

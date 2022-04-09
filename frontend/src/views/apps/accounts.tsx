@@ -221,37 +221,39 @@ const AppAccounts = (): JSX.Element => {
   };
 
   const handleExpenseSubmit = (expense: any) => {
-    console.log(expense);
-    // axios({
-    //   method: 'post',
-    //   url: `/accounts/${localStorage.getItem('currentHome')}/expenses`,
-    //   data: {
-    //     expense,
-    //   },
-    // })
-    //   .then((res: any) => {
-    //     // res.data
-    //   })
-    //   .catch((err: any) => {
-    //     setNotification(err.response.data);
-    //   });
+    axios({
+      method: 'post',
+      url: `/accounts/${localStorage.getItem('currentHome')}/expenses`,
+      data: {
+        expense,
+      },
+    })
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+        setPopup(nullJSX);
+        // push res.data.expense to expense list
+      })
+      .catch((err: any) => {
+        setNotification(err.response.data);
+      });
   };
 
   const handleTransferSubmit = (transfer: any) => {
-    console.log(transfer);
-    // axios({
-    //   method: 'post',
-    //   url: `/accounts/${localStorage.getItem('currentHome')}/transfers`,
-    //   data: {
-    //     transfer,
-    //   },
-    // })
-    //   .then((res: any) => {
-    //     // res.data
-    //   })
-    //   .catch((err: any) => {
-    //     setNotification(err.response.data);
-    //   });
+    axios({
+      method: 'post',
+      url: `/accounts/${localStorage.getItem('currentHome')}/transfers`,
+      data: {
+        transfer,
+      },
+    })
+      .then((res: any) => {
+        setSuccessNotification(res.data);
+        setPopup(nullJSX);
+        // push res.data.transfer to expense list
+      })
+      .catch((err: any) => {
+        setNotification(err.response.data);
+      });
   };
 
   const showExpensePopup = () => {
