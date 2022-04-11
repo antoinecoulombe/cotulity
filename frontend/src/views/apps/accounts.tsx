@@ -388,7 +388,7 @@ const AppAccounts = (): JSX.Element => {
     }, {});
   };
 
-  const getDebtElements = (d: Debt, i: number): JSX.Element[] => {
+  const getDebtElements = (): JSX.Element[] => {
     let orderedDebts = (
       data.filter((d) => d.visible && !isTransfer(d) && isDebt(d)) as Debt[]
     ).map((d) => (d.amount < 0 ? reverseDebt(d) : d));
@@ -396,6 +396,7 @@ const AppAccounts = (): JSX.Element => {
     let grouped = groupBy(orderedDebts, 'fromUserId');
 
     let elements: JSX.Element[] = [];
+    let count = 0;
     for (const [fromId, value] of Object.entries(grouped)) {
       let totalOwed = 0;
       (value as Debt[]).forEach((v) => (totalOwed += v.amount));
@@ -404,8 +405,8 @@ const AppAccounts = (): JSX.Element => {
 
       elements.push(
         <ListItem
-          key={`acc-d-${i}`}
-          uid={i}
+          key={`acc-d-${count}`}
+          uid={count}
           className="debt"
           onClick={(value as Debt[]).map((v) => (
             <div className="debt-row">
@@ -421,12 +422,12 @@ const AppAccounts = (): JSX.Element => {
                   />
                 ) : (
                   <FontAwesomeIcon
-                    key={`rlpi-${i}`}
+                    key={`rlpi-${count}`}
                     icon="user-circle"
                     title={getCompleteName(getUserWithRecord(v.toUserId))}
                   ></FontAwesomeIcon>
                 )}
-                <h4 key={`lil-t-${i}-2`}>
+                <h4 key={`lil-t-${count}-2`}>
                   <Translate name="transfers.to" />{' '}
                   <b>
                     {getUserWithRecord(v.toUserId)?.firstname ?? t('unknown')}
@@ -445,8 +446,8 @@ const AppAccounts = (): JSX.Element => {
             </div>
           ))}
         >
-          <ListItemLeft key={`lil-${i}`}>
-            <div className="img-text" key={`lilit-${i}`}>
+          <ListItemLeft key={`lil-${count}`}>
+            <div className="img-text" key={`lilit-${count}`}>
               {fromUser?.Image?.url ? (
                 <img
                   id="img-profile"
@@ -456,13 +457,13 @@ const AppAccounts = (): JSX.Element => {
                 />
               ) : (
                 <FontAwesomeIcon
-                  key={`rlpi-${i}`}
+                  key={`rlpi-${count}`}
                   icon="user-circle"
                   title={getCompleteName(fromUser)}
                 ></FontAwesomeIcon>
               )}
               <div className="expense-lil-text">
-                <h4 key={`lil-t-${i}`}>
+                <h4 key={`lil-t-${count}`}>
                   <b>{getCompleteName(fromUser)}</b>{' '}
                   <Translate name="accounts.owes" />
                 </h4>
@@ -478,13 +479,77 @@ const AppAccounts = (): JSX.Element => {
           </ListItemRight>
         </ListItem>
       );
-      // console.log(`${key}: ${value.map((v) => v.amount + ' ')}`);
     }
     return elements;
   };
 
   const getCompoundDebtsElement = (): JSX.Element[] => {
-    return [<h3>COMPOUND</h3>];
+    let compoundDebts: Debt[] = []; // TODO: Calculate compound debts
+    return compoundDebts.map((cd, i) => (
+      <ListItem key={`acc-d-${i}`} uid={i} className="debt">
+        <ListItemLeft key={`lil-${i}`}>
+          <div className="img-text" key={`lilit-${i}`}>
+            {getUserWithRecord(cd.fromUserId)?.Image?.url ? (
+              <img
+                id="img-profile"
+                src={`http://localhost:4000/images/public/${
+                  getUserWithRecord(cd.fromUserId)?.Image?.url
+                }`}
+                alt={'NA'}
+                title={getCompleteName(getUserWithRecord(cd.fromUserId))}
+              />
+            ) : (
+              <FontAwesomeIcon
+                key={`rlpi-${i}`}
+                icon="user-circle"
+                title={getCompleteName(getUserWithRecord(cd.fromUserId))}
+              ></FontAwesomeIcon>
+            )}
+            <div className="expense-lil-text">
+              <h4 key={`lil-t-${i}`}>
+                <b>
+                  {getUserWithRecord(cd.fromUserId)?.firstname ?? t('unknown')}
+                </b>{' '}
+                <Translate name="accounts.owes" />
+              </h4>
+            </div>
+          </div>
+        </ListItemLeft>
+        <ListItemRight>
+          <h2>
+            <Translate
+              name={`{"translate":"dollar","format":["${cd.amount}"]}`}
+            />
+          </h2>
+        </ListItemRight>
+        <ListItemRight>
+          <div className="img-text" key={`lilit-${i}`}>
+            {getUserWithRecord(cd.toUserId)?.Image?.url ? (
+              <img
+                id="img-profile"
+                src={`http://localhost:4000/images/public/${
+                  getUserWithRecord(cd.toUserId)?.Image?.url
+                }`}
+                alt={'NA'}
+                title={getCompleteName(getUserWithRecord(cd.toUserId))}
+              />
+            ) : (
+              <FontAwesomeIcon
+                key={`rlpi-${i}`}
+                icon="user-circle"
+                title={getCompleteName(getUserWithRecord(cd.toUserId))}
+              ></FontAwesomeIcon>
+            )}
+            <div className="expense-lil-text">
+              <h4 key={`lil-t-${i}`}>
+                <Translate name="transfers.to" />{' '}
+                <b>{getUserWithRecord(cd.toUserId) ?? t('unknown')}</b>
+              </h4>
+            </div>
+          </div>
+        </ListItemRight>
+      </ListItem>
+    ));
   };
 
   const isExpense = (e: any): e is Expense =>
@@ -753,17 +818,19 @@ const AppAccounts = (): JSX.Element => {
       <div className="content">
         <List key={`expense-list`} className="fill-height">
           {loaded ? (
-            getSelectedSubHeaderTab().name === 'compound' ? (
-              getCompoundDebtsElement()
+            title === 'sidebar.debts.title' ? (
+              getSelectedSubHeaderTab().name === 'compound' ? (
+                getCompoundDebtsElement()
+              ) : (
+                getDebtElements()
+              )
             ) : data.filter((d) => d.visible).length ? (
               data
                 .filter((d) => d.visible)
                 .map((d, i) =>
                   isExpense(d)
                     ? getExpenseElement(d, i)
-                    : isTransfer(d)
-                    ? getTransferElement(d, i)
-                    : getDebtElements(d, i)
+                    : getTransferElement(d as Transfer, i)
                 )
             ) : (
               <h2>
