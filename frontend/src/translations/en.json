@@ -314,7 +314,8 @@
     "noExpenses": "No Expenses.",
     "noTransfers": "No Transfers.",
     "noDebts": "All Debts Are Settled!",
-    "noHistory": "No History."
+    "noHistory": "No History.",
+    "owes": "owes"
   },
   "expenses": {
     "title": {

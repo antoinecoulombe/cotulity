@@ -314,7 +314,8 @@
     "noExpenses": "Aucune dépenses.",
     "noTransfers": "Aucun versements.",
     "noDebts": "Dettes réglées.",
-    "noHistory": "Aucun historique."
+    "noHistory": "Aucun historique.",
+    "owes": "doit"
   },
   "expenses": {
     "title": {

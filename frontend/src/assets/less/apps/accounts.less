@@ -42,7 +42,8 @@
       }
 
       &.expense,
-      &.transfer {
+      &.transfer,
+      &.debt {
         .list-item-left,
         .list-item-right {
           > .img-text {
@@ -133,6 +134,49 @@
               color: var(--gray);
               position: relative;
               top: -2px;
+            }
+          }
+        }
+      }
+
+      &.debt {
+        line-height: 52px;
+
+        .list-item-click {
+          > .debt-row {
+            @height: 32px;
+
+            line-height: @height;
+
+            > .left {
+              > svg,
+              > img {
+                width: @height;
+                height: @height;
+                border-radius: @height;
+                float: left;
+                margin-right: 10px;
+              }
+
+              > h4 {
+                float: left;
+                color: var(--gray);
+
+                > b {
+                  color: var(--darkestGray);
+                  font-weight: 500;
+                }
+              }
+            }
+
+            > .right {
+              h3 {
+                float: right;
+
+                > b {
+                  font-weight: 500;
+                }
+              }
             }
           }
         }

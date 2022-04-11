@@ -32,54 +32,70 @@
 }
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > svg,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > svg,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > svg,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > svg,
 .open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > svg,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > svg,
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > img,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > img,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > img,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > img,
-.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > img {
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > img,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > img {
   width: 52px;
   height: 52px;
   color: var(--darkestGray);
 }
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > .expense-lil-text,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text,
-.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text {
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > .expense-lil-text {
   display: inline-block;
 }
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h3,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h3,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > .expense-lil-text > h3,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h3,
-.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h3 {
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h3,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > .expense-lil-text > h3 {
   font-size: 20px;
   color: var(--darkestGray);
 }
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > .expense-lil-text > h4,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4,
-.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 {
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > .expense-lil-text > h4 {
   font-size: 15px;
   color: var(--gray);
 }
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4 > svg,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4 > svg,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > .expense-lil-text > h4 > svg,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4 > svg,
-.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 > svg {
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 > svg,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > .expense-lil-text > h4 > svg {
   width: 4px;
   margin: 0 7px;
 }
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4 > b,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4 > b,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > .expense-lil-text > h4 > b,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4 > b,
-.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 > b {
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 > b,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > .expense-lil-text > h4 > b {
   color: var(--darkestGray);
   font-weight: 500 !important;
 }
 .open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4.name,
 .open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4.name,
+.open-app-container.accounts .list > .list-item.debt .list-item-left > .img-text > .expense-lil-text > h4.name,
 .open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4.name,
-.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4.name {
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4.name,
+.open-app-container.accounts .list > .list-item.debt .list-item-right > .img-text > .expense-lil-text > h4.name {
   color: var(--darkestGray);
   font-weight: 500 !important;
 }
@@ -117,6 +133,34 @@
   color: var(--gray);
   position: relative;
   top: -2px;
+}
+.open-app-container.accounts .list > .list-item.debt {
+  line-height: 52px;
+}
+.open-app-container.accounts .list > .list-item.debt .list-item-click > .debt-row {
+  line-height: 32px;
+}
+.open-app-container.accounts .list > .list-item.debt .list-item-click > .debt-row > .left > svg,
+.open-app-container.accounts .list > .list-item.debt .list-item-click > .debt-row > .left > img {
+  width: 32px;
+  height: 32px;
+  border-radius: 32px;
+  float: left;
+  margin-right: 10px;
+}
+.open-app-container.accounts .list > .list-item.debt .list-item-click > .debt-row > .left > h4 {
+  float: left;
+  color: var(--gray);
+}
+.open-app-container.accounts .list > .list-item.debt .list-item-click > .debt-row > .left > h4 > b {
+  color: var(--darkestGray);
+  font-weight: 500;
+}
+.open-app-container.accounts .list > .list-item.debt .list-item-click > .debt-row > .right h3 {
+  float: right;
+}
+.open-app-container.accounts .list > .list-item.debt .list-item-click > .debt-row > .right h3 > b {
+  font-weight: 500;
 }
 .open-app-container.accounts .list-item-right > h2 {
   font-weight: bold;
