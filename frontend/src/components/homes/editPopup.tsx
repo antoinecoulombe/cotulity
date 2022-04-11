@@ -20,7 +20,7 @@ interface HomeMember {
   id: number;
   firstname: string;
   lastname: string;
-  image?: string;
+  Image: { url: string } | null;
   HomeUser: { nickname?: string; accepted: boolean };
 }
 
@@ -106,10 +106,18 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
                           )}
                         </IconToolTip>
                       )}
-                      <FontAwesomeIcon
-                        key={`mlpi-${i}`}
-                        icon="user-circle"
-                      ></FontAwesomeIcon>
+                      {m.Image?.url ? (
+                        <img
+                          id="img-profile"
+                          src={`http://localhost:4000/images/public/${m.Image.url}`}
+                          alt={'NA'}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          key={`rlpi-${i}`}
+                          icon="user-circle"
+                        ></FontAwesomeIcon>
+                      )}
                       <h3 key={`mlph-${i}`}>
                         {getFormattedMemberName(m.firstname, m.lastname)}
                       </h3>
@@ -150,10 +158,18 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
                 <ListItem key={`r-${i}`} uid={m.id}>
                   <ListItemLeft key={`rl-${i}`}>
                     <div className="img-text" key={`rlp-${i}`}>
-                      <FontAwesomeIcon
-                        key={`rlpi-${i}`}
-                        icon="user-circle"
-                      ></FontAwesomeIcon>
+                      {m.Image?.url ? (
+                        <img
+                          id="img-profile"
+                          src={`http://localhost:4000/images/public/${m.Image.url}`}
+                          alt={'NA'}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          key={`rlpi-${i}`}
+                          icon="user-circle"
+                        ></FontAwesomeIcon>
+                      )}
                       <h3 key={`rlph-${i}`}>
                         {getFormattedMemberName(m.firstname, m.lastname)}
                       </h3>

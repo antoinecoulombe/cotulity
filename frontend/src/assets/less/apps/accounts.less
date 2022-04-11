@@ -3,4 +3,148 @@
 .open-app-container.accounts {
   max-width: 900px;
   min-height: 600px;
+
+  .list {
+    > h2 {
+      .font-default();
+      font-size: 32px;
+      color: var(--black);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      height: 100%;
+    }
+
+    > .list-item {
+      .list-item-click {
+        > h4 {
+          line-height: 26px;
+          float: left;
+        }
+      }
+
+      &.expense {
+        .list-item-click {
+          > h4 {
+            margin-right: 6px;
+          }
+
+          > svg,
+          > img {
+            width: 26px;
+            height: 26px;
+            border-radius: 100px;
+            float: left;
+            margin-left: 6px;
+          }
+        }
+      }
+
+      &.expense,
+      &.transfer {
+        .list-item-left,
+        .list-item-right {
+          > .img-text {
+            > svg,
+            > img {
+              width: 52px;
+              height: 52px;
+              color: var(--darkestGray);
+            }
+
+            > .expense-lil-text {
+              display: inline-block;
+
+              > h3 {
+                font-size: 20px;
+                color: var(--darkestGray);
+              }
+
+              > h4 {
+                font-size: 15px;
+                color: var(--gray);
+
+                > svg {
+                  width: 4px;
+                  margin: 0 7px;
+                }
+
+                > b {
+                  color: var(--darkestGray);
+                  font-weight: 500 !important;
+                }
+
+                &.name {
+                  color: var(--darkestGray);
+                  font-weight: 500 !important;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &.transfer {
+        .list-item-left,
+        .list-item-right {
+          .expense-lil-text {
+            margin: 6px 0;
+          }
+        }
+
+        .list-item-right {
+          > .img-text {
+            > svg,
+            > img {
+              float: right;
+              margin-right: 0;
+              margin-left: 15px;
+            }
+            h4 {
+              text-align: right;
+            }
+          }
+        }
+
+        .list-item-click {
+          > h4.with-accent {
+            color: var(--gray);
+
+            > b {
+              color: var(--darkestGray);
+            }
+          }
+        }
+
+        .list-item-center {
+          height: 52px;
+
+          > div {
+            text-align: center;
+
+            > h2 {
+              font-size: 30px;
+              position: relative;
+              top: 2px;
+            }
+
+            > h4 {
+              color: var(--gray);
+              position: relative;
+              top: -2px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .list-item-right {
+    > h2 {
+      font-weight: bold;
+      font-size: 30px;
+      line-height: 52px;
+    }
+  }
 }

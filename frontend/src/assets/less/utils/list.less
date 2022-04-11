@@ -26,7 +26,8 @@
     border: var(--border-1-inv);
     padding: @paddingTop @paddingSide;
 
-    &:hover {
+    &:hover,
+    &.clicked {
       box-shadow: 0px 3px 5px 0 rgba(0, 0, 0, 0.07);
       border: var(--list-hover-border);
       background-color: var(--list-hover-bg-color);
@@ -139,11 +140,16 @@
         display: block;
         color: var(--darkestGray);
 
-        > svg {
+        > svg,
+        > img {
           float: left;
           width: @iconWidth;
           height: @iconWidth;
           margin-right: 15px;
+        }
+
+        > img {
+          border-radius: 100px;
         }
 
         > h3 {
@@ -196,6 +202,17 @@
       .icon-tooltip {
         float: right;
       }
+    }
+
+    > .list-item-click {
+      position: relative;
+      float: left;
+      width: 100%;
+      top: 15px;
+      left: -12px;
+      padding: 15px 12px;
+      background-color: var(--lightestGray);
+      border-radius: 0 0 10px 10px;
     }
   }
 }

@@ -85,6 +85,8 @@
     },
     "format": "{1} {0}"
   },
+  "dollar": "${0}",
+  "unknown": "Unknown",
   "form": {
     "email": "Email",
     "password": "Password",
@@ -150,7 +152,7 @@
       "member": "member",
       "members": "Members",
       "requests": "Requests",
-      "noRequests": "No Requests"
+      "noRequests": "No Requests."
     },
     "delete": {
       "text": {
@@ -329,7 +331,9 @@
     },
     "tooltip": {
       "add": "Add Expense"
-    }
+    },
+    "date": "{0} {1}",
+    "by": "by"
   },
   "transfers": {
     "title": {
@@ -345,7 +349,11 @@
     },
     "tooltip": {
       "add": "Add Transfer"
-    }
+    },
+    "sent": "sent",
+    "to": "to",
+    "on": "on",
+    "dot": "."
   },
   "console": {
     "title": { "console": "Console" }

@@ -19,17 +19,22 @@
   border: var(--border-1-inv);
   padding: 15px 12px;
 }
-.list > .list-item:hover {
+.list > .list-item:hover,
+.list > .list-item.clicked {
   box-shadow: 0px 3px 5px 0 rgba(0, 0, 0, 0.07);
   border: var(--list-hover-border);
   background-color: var(--list-hover-bg-color);
 }
 .list > .list-item:hover .icon-tooltip,
-.list > .list-item:hover button {
+.list > .list-item.clicked .icon-tooltip,
+.list > .list-item:hover button,
+.list > .list-item.clicked button {
   display: block !important;
 }
 .list > .list-item:hover > .list-item-left > h2.onHover,
-.list > .list-item:hover > .list-item-right > h2.onHover {
+.list > .list-item.clicked > .list-item-left > h2.onHover,
+.list > .list-item:hover > .list-item-right > h2.onHover,
+.list > .list-item.clicked > .list-item-right > h2.onHover {
   display: block;
 }
 .list > .list-item .tag,
@@ -134,11 +139,17 @@
   color: var(--darkestGray);
 }
 .list > .list-item > .list-item-left > .img-text > svg,
-.list > .list-item > .list-item-right > .img-text > svg {
+.list > .list-item > .list-item-right > .img-text > svg,
+.list > .list-item > .list-item-left > .img-text > img,
+.list > .list-item > .list-item-right > .img-text > img {
   float: left;
   width: 30px;
   height: 30px;
   margin-right: 15px;
+}
+.list > .list-item > .list-item-left > .img-text > img,
+.list > .list-item > .list-item-right > .img-text > img {
+  border-radius: 100px;
 }
 .list > .list-item > .list-item-left > .img-text > h3,
 .list > .list-item > .list-item-right > .img-text > h3 {
@@ -189,4 +200,14 @@
 }
 .list > .list-item > .list-item-right .icon-tooltip {
   float: right;
+}
+.list > .list-item > .list-item-click {
+  position: relative;
+  float: left;
+  width: 100%;
+  top: 15px;
+  left: -12px;
+  padding: 15px 12px;
+  background-color: var(--lightestGray);
+  border-radius: 0 0 10px 10px;
 }

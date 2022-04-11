@@ -2,3 +2,124 @@
   max-width: 900px;
   min-height: 600px;
 }
+.open-app-container.accounts .list > h2 {
+  font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 32px;
+  color: var(--black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: 100%;
+}
+.open-app-container.accounts .list > .list-item .list-item-click > h4 {
+  line-height: 26px;
+  float: left;
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-click > h4 {
+  margin-right: 6px;
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-click > svg,
+.open-app-container.accounts .list > .list-item.expense .list-item-click > img {
+  width: 26px;
+  height: 26px;
+  border-radius: 100px;
+  float: left;
+  margin-left: 6px;
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > svg,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > svg,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > svg,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > svg,
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > img,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > img,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > img,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > img {
+  width: 52px;
+  height: 52px;
+  color: var(--darkestGray);
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text {
+  display: inline-block;
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h3,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h3,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h3,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h3 {
+  font-size: 20px;
+  color: var(--darkestGray);
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 {
+  font-size: 15px;
+  color: var(--gray);
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4 > svg,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4 > svg,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4 > svg,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 > svg {
+  width: 4px;
+  margin: 0 7px;
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4 > b,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4 > b,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4 > b,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4 > b {
+  color: var(--darkestGray);
+  font-weight: 500 !important;
+}
+.open-app-container.accounts .list > .list-item.expense .list-item-left > .img-text > .expense-lil-text > h4.name,
+.open-app-container.accounts .list > .list-item.transfer .list-item-left > .img-text > .expense-lil-text > h4.name,
+.open-app-container.accounts .list > .list-item.expense .list-item-right > .img-text > .expense-lil-text > h4.name,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > .expense-lil-text > h4.name {
+  color: var(--darkestGray);
+  font-weight: 500 !important;
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-left .expense-lil-text,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right .expense-lil-text {
+  margin: 6px 0;
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > svg,
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text > img {
+  float: right;
+  margin-right: 0;
+  margin-left: 15px;
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-right > .img-text h4 {
+  text-align: right;
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-click > h4.with-accent {
+  color: var(--gray);
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-click > h4.with-accent > b {
+  color: var(--darkestGray);
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-center {
+  height: 52px;
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-center > div {
+  text-align: center;
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-center > div > h2 {
+  font-size: 30px;
+  position: relative;
+  top: 2px;
+}
+.open-app-container.accounts .list > .list-item.transfer .list-item-center > div > h4 {
+  color: var(--gray);
+  position: relative;
+  top: -2px;
+}
+.open-app-container.accounts .list-item-right > h2 {
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 52px;
+}

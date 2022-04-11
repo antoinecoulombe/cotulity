@@ -17,6 +17,8 @@ import axios from '../../utils/fetchClient';
 import '../../assets/css/apps/accounts.css';
 import { DropdownMultiOption } from '../../components/forms/dropdownMulti';
 import Translate from '../../components/utils/translate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ListItemCenter from '../../components/utils/lists/listItemCenter';
 
 const nullJSX: JSX.Element = <></>;
 
@@ -151,27 +153,226 @@ const AppAccounts = (): JSX.Element => {
     return array;
   };
 
-  const getExpenseElement = (e: Expense): JSX.Element => {
+  const getUserWithRecord = (record: number) => {
+    return users.find((u) => u.UserRecord.id === record);
+  };
+
+  const getExpenseUser = (e: Expense) => {
+    return getUserWithRecord(e.paidByUserId);
+  };
+
+  const getCompleteName = (user?: AccountHomeMember): string => {
+    if (!user) return t('unknown');
+    return user.firstname + ' ' + user.lastname;
+  };
+
+  const getExpenseElement = (e: Expense, i: number): JSX.Element => {
     return (
-      <ListItem key={`acc-e-${e.id}`} uid={e.id}>
-        <h3>
-          EXPENSE '{e.description}' AT {e.date}
-        </h3>
+      <ListItem
+        key={`acc-e-${i}`}
+        uid={i}
+        className="expense"
+        onClick={[
+          <h4>
+            <Translate name="expenses.title.splittedWith" />:
+          </h4>,
+        ].concat(
+          e.ExpenseSplits.map((es) =>
+            getUserWithRecord(es.userId)?.Image?.url ? (
+              <img
+                id="img-profile"
+                src={`http://localhost:4000/images/public/${
+                  getUserWithRecord(es.userId)?.Image?.url
+                }`}
+                alt={'NA'}
+                title={getCompleteName(getUserWithRecord(es.userId))}
+              />
+            ) : (
+              <FontAwesomeIcon
+                key={`rlpi-${i}`}
+                icon="user-circle"
+                title={getCompleteName(getUserWithRecord(es.userId))}
+              ></FontAwesomeIcon>
+            )
+          )
+        )}
+      >
+        <ListItemLeft key={`lil-${i}`}>
+          <div className="img-text" key={`lilit-${i}`}>
+            {getExpenseUser(e)?.Image?.url ? (
+              <img
+                id="img-profile"
+                src={`http://localhost:4000/images/public/${
+                  getExpenseUser(e)?.Image?.url
+                }`}
+                alt={'NA'}
+                title={getCompleteName(getUserWithRecord(e.paidByUserId))}
+              />
+            ) : (
+              <FontAwesomeIcon
+                key={`rlpi-${i}`}
+                icon="user-circle"
+                title={getCompleteName(getUserWithRecord(e.paidByUserId))}
+              ></FontAwesomeIcon>
+            )}
+            <div className="expense-lil-text">
+              <h3
+                key={`lil-t-${i}`}
+                title={e.description.length <= 22 ? undefined : e.description}
+              >
+                {e.description.length >= 22
+                  ? e.description.substring(0, 22) + '...'
+                  : e.description}
+              </h3>
+              <h4 key={`lil-t-${i}-2`}>
+                {
+                  <Translate
+                    name={`{"translate":"expenses.date","format":["${t(
+                      'date.month.' +
+                        new Date(e.date)
+                          .toLocaleString('en-US', { month: 'short' })
+                          .toLowerCase()
+                    )}","${new Date(e.date).getDate()}"]}`}
+                  />
+                }
+                <FontAwesomeIcon
+                  key={`lil-t-fa-${i}`}
+                  icon="circle"
+                ></FontAwesomeIcon>
+                {t('expenses.by')}{' '}
+                <b>
+                  {users.find((u) => u.UserRecord.id === e.paidByUserId)
+                    ?.firstname ?? t('unknown')}
+                </b>
+              </h4>
+            </div>
+          </div>
+        </ListItemLeft>
+        <ListItemRight>
+          <h2>
+            <Translate
+              name={`{"translate":"dollar","format":["${e.totalAmount}"]}`}
+            />
+          </h2>
+        </ListItemRight>
       </ListItem>
     );
   };
 
-  const getTransferElement = (t: Transfer): JSX.Element => {
+  const getTransferElement = (tr: Transfer, i: number): JSX.Element => {
     return (
-      <ListItem key={`acc-t-${t.id}`} uid={t.id}>
-        <h3>
-          TRANSFER FROM {t.fromUserId} TO {t.toUserId}
-        </h3>
+      <ListItem
+        key={`acc-t-${i}`}
+        uid={i}
+        className="transfer"
+        onClick={[
+          <h4 className="with-accent">
+            <b>{getUserWithRecord(tr.fromUserId)?.firstname ?? t('unknown')}</b>{' '}
+            <Translate name="transfers.sent" />{' '}
+            <b>
+              <Translate
+                name={`{"translate":"dollar","format":["${tr.amount}"]}`}
+              />
+            </b>{' '}
+            <Translate name="transfers.to" />{' '}
+            <b>{getUserWithRecord(tr.toUserId)?.firstname ?? t('unknown')}</b>{' '}
+            <Translate name="transfers.on" />{' '}
+            <Translate
+              name={`{"translate":"expenses.date","format":["${t(
+                'date.month.' +
+                  new Date(tr.date)
+                    .toLocaleString('en-US', { month: 'short' })
+                    .toLowerCase()
+              )}","${new Date(tr.date).getDate()}"]}`}
+            />
+            <Translate name="transfers.dot" />
+          </h4>,
+        ]}
+      >
+        <ListItemLeft key={`lil-${i}`}>
+          <div className="img-text" key={`lilit-${i}`}>
+            {getUserWithRecord(tr.fromUserId)?.Image?.url ? (
+              <img
+                id="img-profile"
+                src={`http://localhost:4000/images/public/${
+                  getUserWithRecord(tr.fromUserId)?.Image?.url
+                }`}
+                alt={'NA'}
+                title={getCompleteName(getUserWithRecord(tr.fromUserId))}
+              />
+            ) : (
+              <FontAwesomeIcon
+                key={`rlpi-${i}`}
+                icon="user-circle"
+                title={getCompleteName(getUserWithRecord(tr.fromUserId))}
+              ></FontAwesomeIcon>
+            )}
+            <div className="expense-lil-text">
+              <h4 key={`lil-t-${i}`} className="name">
+                {getUserWithRecord(tr.fromUserId)?.firstname ?? t('unknown')}
+              </h4>
+              <h4 key={`lil-t-${i}-2`}>
+                <Translate name="transfers.sent" />
+              </h4>
+            </div>
+          </div>
+        </ListItemLeft>
+        <ListItemCenter key={`lic-${i}`}>
+          <div key={`lic-text-${i}`}>
+            <h2 key={`lic-t-${i}`}>
+              <b>
+                <Translate
+                  name={`{"translate":"dollar","format":["${tr.amount}"]}`}
+                />
+              </b>
+            </h2>
+            <h4 key={`lic-t-${i}-2`}>
+              {
+                <Translate
+                  name={`{"translate":"expenses.date","format":["${t(
+                    'date.month.' +
+                      new Date(tr.date)
+                        .toLocaleString('en-US', { month: 'short' })
+                        .toLowerCase()
+                  )}","${new Date(tr.date).getDate()}"]}`}
+                />
+              }
+            </h4>
+          </div>
+        </ListItemCenter>
+        <ListItemRight>
+          <div className="img-text" key={`lilit-${i}`}>
+            {getUserWithRecord(tr.toUserId)?.Image?.url ? (
+              <img
+                id="img-profile"
+                src={`http://localhost:4000/images/public/${
+                  getUserWithRecord(tr.toUserId)?.Image?.url
+                }`}
+                alt={'NA'}
+                title={getCompleteName(getUserWithRecord(tr.toUserId))}
+              />
+            ) : (
+              <FontAwesomeIcon
+                key={`rlpi-${i}`}
+                icon="user-circle"
+                title={getCompleteName(getUserWithRecord(tr.toUserId))}
+              ></FontAwesomeIcon>
+            )}
+            <div className="expense-lil-text">
+              <h4 key={`lil-t-${i}-2`}>
+                <Translate name="transfers.to" />
+              </h4>
+              <h4 key={`lil-t-${i}`} className="name">
+                {getUserWithRecord(tr.toUserId)?.firstname ?? t('unknown')}
+              </h4>
+            </div>
+          </div>
+        </ListItemRight>
       </ListItem>
     );
   };
 
-  const getDebtElement = (d: Debt): JSX.Element => {
+  const getDebtElement = (d: Debt, i: number): JSX.Element => {
     return (
       <ListItem key={`acc-d-${d.id}`} uid={d.id}>
         <h3>
@@ -456,12 +657,12 @@ const AppAccounts = (): JSX.Element => {
             ) : data.filter((d) => d.visible).length ? (
               data
                 .filter((d) => d.visible)
-                .map((d) =>
+                .map((d, i) =>
                   isExpense(d)
-                    ? getExpenseElement(d)
+                    ? getExpenseElement(d, i)
                     : isTransfer(d)
-                    ? getTransferElement(d)
-                    : getDebtElement(d)
+                    ? getTransferElement(d, i)
+                    : getDebtElement(d, i)
                 )
             ) : (
               <h2>
