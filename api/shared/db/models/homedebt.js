@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'id',
         allowNull: false,
       });
-      HomeDebt.belongsTo(models.User, {
-        foreignKey: 'fromId',
+      HomeDebt.belongsTo(models.UserRecord, {
+        foreignKey: 'fromUserId',
         targetKey: 'id',
         as: 'From',
         allowNull: false,
       });
-      HomeDebt.belongsTo(models.User, {
-        foreignKey: 'toId',
+      HomeDebt.belongsTo(models.UserRecord, {
+        foreignKey: 'toUserId',
         targetKey: 'id',
         as: 'To',
         allowNull: false,
@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   HomeDebt.init(
     {
+      id: { type: DataTypes.INTEGER },
       amount: {
         type: DataTypes.DECIMAL(19, 4),
         allowNull: {
@@ -39,6 +40,9 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      homeId: { type: DataTypes.INTEGER, primaryKey: true },
+      fromUserId: { type: DataTypes.INTEGER, primaryKey: true },
+      toUserId: { type: DataTypes.INTEGER, primaryKey: true },
     },
     {
       timestamps: false,

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'id',
         allowNull: false,
       });
-      ExpenseSplit.belongsTo(models.User, {
+      ExpenseSplit.belongsTo(models.UserRecord, {
         foreignKey: 'userId',
         targetKey: 'id',
         allowNull: false,

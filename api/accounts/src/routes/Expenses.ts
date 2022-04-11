@@ -1,6 +1,6 @@
 import express from 'express';
 import { InputsToDate } from '../../../shared/src/routes/Global';
-import { getUsers, settleHomeDebt } from './Accounts';
+import { getUsers, settleHomeDebts } from './Accounts';
 
 const Expenses = express.Router();
 const db = require('../../../shared/db/models');
@@ -30,7 +30,7 @@ interface ExpenseUser {
  * @param res The HTTP response.
  * @returns An array containing the home expenses.
  */
-const getExpenses = async (res: any) => {
+export const getExpenses = async (res: any) => {
   return await res.locals.home.getExpenses({
     attributes: ['id', 'paidByUserId', 'description', 'date', 'totalAmount'],
     include: [
@@ -145,10 +145,18 @@ Expenses.post('/', async (req: any, res: any) => {
       });
 
     return await db.sequelize.transaction(async (t: any) => {
+      // Get user record associated to user id
+      let paidById = (
+        await db.UserRecord.findOne({
+          where: { userId: req.user.id },
+          attributes: ['userId', 'id'],
+        })
+      ).id;
+
       let expenseDb = await db.Expense.create(
         {
           homeId: res.locals.home.id,
-          paidByUserId: req.user.id,
+          paidByUserId: paidById,
           description: reqExpense.description,
           date: date,
           totalAmount: reqExpense.amount,
@@ -156,30 +164,46 @@ Expenses.post('/', async (req: any, res: any) => {
         { transaction: t }
       );
 
-      // Create an expense split for each expense user
-      let amountEach = reqExpense.amount / reqExpense.Users.length;
-      await db.ExpenseSplit.bulkCreate(
-        reqExpense.Users.map((u: ExpenseUser) => {
-          return { expenseId: expenseDb.id, amount: amountEach, userId: u.id };
-        }),
-        { transaction: t }
-      );
+      let ids = reqExpense.Users.map((u: ExpenseUser) => u.id);
 
-      // Settle home debts for all expense users
-      await reqExpense.Users.forEach(async (u: ExpenseUser) => {
-        await settleHomeDebt(
-          req.user.id,
-          u.id,
-          -amountEach,
-          res.locals.home.id,
-          t
-        );
+      // Get user records for all user ids received
+      let userRecords: any[] = await db.UserRecord.findAll({
+        where: { userId: ids },
+        attributes: ['userId', 'id'],
       });
+
+      // Split the amount equally
+      let amountEach = reqExpense.amount / reqExpense.Users.length;
+
+      // Create an expense split for each expense user
+      let expenseSplits = reqExpense.Users.map((u: ExpenseUser) => {
+        return {
+          expenseId: expenseDb.id,
+          amount: amountEach,
+          userId: userRecords.find((ur) => ur.userId === u.id).id,
+        };
+      });
+      await db.ExpenseSplit.bulkCreate(expenseSplits, { transaction: t }).then(
+        async () => {
+          // Settle home debts for all expense users
+          await settleHomeDebts(
+            reqExpense.Users.map((u: ExpenseUser) => {
+              return {
+                fromUserId: paidById,
+                toUserId: userRecords.find((ur) => ur.userId === u.id).id,
+                homeId: res.locals.home.id,
+                amount: amountEach,
+              };
+            }),
+            t
+          );
+        }
+      );
 
       return res.json({
         title: 'expenses.created',
         msg: 'expenses.created',
-        expense: { ...expenseDb, ExpenseSplits: reqExpense.Users },
+        expense: { ...expenseDb.dataValues, ExpenseSplits: reqExpense.Users },
       });
     });
   } catch (error) {

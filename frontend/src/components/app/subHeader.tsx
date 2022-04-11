@@ -3,7 +3,7 @@ import '../../assets/css/app/subheader.css';
 
 export interface SubHeaderTab {
   name: string;
-  action: () => void;
+  action: (...attr: any) => any;
   selected?: boolean;
 }
 

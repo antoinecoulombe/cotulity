@@ -5,7 +5,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Expense extends Model {
     static associate(models) {
-      Expense.belongsTo(models.User, {
+      Expense.belongsTo(models.UserRecord, {
         foreignKey: 'paidByUserId',
         targetKey: 'id',
         as: 'PaidBy',
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true,
       });
-      Expense.belongsToMany(models.User, {
+      Expense.belongsToMany(models.UserRecord, {
         through: models.ExpenseSplit,
         as: 'SplittedWith',
         foreignKey: 'expenseId',

@@ -25,40 +25,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true,
       });
-      User.hasMany(models.Expense, {
-        foreignKey: 'paidByUserId',
-        sourceId: 'id',
-        onDelete: 'cascade',
-        hooks: true,
-      });
-      User.hasMany(models.Transfer, {
-        foreignKey: 'fromUserId',
-        sourceId: 'id',
-        as: 'TransferSent',
-        onDelete: 'cascade',
-        hooks: true,
-      });
-      User.hasMany(models.Transfer, {
-        foreignKey: 'toUserId',
-        sourceId: 'id',
-        as: 'TransferReceived',
-        onDelete: 'cascade',
-        hooks: true,
-      });
-      User.hasMany(models.HomeDebt, {
-        foreignKey: 'fromId',
-        sourceId: 'id',
-        as: 'fromDebt',
-        onDelete: 'cascade',
-        hooks: true,
-      });
-      User.hasMany(models.HomeDebt, {
-        foreignKey: 'toId',
-        sourceId: 'id',
-        as: 'toDebt',
-        onDelete: 'cascade',
-        hooks: true,
-      });
       User.hasMany(models.Grocery, {
         foreignKey: 'ownerId',
         sourceId: 'id',

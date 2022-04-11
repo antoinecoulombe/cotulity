@@ -120,7 +120,7 @@ const AppTasks = (): JSX.Element => {
           {
             icon: 'star',
             name: 'myTasks',
-            action: (t: TaskOccurence) =>
+            action: (t: TaskOccurence): boolean =>
               !t
                 ? true
                 : t.Users?.find(
@@ -133,19 +133,22 @@ const AppTasks = (): JSX.Element => {
           {
             icon: 'calendar',
             name: 'upcoming',
-            action: (t: TaskOccurence) =>
+            action: (t: TaskOccurence): boolean =>
               !t ? true : t.completedOn == null && t.deletedAt == null,
           },
           {
             icon: 'lock',
             name: 'private',
-            action: (t: TaskOccurence, shared: boolean) =>
+            action: (t: TaskOccurence, shared: boolean): boolean =>
               !t
                 ? true
-                : t.Users?.find(
-                    (u) =>
-                      u.id === parseInt(localStorage.getItem('userId') ?? '-2')
-                  ) &&
+                : (
+                    t.Users?.filter(
+                      (u) =>
+                        u.id ===
+                        parseInt(localStorage.getItem('userId') ?? '-2')
+                    ) ?? []
+                  ).length > 0 &&
                   !shared &&
                   t.deletedAt == null &&
                   t.completedOn === null,
@@ -153,13 +156,14 @@ const AppTasks = (): JSX.Element => {
           {
             icon: 'history',
             name: 'history',
-            action: (t: TaskOccurence) =>
+            action: (t: TaskOccurence): boolean =>
               !t ? true : t.completedOn !== null && t.deletedAt === null,
           },
           {
             icon: 'trash',
             name: 'trash',
-            action: (t: TaskOccurence) => (!t ? true : t.deletedAt != null),
+            action: (t: TaskOccurence): boolean =>
+              !t ? true : t.deletedAt != null,
           },
         ].map((t, i) => {
           return {

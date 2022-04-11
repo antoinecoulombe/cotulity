@@ -23,7 +23,6 @@ const nullJSX: JSX.Element = <></>;
 interface ExpenseSplit {
   userId: number;
   amount: number;
-  settled: boolean;
 }
 
 interface Expense {
@@ -31,76 +30,195 @@ interface Expense {
   description: string;
   date: string;
   totalAmount: number;
-  PaidBy: HomeMember;
-  SplittedWith: ExpenseSplit[];
+  paidByUserId: number;
+  ExpenseSplits: ExpenseSplit[];
+  visible?: boolean;
 }
 
 interface Transfer {
+  id: number;
   fromUserId: number;
   toUserId: number;
+  amount: number;
+  date: string;
+  visible?: boolean;
 }
 
-interface AccountHomeMember extends HomeMember {}
+interface Debt {
+  id: number;
+  fromUserId: number;
+  toUserId: number;
+  amount: number;
+  homeId: number;
+  visible?: boolean;
+}
+
+interface AccountHomeMember extends HomeMember {
+  HomeUser: { nickname?: string };
+  UserRecord: {
+    id: number;
+  };
+}
 
 const AppAccounts = (): JSX.Element => {
   const { t } = useTranslation('common');
   const { setNotification, setSuccessNotification } = useNotifications();
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [sidebarTabs, setSidebarTabs] = useState<SidebarTab[]>([]);
-  const [sidebarModules, setSidebarModules] = useState<SidebarModule[]>([]);
-  const [subHeaderTabs, setSubHeaderTabs] = useState<SubHeaderTab[]>([
+  const [title, setHeader] = useState<string>('sidebar.myTasks.title');
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [users, setUsers] = useState<AccountHomeMember[]>([]);
+  const [data, setData] = useState<(Expense | Transfer | Debt)[]>([]);
+
+  const ExpenseTabs: SubHeaderTab[] = [
     {
       name: 'all',
-      action: () => handleSubHeader('all'),
+      action: (e: Expense): boolean => (!e ? true : isExpense(e)),
       selected: true,
     },
     {
       name: 'byMe',
-      action: () => handleSubHeader('byMe'),
+      action: (e: Expense): boolean =>
+        !e
+          ? true
+          : isExpense(e)
+          ? e.paidByUserId.toString() === localStorage.getItem('userId')
+          : false,
       selected: false,
     },
     {
       name: 'splittedWith',
-      action: () => handleSubHeader('splittedWith'),
+      action: (e: Expense): boolean =>
+        !e
+          ? true
+          : isExpense(e)
+          ? e.ExpenseSplits.filter(
+              (es) => es.userId.toString() === localStorage.getItem('userId')
+            ).length > 0
+          : false,
       selected: false,
     },
-  ]);
-  const [title, setHeader] = useState<string>('sidebar.myTasks.title');
-  const [loaded, setLoaded] = useState<boolean>(false);
-  const [users, setUsers] = useState<HomeMember[]>([]);
+  ];
 
-  const getSelectedTab = (): SidebarTab =>
+  const [subHeaderTabs, setSubHeaderTabs] =
+    useState<SubHeaderTab[]>(ExpenseTabs);
+
+  const getSelectedSidebarTab = (): SidebarTab =>
     sidebarTabs.find((t) => t.selected) ?? sidebarTabs[0];
+
+  const getSelectedSubHeaderTab = (): SubHeaderTab =>
+    subHeaderTabs.find((t) => t.selected) ?? subHeaderTabs[0];
 
   useEffect(() => {
     if (!sidebarTabs.length) return;
-    setLoaded(true);
-    let selected = getSelectedTab();
+    let selected = getSelectedSidebarTab();
     handleTitle(selected);
-    //handle expenses and transfers
+    handleData(selected, getSelectedSubHeaderTab());
   }, [sidebarTabs, subHeaderTabs]);
+
+  const handleData = (
+    sidebarTab: SidebarTab,
+    subHeaderTab: SubHeaderTab,
+    newData?: (Expense | Transfer | Debt)[]
+  ): void => {
+    if (!newData && !data?.length) return;
+
+    if (!newData) newData = [...data];
+    newData = newData.map((nd) => {
+      return { ...nd, visible: false };
+    });
+
+    newData.forEach(
+      (d) =>
+        (d.visible =
+          sidebarTab.action && subHeaderTab.action
+            ? sidebarTab.action(d) && subHeaderTab.action(d)
+            : false)
+    );
+
+    setData(sortByDate(newData));
+    setLoaded(true);
+  };
+
+  const sortByDate = (
+    array: (Expense | Transfer | Debt)[]
+  ): (Expense | Transfer | Debt)[] => {
+    array.sort((a, b) => {
+      if ((!isTransfer(a) && isDebt(a)) || (!isTransfer(b) && isDebt(b)))
+        return -1;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+    return array;
+  };
+
+  const getExpenseElement = (e: Expense): JSX.Element => {
+    return (
+      <ListItem key={`acc-e-${e.id}`} uid={e.id}>
+        <h3>
+          EXPENSE '{e.description}' AT {e.date}
+        </h3>
+      </ListItem>
+    );
+  };
+
+  const getTransferElement = (t: Transfer): JSX.Element => {
+    return (
+      <ListItem key={`acc-t-${t.id}`} uid={t.id}>
+        <h3>
+          TRANSFER FROM {t.fromUserId} TO {t.toUserId}
+        </h3>
+      </ListItem>
+    );
+  };
+
+  const getDebtElement = (d: Debt): JSX.Element => {
+    return (
+      <ListItem key={`acc-d-${d.id}`} uid={d.id}>
+        <h3>
+          DEBT FROM {d.fromUserId} TO {d.toUserId}
+        </h3>
+      </ListItem>
+    );
+  };
+
+  const getCompoundDebtsElement = (): JSX.Element[] => {
+    return [<h3>COMPOUND</h3>];
+  };
+
+  const isExpense = (e: any): e is Expense =>
+    'description' in e && 'totalAmount' in e && 'paidByUserId' in e;
+
+  const isTransfer = (e: any): e is Transfer =>
+    'date' in e && 'fromUserId' in e && 'toUserId' in e && 'amount' in e;
+
+  const isDebt = (e: any): e is Debt =>
+    'fromUserId' in e && 'toUserId' in e && 'amount' in e;
 
   useEffect(() => {
     let tabs: SidebarTab[] = [
       {
         icon: 'receipt',
         name: 'expenses',
-        action: (t: Expense | Transfer) => (!t ? true : false),
+        action: (e: Expense | Transfer | Debt): boolean =>
+          !e ? true : isExpense(e),
       },
       {
         icon: 'exchange-alt',
         name: 'transfers',
-        action: (t: Expense | Transfer) => (!t ? true : false),
+        action: (t: Expense | Transfer | Debt): boolean =>
+          !t ? true : isTransfer(t),
       },
       {
         icon: 'people-arrows',
         name: 'debts',
-        action: (t: Expense | Transfer) => (!t ? true : false),
+        action: (d: Expense | Transfer | Debt): boolean =>
+          !d ? true : !isTransfer(d) && isDebt(d),
       },
       {
         icon: 'history',
         name: 'history',
-        action: (t: Expense | Transfer) => (!t ? true : false),
+        action: (te: Expense | Transfer | Debt): boolean =>
+          !te ? true : isTransfer(te) || isExpense(te),
       },
     ].map((t, i) => {
       return {
@@ -121,12 +239,16 @@ const AppAccounts = (): JSX.Element => {
     setSidebarTabs(tabs);
 
     axios
-      .get(`/accounts/${localStorage.getItem('currentHome')}/users`)
+      .get(`/accounts/${localStorage.getItem('currentHome')}`)
       .then(async (res: any) => {
+        let data = [...res.data.expenses]
+          .concat([...res.data.transfers])
+          .concat([...res.data.debts]);
         setUsers([...res.data.users]);
+        handleData(tabs[0], getSelectedSubHeaderTab(), data);
       })
       .catch((err) => {
-        setNotification(err.response.data);
+        if (err?.response?.data) setNotification(err.response.data);
       });
   }, []);
 
@@ -150,39 +272,33 @@ const AppAccounts = (): JSX.Element => {
 
     switch (selected.value) {
       case 'expenses':
-        newSubHeaderTabs = [
-          {
-            name: 'all',
-            action: () => handleSubHeader('all'),
-            selected: true,
-          },
-          {
-            name: 'byMe',
-            action: () => handleSubHeader('byMe'),
-            selected: false,
-          },
-          {
-            name: 'splittedWith',
-            action: () => handleSubHeader('splittedWith'),
-            selected: false,
-          },
-        ];
+        newSubHeaderTabs = ExpenseTabs;
         break;
       case 'transfers':
         newSubHeaderTabs = [
           {
             name: 'all',
-            action: () => handleSubHeader('all'),
+            action: (t: Transfer): boolean => (!t ? true : isTransfer(t)),
             selected: true,
           },
           {
             name: 'fromMe',
-            action: () => handleSubHeader('fromMe'),
+            action: (t: Transfer): boolean =>
+              !t
+                ? true
+                : isTransfer(t)
+                ? t.fromUserId.toString() === localStorage.getItem('userId')
+                : false,
             selected: false,
           },
           {
             name: 'toMe',
-            action: () => handleSubHeader('toMe'),
+            action: (t: Transfer): boolean =>
+              !t
+                ? true
+                : isTransfer(t)
+                ? t.toUserId.toString() === localStorage.getItem('userId')
+                : false,
             selected: false,
           },
         ];
@@ -191,12 +307,14 @@ const AppAccounts = (): JSX.Element => {
         newSubHeaderTabs = [
           {
             name: 'all',
-            action: () => handleSubHeader('all'),
+            action: (d: Debt): boolean =>
+              !d ? true : !isTransfer(d) && isDebt(d),
             selected: true,
           },
           {
             name: 'compound',
-            action: () => handleSubHeader('compound'),
+            action: (d: Debt): boolean =>
+              !d ? true : !isTransfer(d) && isDebt(d),
             selected: false,
           },
         ];
@@ -205,17 +323,37 @@ const AppAccounts = (): JSX.Element => {
         newSubHeaderTabs = [
           {
             name: 'all',
-            action: () => handleSubHeader('all'),
+            action: (te: Transfer | Expense): boolean =>
+              !te ? true : isTransfer(te) || isExpense(te),
             selected: true,
           },
           {
             name: 'includingMe',
-            action: () => handleSubHeader('includingMe'),
+            action: (te: Transfer | Expense): boolean => {
+              if (!te) return true;
+              if (isExpense(te))
+                return (
+                  te.paidByUserId.toString() ===
+                    localStorage.getItem('userId') ||
+                  te.ExpenseSplits.filter(
+                    (es) =>
+                      es.userId.toString() === localStorage.getItem('userId')
+                  ).length > 0
+                );
+
+              if (!isTransfer(te)) return false;
+
+              return (
+                te.fromUserId.toString() === localStorage.getItem('userId') ||
+                te.toUserId.toString() === localStorage.getItem('userId')
+              );
+            },
             selected: false,
           },
         ];
         break;
     }
+
     setSidebarTabs(newTabs);
     setSubHeaderTabs(newSubHeaderTabs);
   };
@@ -302,7 +440,9 @@ const AppAccounts = (): JSX.Element => {
       onAddClick={
         title === 'sidebar.expenses.title'
           ? () => showExpensePopup()
-          : () => showTransferPopup()
+          : title === 'sidebar.transfers.title'
+          ? () => showTransferPopup()
+          : undefined
       }
       onAddTooltip={`${
         title === 'sidebar.expenses.title' ? 'expenses' : 'transfers'
@@ -311,9 +451,34 @@ const AppAccounts = (): JSX.Element => {
       <div className="content">
         <List key={`expense-list`} className="fill-height">
           {loaded ? (
-            <ListItem key={`expense-1`} uid={1}>
-              <></>
-            </ListItem>
+            getSelectedSubHeaderTab().name === 'compound' ? (
+              getCompoundDebtsElement()
+            ) : data.filter((d) => d.visible).length ? (
+              data
+                .filter((d) => d.visible)
+                .map((d) =>
+                  isExpense(d)
+                    ? getExpenseElement(d)
+                    : isTransfer(d)
+                    ? getTransferElement(d)
+                    : getDebtElement(d)
+                )
+            ) : (
+              <h2>
+                <Translate
+                  name={
+                    title === 'sidebar.expenses.title'
+                      ? 'noExpenses'
+                      : title === 'sidebar.transfers.title'
+                      ? 'noTransfers'
+                      : title === 'sidebar.debts.title'
+                      ? 'noDebts'
+                      : 'noHistory'
+                  }
+                  prefix="accounts."
+                />
+              </h2>
+            )
           ) : (
             <></>
           )}

@@ -308,7 +308,11 @@
         }
       }
     },
-    "disabled": "Disabled because there is only one person in this home"
+    "disabled": "Disabled because there is only one person in this home",
+    "noExpenses": "No Expenses.",
+    "noTransfers": "No Transfers.",
+    "noDebts": "All Debts Are Settled!",
+    "noHistory": "No History."
   },
   "expenses": {
     "title": {

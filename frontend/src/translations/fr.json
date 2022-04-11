@@ -307,7 +307,12 @@
           "othersOwe": "Ils vous doivent"
         }
       }
-    }
+    },
+    "disabled": "Disabled because there is only one person in this home",
+    "noExpenses": "Aucune dépenses.",
+    "noTransfers": "Aucun versements.",
+    "noDebts": "Dettes réglées.",
+    "noHistory": "Aucun historique."
   },
   "expenses": {
     "title": {

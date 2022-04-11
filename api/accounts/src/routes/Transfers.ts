@@ -1,6 +1,6 @@
 import express from 'express';
 import { InputsToDate } from '../../../shared/src/routes/Global';
-import { getUsers, settleHomeDebt } from './Accounts';
+import { getUsers, settleHomeDebts } from './Accounts';
 
 const Transfers = express.Router();
 const db = require('../../../shared/db/models');
@@ -23,7 +23,7 @@ const { Op } = require('sequelize');
  * @param res The HTTP response.
  * @returns An array containing all home transfers.
  */
-const getTransfers = async (res: any) => {
+export const getTransfers = async (res: any) => {
   return await res.locals.home.getTransfers({
     attributes: ['id', 'fromUserId', 'toUserId', 'date', 'amount'],
   });
@@ -115,11 +115,14 @@ Transfers.post('/', async (req: any, res: any) => {
         { transaction: t }
       );
 
-      await settleHomeDebt(
-        req.user.id,
-        reqTransfer.User.id,
-        reqTransfer.amount,
-        res.locals.home.id,
+      // Settle home debt between sender and receiver
+      await settleHomeDebts(
+        {
+          fromUserId: req.user.id,
+          toUserId: reqTransfer.User.id,
+          amount: reqTransfer.amount,
+          homeId: res.locals.home.id,
+        },
         t
       );
 

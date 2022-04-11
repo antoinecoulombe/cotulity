@@ -17,13 +17,24 @@ Accounts.use(async (req: any, res, next) => {
 });
 
 // ########################################################
+// ###################### Interfaces ######################
+// ########################################################
+
+interface HomeDebt {
+  fromUserId: number;
+  toUserId: number;
+  amount: number;
+  homeId: number;
+}
+
+// ########################################################
 // ####################### Imports ########################
 // ########################################################
 
-import Transfers from './Transfers';
+import Transfers, { getTransfers } from './Transfers';
 Accounts.use('/transfers', Transfers);
 
-import Expenses from './Expenses';
+import Expenses, { getExpenses } from './Expenses';
 Accounts.use('/expenses', Expenses);
 
 // ########################################################
@@ -42,8 +53,14 @@ Accounts.use('/expenses', Expenses);
 export const getUsers = async (res: any) => {
   return await res.locals.home.getMembers({
     attributes: ['id', 'firstname', 'lastname'],
-    include: [{ model: db.Image, attributes: ['url'] }],
-    through: { where: { accepted: true } },
+    include: [
+      { model: db.Image, attributes: ['url'] },
+      { model: db.UserRecord, attributes: ['id'] },
+    ],
+    through: {
+      where: { accepted: true },
+      attributes: ['accepted', 'nickname'],
+    },
   });
 };
 
@@ -56,47 +73,60 @@ export const getUsers = async (res: any) => {
  * If the sender id (from) is bigger than the receiver id (to), they are switched and the amount
  * is reversed (ie: 50 becomes -50).
  */
-const orderHomeDebt = (
-  from: number,
-  to: number,
-  amount: number
-): { fromId: number; toId: number; amount: number } => {
-  if (from < to) return { fromId: from, toId: to, amount: -amount };
-  return { fromId: to, toId: from, amount: amount };
+const orderHomeDebt = (debt: HomeDebt): HomeDebt => {
+  if (debt.fromUserId < debt.toUserId) return { ...debt, amount: -debt.amount };
+  return {
+    homeId: debt.homeId,
+    fromUserId: debt.toUserId,
+    toUserId: debt.fromUserId,
+    amount: debt.amount,
+  };
 };
 
 /**
  * Adjusts debt between members by the specified amount.
- * @param from The sender of the amount.
- * @param to The receiver of the amount.
- * @param amount The amount to be sent.
- * @param homeId The home id by which the home debt should be found.
+ * @param debts The home debts to be inserted into the database.
+ * Each home debt object contains the sender, receiver, home and amount to be sent.
  * @param transaction A sequelize transaction object.
  */
-export const settleHomeDebt = async (
-  from: number,
-  to: number,
-  amount: number,
-  homeId: number,
+export const settleHomeDebts = async (
+  debts: HomeDebt | HomeDebt[],
   transaction?: any
 ): Promise<void> => {
-  let hd = orderHomeDebt(from, to, amount); // Reverse sender and receiver if needed
+  // Reverse senders and receivers, if needed
+  if (!Array.isArray(debts)) debts = [debts];
+  let orderedDebts: HomeDebt[] = debts
+    .filter((d) => d.fromUserId !== d.toUserId)
+    .map((d) => orderHomeDebt(d));
 
-  // Find the home debt between the two members
-  let homeDebt = await db.HomeDebt.findOne({
-    where: { homeId: homeId, fromId: hd.fromId, toId: hd.toId },
+  // Check if the debts array is empty
+  if (!orderedDebts.length) return;
+
+  // Sum debts if there is one between the debts members
+  orderedDebts = await Promise.all(
+    orderedDebts.map(async (od) => {
+      // Find the home debt between the two members
+      let debtDb = await db.HomeDebt.findOne({
+        where: {
+          homeId: od.homeId,
+          fromUserId: od.fromUserId,
+          toUserId: od.toUserId,
+        },
+      });
+
+      // If no debt is found between the two members, the row can be inserted as is
+      if (!debtDb) return od;
+
+      // Otherwise, sum the amounts
+      return { ...od, amount: od.amount + debtDb.amount };
+    })
+  );
+
+  await db.HomeDebt.bulkCreate(orderedDebts, {
+    fields: ['homeId', 'fromUserId', 'toUserId', 'amount'],
+    updateOnDuplicate: ['amount'],
+    transaction: transaction,
   });
-
-  // If no debt between the two member is found, create one
-  if (!homeDebt)
-    await db.HomeDebt.create(
-      { ...hd, homeId: homeId },
-      transaction ? { transaction: transaction } : {}
-    );
-  else {
-    homeDebt.amount += hd.amount; // Add the amount to the debt
-    await homeDebt.save(transaction ? { transaction: transaction } : {});
-  }
 };
 
 // ########################################################
@@ -113,28 +143,48 @@ Accounts.get('/users', async (req: any, res: any) => {
       include: [
         { model: db.Image, attributes: ['url'] },
         {
-          model: db.Expense,
-          attributes: ['description', 'date', 'totalAmount'],
+          model: db.UserRecord,
+          attributes: ['id'],
           include: [
             {
-              model: db.User,
-              as: 'SplittedWith',
-              attributes: ['id'],
-              through: {
-                attributes: ['amount'],
-              },
+              model: db.Expense,
+              attributes: [
+                'id',
+                'description',
+                'date',
+                'totalAmount',
+                'paidByUserId',
+              ],
+              include: [
+                {
+                  model: db.UserRecord,
+                  as: 'SplittedWith',
+                  attributes: ['id'],
+                  through: {
+                    attributes: ['amount'],
+                  },
+                },
+              ],
+            },
+            {
+              model: db.Transfer,
+              as: 'TransferSent',
+              attributes: ['date', 'amount', 'toUserId'],
+            },
+            {
+              model: db.Transfer,
+              as: 'TransferReceived',
+              attributes: ['date', 'amount', 'fromUserId'],
+            },
+            {
+              model: db.HomeDebt,
+              as: 'fromDebt',
+            },
+            {
+              model: db.HomeDebt,
+              as: 'toDebt',
             },
           ],
-        },
-        {
-          model: db.Transfer,
-          as: 'TransferSent',
-          attributes: ['date', 'amount', 'toUserId'],
-        },
-        {
-          model: db.Transfer,
-          as: 'TransferReceived',
-          attributes: ['date', 'amount', 'fromUserId'],
         },
       ],
       through: {
@@ -149,7 +199,10 @@ Accounts.get('/users', async (req: any, res: any) => {
     });
   } catch (error) {
     /* istanbul ignore next */
-    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+    res.status(500).json({
+      title: 'request.error',
+      msg: 'request.error',
+    });
   }
 });
 
@@ -161,8 +214,28 @@ Accounts.get('/debts', async (req: any, res: any) => {
     return res.json({
       title: 'request.success',
       msg: 'request.success',
-      debts: await res.locals.home.getHomeDebts(),
+      debts: await res.locals.home.getHomeDebts({
+        attributes: ['fromUserId', 'toUserId', 'amount'],
+      }),
       users: await getUsers(res),
+    });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+Accounts.get('/', async (req: any, res: any) => {
+  try {
+    return res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      users: await getUsers(res),
+      debts: await res.locals.home.getHomeDebts({
+        attributes: ['fromUserId', 'toUserId', 'amount'],
+      }),
+      expenses: await getExpenses(res),
+      transfers: await getTransfers(res),
     });
   } catch (error) {
     /* istanbul ignore next */
