@@ -43,3 +43,10 @@ export const validateEmail = (email): boolean => {
   var re = /\S+@\S+\.\S+/;
   return re.test(email);
 };
+
+export const groupBy = function (xs, key) {
+  return xs.reduce(function (rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};

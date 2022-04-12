@@ -1,6 +1,6 @@
 import * as React from 'react';
-import axios from '../utils/fetchClient';
 import { useInterval } from '../utils/interval';
+import axios from '../utils/fetchClient';
 
 const timeoutCallbackDelay = 1; // Delay before triggering notification deletion
 

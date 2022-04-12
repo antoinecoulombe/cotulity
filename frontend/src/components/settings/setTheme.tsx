@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import Translate from '../../components/utils/translate';
 import $ from 'jquery';
-import { useState } from 'react';
 
 interface SetThemeProps {
   setTheme(theme: string): void;

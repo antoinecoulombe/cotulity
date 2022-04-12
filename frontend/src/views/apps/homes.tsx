@@ -9,17 +9,17 @@ import {
 import AppContainer, {
   handleOpenAppResize,
 } from '../../components/app/appContainer';
+import axios from '../../utils/fetchClient';
 import ReactDOMServer from 'react-dom/server';
+import SingleInputPopup from '../../components/forms/singleInputPopup';
+import WarningPopup from '../../components/global/warningPopup';
+import EditPopup from '../../components/homes/editPopup';
 import IconToolTip from '../../components/global/iconTooltip';
 import List from '../../components/utils/lists/list';
 import ListItem from '../../components/utils/lists/listItem';
 import ListItemLeft from '../../components/utils/lists/listLeft';
 import ListItemRight from '../../components/utils/lists/listRight';
 import Translate from '../../components/utils/translate';
-import axios from '../../utils/fetchClient';
-import SingleInputPopup from '../../components/forms/singleInputPopup';
-import WarningPopup from '../../components/global/warningPopup';
-import EditPopup from '../../components/homes/editPopup';
 import '../../assets/css/apps/homes.css';
 
 export interface Home {

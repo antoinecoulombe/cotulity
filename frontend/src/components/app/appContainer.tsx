@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import SubHeader, { SubHeaderProps } from './subHeader';
-import Sidebar, { SidebarTab } from './sidebar';
 import { useOutsideAlerter } from '../utils/outsideClick';
 import { useHistory } from 'react-router';
+import SubHeader, { SubHeaderProps } from './subHeader';
+import Sidebar, { SidebarTab } from './sidebar';
 import Header from './Header';
 import $ from 'jquery';
 import '../../assets/css/app/open-app.css';

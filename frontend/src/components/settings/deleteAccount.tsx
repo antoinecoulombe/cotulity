@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
-import Translate from '../../components/utils/translate';
-import WarningPopup from '../../components/global/warningPopup';
 import axios from '../../utils/fetchClient';
+import WarningPopup from '../../components/global/warningPopup';
+import Translate from '../../components/utils/translate';
 
 interface DeleteAccountProps {
   setPopup(popup: JSX.Element): void;

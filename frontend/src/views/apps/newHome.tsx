@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory } from 'react-router';
+import axios from '../../utils/fetchClient';
 import App from '../../components/apps/app';
 import SingleInputForm from '../../components/forms/singleInputForm';
-import axios from '../../utils/fetchClient';
 import $ from 'jquery';
 import '../../assets/css/views/apps.css';
 

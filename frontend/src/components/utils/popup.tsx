@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import IconToolTip from '../global/iconTooltip';
-import ReactDOMServer from 'react-dom/server';
-import Translate from './translate';
 import { useEffect, useRef } from 'react';
 import { useOutsideAlerter } from './outsideClick';
+import ReactDOMServer from 'react-dom/server';
+import IconToolTip from '../global/iconTooltip';
+import Translate from './translate';
 import $ from 'jquery';
 
 interface PopupProps {

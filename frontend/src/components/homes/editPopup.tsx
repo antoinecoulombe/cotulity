@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
-import Toggle, { Tab } from '../global/toggle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Home } from '../../views/apps/homes';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { getCopyIndex, getTranslateJSON } from '../../utils/global';
+import Toggle, { Tab } from '../global/toggle';
+import axios from '../../utils/fetchClient';
+import ReactDOMServer from 'react-dom/server';
+import IconToolTip from '../global/iconTooltip';
 import List from '../utils/lists/list';
 import ListItem from '../utils/lists/listItem';
 import ListItemLeft from '../utils/lists/listLeft';
-import Popup from '../utils/popup';
 import ListItemRight from '../utils/lists/listRight';
-import IconToolTip from '../global/iconTooltip';
-import ReactDOMServer from 'react-dom/server';
-import Translate from '../utils/translate';
-import SingleInputForm from '../forms/singleInputForm';
-import axios from '../../utils/fetchClient';
+import Popup from '../utils/popup';
 import WarningPopup from '../global/warningPopup';
+import SingleInputForm from '../forms/singleInputForm';
+import Translate from '../utils/translate';
 
 interface HomeMember {
   id: number;

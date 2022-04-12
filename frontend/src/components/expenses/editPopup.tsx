@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
-import { initTaskOccurence, Task, TaskOccurence } from '../../views/apps/tasks';
 import { useTranslation } from 'react-i18next';
+import { HomeMember } from '../../views/apps/homes';
 import DropdownMulti, { DropdownMultiOption } from '../forms/dropdownMulti';
-import Popup from '../utils/popup';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
+import Popup from '../utils/popup';
 import Translate from '../utils/translate';
-import IconToolTip from '../global/iconTooltip';
-import Dropdown from '../forms/dropdown';
-import { HomeMember } from '../../views/apps/homes';
 
 interface Expense {
   amount?: number;

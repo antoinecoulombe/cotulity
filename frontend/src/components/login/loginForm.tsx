@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getNotifications, isAuthenticated } from '../../utils/global';
-import {
-  jsonNotification,
-  useNotifications,
-} from '../../contexts/NotificationsContext';
+import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory, useParams } from 'react-router';
-import Input from '../forms/input';
-import FormToggle from './formToggle';
 import axios from '../../utils/fetchClient';
-import $ from 'jquery';
-import Translate from '../utils/translate';
+import FormToggle from './formToggle';
+import Input from '../forms/input';
 import SingleInputPopup from '../forms/singleInputPopup';
+import Translate from '../utils/translate';
+import $ from 'jquery';
 
 const LoginForm = (): JSX.Element => {
   let { token: inviteToken } = useParams<{ token: string }>();

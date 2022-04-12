@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getNotifications, isAuthenticated } from '../../utils/global';
-import {
-  jsonNotification,
-  useNotifications,
-} from '../../contexts/NotificationsContext';
+import { isAuthenticated } from '../../utils/global';
+import { useNotifications } from '../../contexts/NotificationsContext';
 import { useHistory, useParams } from 'react-router';
-import Input from '../forms/input';
 import axios from '../../utils/fetchClient';
-import $ from 'jquery';
+import Input from '../forms/input';
 import Title from '../forms/title';
+import $ from 'jquery';
 
 const initForm = {
   password: '',

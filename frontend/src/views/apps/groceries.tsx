@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import AppContainer, {
   handleOpenAppResize,
 } from '../../components/app/appContainer';
-import IconToolTip from '../../components/global/iconTooltip';
 import axios from '../../utils/fetchClient';
+import IconToolTip from '../../components/global/iconTooltip';
 import Translate from '../../components/utils/translate';
 import $ from 'jquery';
 import '../../assets/css/apps/groceries.css';

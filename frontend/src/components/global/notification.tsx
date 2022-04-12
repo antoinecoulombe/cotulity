@@ -4,8 +4,8 @@ import {
   strictJsonNotification,
   useNotifications,
 } from '../../contexts/NotificationsContext';
-import $ from 'jquery';
 import Translate from '../utils/translate';
+import $ from 'jquery';
 
 interface NotificationProps {
   json: strictJsonNotification;

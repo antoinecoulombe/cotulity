@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { initTaskOccurence, Task, TaskOccurence } from '../../views/apps/tasks';
 import { useTranslation } from 'react-i18next';
 import DropdownMulti, { DropdownMultiOption } from '../forms/dropdownMulti';
+import IconToolTip from '../global/iconTooltip';
 import Popup from '../utils/popup';
+import Dropdown from '../forms/dropdown';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
 import Translate from '../utils/translate';
-import IconToolTip from '../global/iconTooltip';
-import Dropdown from '../forms/dropdown';
 
 interface EditPopupProps {
   taskOccurence?: TaskOccurence;

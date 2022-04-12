@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNotifications } from '../../contexts/NotificationsContext';
-import Translate from '../../components/utils/translate';
 import axios from '../../utils/fetchClient';
 import IconToolTip from '../../components/global/iconTooltip';
+import Translate from '../../components/utils/translate';
 import $ from 'jquery';
 
 interface SetProfilePictureProps {}
