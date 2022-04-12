@@ -371,12 +371,7 @@ const AppAccounts = (): JSX.Element => {
   };
 
   const getCompoundDebtsElement = (): JSX.Element => {
-    return (
-      <CompoundDebts
-        debts={data.filter((d) => !isTransfer(d) && isDebt(d)) as Debt[]}
-        users={users}
-      />
-    );
+    return <CompoundDebts users={users} />;
   };
 
   // #endregion

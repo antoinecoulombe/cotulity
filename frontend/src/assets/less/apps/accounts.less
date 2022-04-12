@@ -86,7 +86,8 @@
         }
       }
 
-      &.transfer {
+      &.transfer,
+      &.debt {
         .list-item-left,
         .list-item-right {
           .expense-lil-text {
@@ -141,6 +142,13 @@
 
       &.debt {
         line-height: 52px;
+
+        .list-item-left,
+        .list-item-right {
+          .expense-lil-text {
+            margin: 0;
+          }
+        }
 
         .list-item-click {
           > .debt-row {

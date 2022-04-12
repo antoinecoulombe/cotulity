@@ -1,5 +1,6 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
+import { groupBy } from '../../../shared/src/routes/Global';
 
 const Accounts = express.Router();
 const db = require('../../../shared/db/models');
@@ -24,7 +25,7 @@ interface HomeDebt {
   fromUserId: number;
   toUserId: number;
   amount: number;
-  homeId: number;
+  homeId?: number;
 }
 
 // ########################################################
@@ -44,6 +45,96 @@ Accounts.use('/expenses', Expenses);
 // ########################################################
 // ################### Getters / Globals ##################
 // ########################################################
+
+/**
+ * Sums all debts for each user.
+ * @param groupedDebt The Debt array grouped using Global.groupBy.
+ * @returns An array of objects containing all user ids and their total debts.
+ */
+const sumGroupedDebts = (groupedDebt: any): { id: number; total: number }[] => {
+  let totals: { id: number; total: number }[] = [];
+
+  for (const [userId, subDebts] of Object.entries(groupedDebt)) {
+    let total = 0;
+
+    (subDebts as HomeDebt[]).forEach((sd: HomeDebt) => (total += sd.amount));
+    totals.push({ id: parseInt(userId), total: total });
+  }
+
+  return totals;
+};
+
+/**
+ * Sums all debts and compounds them.
+ * @param debts The Debts to be compounded.
+ * @returns An array of objects containing the user id and
+ * its debt, either negative or positive.
+ */
+const getCompoundedDebts = (
+  debts: HomeDebt[]
+): { id: number; total: number }[] => {
+  let owes = sumGroupedDebts(groupBy(debts, 'fromUserId'));
+  let isOwed = sumGroupedDebts(groupBy(debts, 'toUserId'));
+  let totals = [...owes];
+
+  isOwed.forEach((is) => {
+    let t = totals.find((t) => t.id === is.id);
+    if (!t) totals.push({ id: is.id, total: -is.total });
+    else t.total -= is.total;
+  });
+
+  return totals;
+};
+
+/**
+ * Gets the minimal amount of transfers needed to settle all home debts.
+ * @param totals The compounded debts array.
+ * @returns An array containing all transfers needed to settle all home debts.
+ */
+const getCompoundedTransfers = (
+  totals: { id: number; total: number }[]
+): HomeDebt[] => {
+  let totalsOwed: { id: number; total: number }[] = [];
+  let totalsOwes: { id: number; total: number }[] = [];
+
+  totals.sort((a, b) => b.total - a.total);
+
+  totals.forEach((t) => {
+    if (t.total < 0) totalsOwed.push(t);
+    else if (t.total > 0) totalsOwes.push(t);
+  });
+
+  let transfers: HomeDebt[] = [];
+
+  totalsOwed.forEach((to) => {
+    let owed = to.total;
+
+    totalsOwes.every((tos) => {
+      let toTransfer = -owed > tos.total ? tos.total : -owed;
+
+      transfers.push({
+        fromUserId: tos.id,
+        toUserId: to.id,
+        amount: toTransfer,
+      });
+      tos.total -= toTransfer;
+      to.total += toTransfer;
+
+      if (to.total == 0) return false;
+      return true;
+    });
+  });
+
+  return transfers;
+};
+
+/**
+ * Gets the minimal amount of transfers needed to settle all home debts.
+ * @param debts The home debts array.
+ * @returns An array containing all transfers needed to settle all home debts.
+ */
+const getMinimumTransfers = (debts: HomeDebt[]): HomeDebt[] =>
+  getCompoundedTransfers(getCompoundedDebts(debts));
 
 /**
  * Gets the current home users.
@@ -218,6 +309,24 @@ Accounts.get('/debts', async (req: any, res: any) => {
         attributes: ['fromUserId', 'toUserId', 'amount'],
       }),
       users: await getUsers(res),
+    });
+  } catch (error) {
+    /* istanbul ignore next */
+    res.status(500).json({ title: 'request.error', msg: 'request.error' });
+  }
+});
+
+/**
+ * Gets the minimum amount of home debts (compound transfers).
+ */
+Accounts.get('/debts/compound', async (req: any, res: any) => {
+  try {
+    let debts = await res.locals.home.getHomeDebts();
+
+    return res.json({
+      title: 'request.success',
+      msg: 'request.success',
+      debts: getMinimumTransfers(debts),
     });
   } catch (error) {
     /* istanbul ignore next */

@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 interface ListItemProps {
   children: object;
-  uid: number;
+  uid?: number;
   className?: string;
   onClick?: JSX.Element[];
 }
@@ -16,7 +16,7 @@ const ListItem = (props: ListItemProps): JSX.Element => {
           clicked ? ' clicked' : ''
         }`}
         data-uid={props.uid}
-        onClick={() => setClicked(!clicked)}
+        onClick={props.onClick ? () => setClicked(!clicked) : undefined}
         style={{ cursor: props.onClick ? 'pointer' : 'auto' }}
       >
         {props.children}

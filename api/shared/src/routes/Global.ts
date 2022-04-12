@@ -130,3 +130,16 @@ export const InputsToDate = (
     return null;
   }
 };
+
+/**
+ * Groups an array by the specified key.
+ * @param xs The array to be grouped.
+ * @param key The key used for grouping.
+ * @returns A grouped array.
+ */
+export const groupBy = function (xs: any, key: string) {
+  return xs.reduce(function (rv: any, x: any) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
