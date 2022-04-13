@@ -19,6 +19,9 @@
   line-height: 26px;
   float: left;
 }
+.open-app-container.accounts .list > .list-item .list-item-click > svg {
+  color: var(--black);
+}
 .open-app-container.accounts .list > .list-item.expense .list-item-click > h4 {
   margin-right: 6px;
 }

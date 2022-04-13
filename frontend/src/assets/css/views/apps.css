@@ -20,7 +20,7 @@
   cursor: default;
 }
 #apps-container > #apps > .app-container.disabled > .app {
-  opacity: 0.8;
+  opacity: var(--app-disabled-opacity);
 }
 #apps-container > #apps > .app-container.disabled:hover > .app {
   color: var(--error-color) !important;

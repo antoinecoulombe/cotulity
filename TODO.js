@@ -70,3 +70,9 @@
 // CANC: Implement code coverage with microservices                                   X
 
 // #endregion
+
+// TODO: Rapport
+// -> déjà fait premiere session
+// -> ajouts
+// -> README (comment executer le projet)
+// TODO: Mettre a jour .README

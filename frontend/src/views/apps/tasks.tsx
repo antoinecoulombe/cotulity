@@ -26,8 +26,8 @@ export interface Task {
   shared: boolean;
   repeat: string;
   untilDate: string;
-  Owner?: TaskHomeMember;
   Occurences: TaskOccurence[];
+  Owner?: TaskHomeMember;
 }
 
 export const initTask: Task = {
@@ -39,19 +39,12 @@ export const initTask: Task = {
   Occurences: [],
 };
 
-export interface TaskUser {
-  id: number;
-  firstname: string;
-  lastname: string;
-  Image: { url: string } | null;
-}
-
 export interface TaskOccurence {
   id: number;
   completedOn: string | null;
   deletedAt: string | null;
   dueDateTime: string;
-  Users?: TaskUser[];
+  Users?: HomeMember[];
   important: boolean;
   visible: boolean;
   Task: Task;
@@ -230,8 +223,8 @@ const AppTasks = (): JSX.Element => {
               (count +=
                 to.deletedAt == null &&
                 to.completedOn == null &&
-                (to.Users?.filter((tou: TaskUser) => tou.id === u.id).length ??
-                  -1) > 0
+                (to.Users?.filter((tou: HomeMember) => tou.id === u.id)
+                  .length ?? -1) > 0
                   ? 1
                   : 0)
           )

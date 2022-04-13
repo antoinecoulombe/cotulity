@@ -32,7 +32,7 @@ const ListItemExpense = (props: ListItemExpenseProps): JSX.Element => {
       uid={props.expense.id}
       className="expense"
       onClick={[
-        <h4>
+        <h4 key={props.expense.id}>
           <Translate name="expenses.title.splittedWith" />:
         </h4>,
       ].concat(
@@ -40,6 +40,7 @@ const ListItemExpense = (props: ListItemExpenseProps): JSX.Element => {
           getUserWithRecord(props.users, es.userId)?.Image?.url ? (
             <img
               id="img-profile"
+              key={es.userId}
               src={`http://localhost:4000/images/public/${
                 getUserWithRecord(props.users, es.userId)?.Image?.url
               }`}
@@ -48,6 +49,7 @@ const ListItemExpense = (props: ListItemExpenseProps): JSX.Element => {
             />
           ) : (
             <FontAwesomeIcon
+              key={es.userId}
               icon="user-circle"
               title={getCompleteName(getUserWithRecord(props.users, es.userId))}
             ></FontAwesomeIcon>

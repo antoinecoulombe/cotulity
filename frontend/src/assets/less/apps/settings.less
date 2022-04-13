@@ -93,9 +93,12 @@
         }
 
         > .overlay-delete {
-          z-index: 9;
           display: none;
+          position: absolute !important;
+          right: 0px;
+          margin-top: -3px;
           background-color: var(--error-color-60);
+          z-index: 9;
 
           > svg {
             color: white !important;

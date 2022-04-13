@@ -79,9 +79,12 @@
   color: var(--lightGray);
 }
 .open-app-container.settings .setting.picture > .img-profile-container > .overlay-delete {
-  z-index: 9;
   display: none;
+  position: absolute !important;
+  right: 0px;
+  margin-top: -3px;
   background-color: var(--error-color-60);
+  z-index: 9;
 }
 .open-app-container.settings .setting.picture > .img-profile-container > .overlay-delete > svg {
   color: white !important;
