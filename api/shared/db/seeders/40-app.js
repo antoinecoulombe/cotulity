@@ -16,8 +16,8 @@ module.exports = {
         {
           priority: 10,
           name: 'calendar',
-          online: false,
-          image: 'calendar-alt',
+          online: true,
+          image: 'calendar-days',
           createdAt: Sequelize.literal('NOW()'),
           updatedAt: Sequelize.literal('NOW()'),
         },

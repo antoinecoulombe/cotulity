@@ -389,7 +389,7 @@ const AppAccounts = (): JSX.Element => {
       .then((res: any) => {
         setSuccessNotification(res.data);
         setPopup(nullJSX);
-        // push res.data.expense to expense list
+        // TODO: HANDLE NEW EXPENSE -> push res.data.expense to expense list
       })
       .catch((err: any) => {
         setNotification(err.response.data);
@@ -436,7 +436,7 @@ const AppAccounts = (): JSX.Element => {
       .then((res: any) => {
         setSuccessNotification(res.data);
         setPopup(nullJSX);
-        // push res.data.transfer to expense list
+        // TODO: HANDLE NEW TRANSFER -> push res.data.transfer to expense list
       })
       .catch((err: any) => {
         setNotification(err.response.data);

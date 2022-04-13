@@ -74,7 +74,9 @@ import {
   faPeopleArrows,
   faBan,
   faCircle,
+  faCalendarDays,
 } from '@fortawesome/free-solid-svg-icons';
+import AppCalendar from './apps/calendar';
 
 library.add(
   faArrowAltCircleRight,
@@ -119,7 +121,8 @@ library.add(
   faExchangeAlt,
   faPeopleArrows,
   faBan,
-  faCircle
+  faCircle,
+  faCalendarDays
 );
 
 const App = (): JSX.Element => {
@@ -165,6 +168,7 @@ const App = (): JSX.Element => {
         <PrivateRoute exact path="/apps/accounts" component={AppAccounts} />
         <PrivateRoute exact path="/apps/tasks" component={AppTasks} />
         <PrivateRoute exact path="/apps/groceries" component={AppGroceries} />
+        <PrivateRoute exact path="/apps/calendar" component={AppCalendar} />
         <PrivateRoute exact path="/apps/console" component={AppConsole} />
         <Route
           exact

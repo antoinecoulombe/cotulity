@@ -1,110 +1,72 @@
-// #region Ameliorations                                                    ->  39h
+// #region Ameliorations
 
-// TODO: [ONGOING] Refactor css                                             -> 20h
-//  -> Convert fixed sizes to em + responsive typography (media queries)    ->  8h
-//  -> Standardize classes                                                  ->  6h
-//  -> Standardize colors (grey tones, opacities...)                        ->  3h
-//  -> Standardize font sizes and hX uses between apps                      ->  3h
-// DONE: Refactor api urls                                                  ->  4h
-// DONE: Add type uniformity react                                          ->  6h
-// DONE: Add missing validations (React + API)                              ->  8h
-// DONE: Update README (mainly .less section)                               ->  1h
-// DONE: Rework TypeScript debug environment for vscode                     ->  6h
-
-// #endregion
-
-// #region Tests                                                            ->  26h
-
-// DONE: Implement API tests                                                -> 26h
-//  -> Groceries                                                            ->  4h
-//  -> Homes                                                                -> 12h
-//  -> Users                                                                ->  4h
-//  -> Images                                                               ->  3h
-//  -> Notifications                                                        ->  3h
+// CANC: Refactor css                                                                 X
+//  -> Convert fixed sizes to em + responsive typography (media queries)              X
+//  -> Standardize classes                                                            X
+//  -> Standardize colors (grey tones, opacities...)                                  X
+//  -> Standardize font sizes and hX uses between apps                                X
+// DONE: Refactor api urls
+// DONE: Add type uniformity react
+// DONE: Add missing validations (React + API)
+// DONE: Update README (mainly .less section)
+// DONE: Rework TypeScript debug environment for vscode
 
 // #endregion
 
-// #region Features                                                         -> 170h
+// #region Tests
 
-// DONE: Micro-services per app (proof of concept for larger web app)       -> 16h
-// DONE: Complete Tasks app                                                 -> 32h
-//  -> DONE: Add repeating options                                          ->  6h
-//  -> DONE: Fix task refresh                                               ->  8h
-//  -> DONE: Restore tasks from trash                                       ->  2h
-//  -> DONE: Add field validation                                           ->  4h
-// TODO: Redesign + Develop Finances app                                    -> 30h
-// TODO: Develop Calendar app                                               -> 50h
-// TODO: Send verification email                                            ->  8h
-//  -> not needed if invited since link is only available to sent email
-// DONE: Password reset links                                               -> 10h
-//  -> Vercel production environnement?
-//  -> Add "export HTTPS=true &&" at the beginning of start script in "frontend/package.json"
+// DONE: Implement API tests
+//  -> Groceries
+//  -> Homes
+//  -> Users
+//  -> Images
+//  -> Notifications
+// TODO: Implement Task tests
+// TODO: Implement
 
 // #endregion
 
-// #region Fixes                                                            -> 30h
+// #region Features
 
-// TODO: Implement second chance                                            ->  8h
-// TODO: Fix height of popups inside open-app                               ->  4h
-// DONE: Delete notifications after timeout                                 ->  8h
-// TODO: Block commits on test fail (implement on merge)                    ->  2h
-// DONE: Sidebar shrinking if window width < x pixels                       ->  4h
-// DONE: Implement working horizontal scroll without pressing shift         ->  4h
-
-// #endregion
-
-// #region Nice to have (If time remaining)
-
-// TODO: Skeleton loading
-// TODO: Add app priority/visibility for each user (Many to Many table)
-// TODO: Add tasks statistics with graphs
-// TODO: Add filter and sort in Tasks app
-// TODO: Prevent notification deletion after timeout if hovered
-//   -> Set notification timestamp to null on mouse enter and to Date.now() on mouse leave
-// TODO: Add more descriptive images to notifications
-// TODO: Add phone number validation in user model
-// TODO: Keep transactions (transfers, expenses) when a user is involved
-// TODO: Add slider for minutes, hours, days and months                     ->  6h
-//   -> Replace by dummy user?
-// TODO: Replace multiple responses in method by error throws + 1 response
-// TODO: Fix scrollbar height in .list
-//   -> So that popups don't disappear
-// TODO: Scrollbar on dropdown
-// TODO: Host and convert website to HTTPS                                  -> 24h
+// DONE: Micro-services per app (proof of concept for larger web app)
+// DONE: Complete Tasks app
+//  -> DONE: Add repeating options
+//  -> DONE: Fix task refresh
+//  -> DONE: Restore tasks from trash
+//  -> DONE: Add field validation
+// DONE: Redesign + Develop Finances app
+// TODO: Develop Calendar app
+// DONE: Send verification email
+// DONE: Password reset links
 
 // #endregion
 
-// CPS + MPS + ProjeqTor                                                    ->   5h
-// Total                                                                    -> 270h
+// #region Fixes
 
-/*
+// CANC: Implement second chance                                                      X
+// DONE: Fix height of popups inside open-app
+// DONE: Delete notifications after timeout
+// CANC: Block commits on test fail (implement on merge)                              X
+// DONE: Sidebar shrinking if window width < x pixels
+// DONE: Implement working horizontal scroll without pressing shift
 
-settle debt to receiver
-remaining = substract due total to receiver from transfer amount
+// #endregion
 
-if (remaining > 0)
-{
-  get debts to other home member
-  if (no other debts)
-    return; (receiving person will now oew money to sender)
-  else 
-  {
-    for each other user that sender owes money
-    {
-      check if they have debt to receiver
-      if (they have debt)
-      {
-        if (the remaining amount over the amount due to de receiver >= their debt to the receiver)
-        {
-          settle the debt
-          substract debt to remaining amount
-        }
-        
-        if (remaining == 0)
-          return;
-      }
-    }
-  }
-}
+// #region Nice to have
 
-*/
+// CANC: Skeleton loading                                                             X
+// CANC: Add app priority/visibility for each user (Many to Many table)               X
+// CANC: Add tasks statistics with graphs                                             X
+// CANC: Add filter and sort in Tasks app                                             X
+// DONE: Prevent notification deletion after timeout if hovered
+// CANC: Add more descriptive images to notifications                                 X
+// CANC: Add phone number validation in user model                                    X
+// DONE: Keep transactions (transfers, expenses) when a user is deleted
+// CANC: Add slider for minutes, hours, days and months                               X
+// CANC: Replace multiple responses in method by error throws + 1 response            X
+// DONE: Fix scrollbar height in .list
+// CANC: Scrollbar on dropdown                                                        X
+// CANC: Host and convert website to HTTPS                                            X
+// CANC: Implement code coverage with microservices                                   X
+
+// #endregion

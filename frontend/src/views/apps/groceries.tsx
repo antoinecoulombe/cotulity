@@ -11,7 +11,7 @@ import Translate from '../../components/utils/translate';
 import $ from 'jquery';
 import '../../assets/css/apps/groceries.css';
 
-interface article {
+interface Article {
   id: number;
   description: string;
   deletedAt?: null | string;
@@ -19,7 +19,7 @@ interface article {
 
 const AppGroceries = (): JSX.Element => {
   const [newArticle, setNewArticle] = useState<string>('');
-  const [articles, setArticles] = useState<article[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const { setNotification, setErrorNotification } = useNotifications();
   const { t } = useTranslation('common');
   const [loaded, setLoaded] = useState<boolean>(false);
