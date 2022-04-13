@@ -34,7 +34,7 @@ const ListItemTransfer = (props: ListItemTransferProps): JSX.Element => {
       uid={props.transfer.id}
       className="transfer"
       onClick={[
-        <h4 className="with-accent">
+        <h4 className="with-accent" key={props.transfer.id}>
           <b>{getFromUser()?.firstname ?? t('unknown')}</b>{' '}
           <Translate name="transfers.sent" />{' '}
           <b>
