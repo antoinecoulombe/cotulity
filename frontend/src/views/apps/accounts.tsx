@@ -71,6 +71,21 @@ export const getUserWithRecord = (
   return users.find((u) => u.UserRecord.id === record);
 };
 
+export const getDateString = (
+  dateString: string,
+  t: (...attr: any) => any
+): JSX.Element => {
+  let date = new Date(dateString);
+  return (
+    <Translate
+      name={`{"translate":"date.formatWYear","format":["${date.getDate()}","${t(
+        'date.month.' +
+          date.toLocaleString('en-US', { month: 'short' }).toLowerCase()
+      )}","${date.getFullYear()}"]}`}
+    />
+  );
+};
+
 const AppAccounts = (): JSX.Element => {
   const subHeaderTabsObject: { [key: string]: SubHeaderTab[] } = {
     expenses: [
@@ -389,7 +404,14 @@ const AppAccounts = (): JSX.Element => {
       .then((res: any) => {
         setSuccessNotification(res.data);
         setPopup(nullJSX);
-        // TODO: HANDLE NEW EXPENSE -> push res.data.expense to expense list
+
+        let newData = [...data];
+        newData.push(res.data.expense);
+        handleData(
+          getSelectedSidebarTab(),
+          getSelectedSubHeaderTab(),
+          sortByDate(newData)
+        );
       })
       .catch((err: any) => {
         setNotification(err.response.data);
@@ -436,7 +458,14 @@ const AppAccounts = (): JSX.Element => {
       .then((res: any) => {
         setSuccessNotification(res.data);
         setPopup(nullJSX);
-        // TODO: HANDLE NEW TRANSFER -> push res.data.transfer to expense list
+
+        let newData = [...data];
+        newData.push(res.data.transfer);
+        handleData(
+          getSelectedSidebarTab(),
+          getSelectedSubHeaderTab(),
+          sortByDate(newData)
+        );
       })
       .catch((err: any) => {
         setNotification(err.response.data);

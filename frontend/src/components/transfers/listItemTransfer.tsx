@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AccountHomeMember,
+  getDateString,
   getUserWithRecord,
   Transfer,
 } from '../../views/apps/accounts';
@@ -45,14 +46,7 @@ const ListItemTransfer = (props: ListItemTransferProps): JSX.Element => {
           <Translate name="transfers.to" />{' '}
           <b>{getToUser()?.firstname ?? t('unknown')}</b>{' '}
           <Translate name="transfers.on" />{' '}
-          <Translate
-            name={`{"translate":"expenses.date","format":["${t(
-              'date.month.' +
-                new Date(props.transfer.date)
-                  .toLocaleString('en-US', { month: 'short' })
-                  .toLowerCase()
-            )}","${new Date(props.transfer.date).getDate()}"]}`}
-          />
+          {getDateString(props.transfer.date, t)}
           <Translate name="transfers.dot" />
         </h4>,
       ]}
@@ -91,18 +85,7 @@ const ListItemTransfer = (props: ListItemTransferProps): JSX.Element => {
               />
             </b>
           </h2>
-          <h4>
-            {
-              <Translate
-                name={`{"translate":"expenses.date","format":["${t(
-                  'date.month.' +
-                    new Date(props.transfer.date)
-                      .toLocaleString('en-US', { month: 'short' })
-                      .toLowerCase()
-                )}","${new Date(props.transfer.date).getDate()}"]}`}
-              />
-            }
-          </h4>
+          <h4>{getDateString(props.transfer.date, t)}</h4>
         </div>
       </ListItemCenter>
       <ListItemRight>

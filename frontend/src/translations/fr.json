@@ -83,7 +83,8 @@
       "nov": "Nov.",
       "dec": "Déc."
     },
-    "format": "{0} {1}"
+    "format": "{0} {1}",
+    "formatWYear": "{0} {1} {2}"
   },
   "dollar": "{0}$",
   "unknown": "Inconnu",
@@ -333,7 +334,6 @@
     "tooltip": {
       "add": "Ajouter une dépense"
     },
-    "date": "{1} {0}",
     "by": "par"
   },
   "transfers": {
@@ -473,7 +473,16 @@
         "noUsers": "La tâche n'a pas d'utilisateurs"
       },
       "transfers": {
-        "invalidAmount": "Le montant du versement est invalide."
+        "invalidAmount": "Le montant du versement est invalide.",
+        "created": "Versement créé",
+        "notFound": "Versement introuvable",
+        "noUsers": "Le versement n'a pas d'utilisateurs"
+      },
+      "expenses": {
+        "created": "Dépense créée",
+        "invalidUsers": "Utilisateurs invalides",
+        "noUsers": "La dépense n'a pas d'utilisateurs",
+        "invalidAmount": "Le montant de la dépense est invalide."
       }
     },
     "msg": {
@@ -552,6 +561,7 @@
           "taskName": {
             "missing": "Veuillez entrer un nom de tâche."
           },
+          "eventName": { "missing": "Veuillez nommer votre événement." },
           "transferAmount": {
             "missing": "Veuillez entrer un montant de versement.",
             "valid": "Veuillez entrer un montant de versement valide."
@@ -625,12 +635,21 @@
       "tasks": {
         "created": "Vous la retrouverez dans la section 'À venir'.",
         "modified": "La tâche a été modifiée.",
-        "notFound": "Auncune tâche n'est associée à cet identifiant.",
+        "notFound": "Aucune tâche n'est associée à cet identifiant.",
         "noUsers": "Veuillez ajouter des utilisateurs à la tâche."
       },
       "transfers": {
         "userNotFound": "Le destinataire du versement est introuvable.",
-        "amountOverZero": "Le montant minimal d'un versement est de 0.01$."
+        "amountOverZero": "Le montant minimal d'un versement est de 0.01$.",
+        "created": "Vous pouvez le trouver en ordre chronologique dans la section 'Versements'.",
+        "notFound": "Auncun versement n'est associé à cet identifiant."
+      },
+      "expenses": {
+        "created": "Vous pouvez la trouver en ordre chronologique dans la section 'Dépenses'.",
+        "notFound": "Aucune dépense n'est associée à cet identifiant.",
+        "noUsers": "Veuillez ajouter des utilisateurs à la dépense.",
+        "amountOverZero": "Le montant minimal d'une dépense est de 0.01$.",
+        "userNotInHome": "Les utilisateurs de la dépense ne font pas partis de cette maison."
       }
     }
   }

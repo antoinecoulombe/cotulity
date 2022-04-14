@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AccountHomeMember,
   Expense,
+  getDateString,
   getUserWithRecord,
 } from '../../views/apps/accounts';
 import ListItem from '../utils/lists/listItem';
@@ -91,16 +92,7 @@ const ListItemExpense = (props: ListItemExpenseProps): JSX.Element => {
                 : props.expense.description}
             </h3>
             <h4>
-              {
-                <Translate
-                  name={`{"translate":"expenses.date","format":["${t(
-                    'date.month.' +
-                      new Date(props.expense.date)
-                        .toLocaleString('en-US', { month: 'short' })
-                        .toLowerCase()
-                  )}","${new Date(props.expense.date).getDate()}"]}`}
-                />
-              }
+              {getDateString(props.expense.date, t)}
               <FontAwesomeIcon icon="circle"></FontAwesomeIcon>
               {t('expenses.by')}{' '}
               <b>

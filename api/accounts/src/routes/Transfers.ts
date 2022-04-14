@@ -132,7 +132,12 @@ Transfers.post('/', async (req: any, res: any) => {
     return res.json({
       title: 'transfers.created',
       msg: 'transfers.created',
-      transfer: reqTransfer,
+      transfer: {
+        fromUserId: req.user.id,
+        toUserId: reqTransfer.User.id,
+        amount: reqTransfer.amount,
+        date: date,
+      },
     });
   } catch (error) {
     /* istanbul ignore next */

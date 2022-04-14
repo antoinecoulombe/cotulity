@@ -83,7 +83,8 @@
       "nov": "Nov",
       "dec": "Dec"
     },
-    "format": "{1} {0}"
+    "format": "{1} {0}",
+    "formatWYear": "{1} {0}, {2}"
   },
   "dollar": "${0}",
   "unknown": "Unknown",
@@ -333,7 +334,6 @@
     "tooltip": {
       "add": "Add Expense"
     },
-    "date": "{0} {1}",
     "by": "by"
   },
   "transfers": {
@@ -473,7 +473,16 @@
         "noUsers": "Task has no users"
       },
       "transfers": {
+        "created": "Transfer Created",
+        "notFound": "Transfer not found",
+        "noUsers": "Transfer has no users",
         "invalidAmount": "The transfer amount is invalid."
+      },
+      "expenses": {
+        "created": "Expense Created",
+        "invalidUsers": "Invalid Users",
+        "noUsers": "Expense has no users",
+        "invalidAmount": "The expense amount is invalid."
       }
     },
     "msg": {
@@ -553,6 +562,7 @@
           "taskName": {
             "missing": "Please enter a task name."
           },
+          "eventName": { "missing": "Please enter an event name." },
           "transferAmount": {
             "missing": "Please enter a transfer amount.",
             "valid": "Please enter a valid transfer amount."
@@ -630,8 +640,17 @@
         "noUsers": "Please add users to the task."
       },
       "transfers": {
+        "created": "You can find it in chronological order under the 'Transfers' tab.",
         "userNotFound": "We couldn't find the destination user.",
-        "amountOverZero": "The minimum transfer amount is $0.01."
+        "amountOverZero": "The minimum transfer amount is $0.01.",
+        "notFound": "We couldn't find a transfer associated to that identifier."
+      },
+      "expenses": {
+        "created": "You can find it in chronological order under the 'Expenses' tab.",
+        "notFound": "We couldn't find an expense associated to that identifier.",
+        "noUsers": "Please add users to the expense.",
+        "amountOverZero": "The minimum expense amount is $0.01.",
+        "userNotInHome": "The specified users are not members of this house."
       }
     }
   }

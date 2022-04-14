@@ -140,7 +140,7 @@ Expenses.post('/', async (req: any, res: any) => {
       reqExpense.Users.filter((u: any) => !membersIds.includes(u.id)).length > 0
     )
       return res.status(500).json({
-        title: 'expenses.userNotInHome',
+        title: 'expenses.invalidUsers',
         msg: 'expenses.userNotInHome',
       });
 
@@ -203,7 +203,12 @@ Expenses.post('/', async (req: any, res: any) => {
       return res.json({
         title: 'expenses.created',
         msg: 'expenses.created',
-        expense: { ...expenseDb.dataValues, ExpenseSplits: reqExpense.Users },
+        expense: {
+          ...expenseDb.dataValues,
+          ExpenseSplits: reqExpense.Users.map((u: ExpenseUser) => {
+            return { userId: u.id, amount: amountEach };
+          }),
+        },
       });
     });
   } catch (error) {
