@@ -334,7 +334,8 @@ button:hover {
 .popup-container > .popup > .close > .icon:hover {
   color: var(--darkGray);
 }
-.popup-container > .popup .form-input > input {
+.popup-container > .popup .form-input > input,
+.popup-container > .popup .form-input > textarea {
   background-color: var(--popup-input-bg-color);
 }
 .popup-container > .popup.si {
@@ -788,7 +789,8 @@ button:hover {
 .si-form.in-popup > .title > h2 {
   color: var(--black);
 }
-.si-form.in-popup .form-input > input {
+.si-form.in-popup .form-input > input,
+.si-form.in-popup .form-input > textarea {
   border: solid 1px var(--popup-border-color);
   border-radius: 7.5px;
 }
@@ -893,7 +895,8 @@ button:hover {
   margin-top: 12px;
   z-index: 2;
 }
-.form-input > input {
+.form-input > input,
+.form-input > textarea {
   font-family: 'DM Sans', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -916,26 +919,52 @@ button:hover {
   -webkit-box-sizing: border-box;
 }
 .form-input > input:not(.never-focused):focus,
+.form-input > textarea:not(.never-focused):focus,
 .form-input > input:not(.never-focused).filled,
-.form-input > input:not(.never-focused):-webkit-autofill {
+.form-input > textarea:not(.never-focused).filled,
+.form-input > input:not(.never-focused):-webkit-autofill,
+.form-input > textarea:not(.never-focused):-webkit-autofill {
   padding-top: 18px;
 }
-.form-input > input:not(.never-focused):focus ~ label {
+.form-input > input:not(.never-focused):focus ~ label,
+.form-input > textarea:not(.never-focused):focus ~ label {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
 }
-.form-input > input:not(.never-focused):-webkit-autofill + label {
+.form-input > input:not(.never-focused):-webkit-autofill + label,
+.form-input > textarea:not(.never-focused):-webkit-autofill + label {
   font-size: 12px;
   line-height: 26px;
   height: 26px;
 }
-.form-input > input.with-image + label {
+.form-input > input.with-image + label,
+.form-input > textarea.with-image + label {
   padding-left: 55px;
+}
+.form-input > textarea {
+  resize: none;
+}
+.form-input > textarea:not(.never-focused):focus,
+.form-input > textarea:not(.never-focused).filled,
+.form-input > textarea:not(.never-focused):-webkit-autofill {
+  padding-top: 22px;
 }
 .form-input.error > label {
   color: var(--error-color) !important;
   font-weight: 500;
+}
+.form-input.height-2x {
+  height: 100px;
+}
+.form-input.height-3x {
+  height: 150px;
+}
+.form-input.height-4x {
+  height: 200px;
+}
+.form-input.height-5x {
+  height: 250px;
 }
 @supports (-webkit-appearance: none) or (-moz-appearance: none) {
   .generic-input input[type='checkbox'],

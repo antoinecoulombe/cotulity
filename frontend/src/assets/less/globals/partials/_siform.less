@@ -260,9 +260,12 @@
       color: var(--black);
     }
 
-    .form-input > input {
-      border: solid 1px var(--popup-border-color);
-      border-radius: 7.5px;
+    .form-input {
+      > input,
+      > textarea {
+        border: solid 1px var(--popup-border-color);
+        border-radius: 7.5px;
+      }
     }
   }
 

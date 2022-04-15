@@ -66,6 +66,9 @@
     "decline": "Decline",
     "send": "Send"
   },
+  "time": {
+    "hours": "hours"
+  },
   "date": {
     "today": "Today",
     "tomorrow": "Tomorrow",
@@ -293,7 +296,33 @@
     "empty": "Your grocery list is empty."
   },
   "calendar": {
-    "title": { "calendar": "Calendar" }
+    "title": {
+      "calendar": "Calendar",
+      "event": {
+        "create": "Create Event",
+        "name": "Name",
+        "notes": "Notes",
+        "duration": "Duration",
+        "repeat": "Repeat",
+        "until": "Until",
+        "users": "Participants",
+        "location": "Location",
+        "startsAt": "Starts At",
+        "shared": "Private"
+      }
+    },
+    "name": {
+      "event": {
+        "name": "Event name",
+        "users": "Select members participating in this event",
+        "location": "Add a location to this event",
+        "notes": "Add a note"
+      }
+    },
+    "tooltip": {
+      "shared": "A private event will only be visible to members included in it.",
+      "add": "Create Event"
+    }
   },
   "accounts": {
     "title": {

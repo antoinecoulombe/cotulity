@@ -28,6 +28,7 @@ export interface CalendarEventOccurence {
   notes: string;
   start: string;
   end: string;
+  duration: number;
   Event: CalendarEvent;
   Users?: HomeMember[];
 }
@@ -47,6 +48,7 @@ export const initCalendarEventOccurence: CalendarEventOccurence = {
   notes: '',
   start: '/@:',
   end: '/@:',
+  duration: 120,
   Event: initCalendarEvent,
   Users: [],
 };
@@ -62,20 +64,21 @@ const AppCalendar = (): JSX.Element => {
   const [users, setUsers] = useState<HomeMember[]>([]);
 
   const getEvents = (): void => {
-    // axios
-    //   .get(`/calendar/${localStorage.getItem('currentHome')}/events`)
-    //   .then((res: any) => {
-    //     if (res.data.events) setEvents(res.data.events);
-    //     else setErrorNotification(res.data);
-    //   })
-    //   .catch((err) => {
-    //     setNotification(err.response.data);
-    //   });
+    axios
+      .get(`/calendar/${localStorage.getItem('currentHome')}/events`)
+      .then((res: any) => {
+        if (res.data.events && res.data.users) {
+          setEvents(res.data.events);
+          setUsers(res.data.users);
+        } else setErrorNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
   };
 
   useEffect(() => {
     getEvents();
-    showPopup();
   }, []);
 
   const handleSubmit = (event: CalendarEvent) => {};
@@ -118,6 +121,7 @@ const AppCalendar = (): JSX.Element => {
       popup={popup}
       title="calendar"
       appName="calendar"
+      onAddClick={() => showPopup(undefined)}
       bodyMinHeight={580}
     >
       <FullCalendar

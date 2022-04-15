@@ -79,3 +79,33 @@ export const notifyMembersExceptOwner = async (
     transaction
   );
 };
+
+/**
+ * Gets the current home users.
+ * @param res The HTTP response.
+ * @returns An array containing the home users.
+ */
+export const getHomeUsers = async (
+  db: any,
+  res: any
+): Promise<
+  {
+    id: number;
+    firstname: string;
+    lastname: string;
+    Image: { url: string } | null;
+    UserRecord: { id: number };
+  }[]
+> => {
+  return await res.locals.home.getMembers({
+    attributes: ['id', 'firstname', 'lastname'],
+    include: [
+      { model: db.Image, attributes: ['url'] },
+      { model: db.UserRecord, attributes: ['id'] },
+    ],
+    through: {
+      where: { accepted: true },
+      attributes: ['accepted', 'nickname'],
+    },
+  });
+};

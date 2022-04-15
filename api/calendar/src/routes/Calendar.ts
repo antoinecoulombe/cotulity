@@ -1,5 +1,6 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
+import { getHomeUsers } from '../../../shared/src/routes/Homes';
 
 const Calendar = express.Router();
 const db = require('../../../shared/db/models');
@@ -28,12 +29,25 @@ Calendar.use(async (req: any, res, next) => {
 /**
  * Temporary placeholder get method.
  */
-Calendar.get('/', async (req: any, res: any) => {
+Calendar.get('/events', async (req: any, res: any) => {
   try {
-    return res.status(501).json({
+    let events = await res.locals.home.getCalendarEvents({
+      where: { [Op.or]: [{ ownerId: req.user.id }, { shared: true }] },
+      attributes: ['ownerId', 'name', 'shared', 'repeat', 'untilDate'],
+      include: [
+        {
+          model: db.CalendarEventOccurence,
+          attributes: ['location', 'notes', 'start', 'end'],
+          include: [{ model: db.CalendarEventUser, attributes: ['userId'] }],
+        },
+      ],
+    });
+
+    return res.json({
       title: 'request.notImplemented',
       msg: 'request.notImplemented',
-      reached: 'calendar',
+      events: events,
+      users: await getHomeUsers(db, res),
     });
   } catch (error) {
     /* istanbul ignore next */

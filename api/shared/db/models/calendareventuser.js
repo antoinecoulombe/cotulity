@@ -3,22 +3,22 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class CalendarEventUsers extends Model {
+  class CalendarEventUser extends Model {
     static associate(models) {
-      CalendarEventUsers.belongsTo(models.CalendarEventOccurence, {
+      CalendarEventUser.belongsTo(models.CalendarEventOccurence, {
         foreignKey: 'calendarEventOccurenceId',
         targetKey: 'id',
         allowNull: false,
         hooks: true,
       });
-      CalendarEventUsers.belongsTo(models.User, {
+      CalendarEventUser.belongsTo(models.User, {
         foreignKey: 'userId',
         targetKey: 'id',
         allowNull: false,
       });
     }
   }
-  CalendarEventUsers.init(
+  CalendarEventUser.init(
     {},
     {
       timestamps: true,
@@ -27,5 +27,5 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
     }
   );
-  return CalendarEventUsers;
+  return CalendarEventUser;
 };

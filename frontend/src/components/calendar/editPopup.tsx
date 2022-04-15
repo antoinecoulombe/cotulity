@@ -23,18 +23,24 @@ interface EditPopupProps {
 
 interface CalendarErrors {
   name: boolean;
-  participants: boolean;
-  dueDate: boolean;
-  dueTime: boolean;
+  location: boolean;
+  notes: boolean;
+  start: boolean;
+  duration: boolean;
+  repeat: boolean;
   untilDate: boolean;
+  Users: boolean;
 }
 
 const initCalendarErrors: CalendarErrors = {
   name: false,
-  participants: false,
-  dueDate: false,
-  dueTime: false,
+  location: false,
+  notes: false,
+  start: false,
+  duration: false,
+  repeat: false,
   untilDate: false,
+  Users: false,
 };
 
 const EditPopup = (props: EditPopupProps): JSX.Element => {
@@ -152,43 +158,56 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     return newDate;
   };
 
-  // const setDueDateTime = (e: any, field: string): boolean => {
-  //   if (e.target.value.length > 2) return false;
-  //   let newDate = InputToDateTime(e, field, eventOccurence.dueDateTime);
-  //   if (!newDate) return false;
-  //   setEventOccurence({ ...eventOccurence, dueDateTime: newDate });
-  //   return true;
-  // };
+  const setDueDateTime = (e: any, field: string, end?: boolean): boolean => {
+    if (e.target.value.length > 2) return false;
+    let newDate = InputToDateTime(
+      e,
+      field,
+      end ? eventOccurence.end : eventOccurence.start
+    );
+    if (!newDate) return false;
 
-  // const setUntilDate = (e: any, field: string): boolean => {
-  //   if (e.target.value.length > 2) return false;
-  //   let newDate = InputToDateTime(e, field, eventOccurence.Task.untilDate);
-  //   if (!newDate) return false;
-  //   setEventOccurence({
-  //     ...eventOccurence,
-  //     Task: { ...eventOccurence.Task, untilDate: newDate },
-  //   });
-  //   return true;
-  // };
+    if (end) setEventOccurence({ ...eventOccurence, end: newDate });
+    else setEventOccurence({ ...eventOccurence, start: newDate });
 
-  // const handleUserSelect = (selected: DropdownMultiOption[]): void => {
-  //   let newTask = { ...eventOccurence };
-  //   newTask.Users = selected.map((us) => {
-  //     return {
-  //       id: us.id,
-  //       firstname: us.value.split(' ')[0],
-  //       lastname: us.value.split(' ')[1],
-  //       Image: !us.img ? null : { url: us.img },
-  //     };
-  //   });
-  //   setEventOccurence(newTask);
-  // };
+    return true;
+  };
 
-  // const handleRepeatSelect = (selected: DropdownMultiOption): void => {
-  //   let newTask = { ...eventOccurence };
-  //   newTask.Task.repeat = selected.altId ?? 'none';
-  //   setEventOccurence(newTask);
-  // };
+  const setUntilDate = (e: any, field: string): boolean => {
+    if (e.target.value.length > 2) return false;
+    let newDate = InputToDateTime(e, field, eventOccurence.Event.untilDate);
+    if (!newDate) return false;
+    setEventOccurence({
+      ...eventOccurence,
+      Event: { ...eventOccurence.Event, untilDate: newDate },
+    });
+    return true;
+  };
+
+  const handleUserSelect = (selected: DropdownMultiOption[]): void => {
+    let newEvent = { ...eventOccurence };
+    newEvent.Users = selected.map((us) => {
+      return {
+        id: us.id,
+        firstname: us.value.split(' ')[0],
+        lastname: us.value.split(' ')[1],
+        Image: !us.img ? null : { url: us.img },
+      };
+    });
+    setEventOccurence(newEvent);
+  };
+
+  const handleRepeatSelect = (selected: DropdownMultiOption): void => {
+    let newEvent = { ...eventOccurence };
+    newEvent.Event.repeat = selected.altId ?? 'none';
+    setEventOccurence(newEvent);
+  };
+
+  const handleDurationSelect = (selected: DropdownMultiOption): void => {
+    let newEvent = { ...eventOccurence };
+    newEvent.duration = selected.id;
+    setEventOccurence(newEvent);
+  };
 
   return (
     <Popup
@@ -201,32 +220,47 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
       new={props.event === undefined}
     >
       <div className="form">
-        <h1>
-          <Translate
-            name={props.event ? 'manage' : 'create'}
-            prefix="tasks.title."
-          />
-        </h1>
-        {/* <SingleInputForm
-          name="tasks.name.taskDesc"
-          title="form.name"
+        {!props.event && (
+          <h1>
+            <Translate name="create" prefix="calendar.title.event." />
+          </h1>
+        )}
+        <SingleInputForm
+          name="calendar.name.event.name"
+          title="calendar.title.event.name"
           type="text"
           required={true}
-          value={eventOccurence.Task.name}
+          value={eventOccurence.Event.name}
           parent={{
             onChange: (e: any) =>
               setEventOccurence({
                 ...eventOccurence,
-                Task: { ...eventOccurence.Task, name: e.target.value },
+                Event: { ...eventOccurence.Event, name: e.target.value },
               }),
           }}
           iconStyle={{ iconWidth: 36, tooltipMultiplier: 8 }}
           className="in-popup"
           error={errors.name}
         ></SingleInputForm>
+        <SingleInputForm
+          name="calendar.name.event.location"
+          title="calendar.title.event.location"
+          type="text"
+          value={eventOccurence.location}
+          parent={{
+            onChange: (e: any) =>
+              setEventOccurence({
+                ...eventOccurence,
+                location: e.target.value,
+              }),
+          }}
+          iconStyle={{ iconWidth: 36, tooltipMultiplier: 8 }}
+          className="in-popup"
+          error={errors.location}
+        ></SingleInputForm>
         <DropdownMulti
-          name="tasks.name.participants"
-          title="tasks.title.participants"
+          name="calendar.name.event.users"
+          title="calendar.title.event.users"
           options={props.users}
           onSelect={(selected) => handleUserSelect(selected)}
           onSelectTransform={(value: string) => {
@@ -234,62 +268,63 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             return `${split[0]} ${split[1][0].toUpperCase()}.`;
           }}
           className="in-popup"
-          required={eventOccurence.Task.shared}
-          disabled={!eventOccurence.Task.shared}
-          error={errors.participants}
+          required={eventOccurence.Event.shared}
+          disabled={!eventOccurence.Event.shared}
+          error={errors.Users}
         ></DropdownMulti>
         <Dropdown
           name="tasks.name.repeat.none"
-          title="tasks.title.repeat"
+          title="calendar.title.event.repeat"
           options={[
             {
               id: 1,
               altId: 'none',
               value: t('tasks.name.repeat.none'),
-              selected: eventOccurence.Task.repeat === 'none',
+              selected: eventOccurence.Event.repeat === 'none',
             },
             {
               id: 2,
               altId: 'day',
               value: t('tasks.name.repeat.day'),
-              selected: eventOccurence.Task.repeat === 'day',
+              selected: eventOccurence.Event.repeat === 'day',
             },
             {
               id: 3,
               altId: 'week',
               value: t('tasks.name.repeat.week'),
-              selected: eventOccurence.Task.repeat === 'week',
+              selected: eventOccurence.Event.repeat === 'week',
             },
             {
               id: 4,
               altId: 'twoweek',
               value: t('tasks.name.repeat.twoweek'),
-              selected: eventOccurence.Task.repeat === 'twoweek',
+              selected: eventOccurence.Event.repeat === 'twoweek',
             },
             {
               id: 5,
               altId: 'month',
               value: t('tasks.name.repeat.month'),
-              selected: eventOccurence.Task.repeat === 'month',
+              selected: eventOccurence.Event.repeat === 'month',
             },
           ]}
           onSelect={(selected) => handleRepeatSelect(selected)}
           className={`in-popup${
-            eventOccurence.Task.repeat !== 'none'
+            eventOccurence.Event.repeat !== 'none'
               ? ' half double with-d-squared'
               : ''
           }`}
           required={true}
+          error={errors.repeat}
         ></Dropdown>
-        {eventOccurence.Task.repeat !== 'none' && (
+        {eventOccurence.Event.repeat !== 'none' && (
           <DoubleInputTitle
             name={['tasks.name.date.dd', 'tasks.name.date.mm']}
-            title="tasks.title.until"
+            title="calendar.title.event.until"
             required={true}
             type="text"
             values={{
-              first: getDateTime(eventOccurence.Task.untilDate).day,
-              second: getDateTime(eventOccurence.Task.untilDate).month,
+              first: getDateTime(eventOccurence.Event.untilDate).day,
+              second: getDateTime(eventOccurence.Event.untilDate).month,
             }}
             onChange={(e: any, input: number) =>
               setUntilDate(e, input === 1 ? 'day' : 'month')
@@ -300,48 +335,117 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
         )}
         <DoubleInputTitle
           name={['tasks.name.date.dd', 'tasks.name.date.mm']}
-          title="tasks.title.dueDate"
+          title="calendar.title.event.startsAt"
           required={true}
           type="text"
           values={{
-            first: getDateTime(eventOccurence.dueDateTime).day,
-            second: getDateTime(eventOccurence.dueDateTime).month,
+            first: getDateTime(eventOccurence.start).day,
+            second: getDateTime(eventOccurence.start).month,
           }}
           onChange={(e: any, input: number) =>
             setDueDateTime(e, input === 1 ? 'day' : 'month')
           }
           className="in-popup half squared-inputs left"
-          error={errors.dueDate}
+          error={errors.start}
         ></DoubleInputTitle>
         <DoubleInputTitle
           name={['tasks.name.date.hh', 'tasks.name.date.mm']}
-          title="tasks.title.dueTime"
+          title="&#8205;"
           type="text"
           values={{
-            first: getDateTime(eventOccurence.dueDateTime).hour,
-            second: getDateTime(eventOccurence.dueDateTime).minute,
+            first: getDateTime(eventOccurence.start).hour,
+            second: getDateTime(eventOccurence.start).minute,
           }}
           onChange={(e: any, input: number) =>
             setDueDateTime(e, input === 1 ? 'hour' : 'minute')
           }
           className="in-popup half squared-inputs right"
-          error={errors.dueTime}
+          error={errors.start}
         ></DoubleInputTitle>
-        <div className="switch">
-          <h2>
-            <Translate name="important" prefix="tasks.title." />
-          </h2>
-        </div>
+        <Dropdown
+          name="60 minutes"
+          title="calendar.title.event.duration"
+          options={[
+            {
+              id: 15,
+              value: '15 minutes',
+              selected: eventOccurence.duration === 15,
+            },
+            {
+              id: 30,
+              value: '30 minutes',
+              selected: eventOccurence.duration === 30,
+            },
+            {
+              id: 45,
+              value: '45 minutes',
+              selected: eventOccurence.duration === 45,
+            },
+            {
+              id: 60,
+              value: '60 minutes',
+              selected: eventOccurence.duration === 60,
+            },
+            {
+              id: 90,
+              value: '90 minutes',
+              selected: eventOccurence.duration === 90,
+            },
+            {
+              id: 120,
+              value: `2 ${t('time.hours')}`,
+              selected: eventOccurence.duration === 120,
+            },
+            {
+              id: 180,
+              value: `3 ${t('time.hours')}`,
+              selected: eventOccurence.duration === 180,
+            },
+            {
+              id: 240,
+              value: `4 ${t('time.hours')}`,
+              selected: eventOccurence.duration === 240,
+            },
+            {
+              id: 300,
+              value: `5 ${t('time.hours')}`,
+              selected: eventOccurence.duration === 300,
+            },
+          ]}
+          maxOptions={4}
+          onSelect={(selected) => handleDurationSelect(selected)}
+          className="in-popup"
+          required={true}
+          error={errors.duration}
+        ></Dropdown>
+        <SingleInputForm
+          name="calendar.name.event.notes"
+          title="calendar.title.event.notes"
+          type="text"
+          value={eventOccurence.notes}
+          parent={{
+            onChange: (e: any) =>
+              setEventOccurence({
+                ...eventOccurence,
+                notes: e.target.value,
+              }),
+          }}
+          iconStyle={{ iconWidth: 36, tooltipMultiplier: 8 }}
+          className="in-popup"
+          error={errors.notes}
+          heightMultiplier={2}
+        ></SingleInputForm>
+
         <div className="switch help last">
           <h2>
             <b>
-              <Translate name="shared" prefix="tasks.title." />
+              <Translate name="shared" prefix="calendar.title.event." />
             </b>
             <IconToolTip
               icon="question-circle"
               style={{ iconWidth: 23, tooltipMultiplier: 10 }}
             >
-              tasks.tooltip.shared
+              calendar.tooltip.shared
             </IconToolTip>
           </h2>
           <div className="input-toggle">
@@ -350,12 +454,20 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
                 id="theme-switch"
                 type="checkbox"
                 className="switch"
-                defaultChecked={eventOccurence.Task.shared}
-                disabled={eventOccurence.Task.id !== -1}
-                onClick={() => toggleSharedSwitch('shared')}
+                defaultChecked={eventOccurence.Event.shared}
+                disabled={eventOccurence.Event.id !== -1}
+                onClick={() => toggleSharedSwitch()}
               />
             </div>
           </div>
+        </div>
+        {/* 
+        
+        
+        <div className="switch">
+          <h2>
+            <Translate name="important" prefix="tasks.title." />
+          </h2>
         </div> */}
       </div>
     </Popup>

@@ -8,6 +8,7 @@ import {
   denyIfNotOwner,
   getMembersExceptOwner,
   getMembersExceptRequester,
+  getHomeUsers,
 } from '../../../shared/src/routes/Homes';
 
 const Home = express.Router();
@@ -99,13 +100,7 @@ Home.get('/', async (req: any, res: any) => {
  */
 Home.get('/users', async (req: any, res: any) => {
   try {
-    let users = await res.locals.home.getMembers({
-      attributes: ['id', 'firstname', 'lastname'],
-      include: [{ model: db.Image, attributes: ['url'] }],
-      through: {
-        where: { accepted: true },
-      },
-    });
+    let users = await getHomeUsers(db, res);
 
     res.json({
       title: 'request.success',

@@ -15,6 +15,7 @@ export interface DropdownMultiProps {
   disabled?: boolean;
   required?: boolean;
   className?: string;
+  maxOptions?: number;
   values?: {
     first?: string;
     second?: string;
@@ -125,7 +126,18 @@ const DropdownMulti = (props: DropdownMultiProps): JSX.Element => {
           }
           after={
             opened ? (
-              <div className="dropdown-unselected">
+              <div
+                className="dropdown-unselected"
+                style={
+                  props.maxOptions
+                    ? {
+                        maxHeight: props.maxOptions * 50,
+                        overflowX: 'hidden',
+                        overflowY: 'scroll',
+                      }
+                    : undefined
+                }
+              >
                 {unselected.map((us) => (
                   <div
                     key={`us-${us.id}`}

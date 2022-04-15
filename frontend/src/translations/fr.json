@@ -66,6 +66,9 @@
     "decline": "Refuser",
     "send": "Envoyer"
   },
+  "time": {
+    "hours": "heures"
+  },
   "date": {
     "today": "Aujourd'hui",
     "tomorrow": "Demain",
@@ -293,7 +296,33 @@
     "empty": "Votre liste d'épicerie est vide."
   },
   "calendar": {
-    "title": { "calendar": "Calendrier" }
+    "title": {
+      "calendar": "Calendrier",
+      "event": {
+        "create": "Créer un événement",
+        "name": "Nom",
+        "notes": "Notes",
+        "duration": "Durée",
+        "repeat": "Répétition",
+        "until": "Jusqu'à",
+        "users": "Participants",
+        "location": "Emplacement",
+        "startsAt": "Date & Heure",
+        "shared": "Privé"
+      }
+    },
+    "name": {
+      "event": {
+        "name": "Nom de l'événement",
+        "users": "Membres participants à l'événement",
+        "location": "Ajouter un emplacement",
+        "notes": "Ajouter une note"
+      }
+    },
+    "tooltip": {
+      "shared": "Un événement privé sera visible seulement pour les membres participants.",
+      "add": "Ajouter un événement"
+    }
   },
   "accounts": {
     "title": {

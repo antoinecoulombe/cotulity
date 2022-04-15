@@ -25,6 +25,7 @@ export interface SingleInputFormProps {
   className?: string;
   onlyNumbers?: boolean;
   onlyPositives?: boolean;
+  heightMultiplier?: number;
   parent?: { onChange: (e: any) => void };
   errorCheck?: (input: string) => boolean;
   onSubmit?: (value: string) => void;
@@ -99,6 +100,7 @@ const SingleInputForm = (props: SingleInputFormProps): JSX.Element => {
           onChange={onChange}
           onKeyPress={handleKeyPress}
           filled={(props.value?.length ?? 0) > 0}
+          heightMultiplier={props.heightMultiplier}
         ></Input>
         {props.onSubmit && (
           <IconToolTip

@@ -1,6 +1,7 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
 import { groupBy } from '../../../shared/src/routes/Global';
+import { getHomeUsers } from '../../../shared/src/routes/Homes';
 
 const Accounts = express.Router();
 const db = require('../../../shared/db/models');
@@ -135,25 +136,6 @@ const getCompoundedTransfers = (
  */
 const getMinimumTransfers = (debts: HomeDebt[]): HomeDebt[] =>
   getCompoundedTransfers(getCompoundedDebts(debts));
-
-/**
- * Gets the current home users.
- * @param res The HTTP response.
- * @returns An array containing the home users.
- */
-export const getUsers = async (res: any) => {
-  return await res.locals.home.getMembers({
-    attributes: ['id', 'firstname', 'lastname'],
-    include: [
-      { model: db.Image, attributes: ['url'] },
-      { model: db.UserRecord, attributes: ['id'] },
-    ],
-    through: {
-      where: { accepted: true },
-      attributes: ['accepted', 'nickname'],
-    },
-  });
-};
 
 /**
  * Reorders the sender and receiver of an amount to avoid duplicated in database.
@@ -308,7 +290,7 @@ Accounts.get('/debts', async (req: any, res: any) => {
       debts: await res.locals.home.getHomeDebts({
         attributes: ['fromUserId', 'toUserId', 'amount'],
       }),
-      users: await getUsers(res),
+      users: await getHomeUsers(db, res),
     });
   } catch (error) {
     /* istanbul ignore next */
@@ -339,7 +321,7 @@ Accounts.get('/', async (req: any, res: any) => {
     return res.json({
       title: 'request.success',
       msg: 'request.success',
-      users: await getUsers(res),
+      users: await getHomeUsers(db, res),
       debts: await res.locals.home.getHomeDebts({
         attributes: ['fromUserId', 'toUserId', 'amount'],
       }),

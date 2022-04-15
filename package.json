@@ -24,7 +24,7 @@
     "t:accounts": "npm --prefix ./api/accounts run dev:test",
     "t:calendar": "npm --prefix ./api/calendar run dev:test",
     "t:start": "npm --prefix ./api/test start",
-    "coverage": "cross-env NODE_ENV=test npm --prefix ./api/shared run migrate:reset && jest --runInBand"
+    "coverage": "./coverage.sh"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

@@ -1,6 +1,7 @@
 import express from 'express';
 import { InputsToDate } from '../../../shared/src/routes/Global';
-import { getUsers, settleHomeDebts } from './Accounts';
+import { getHomeUsers } from '../../../shared/src/routes/Homes';
+import { settleHomeDebts } from './Accounts';
 
 const Transfers = express.Router();
 const db = require('../../../shared/db/models');
@@ -42,7 +43,7 @@ Transfers.get('/', async (req: any, res: any) => {
       title: 'request.success',
       msg: 'request.success',
       transfers: await getTransfers(res),
-      users: await getUsers(res),
+      users: await getHomeUsers(db, res),
     });
   } catch (error) {
     /* istanbul ignore next */
@@ -85,16 +86,7 @@ Transfers.post('/', async (req: any, res: any) => {
       });
 
     // Get all home members
-    let members = await res.locals.home.getMembers({
-      attributes: ['id', 'firstname', 'lastname'],
-      include: [
-        {
-          model: db.Image,
-          as: 'Image',
-          attributes: ['url'],
-        },
-      ],
-    });
+    let members = await getHomeUsers(db, res);
 
     // Check if the receiver is in home
     if (members.filter((m: any) => m.id === reqTransfer.User.id).length === 0)

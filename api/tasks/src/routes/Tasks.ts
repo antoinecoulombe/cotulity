@@ -1,6 +1,7 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
 import { InputsToDate } from '../../../shared/src/routes/Global';
+import { getHomeUsers } from '../../../shared/src/routes/Homes';
 
 const Tasks = express.Router();
 const db = require('../../../shared/db/models');
@@ -163,16 +164,7 @@ const getRepeatingDatesUntil = (
  * @returns An array containing the task users.
  */
 const getUsers = async (req: any, res: any) => {
-  let members = await res.locals.home.getMembers({
-    attributes: ['id', 'firstname', 'lastname'],
-    include: [
-      {
-        model: db.Image,
-        as: 'Image',
-        attributes: ['url'],
-      },
-    ],
-  });
+  let members = await getHomeUsers(db, res);
 
   // If the task isn't shared, return only the requester id
   if (req.body.task.Task.shared == false)
@@ -359,13 +351,7 @@ Tasks.get('/users', async (req: any, res: any) => {
     inTwoWeeks.setDate(inTwoWeeks.getDate() + 14);
 
     // Get all accepted home users
-    let users = await res.locals.home.getMembers({
-      attributes: ['id', 'firstname', 'lastname'],
-      include: [{ model: db.Image, attributes: ['url'] }],
-      through: {
-        where: { accepted: true },
-      },
-    });
+    let users = await getHomeUsers(db, res);
 
     // Get all task occurences associated to each user
     let usersWithTasks = await Promise.all(

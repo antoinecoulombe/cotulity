@@ -29,6 +29,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade',
         hooks: true,
       });
+      Home.hasMany(models.CalendarEvent, {
+        foreignKey: 'homeId',
+        sourceId: 'id',
+        onDelete: 'cascade',
+        hooks: true,
+      });
       Home.hasMany(models.Expense, {
         foreignKey: 'homeId',
         sourceId: 'id',

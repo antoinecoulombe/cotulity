@@ -75,7 +75,8 @@
     }
   }
 
-  > input {
+  > input,
+  > textarea {
     .font();
 
     float: left;
@@ -116,11 +117,36 @@
     }
   }
 
+  > textarea {
+    resize: none;
+
+    &:not(.never-focused) {
+      &:focus,
+      &.filled,
+      &:-webkit-autofill {
+        padding-top: 22px;
+      }
+    }
+  }
+
   &.error {
     > label {
       color: var(--error-color) !important;
       font-weight: 500;
     }
+  }
+
+  &.height-2x {
+    height: @height * 2;
+  }
+  &.height-3x {
+    height: @height * 3;
+  }
+  &.height-4x {
+    height: @height * 4;
+  }
+  &.height-5x {
+    height: @height * 5;
   }
 }
 

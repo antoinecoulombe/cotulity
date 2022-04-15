@@ -14,6 +14,7 @@ interface InputProps {
   after?: JSX.Element;
   filled?: boolean;
   neverFocused?: boolean;
+  heightMultiplier?: number;
   onChange: (e: any) => void;
   onKeyPress?: (e: any) => void;
   onClick?: (e: any) => void;
@@ -39,32 +40,53 @@ const Input = (props: InputProps): JSX.Element => {
 
   return (
     <div
-      className={`form-input ${props.className ?? ''} ${
-        props.error ? 'error' : ''
-      }`}
+      className={`form-input ${props.className ?? ''}${
+        props.error ? ' error' : ''
+      }${props.heightMultiplier ? `height-${props.heightMultiplier}x` : ''}`}
     >
       {props.before}
       {props.beforeImg && (
         <div className="input-before-img">{props.beforeImg}</div>
       )}
-      <input
-        id={props.name}
-        name={props.name}
-        type={props.type}
-        value={props.value}
-        onBlur={handleBlur}
-        onChange={props.onChange}
-        onKeyPress={props.onKeyPress}
-        onClick={props.onClick}
-        onFocus={props.onFocus}
-        className={`${
-          props.neverFocused === true
-            ? 'never-focused'
-            : props.filled
-            ? 'filled'
-            : ''
-        }${props.beforeImg ? ' with-image' : ''}`}
-      ></input>
+      {props.heightMultiplier ? (
+        <textarea
+          id={props.name}
+          name={props.name}
+          value={props.value}
+          onBlur={handleBlur}
+          onChange={props.onChange}
+          onKeyPress={props.onKeyPress}
+          onClick={props.onClick}
+          onFocus={props.onFocus}
+          className={`${
+            props.neverFocused === true
+              ? 'never-focused'
+              : props.filled
+              ? 'filled'
+              : ''
+          }${props.beforeImg ? ' with-image' : ''}`}
+        ></textarea>
+      ) : (
+        <input
+          id={props.name}
+          name={props.name}
+          type={props.type}
+          value={props.value}
+          onBlur={handleBlur}
+          onChange={props.onChange}
+          onKeyPress={props.onKeyPress}
+          onClick={props.onClick}
+          onFocus={props.onFocus}
+          className={`${
+            props.neverFocused === true
+              ? 'never-focused'
+              : props.filled
+              ? 'filled'
+              : ''
+          }${props.beforeImg ? ' with-image' : ''}`}
+        ></input>
+      )}
+
       <label
         htmlFor={props.name}
         className={

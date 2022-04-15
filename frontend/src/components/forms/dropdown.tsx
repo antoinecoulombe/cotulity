@@ -15,6 +15,7 @@ export interface DropdownProps {
   disabled?: boolean;
   required?: boolean;
   className?: string;
+  maxOptions?: number;
   values?: {
     first?: string;
     second?: string;
@@ -70,7 +71,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
   };
 
   return (
-    <div className={`si-form ${props.className ?? ''} r-offset `}>
+    <div className={`si-form ${props.className ?? ''} r-offset`}>
       <Title help={props.children} required={props.required}>
         {props.title}
       </Title>
@@ -90,7 +91,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
           value={getSelectedValue()}
           error={props.error}
           onChange={() => {}}
-          onFocus={() => setOpened(options.length > 1)}
+          onClick={() => setOpened(options.length > 1 ? !opened : false)}
           className={opened ? 'active' : ''}
           filled={false}
           neverFocused={true}
@@ -122,7 +123,18 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
           }
           after={
             opened ? (
-              <div className="dropdown-unselected">
+              <div
+                className="dropdown-unselected"
+                style={
+                  props.maxOptions
+                    ? {
+                        maxHeight: props.maxOptions * 50,
+                        overflowX: 'hidden',
+                        overflowY: 'scroll',
+                      }
+                    : undefined
+                }
+              >
                 {options
                   .filter((o) => !o.selected)
                   .map((us) => (

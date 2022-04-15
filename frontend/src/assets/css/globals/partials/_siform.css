@@ -204,7 +204,8 @@
 .si-form.in-popup > .title > h2 {
   color: var(--black);
 }
-.si-form.in-popup .form-input > input {
+.si-form.in-popup .form-input > input,
+.si-form.in-popup .form-input > textarea {
   border: solid 1px var(--popup-border-color);
   border-radius: 7.5px;
 }

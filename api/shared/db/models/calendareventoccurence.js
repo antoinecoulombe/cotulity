@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'CalendarEvent',
         allowNull: false,
       });
-      CalendarEventOccurence.hasMany(models.CalendarEventUsers, {
+      CalendarEventOccurence.hasMany(models.CalendarEventUser, {
         foreignKey: 'calendarEventOccurenceId',
         sourceId: 'id',
         as: 'userRelation',
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       });
       CalendarEventOccurence.belongsToMany(models.User, {
-        through: models.CalendarEventUsers,
+        through: models.CalendarEventUser,
         as: 'Users',
         foreignKey: 'calendarEventOccurenceId',
         otherKey: 'userId',

@@ -1,6 +1,7 @@
 import express from 'express';
 import { InputsToDate } from '../../../shared/src/routes/Global';
-import { getUsers, settleHomeDebts } from './Accounts';
+import { getHomeUsers } from '../../../shared/src/routes/Homes';
+import { settleHomeDebts } from './Accounts';
 
 const Expenses = express.Router();
 const db = require('../../../shared/db/models');
@@ -55,7 +56,7 @@ Expenses.get('/', async (req: any, res: any) => {
       title: 'request.success',
       msg: 'request.success',
       expenses: await getExpenses(res),
-      users: await getUsers(res),
+      users: await getHomeUsers(db, res),
     });
   } catch (error) {
     /* istanbul ignore next */
