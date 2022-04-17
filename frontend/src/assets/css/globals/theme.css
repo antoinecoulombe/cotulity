@@ -69,6 +69,8 @@
   --console-bg: rgba(0, 0, 0, 0.3);
   --app-disabled-opacity: 0.4;
   --list-item-click-bg: rgba(255, 255, 255, 0.06);
+  --calendarGray: #14171a;
+  --calendarToday: rgba(0, 123, 255, 0.041);
   --badge-bg: var(--lighterGray);
   --badge-color: var(--darkestGray);
   --clickable-white-bg: var(--lightGray);
@@ -149,6 +151,8 @@
   --console-bg: rgba(0, 0, 0, 0.05);
   --app-disabled-opacity: 0.8;
   --list-item-click-bg: var(--lightestGray);
+  --calendarGray: #edf0f3;
+  --calendarToday: rgba(0, 0, 0, 0.04);
   --badge-bg: var(--lighterGray);
   --badge-color: var(--gray);
   --clickable-white-bg: var(--lightGray);

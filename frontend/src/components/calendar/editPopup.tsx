@@ -12,10 +12,12 @@ import Dropdown from '../forms/dropdown';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
 import Translate from '../utils/translate';
+import { handleDate } from '../../utils/global';
 
 interface EditPopupProps {
-  event?: CalendarEventOccurence;
   users: Array<DropdownMultiOption>;
+  event?: CalendarEventOccurence;
+  justDate?: boolean;
   onCancel(...attr: any): any;
   onSubmit(...attr: any): any;
   onDelete?(...attr: any): any;
@@ -46,21 +48,14 @@ const initCalendarErrors: CalendarErrors = {
 const EditPopup = (props: EditPopupProps): JSX.Element => {
   const { t } = useTranslation('common');
 
-  // Input format: 2021-08-18T08:26:21.000Z
-  // Input format: Mon, 09 Jan 2023 05:00:00 GMT
-  // Output format: 'DD/MM@HH:mm'
-  const handleDate = (date: string): string => {
-    let newDate = new Date(date);
-    return `${newDate.getUTCDate()}/${
-      newDate.getUTCMonth() + 1
-    }@${newDate.getUTCHours()}:${newDate.getUTCMinutes()}`;
-  };
-
   const [eventOccurence, setEventOccurence] = useState<CalendarEventOccurence>(
     props.event
       ? {
           ...props.event,
-          start: handleDate(props.event.start),
+          start: handleDate(
+            props.event.start,
+            props.justDate === true ? 'date' : undefined
+          ),
           end: handleDate(props.event.end),
           Event: {
             ...props.event.Event,
@@ -269,7 +264,6 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           }}
           className="in-popup"
           required={eventOccurence.Event.shared}
-          disabled={!eventOccurence.Event.shared}
           error={errors.Users}
         ></DropdownMulti>
         <Dropdown
@@ -367,19 +361,9 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           title="calendar.title.event.duration"
           options={[
             {
-              id: 15,
-              value: '15 minutes',
-              selected: eventOccurence.duration === 15,
-            },
-            {
               id: 30,
               value: '30 minutes',
               selected: eventOccurence.duration === 30,
-            },
-            {
-              id: 45,
-              value: '45 minutes',
-              selected: eventOccurence.duration === 45,
             },
             {
               id: 60,

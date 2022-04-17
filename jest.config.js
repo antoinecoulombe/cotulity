@@ -7,4 +7,11 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['**/*.ts?(x)'],
   coveragePathIgnorePatterns: ['/node_modules/', '/db/'],
+  projects: [
+    '<rootDir>/api/test',
+    '<rootDir>/api/auth',
+    '<rootDir>/api/global',
+    '<rootDir>/api/homes',
+    '<rootDir>/api/groceries',
+  ],
 };

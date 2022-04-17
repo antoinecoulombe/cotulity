@@ -37,15 +37,23 @@ Calendar.get('/events', async (req: any, res: any) => {
       include: [
         {
           model: db.CalendarEventOccurence,
+          as: 'Occurences',
           attributes: ['location', 'notes', 'start', 'end'],
-          include: [{ model: db.CalendarEventUser, attributes: ['userId'] }],
+          include: [
+            {
+              model: db.User,
+              as: 'Users',
+              attributes: ['id', 'firstname', 'lastname'],
+              include: [{ model: db.Image, attributes: ['url'] }],
+            },
+          ],
         },
       ],
     });
 
     return res.json({
-      title: 'request.notImplemented',
-      msg: 'request.notImplemented',
+      title: 'request.success',
+      msg: 'request.success',
       events: events,
       users: await getHomeUsers(db, res),
     });

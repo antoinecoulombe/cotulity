@@ -50,3 +50,22 @@ export const groupBy = function (xs, key) {
     return rv;
   }, {});
 };
+
+// Input format: 2021-08-18T08:26:21.000Z
+// Input format: Mon, 09 Jan 2023 05:00:00 GMT
+// Output format: 'DD/MM@HH:mm'
+export const handleDate = (date: string, only?: string): string => {
+  if (!date || date === '/@:') return '/@:';
+
+  let newDate = new Date(date);
+  let dateString = `${newDate.getDate()}/${
+    newDate.getMonth() + 1
+  }@${newDate.getHours()}:${newDate.getMinutes()}`;
+
+  if (only === 'date')
+    dateString = dateString.substring(0, dateString.indexOf('@')) + '@:';
+  else if (only === 'time')
+    dateString = '/' + dateString.substring(dateString.indexOf('@'));
+
+  return dateString;
+};

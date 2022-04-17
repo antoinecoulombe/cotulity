@@ -27,7 +27,13 @@ const SetSafeDelete = (props: SetSafeDeleteProps): JSX.Element => {
       <div className="right">
         <div className="input-toggle">
           <div className="generic-input">
-            {localStorage.getItem('safeDelete') === 'true' ? (
+            <input
+              id="theme-switch"
+              type="checkbox"
+              className="switch"
+              disabled={true}
+            />
+            {/* {localStorage.getItem('safeDelete') === 'true' ? (
               <input
                 id="theme-switch"
                 type="checkbox"
@@ -42,7 +48,7 @@ const SetSafeDelete = (props: SetSafeDeleteProps): JSX.Element => {
                 className="switch"
                 onClick={toggleSafeDelete}
               />
-            )}
+            )} */}
           </div>
         </div>
       </div>

@@ -7,5 +7,54 @@
 
   .app-body {
     .font-default();
+
+    .fc {
+      .fc-toolbar-title {
+        font-weight: 700;
+        color: var(--darkestGray);
+        text-align: center;
+        line-height: 95%;
+
+        > b {
+          color: var(--gray);
+          font-size: 14px;
+          position: relative;
+          font-weight: 500;
+        }
+      }
+
+      .fc-col-header-cell {
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+
+        a {
+          text-transform: uppercase;
+          font-weight: 300;
+          color: var(--darkGray);
+          padding: 15px 0;
+        }
+      }
+
+      .fc-daygrid-day-number {
+        color: var(--gray);
+        padding: 8px;
+      }
+
+      .fc-day-other {
+        background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f9f9fa' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+
+        .fc-daygrid-event {
+          opacity: 0.6;
+        }
+      }
+
+      .fc-day-today {
+        background-color: var(--calendarToday);
+      }
+
+      * {
+        border-color: var(--calendarGray);
+      }
+    }
   }
 }

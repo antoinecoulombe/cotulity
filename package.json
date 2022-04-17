@@ -23,8 +23,7 @@
     "t:groceries": "npm --prefix ./api/groceries run dev:test",
     "t:accounts": "npm --prefix ./api/accounts run dev:test",
     "t:calendar": "npm --prefix ./api/calendar run dev:test",
-    "t:start": "npm --prefix ./api/test start",
-    "coverage": "./coverage.sh"
+    "t:start": "npm --prefix ./api/test start"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

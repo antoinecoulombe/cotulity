@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useTranslation } from 'react-i18next';
 import { HomeMember } from './homes';
+import { DropdownMultiOption } from '../../components/forms/dropdownMulti';
 import axios from '../../utils/fetchClient';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import momentPlugin from '@fullcalendar/moment';
+import frLocale from '@fullcalendar/core/locales/fr';
 import AppContainer from '../../components/app/appContainer';
-import '../../assets/css/apps/calendar.css';
 import EditPopup from '../../components/calendar/editPopup';
-import { DropdownMultiOption } from '../../components/forms/dropdownMulti';
+import $ from 'jquery';
+import '../../assets/css/apps/calendar.css';
 
 export interface CalendarEvent {
   id: number;
@@ -77,19 +80,52 @@ const AppCalendar = (): JSX.Element => {
       });
   };
 
+  const setTitleHTML = () => {
+    let title = $('.fc-toolbar-title').text().split(' ');
+    console.log(title);
+    if ($('.fc-toolbar-title > b').length > 0) return;
+    if (!title || !title.length) return;
+
+    if (title.length === 2)
+      $('.fc-toolbar-title').html(`${title[0]}<br/><b>${title[1]}</b>`);
+    else if (title.length === 5 || title.length === 6) {
+      let firstRow = $('.fc-toolbar-title').text();
+      firstRow = firstRow.substring(
+        0,
+        firstRow.lastIndexOf(localStorage.getItem('lang') === 'fr' ? ' ' : ',')
+      );
+      $('.fc-toolbar-title').html(
+        `${firstRow}<br/><b>${title[title.length - 1]}</b>`
+      );
+    }
+  };
+
   useEffect(() => {
     getEvents();
+    setTitleHTML();
+
+    $('.fc-toolbar-title').on('DOMSubtreeModified', () => {
+      setTitleHTML();
+    });
+
+    return () => {
+      $('.fc-toolbar-title').off('DOMSubtreeModified');
+    };
   }, []);
 
   const handleSubmit = (event: CalendarEvent) => {};
 
   const deleteEvent = (id: number, closePopup?: boolean) => {};
 
-  const showPopup = (event?: CalendarEventOccurence): void => {
+  const showPopup = (
+    event?: CalendarEventOccurence,
+    justDate?: boolean
+  ): void => {
     setPopup(
       <EditPopup
         onCancel={() => setPopup(nullJSX)}
         event={event}
+        justDate={justDate}
         users={users.map((u) => {
           return {
             id: u.id,
@@ -110,7 +146,16 @@ const AppCalendar = (): JSX.Element => {
     );
   };
 
-  const onEventClick = () => {};
+  const onEventClick = (arg) => {
+    console.log('event click');
+  };
+
+  const onDateClick = (arg) => {
+    showPopup(
+      { ...initCalendarEventOccurence, start: arg.date },
+      arg.view.type === 'dayGridMonth'
+    );
+  };
 
   const onEventSet = () => {};
 
@@ -125,12 +170,20 @@ const AppCalendar = (): JSX.Element => {
       bodyMinHeight={580}
     >
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[
+          dayGridPlugin,
+          timeGridPlugin,
+          interactionPlugin,
+          momentPlugin,
+        ]}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          right: 'dayGridMonth,timeGridWeek',
         }}
+        locale={localStorage.getItem('lang') === 'fr' ? 'fr' : 'en'}
+        locales={[frLocale]}
+        allDaySlot={false}
         events={[
           {
             title: 'Class',
@@ -144,6 +197,7 @@ const AppCalendar = (): JSX.Element => {
         select={onSelect}
         eventClick={onEventClick}
         eventsSet={onEventSet}
+        dateClick={onDateClick}
       />
     </AppContainer>
   );
