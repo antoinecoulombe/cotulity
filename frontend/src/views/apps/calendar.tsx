@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useTranslation } from 'react-i18next';
 import { HomeMember } from './homes';
@@ -14,6 +14,7 @@ import AppContainer from '../../components/app/appContainer';
 import EditPopup from '../../components/calendar/editPopup';
 import $ from 'jquery';
 import '../../assets/css/apps/calendar.css';
+import ViewPopup from '../../components/calendar/viewPopup';
 
 export interface CalendarEvent {
   id: number;
@@ -21,7 +22,7 @@ export interface CalendarEvent {
   shared: boolean;
   repeat: string;
   untilDate: string;
-  Events: CalendarEventOccurence[];
+  Occurences: CalendarEventOccurence[];
   Owner?: HomeMember;
 }
 
@@ -36,13 +37,25 @@ export interface CalendarEventOccurence {
   Users?: HomeMember[];
 }
 
+interface CalendarHomeMember extends HomeMember {
+  color?: string;
+}
+
+interface FcEvent {
+  title: string;
+  start: Date;
+  end: Date;
+  event: CalendarEventOccurence;
+  className: string;
+}
+
 export const initCalendarEvent: CalendarEvent = {
   id: -1,
   name: '',
   shared: true,
   repeat: 'none',
   untilDate: '/@:',
-  Events: [],
+  Occurences: [],
 };
 
 export const initCalendarEventOccurence: CalendarEventOccurence = {
@@ -59,12 +72,27 @@ export const initCalendarEventOccurence: CalendarEventOccurence = {
 const nullJSX: JSX.Element = <></>;
 
 const AppCalendar = (): JSX.Element => {
-  const { setNotification, setErrorNotification } = useNotifications();
+  const calendarColors: string[] = [
+    'blue',
+    'red',
+    'orange',
+    'purple',
+    'green',
+    'pink',
+    'turquoise',
+    'yellow',
+    'lightblue',
+    'gray',
+    'lightgray',
+  ];
+
+  const { setNotification, setSuccessNotification, setErrorNotification } =
+    useNotifications();
   const { t } = useTranslation('common');
 
-  const [events, setEvents] = useState<string>('');
+  const [events, setEvents] = useState<CalendarEventOccurence[]>([]);
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
-  const [users, setUsers] = useState<HomeMember[]>([]);
+  const [users, setUsers] = useState<CalendarHomeMember[]>([]);
 
   const getEvents = (): void => {
     axios
@@ -72,7 +100,17 @@ const AppCalendar = (): JSX.Element => {
       .then((res: any) => {
         if (res.data.events && res.data.users) {
           setEvents(res.data.events);
-          setUsers(res.data.users);
+
+          setUsers(
+            res.data.users
+              .sort((a, b) => a.id - b.id)
+              .map((u, i) => {
+                return {
+                  ...u,
+                  color: calendarColors[i % calendarColors.length],
+                };
+              })
+          );
         } else setErrorNotification(res.data);
       })
       .catch((err) => {
@@ -82,7 +120,6 @@ const AppCalendar = (): JSX.Element => {
 
   const setTitleHTML = () => {
     let title = $('.fc-toolbar-title').text().split(' ');
-    console.log(title);
     if ($('.fc-toolbar-title > b').length > 0) return;
     if (!title || !title.length) return;
 
@@ -100,9 +137,27 @@ const AppCalendar = (): JSX.Element => {
     }
   };
 
+  const setCalendarHeigth = () => {
+    let table = $('.fc-scrollgrid-sync-table');
+    let view = $('.fc-view-harness');
+    let cal = $('.fc');
+    if (!table.length || !view.length || !cal.length) return;
+
+    let winHeight = $(window)?.height();
+    if (!winHeight) return;
+
+    let tableHeight = winHeight - 460;
+    table.height(tableHeight);
+    view.height(tableHeight + 59);
+    cal.height(tableHeight + 59 + 70);
+  };
+
   useEffect(() => {
     getEvents();
     setTitleHTML();
+    setCalendarHeigth();
+
+    window.addEventListener('resize', () => setCalendarHeigth());
 
     $('.fc-toolbar-title').on('DOMSubtreeModified', () => {
       setTitleHTML();
@@ -110,14 +165,62 @@ const AppCalendar = (): JSX.Element => {
 
     return () => {
       $('.fc-toolbar-title').off('DOMSubtreeModified');
+      window.removeEventListener('resize', () => setCalendarHeigth());
     };
   }, []);
 
-  const handleSubmit = (event: CalendarEvent) => {};
+  const handleSubmit = (event: CalendarEvent) => {
+    axios({
+      method: event.id === -1 ? 'post' : 'put',
+      url: `/calendar/${localStorage.getItem('currentHome')}/events/${
+        event.id === -1 ? '' : event.id
+      }`,
+      data: {
+        event,
+      },
+    })
+      .then((res: any) => {
+        let newEvents = [...events];
+        if (event.id !== -1) {
+          // res.data.deletedIds.forEach((id) => {
+          //   let taskOccIndex = -1;
+          //   let taskIndex = newEvents.findIndex((t) => {
+          //     if (t.Occurences) {
+          //       taskOccIndex = t.Occurences?.findIndex((to) => to.id === id);
+          //       return taskOccIndex !== -1;
+          //     }
+          //     return false;
+          //   });
+          //   if (taskIndex >= 0 && taskOccIndex >= 0)
+          //     newEvents[taskIndex].Occurences.splice(taskOccIndex, 1);
+          //   if (newEvents[taskIndex].Occurences.length === 0)
+          //     newEvents.splice(taskIndex, 1);
+          // });
+          // res.data.task.Occurences.forEach((to) => (to.completedOn = null));
+          // let taskIndex = newEvents.findIndex((t) => t.id === res.data.task.id);
+          // if (taskIndex < 0) newEvents.push(res.data.task);
+          // else {
+          //   newEvents[taskIndex].name = res.data.task.name;
+          //   newEvents[taskIndex].repeat = res.data.task.repeat;
+          //   newEvents[taskIndex].shared = res.data.task.shared;
+          //   newEvents[taskIndex].untilDate = res.data.task.untilDate;
+          //   newEvents[taskIndex].Occurences = newEvents[
+          //     taskIndex
+          //   ].Occurences.concat(res.data.task.Occurences);
+          // }
+        } else newEvents.push(res.data.event);
+
+        setPopup(nullJSX);
+        setSuccessNotification(res.data);
+      })
+      .catch((err) => {
+        setNotification(err.response.data);
+      });
+  };
 
   const deleteEvent = (id: number, closePopup?: boolean) => {};
 
-  const showPopup = (
+  const showEditPopup = (
     event?: CalendarEventOccurence,
     justDate?: boolean
   ): void => {
@@ -137,7 +240,7 @@ const AppCalendar = (): JSX.Element => {
                 : undefined,
             selected: !event
               ? false
-              : (event.Users?.find((eu) => eu.id === u.id) ?? null) != null,
+              : (event.Users?.filter((eu) => eu.id === u.id)?.length ?? -1) > 0,
           } as DropdownMultiOption;
         })}
         onSubmit={(eventGroup: CalendarEvent) => handleSubmit(eventGroup)}
@@ -146,27 +249,61 @@ const AppCalendar = (): JSX.Element => {
     );
   };
 
+  const showViewPopup = (event: CalendarEventOccurence): void => {
+    setPopup(
+      <ViewPopup
+        event={event}
+        users={users}
+        onCancel={() => setPopup(nullJSX)}
+        onEdit={() => showEditPopup(event)}
+      />
+    );
+  };
+
   const onEventClick = (arg) => {
-    console.log('event click');
+    showViewPopup(arg.event._def.extendedProps.event);
   };
 
   const onDateClick = (arg) => {
-    showPopup(
+    showEditPopup(
       { ...initCalendarEventOccurence, start: arg.date },
       arg.view.type === 'dayGridMonth'
     );
   };
 
-  const onEventSet = () => {};
+  const onEventSet = (arg) => {
+    // console.log('event set');
+  };
 
-  const onSelect = () => {};
+  const onEventDrop = (arg) => {
+    console.log('event dropped');
+  };
+
+  const getOccurences = useCallback((): FcEvent[] => {
+    let ev: FcEvent[] = [];
+
+    events.forEach((e) =>
+      events.forEach((eo) =>
+        ev.push({
+          title: eo.Event.name,
+          start: new Date(eo.start),
+          end: new Date(eo.end),
+          event: eo,
+          className:
+            users.find((u) => u.id === eo.Event.Owner?.id)?.color ?? 'blue',
+        })
+      )
+    );
+
+    return ev;
+  }, [events]);
 
   return (
     <AppContainer
       popup={popup}
       title="calendar"
       appName="calendar"
-      onAddClick={() => showPopup(undefined)}
+      onAddClick={() => showEditPopup(undefined)}
       bodyMinHeight={580}
     >
       <FullCalendar
@@ -177,27 +314,26 @@ const AppCalendar = (): JSX.Element => {
           momentPlugin,
         ]}
         headerToolbar={{
-          left: 'prev,next today',
+          left: 'prev,next',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek',
+          right: 'today',
         }}
         locale={localStorage.getItem('lang') === 'fr' ? 'fr' : 'en'}
         locales={[frLocale]}
         allDaySlot={false}
-        events={[
-          {
-            title: 'Class',
-            start: new Date(),
-            end: new Date().setHours(new Date().getHours() + 3),
-          },
-        ]}
+        events={getOccurences()}
+        eventTimeFormat={{
+          hour: 'numeric',
+          minute: '2-digit',
+          meridiem: false,
+          hour12: false,
+        }}
         initialView="dayGridMonth"
         editable={true}
-        selectable={true}
-        select={onSelect}
         eventClick={onEventClick}
         eventsSet={onEventSet}
         dateClick={onDateClick}
+        eventDrop={onEventDrop}
       />
     </AppContainer>
   );

@@ -366,6 +366,13 @@ const AppAccounts = (): JSX.Element => {
       data.filter((d) => d.visible && !isTransfer(d) && isDebt(d)) as Debt[]
     ).map((d) => (d.amount < 0 ? reverseDebt(d) : d));
 
+    if (!orderedDebts.length)
+      return [
+        <h2>
+          <Translate name="noDebts" prefix="accounts." />
+        </h2>,
+      ];
+
     let grouped = groupBy(orderedDebts, 'fromUserId');
 
     let elements: JSX.Element[] = [];

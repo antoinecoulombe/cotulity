@@ -300,6 +300,7 @@
       "calendar": "Calendar",
       "event": {
         "create": "Create Event",
+        "edit": "Edit Event",
         "name": "Name",
         "notes": "Notes",
         "duration": "Duration",
@@ -308,7 +309,11 @@
         "users": "Participants",
         "location": "Location",
         "startsAt": "Starts At",
-        "shared": "Private"
+        "shared": "Private",
+        "at": "At",
+        "to": "to",
+        "repeats": "Repeats",
+        "noNotes": "This even has no notes."
       }
     },
     "name": {
@@ -486,6 +491,14 @@
           "verified": "Account Verified"
         }
       },
+      "calendar": {
+        "event": {
+          "notFound": "Event not found",
+          "created": "Event Created",
+          "modified": "Event Modified",
+          "invalidUntilDate": "Invalid Until Date"
+        }
+      },
       "groceries": {
         "notFound": "Grocery not found",
         "error": {
@@ -650,6 +663,14 @@
           "alreadyVerified": "The account associated to that verification URL is already verified.",
           "expired": "This verification url is expired. Try logging in again to send another verification email.",
           "verified": "You can now log in."
+        }
+      },
+      "calendar": {
+        "event": {
+          "notFound": "We couldn't find the event.",
+          "created": "You can find it in now in the calendar!",
+          "modified": "The calendar has been updated.",
+          "untilBeforeEnd": "The repeat date can't be before the event's end date."
         }
       },
       "picture": {

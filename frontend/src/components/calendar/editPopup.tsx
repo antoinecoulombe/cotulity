@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { handleDate, getDateTime, InputToDateTime } from '../../utils/date';
+import { useNotifications } from '../../contexts/NotificationsContext';
 import {
   CalendarEventOccurence,
-  CalendarEvent,
   initCalendarEventOccurence,
 } from '../../views/apps/calendar';
 import DropdownMulti, { DropdownMultiOption } from '../forms/dropdownMulti';
@@ -12,7 +13,6 @@ import Dropdown from '../forms/dropdown';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
 import Translate from '../utils/translate';
-import { handleDate } from '../../utils/global';
 
 interface EditPopupProps {
   users: Array<DropdownMultiOption>;
@@ -47,6 +47,7 @@ const initCalendarErrors: CalendarErrors = {
 
 const EditPopup = (props: EditPopupProps): JSX.Element => {
   const { t } = useTranslation('common');
+  const { setErrorNotification } = useNotifications();
 
   const [eventOccurence, setEventOccurence] = useState<CalendarEventOccurence>(
     props.event
@@ -87,70 +88,55 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
   const onSubmit = (): void => {
     let newErrors = { ...initCalendarErrors };
-  };
+    if (!eventOccurence.Event.name?.length) newErrors.name = true;
+    if (!eventOccurence.Users?.length) newErrors.Users = true;
+    if (!eventOccurence.Event.repeat?.length) newErrors.repeat = true;
+    if (
+      !eventOccurence.start?.length ||
+      eventOccurence.start === '/@:' ||
+      !getDateTime(eventOccurence.start).hour.length ||
+      !getDateTime(eventOccurence.start).minute.length ||
+      !getDateTime(eventOccurence.start).month.length ||
+      !getDateTime(eventOccurence.start).day.length
+    )
+      newErrors.start = true;
+    if (!eventOccurence.duration) newErrors.duration = true;
 
-  const getDateTime = (
-    dateTime: string
-  ): {
-    day: string;
-    month: string;
-    hour: string;
-    minute: string;
-  } => {
+    setErrors(newErrors);
+
+    for (const prop in newErrors) if (newErrors[prop]) return;
+
     try {
-      let split = dateTime.split('@');
-      var day: string, month: string, hour: string, minute: string;
-      if (split[0].length > 1) {
-        day = split[0].substring(0, split[0].indexOf('/'));
-        month = split[0].substring(split[0].indexOf('/') + 1);
-      } else {
-        day = '';
-        month = '';
-      }
+      let startString = getDateTime(eventOccurence.start);
+      let startDate = new Date(
+        new Date().getFullYear(),
+        parseInt(startString.month) - 1,
+        parseInt(startString.day),
+        parseInt(startString.hour),
+        parseInt(startString.minute)
+      );
 
-      if (split[1].length > 1) {
-        hour = split[1].substring(0, split[1].indexOf(':'));
-        minute = split[1].substring(split[1].indexOf(':') + 1);
-      } else {
-        hour = '';
-        minute = '';
-      }
-      return { day: day, month: month, hour: hour, minute: minute };
+      let endDate = new Date(startDate);
+      endDate.setMinutes(endDate.getMinutes() + eventOccurence.duration);
+
+      let untilDate =
+        eventOccurence.Event.untilDate !== '/@:'
+          ? eventOccurence.Event.untilDate.substring(
+              0,
+              eventOccurence.Event.untilDate.indexOf('@')
+            ) + '@23:59'
+          : '/@:';
+
+      console.log(untilDate);
+
+      props.onSubmit({
+        ...eventOccurence,
+        end: handleDate(endDate),
+        Event: { ...eventOccurence.Event, untilDate: untilDate },
+      });
     } catch (error) {
-      return { day: '', month: '', hour: '', minute: '' };
+      setErrorNotification({ title: 'request.error', msg: 'request.error' });
     }
-  };
-
-  const InputToDateTime = (
-    e: any,
-    field: string,
-    date: string
-  ): string | null => {
-    var newDate: string = '';
-    switch (field) {
-      case 'day':
-        if (e.target.value > 31) return null;
-        newDate = e.target.value + date.substring(date.indexOf('/'));
-        break;
-      case 'month':
-        if (e.target.value > 12) return null;
-        newDate = date.substring(0, date.indexOf('/') + 1);
-        newDate += e.target.value;
-        newDate += date.substring(date.indexOf('@'));
-        break;
-      case 'hour':
-        if (e.target.value > 23) return null;
-        newDate = date.substring(0, date.indexOf('@') + 1);
-        newDate += e.target.value;
-        newDate += date.substring(date.indexOf(':'));
-        break;
-      case 'minute':
-        if (e.target.value > 59) return null;
-        newDate = date.substring(0, date.indexOf(':') + 1);
-        newDate += e.target.value;
-        break;
-    }
-    return newDate;
   };
 
   const setDueDateTime = (e: any, field: string, end?: boolean): boolean => {
@@ -209,17 +195,20 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
       onCancel={() => props.onCancel?.()}
       onSubmit={onSubmit}
       onDelete={
-        props.event ? () => props.onDelete?.(props.event?.id) : undefined
+        props.event?.Event.name.length
+          ? () => props.onDelete?.(props.event?.id)
+          : undefined
       }
       type="edit"
       new={props.event === undefined}
     >
       <div className="form">
-        {!props.event && (
-          <h1>
-            <Translate name="create" prefix="calendar.title.event." />
-          </h1>
-        )}
+        <h1>
+          <Translate
+            name={props.event?.Event.name.length ? 'edit' : 'create'}
+            prefix="calendar.title.event."
+          />
+        </h1>
         <SingleInputForm
           name="calendar.name.event.name"
           title="calendar.title.event.name"
@@ -263,7 +252,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             return `${split[0]} ${split[1][0].toUpperCase()}.`;
           }}
           className="in-popup"
-          required={eventOccurence.Event.shared}
+          required={true}
           error={errors.Users}
         ></DropdownMulti>
         <Dropdown
@@ -438,21 +427,13 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
                 id="theme-switch"
                 type="checkbox"
                 className="switch"
-                defaultChecked={eventOccurence.Event.shared}
+                defaultChecked={!eventOccurence.Event.shared}
                 disabled={eventOccurence.Event.id !== -1}
                 onClick={() => toggleSharedSwitch()}
               />
             </div>
           </div>
         </div>
-        {/* 
-        
-        
-        <div className="switch">
-          <h2>
-            <Translate name="important" prefix="tasks.title." />
-          </h2>
-        </div> */}
       </div>
     </Popup>
   );

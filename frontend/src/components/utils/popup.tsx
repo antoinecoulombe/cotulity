@@ -10,9 +10,10 @@ interface PopupProps {
   children: any;
   className?: string;
   popup?: JSX.Element;
-  type: 'edit' | 'si' | 'warning';
+  type: 'edit' | 'si' | 'warning' | 'custom';
   new?: boolean;
   style?: any;
+  noX?: boolean;
   onCancel(...attr: any): any;
   onSubmit?(...attr: any): any;
   onDelete?(...attr: any): any;
@@ -24,8 +25,9 @@ const Popup = (props: PopupProps): JSX.Element => {
 
   const handleResize = (): void => {
     let winHeight = $(window).height();
+    let marginY = 20;
     if (winHeight) {
-      let popupHeight = parseInt(winHeight.toString()) - 120;
+      let popupHeight = parseInt(winHeight.toString()) - 120 - marginY * 2;
       $('.popup').css({ maxHeight: popupHeight });
       $('.popup > .form').css({ maxHeight: popupHeight - 60 });
     }
@@ -48,13 +50,15 @@ const Popup = (props: PopupProps): JSX.Element => {
         style={props.style}
       >
         {props.popup}
-        <div className="close">
-          <FontAwesomeIcon
-            icon="times"
-            className="icon"
-            onClick={props.onCancel}
-          />
-        </div>
+        {props.noX !== true && (
+          <div className="close">
+            <FontAwesomeIcon
+              icon="times"
+              className="icon"
+              onClick={props.onCancel}
+            />
+          </div>
+        )}
         {props.children}
         {props.onSubmit && (
           <div className="buttons">

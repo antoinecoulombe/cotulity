@@ -300,6 +300,7 @@
       "calendar": "Calendrier",
       "event": {
         "create": "Créer un événement",
+        "edit": "Modifier l'événement",
         "name": "Nom",
         "notes": "Notes",
         "duration": "Durée",
@@ -308,7 +309,11 @@
         "users": "Participants",
         "location": "Emplacement",
         "startsAt": "Date & Heure",
-        "shared": "Privé"
+        "shared": "Privé",
+        "at": "À",
+        "to": "-",
+        "repeats": "Chaque",
+        "noNotes": "Aucunes notes."
       }
     },
     "name": {
@@ -486,6 +491,14 @@
           "verified": "Compte vérifié"
         }
       },
+      "calendar": {
+        "event": {
+          "notFound": "Événement introuvable",
+          "created": "Événement créé",
+          "modified": "Événement modifié",
+          "invalidUntilDate": "Date de répétition invalide"
+        }
+      },
       "groceries": {
         "notFound": "Article introuvable",
         "error": {
@@ -649,6 +662,14 @@
           "alreadyVerified": "Le compte associé à ce code de vérification est déjà vérifié.",
           "expired": "Ce code de vérification est expiré. Tentez de vous connecter pour en envoyer un autre.",
           "verified": "Vous pouvez maintenant vous connecter."
+        }
+      },
+      "calendar": {
+        "event": {
+          "notFound": "Aucun événement n'est associé à cet identifiant.",
+          "created": "Vous pouvez le retrouver dès maintenant dans le calendrier!",
+          "modified": "Le calendrier à été mis-à-jour.",
+          "untilBeforeEnd": "La date de fin de répétition doit être après la date de l'événement."
         }
       },
       "picture": {

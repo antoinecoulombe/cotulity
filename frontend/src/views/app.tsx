@@ -75,6 +75,9 @@ import {
   faBan,
   faCircle,
   faCalendarDays,
+  faLocationDot,
+  faRepeat,
+  faCalendarDay,
 } from '@fortawesome/free-solid-svg-icons';
 import AppCalendar from './apps/calendar';
 
@@ -122,7 +125,10 @@ library.add(
   faPeopleArrows,
   faBan,
   faCircle,
-  faCalendarDays
+  faCalendarDays,
+  faLocationDot,
+  faRepeat,
+  faCalendarDay
 );
 
 const App = (): JSX.Element => {
