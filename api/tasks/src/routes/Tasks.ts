@@ -2,6 +2,7 @@ import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
 import { InputsToDate } from '../../../shared/src/routes/Global';
 import { getHomeUsers } from '../../../shared/src/routes/Homes';
+import { getRepeatingDatesUntil } from '../../../shared/src/routes/Date';
 
 const Tasks = express.Router();
 const db = require('../../../shared/db/models');
@@ -105,59 +106,6 @@ const getTasks = async (
 };
 
 /**
- * Gets all occurences of a Date until 'untilDate'.
- * @param dueDate The date of the first task occurence.
- * @param repeat The task frequency. Either 'day', 'week', 'twoweek' or 'month'.
- * @param untilDate The date of the last task occurence.
- * @returns A string array containing the task occurences, as UTC string.
- */
-const getRepeatingDatesUntil = (
-  dueDate: Date,
-  repeat?: string,
-  untilDate?: Date | null
-): string[] => {
-  let occurences: string[] = [];
-  occurences.push(dueDate.toUTCString());
-
-  // Check if task repeats
-  if (repeat && untilDate && repeat !== 'none') {
-    let valid: boolean = true;
-    let untilMilliseconds = untilDate.getTime();
-    let dueMilliseconds = dueDate.getTime();
-
-    // While task occurence is before 'untilDate', with a limit of 50 occurences
-    while (dueMilliseconds <= untilMilliseconds && occurences.length < 50) {
-      switch (repeat) {
-        case 'day':
-          dueDate.setDate(dueDate.getDate() + 1);
-          break;
-        case 'week':
-          dueDate.setDate(dueDate.getDate() + 7);
-          break;
-        case 'twoweek':
-          dueDate.setDate(dueDate.getDate() + 14);
-          break;
-        case 'month':
-          dueDate.setMonth(dueDate.getMonth() + 1);
-          break;
-        default:
-          valid = false;
-          break;
-      }
-
-      dueMilliseconds = dueDate.getTime();
-
-      // Make sure the task occurence is before 'untilDate'
-      if (!valid || dueMilliseconds > untilMilliseconds) break;
-
-      occurences.push(dueDate.toUTCString());
-    }
-  }
-
-  return occurences;
-};
-
-/**
  * Gets the task users.
  * @param req The HTTP request.
  * @param res The HTTP response.
@@ -208,8 +156,7 @@ const respondIfErrors = (users: any[], repeat: string, res: any): boolean => {
  * @param transaction The sequelize transaction object.
  * @param repeat The repeat frequency string.
  * @param untilDate The repeat frequency end date.
- * @param deleteOld A boolean indicating whether or not the old task occurences
- * associated to a task should be deleted.
+ * @param deleteOld The id of the first occurence to delete. All ids greater than this will be deleted.
  * @returns A promise to return an object containing created and deleted task occurences, with their users.
  */
 const createTaskOccurences = async (
@@ -286,7 +233,7 @@ const createTaskOccurences = async (
   // Get ids from inserted task occurences and associate them with corresponding local task occurences
   taskOccurences = taskOccurences.map((t: any) => {
     // Get local task occurence date string
-    let tDate: string = new Date(t.dueDateTime).toUTCString();
+    let tDate: string = t.dueDateTime.toUTCString();
 
     // Find the inserted task occurence with the same date
     let taskOcc = taskOccurencesDb.find(
@@ -356,29 +303,27 @@ Tasks.get('/users', async (req: any, res: any) => {
     // Get all task occurences associated to each user
     let usersWithTasks = await Promise.all(
       users.map(async (u: any) => {
-        let taskOccurences = await u.getTaskOccurences({
-          where: {
-            [Op.and]: [
-              { dueDateTime: { [Op.gte]: new Date() } },
-              { dueDateTime: { [Op.lte]: inTwoWeeks } },
-            ],
-          },
-          include: [
-            {
-              model: db.Task,
-              as: 'Task',
-              attributes: ['shared'],
-              where: {
-                [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
+        let tasks = (
+          await res.locals.home.getTasks({
+            attributes: ['ownerId', 'name', 'repeat', 'untilDate', 'shared'],
+            include: [
+              {
+                model: db.TaskOccurence,
+                as: 'Occurences',
+                include: [
+                  {
+                    model: db.User,
+                    as: 'Users',
+                    where: { id: u.id },
+                  },
+                ],
               },
-            },
-          ],
-          attributes: ['taskId', 'deletedAt', 'completedOn', 'dueDateTime'],
-          order: ['dueDateTime'],
-        });
+            ],
+          })
+        ).filter((t: any) => t.Occurences.length > 0);
 
         // Merge the user sequelize object with its task occurences
-        return { ...u.dataValues, TaskOccurences: taskOccurences };
+        return { ...u.dataValues, TaskOccurences: tasks };
       })
     );
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNotifications } from '../../contexts/NotificationsContext';
 import { useTranslation } from 'react-i18next';
 import { HomeMember } from './homes';
@@ -12,9 +12,9 @@ import momentPlugin from '@fullcalendar/moment';
 import frLocale from '@fullcalendar/core/locales/fr';
 import AppContainer from '../../components/app/appContainer';
 import EditPopup from '../../components/calendar/editPopup';
+import ViewPopup from '../../components/calendar/viewPopup';
 import $ from 'jquery';
 import '../../assets/css/apps/calendar.css';
-import ViewPopup from '../../components/calendar/viewPopup';
 
 export interface CalendarEvent {
   id: number;
@@ -24,6 +24,7 @@ export interface CalendarEvent {
   untilDate: string;
   Occurences: CalendarEventOccurence[];
   Owner?: HomeMember;
+  ownerId?: number;
 }
 
 export interface CalendarEventOccurence {
@@ -37,7 +38,7 @@ export interface CalendarEventOccurence {
   Users?: HomeMember[];
 }
 
-interface CalendarHomeMember extends HomeMember {
+export interface CalendarHomeMember extends HomeMember {
   color?: string;
 }
 
@@ -93,6 +94,7 @@ const AppCalendar = (): JSX.Element => {
   const [events, setEvents] = useState<CalendarEventOccurence[]>([]);
   const [popup, setPopup] = useState<JSX.Element>(nullJSX);
   const [users, setUsers] = useState<CalendarHomeMember[]>([]);
+  const [myEvents, setMyEvents] = useState<boolean>(false);
 
   const getEvents = (): void => {
     axios
@@ -169,7 +171,11 @@ const AppCalendar = (): JSX.Element => {
     };
   }, []);
 
-  const handleSubmit = (event: CalendarEvent) => {
+  const handleSubmit = (
+    event: CalendarEventOccurence,
+    updateAllOnUpdate?: boolean
+  ) => {
+    console.log(updateAllOnUpdate);
     axios({
       method: event.id === -1 ? 'post' : 'put',
       url: `/calendar/${localStorage.getItem('currentHome')}/events/${
@@ -182,36 +188,14 @@ const AppCalendar = (): JSX.Element => {
       .then((res: any) => {
         let newEvents = [...events];
         if (event.id !== -1) {
-          // res.data.deletedIds.forEach((id) => {
-          //   let taskOccIndex = -1;
-          //   let taskIndex = newEvents.findIndex((t) => {
-          //     if (t.Occurences) {
-          //       taskOccIndex = t.Occurences?.findIndex((to) => to.id === id);
-          //       return taskOccIndex !== -1;
-          //     }
-          //     return false;
-          //   });
-          //   if (taskIndex >= 0 && taskOccIndex >= 0)
-          //     newEvents[taskIndex].Occurences.splice(taskOccIndex, 1);
-          //   if (newEvents[taskIndex].Occurences.length === 0)
-          //     newEvents.splice(taskIndex, 1);
-          // });
-          // res.data.task.Occurences.forEach((to) => (to.completedOn = null));
-          // let taskIndex = newEvents.findIndex((t) => t.id === res.data.task.id);
-          // if (taskIndex < 0) newEvents.push(res.data.task);
-          // else {
-          //   newEvents[taskIndex].name = res.data.task.name;
-          //   newEvents[taskIndex].repeat = res.data.task.repeat;
-          //   newEvents[taskIndex].shared = res.data.task.shared;
-          //   newEvents[taskIndex].untilDate = res.data.task.untilDate;
-          //   newEvents[taskIndex].Occurences = newEvents[
-          //     taskIndex
-          //   ].Occurences.concat(res.data.task.Occurences);
-          // }
-        } else newEvents.push(res.data.event);
+          newEvents = newEvents
+            .filter((e) => !res.data.deleted.includes(e.id))
+            .concat(res.data.created);
+        } else newEvents = newEvents.concat(res.data.created);
 
         setPopup(nullJSX);
         setSuccessNotification(res.data);
+        setEvents(newEvents);
       })
       .catch((err) => {
         setNotification(err.response.data);
@@ -221,13 +205,13 @@ const AppCalendar = (): JSX.Element => {
   const deleteEvent = (id: number, closePopup?: boolean) => {};
 
   const showEditPopup = (
-    event?: CalendarEventOccurence,
+    eventOccurence?: CalendarEventOccurence,
     justDate?: boolean
   ): void => {
     setPopup(
       <EditPopup
         onCancel={() => setPopup(nullJSX)}
-        event={event}
+        event={eventOccurence}
         justDate={justDate}
         users={users.map((u) => {
           return {
@@ -238,13 +222,19 @@ const AppCalendar = (): JSX.Element => {
               (u.Image?.url ?? undefined) === undefined
                 ? 'user-circle'
                 : undefined,
-            selected: !event
+            selected: !eventOccurence
               ? false
-              : (event.Users?.filter((eu) => eu.id === u.id)?.length ?? -1) > 0,
+              : (eventOccurence.Users?.filter((eu) => eu.id === u.id)?.length ??
+                  -1) > 0,
           } as DropdownMultiOption;
         })}
-        onSubmit={(eventGroup: CalendarEvent) => handleSubmit(eventGroup)}
-        onDelete={event ? (id: number) => deleteEvent(id, true) : undefined}
+        onSubmit={(
+          eventOccurence: CalendarEventOccurence,
+          updateAllOnUpdate?: boolean
+        ) => handleSubmit(eventOccurence, updateAllOnUpdate)}
+        onDelete={
+          eventOccurence ? (id: number) => deleteEvent(id, true) : undefined
+        }
       />
     );
   };
@@ -271,32 +261,19 @@ const AppCalendar = (): JSX.Element => {
     );
   };
 
-  const onEventSet = (arg) => {
-    // console.log('event set');
-  };
-
   const onEventDrop = (arg) => {
-    console.log('event dropped');
+    axios({
+      method: 'put',
+      url: `/calendar/${localStorage.getItem('currentHome')}/events/${
+        arg.event._def.extendedProps.event.id
+      }/move`,
+      data: {
+        start: arg.event.start,
+      },
+    }).catch((err) => {
+      if (err.response.data) setNotification(err.response.data);
+    });
   };
-
-  const getOccurences = useCallback((): FcEvent[] => {
-    let ev: FcEvent[] = [];
-
-    events.forEach((e) =>
-      events.forEach((eo) =>
-        ev.push({
-          title: eo.Event.name,
-          start: new Date(eo.start),
-          end: new Date(eo.end),
-          event: eo,
-          className:
-            users.find((u) => u.id === eo.Event.Owner?.id)?.color ?? 'blue',
-        })
-      )
-    );
-
-    return ev;
-  }, [events]);
 
   return (
     <AppContainer
@@ -313,15 +290,57 @@ const AppCalendar = (): JSX.Element => {
           interactionPlugin,
           momentPlugin,
         ]}
+        customButtons={{
+          myEvents: {
+            text: myEvents ? t('calendar.showMyEvents') : t('calendar.showAll'),
+            click: () => {
+              setMyEvents(!myEvents);
+              $('.fc-toolbar-chunk:last-of-type > button').css(
+                'background-color',
+                myEvents ? 'var(--calendar-header-btn-bg)' : 'var(--black)'
+              );
+              $('.fc-toolbar-chunk:last-of-type > button').css(
+                'color',
+                myEvents ? 'var(--calendar-header-btn-color)' : 'var(--white)'
+              );
+            },
+          },
+        }}
         headerToolbar={{
-          left: 'prev,next',
+          left: 'prev,next today',
           center: 'title',
-          right: 'today',
+          right: 'myEvents',
         }}
         locale={localStorage.getItem('lang') === 'fr' ? 'fr' : 'en'}
         locales={[frLocale]}
         allDaySlot={false}
-        events={getOccurences()}
+        events={useMemo(
+          () =>
+            events
+              .filter((e) =>
+                !myEvents
+                  ? true
+                  : e.Users?.filter(
+                      (eu) =>
+                        eu.id ===
+                        parseInt(localStorage.getItem('userId') ?? '-1')
+                    ).length
+              )
+              .map((e) => {
+                return {
+                  title: e.Event.name,
+                  start: e.start,
+                  end: e.end,
+                  event: e,
+                  className:
+                    users.find(
+                      (u) =>
+                        u.id === e.Event.Owner?.id || u.id === e.Event.ownerId
+                    )?.color ?? 'blue',
+                };
+              }),
+          [events, myEvents, users]
+        )}
         eventTimeFormat={{
           hour: 'numeric',
           minute: '2-digit',
@@ -331,7 +350,6 @@ const AppCalendar = (): JSX.Element => {
         initialView="dayGridMonth"
         editable={true}
         eventClick={onEventClick}
-        eventsSet={onEventSet}
         dateClick={onDateClick}
         eventDrop={onEventDrop}
       />

@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { HomeMember } from '../../views/apps/homes';
-import { CalendarEventOccurence } from '../../views/apps/calendar';
-import Popup from '../utils/popup';
-import Translate from '../utils/translate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  CalendarEventOccurence,
+  CalendarHomeMember,
+} from '../../views/apps/calendar';
+import Popup from '../utils/popup';
 
 interface EditPopupProps {
-  users: HomeMember[];
+  users: CalendarHomeMember[];
   event: CalendarEventOccurence;
   onCancel?(...attr: any): any;
   onEdit?(...attr: any): any;
@@ -114,6 +115,9 @@ const ViewPopup = (props: EditPopupProps): JSX.Element => {
                     key={u.id}
                     icon="user-circle"
                     title={`${u.firstname} ${u.lastname}`}
+                    className={
+                      props.users.find((pu) => pu.id === u.id)?.color ?? ''
+                    }
                   />
                 )
               )}

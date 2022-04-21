@@ -3,6 +3,9 @@
   min-height: 50%;
   min-width: 800px;
 }
+.open-app-container.calendar .popup.edit > .popup-container {
+  z-index: 9999999;
+}
 .open-app-container.calendar .calendar-event-popup .popup > .info-event {
   max-width: 400px;
 }
@@ -104,6 +107,12 @@
   position: relative;
   font-weight: 500;
 }
+.open-app-container.calendar .app-body .fc .fc-toolbar-chunk:nth-of-type(2) {
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  pointer-events: none;
+}
 .open-app-container.calendar .app-body .fc .fc-toolbar-chunk > .fc-button,
 .open-app-container.calendar .app-body .fc .fc-toolbar-chunk > .fc-button-group > .fc-button {
   background-color: var(--calendar-header-btn-bg);
@@ -171,100 +180,143 @@
 }
 .open-app-container.calendar .app-body .fc .fc-event .fc-event-title,
 .open-app-container.calendar .app-body .fc .fc-event .fc-event-time {
-  color: var(--black);
   font-size: 14px;
-}
-.open-app-container.calendar .app-body .fc .fc-event.blue {
-  background-color: var(--calendar-event-blue);
-  border-color: var(--calendar-event-blue-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.blue .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.blue .fc-event-time {
-  color: var(--calendar-event-blue-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.red {
-  background-color: var(--calendar-event-red);
-  border-color: var(--calendar-event-red-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.red .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.red .fc-event-time {
-  color: var(--calendar-event-red-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.orange {
-  background-color: var(--calendar-event-orange);
-  border-color: var(--calendar-event-orange-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.orange .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.orange .fc-event-time {
-  color: var(--calendar-event-orange-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.green {
-  background-color: var(--calendar-event-green);
-  border-color: var(--calendar-event-green-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.green .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.green .fc-event-time {
-  color: var(--calendar-event-green-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.purple {
-  background-color: var(--calendar-event-purple);
-  border-color: var(--calendar-event-purple-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.purple .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.purple .fc-event-time {
-  color: var(--calendar-event-purple-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.turquoise {
-  background-color: var(--calendar-event-turquoise);
-  border-color: var(--calendar-event-turquoise-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.turquoise .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.turquoise .fc-event-time {
-  color: var(--calendar-event-turquoise-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.pink {
-  background-color: var(--calendar-event-pink);
-  border-color: var(--calendar-event-pink-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.pink .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.pink .fc-event-time {
-  color: var(--calendar-event-pink-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.yellow {
-  background-color: var(--calendar-event-yellow);
-  border-color: var(--calendar-event-yellow-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.yellow .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.yellow .fc-event-time {
-  color: var(--calendar-event-yellow-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.lightblue {
-  background-color: var(--calendar-event-lightblue);
-  border-color: var(--calendar-event-lightblue-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.lightblue .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.lightblue .fc-event-time {
-  color: var(--calendar-event-lightblue-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.gray {
-  background-color: var(--calendar-event-gray);
-  border-color: var(--calendar-event-gray-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.gray .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.gray .fc-event-time {
-  color: var(--calendar-event-gray-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.lightgray {
-  background-color: var(--calendar-event-lightgray);
-  border-color: var(--calendar-event-lightgray-o);
-}
-.open-app-container.calendar .app-body .fc .fc-event.lightgray .fc-event-title,
-.open-app-container.calendar .app-body .fc .fc-event.lightgray .fc-event-time {
-  color: var(--calendar-event-lightgray-o);
 }
 .open-app-container.calendar .app-body .fc .fc-event .fc-daygrid-event-dot {
   display: none;
 }
 .open-app-container.calendar .app-body .fc * {
   border-color: var(--calendar-borders);
+}
+.open-app-container.calendar .fc-event.blue,
+.open-app-container.calendar .participants > .imgs > svg.blue {
+  background-color: var(--calendar-event-blue);
+  border-color: var(--calendar-event-blue-o) !important;
+  color: var(--calendar-event-blue-o) !important;
+}
+.open-app-container.calendar .fc-event.blue .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.blue .fc-event-title,
+.open-app-container.calendar .fc-event.blue .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.blue .fc-event-time {
+  color: var(--calendar-event-blue-o);
+}
+.open-app-container.calendar .fc-event.red,
+.open-app-container.calendar .participants > .imgs > svg.red {
+  background-color: var(--calendar-event-red);
+  border-color: var(--calendar-event-red-o) !important;
+  color: var(--calendar-event-red-o) !important;
+}
+.open-app-container.calendar .fc-event.red .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.red .fc-event-title,
+.open-app-container.calendar .fc-event.red .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.red .fc-event-time {
+  color: var(--calendar-event-red-o);
+}
+.open-app-container.calendar .fc-event.orange,
+.open-app-container.calendar .participants > .imgs > svg.orange {
+  background-color: var(--calendar-event-orange);
+  border-color: var(--calendar-event-orange-o) !important;
+  color: var(--calendar-event-orange-o) !important;
+}
+.open-app-container.calendar .fc-event.orange .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.orange .fc-event-title,
+.open-app-container.calendar .fc-event.orange .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.orange .fc-event-time {
+  color: var(--calendar-event-orange-o);
+}
+.open-app-container.calendar .fc-event.green,
+.open-app-container.calendar .participants > .imgs > svg.green {
+  background-color: var(--calendar-event-green);
+  border-color: var(--calendar-event-green-o) !important;
+  color: var(--calendar-event-green-o) !important;
+}
+.open-app-container.calendar .fc-event.green .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.green .fc-event-title,
+.open-app-container.calendar .fc-event.green .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.green .fc-event-time {
+  color: var(--calendar-event-green-o);
+}
+.open-app-container.calendar .fc-event.purple,
+.open-app-container.calendar .participants > .imgs > svg.purple {
+  background-color: var(--calendar-event-purple);
+  border-color: var(--calendar-event-purple-o) !important;
+  color: var(--calendar-event-purple-o) !important;
+}
+.open-app-container.calendar .fc-event.purple .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.purple .fc-event-title,
+.open-app-container.calendar .fc-event.purple .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.purple .fc-event-time {
+  color: var(--calendar-event-purple-o);
+}
+.open-app-container.calendar .fc-event.turquoise,
+.open-app-container.calendar .participants > .imgs > svg.turquoise {
+  background-color: var(--calendar-event-turquoise);
+  border-color: var(--calendar-event-turquoise-o) !important;
+  color: var(--calendar-event-turquoise-o) !important;
+}
+.open-app-container.calendar .fc-event.turquoise .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.turquoise .fc-event-title,
+.open-app-container.calendar .fc-event.turquoise .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.turquoise .fc-event-time {
+  color: var(--calendar-event-turquoise-o);
+}
+.open-app-container.calendar .fc-event.pink,
+.open-app-container.calendar .participants > .imgs > svg.pink {
+  background-color: var(--calendar-event-pink);
+  border-color: var(--calendar-event-pink-o) !important;
+  color: var(--calendar-event-pink-o) !important;
+}
+.open-app-container.calendar .fc-event.pink .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.pink .fc-event-title,
+.open-app-container.calendar .fc-event.pink .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.pink .fc-event-time {
+  color: var(--calendar-event-pink-o);
+}
+.open-app-container.calendar .fc-event.yellow,
+.open-app-container.calendar .participants > .imgs > svg.yellow {
+  background-color: var(--calendar-event-yellow);
+  border-color: var(--calendar-event-yellow-o) !important;
+  color: var(--calendar-event-yellow-o) !important;
+}
+.open-app-container.calendar .fc-event.yellow .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.yellow .fc-event-title,
+.open-app-container.calendar .fc-event.yellow .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.yellow .fc-event-time {
+  color: var(--calendar-event-yellow-o);
+}
+.open-app-container.calendar .fc-event.lightblue,
+.open-app-container.calendar .participants > .imgs > svg.lightblue {
+  background-color: var(--calendar-event-lightblue);
+  border-color: var(--calendar-event-lightblue-o) !important;
+  color: var(--calendar-event-lightblue-o) !important;
+}
+.open-app-container.calendar .fc-event.lightblue .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.lightblue .fc-event-title,
+.open-app-container.calendar .fc-event.lightblue .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.lightblue .fc-event-time {
+  color: var(--calendar-event-lightblue-o);
+}
+.open-app-container.calendar .fc-event.gray,
+.open-app-container.calendar .participants > .imgs > svg.gray {
+  background-color: var(--calendar-event-gray);
+  border-color: var(--calendar-event-gray-o) !important;
+  color: var(--calendar-event-gray-o) !important;
+}
+.open-app-container.calendar .fc-event.gray .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.gray .fc-event-title,
+.open-app-container.calendar .fc-event.gray .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.gray .fc-event-time {
+  color: var(--calendar-event-gray-o);
+}
+.open-app-container.calendar .fc-event.lightgray,
+.open-app-container.calendar .participants > .imgs > svg.lightgray {
+  background-color: var(--calendar-event-lightgray);
+  border-color: var(--calendar-event-lightgray-o) !important;
+  color: var(--calendar-event-lightgray-o) !important;
+}
+.open-app-container.calendar .fc-event.lightgray .fc-event-title,
+.open-app-container.calendar .participants > .imgs > svg.lightgray .fc-event-title,
+.open-app-container.calendar .fc-event.lightgray .fc-event-time,
+.open-app-container.calendar .participants > .imgs > svg.lightgray .fc-event-time {
+  color: var(--calendar-event-lightgray-o);
 }

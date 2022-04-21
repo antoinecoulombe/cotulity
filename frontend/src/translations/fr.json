@@ -327,7 +327,9 @@
     "tooltip": {
       "shared": "Un événement privé sera visible seulement pour les membres participants.",
       "add": "Ajouter un événement"
-    }
+    },
+    "showMyEvents": "Mes événements",
+    "showAll": "Tout les événements"
   },
   "accounts": {
     "title": {

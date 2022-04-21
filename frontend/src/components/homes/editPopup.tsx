@@ -219,7 +219,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           yesText={`homes.rejectRequest.buttons.yes`}
           noText={`homes.rejectRequest.buttons.no`}
           onCancel={() => setPopup(nullJSX)}
-          onSubmit={() => requestHandleRequest(accept, memberId)}
+          onYes={() => requestHandleRequest(accept, memberId)}
         />
       );
     } else requestHandleRequest(accept, memberId);
@@ -270,7 +270,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           yesText={getTranslateJSON(`homes.kickMember.buttons.yes`, [name])}
           noText={getTranslateJSON(`homes.kickMember.buttons.no`, [name])}
           onCancel={() => setPopup(nullJSX)}
-          onSubmit={() => requestDeleteMember(memberId)}
+          onYes={() => requestDeleteMember(memberId)}
         />
       );
     } else requestDeleteMember(memberId);

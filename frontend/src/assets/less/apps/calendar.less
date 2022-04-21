@@ -5,6 +5,10 @@
   min-height: 50%;
   min-width: 800px;
 
+  .popup.edit > .popup-container {
+    z-index: 9999999;
+  }
+
   .calendar-event-popup {
     .popup {
       > .info-event {
@@ -130,6 +134,13 @@
       }
 
       .fc-toolbar-chunk {
+        &:nth-of-type(2) {
+          width: 100%;
+          position: absolute;
+          top: 0px;
+          pointer-events: none;
+        }
+
         > .fc-button,
         > .fc-button-group > .fc-button {
           background-color: var(--calendar-header-btn-bg);
@@ -218,108 +229,7 @@
 
         .fc-event-title,
         .fc-event-time {
-          color: var(--black);
           font-size: 14px;
-        }
-
-        &.blue {
-          background-color: var(--calendar-event-blue);
-          border-color: var(--calendar-event-blue-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-blue-o);
-          }
-        }
-        &.red {
-          background-color: var(--calendar-event-red);
-          border-color: var(--calendar-event-red-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-red-o);
-          }
-        }
-        &.orange {
-          background-color: var(--calendar-event-orange);
-          border-color: var(--calendar-event-orange-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-orange-o);
-          }
-        }
-        &.green {
-          background-color: var(--calendar-event-green);
-          border-color: var(--calendar-event-green-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-green-o);
-          }
-        }
-        &.purple {
-          background-color: var(--calendar-event-purple);
-          border-color: var(--calendar-event-purple-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-purple-o);
-          }
-        }
-        &.turquoise {
-          background-color: var(--calendar-event-turquoise);
-          border-color: var(--calendar-event-turquoise-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-turquoise-o);
-          }
-        }
-        &.pink {
-          background-color: var(--calendar-event-pink);
-          border-color: var(--calendar-event-pink-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-pink-o);
-          }
-        }
-        &.yellow {
-          background-color: var(--calendar-event-yellow);
-          border-color: var(--calendar-event-yellow-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-yellow-o);
-          }
-        }
-        &.lightblue {
-          background-color: var(--calendar-event-lightblue);
-          border-color: var(--calendar-event-lightblue-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-lightblue-o);
-          }
-        }
-        &.gray {
-          background-color: var(--calendar-event-gray);
-          border-color: var(--calendar-event-gray-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-gray-o);
-          }
-        }
-        &.lightgray {
-          background-color: var(--calendar-event-lightgray);
-          border-color: var(--calendar-event-lightgray-o);
-
-          .fc-event-title,
-          .fc-event-time {
-            color: var(--calendar-event-lightgray-o);
-          }
         }
 
         .fc-daygrid-event-dot {
@@ -329,6 +239,120 @@
 
       * {
         border-color: var(--calendar-borders);
+      }
+    }
+  }
+
+  .fc-event,
+  .participants > .imgs > svg {
+    &.blue {
+      background-color: var(--calendar-event-blue);
+      border-color: var(--calendar-event-blue-o) !important;
+      color: var(--calendar-event-blue-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-blue-o);
+      }
+    }
+    &.red {
+      background-color: var(--calendar-event-red);
+      border-color: var(--calendar-event-red-o) !important;
+      color: var(--calendar-event-red-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-red-o);
+      }
+    }
+    &.orange {
+      background-color: var(--calendar-event-orange);
+      border-color: var(--calendar-event-orange-o) !important;
+      color: var(--calendar-event-orange-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-orange-o);
+      }
+    }
+    &.green {
+      background-color: var(--calendar-event-green);
+      border-color: var(--calendar-event-green-o) !important;
+      color: var(--calendar-event-green-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-green-o);
+      }
+    }
+    &.purple {
+      background-color: var(--calendar-event-purple);
+      border-color: var(--calendar-event-purple-o) !important;
+      color: var(--calendar-event-purple-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-purple-o);
+      }
+    }
+    &.turquoise {
+      background-color: var(--calendar-event-turquoise);
+      border-color: var(--calendar-event-turquoise-o) !important;
+      color: var(--calendar-event-turquoise-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-turquoise-o);
+      }
+    }
+    &.pink {
+      background-color: var(--calendar-event-pink);
+      border-color: var(--calendar-event-pink-o) !important;
+      color: var(--calendar-event-pink-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-pink-o);
+      }
+    }
+    &.yellow {
+      background-color: var(--calendar-event-yellow);
+      border-color: var(--calendar-event-yellow-o) !important;
+      color: var(--calendar-event-yellow-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-yellow-o);
+      }
+    }
+    &.lightblue {
+      background-color: var(--calendar-event-lightblue);
+      border-color: var(--calendar-event-lightblue-o) !important;
+      color: var(--calendar-event-lightblue-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-lightblue-o);
+      }
+    }
+    &.gray {
+      background-color: var(--calendar-event-gray);
+      border-color: var(--calendar-event-gray-o) !important;
+      color: var(--calendar-event-gray-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-gray-o);
+      }
+    }
+    &.lightgray {
+      background-color: var(--calendar-event-lightgray);
+      border-color: var(--calendar-event-lightgray-o) !important;
+      color: var(--calendar-event-lightgray-o) !important;
+
+      .fc-event-title,
+      .fc-event-time {
+        color: var(--calendar-event-lightgray-o);
       }
     }
   }

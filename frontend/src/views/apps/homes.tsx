@@ -99,7 +99,7 @@ const AppHomes = () => {
         yesText={`homes.${action}.buttons.yes`}
         noText={`homes.${action}.buttons.no`}
         onCancel={closePopup}
-        onSubmit={() => (action === 'quit' ? quitHome(ref) : deleteHome(ref))}
+        onYes={() => (action === 'quit' ? quitHome(ref) : deleteHome(ref))}
       >
         {`homes.tooltip.${action === 'quit' ? 'quitHome' : 'deleteHome'}`}
       </WarningPopup>

@@ -13,6 +13,7 @@ import Dropdown from '../forms/dropdown';
 import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
 import Translate from '../utils/translate';
+import WarningPopup from '../global/warningPopup';
 
 interface EditPopupProps {
   users: Array<DropdownMultiOption>;
@@ -45,6 +46,8 @@ const initCalendarErrors: CalendarErrors = {
   Users: false,
 };
 
+const nullJSX: JSX.Element = <></>;
+
 const EditPopup = (props: EditPopupProps): JSX.Element => {
   const { t } = useTranslation('common');
   const { setErrorNotification } = useNotifications();
@@ -70,11 +73,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     ...initCalendarErrors,
   });
 
-  useEffect(() => {}, []);
-
-  // const onChange = (event: any) => {
-  //   setName(event.target.value);
-  // };
+  const [popup, setPopup] = useState<JSX.Element>(nullJSX);
 
   const toggleSharedSwitch = (): void => {
     setEventOccurence({
@@ -86,7 +85,7 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
     });
   };
 
-  const onSubmit = (): void => {
+  const onSubmit = (updateAllOnUpdate?: boolean): void => {
     let newErrors = { ...initCalendarErrors };
     if (!eventOccurence.Event.name?.length) newErrors.name = true;
     if (!eventOccurence.Users?.length) newErrors.Users = true;
@@ -127,13 +126,14 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             ) + '@23:59'
           : '/@:';
 
-      console.log(untilDate);
-
-      props.onSubmit({
-        ...eventOccurence,
-        end: handleDate(endDate),
-        Event: { ...eventOccurence.Event, untilDate: untilDate },
-      });
+      props.onSubmit(
+        {
+          ...eventOccurence,
+          end: handleDate(endDate),
+          Event: { ...eventOccurence.Event, untilDate: untilDate },
+        },
+        updateAllOnUpdate
+      );
     } catch (error) {
       setErrorNotification({ title: 'request.error', msg: 'request.error' });
     }
@@ -192,8 +192,30 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
 
   return (
     <Popup
+      popup={popup}
       onCancel={() => props.onCancel?.()}
-      onSubmit={onSubmit}
+      onSubmit={() => {
+        if (eventOccurence.id === -1) onSubmit();
+        else {
+          setPopup(
+            <WarningPopup
+              title={t('calendar.event.update.title')}
+              desc={t('calendar.event.update.desc')}
+              yesText={t('calendar.event.update.allNext')}
+              noText={t('calendar.event.update.onlyThisOne')}
+              onCancel={() => setPopup(nullJSX)}
+              onYes={() => {
+                setPopup(nullJSX);
+                onSubmit(true);
+              }}
+              onNo={() => {
+                setPopup(nullJSX);
+                onSubmit(false);
+              }}
+            ></WarningPopup>
+          );
+        }
+      }}
       onDelete={
         props.event?.Event.name.length
           ? () => props.onDelete?.(props.event?.id)

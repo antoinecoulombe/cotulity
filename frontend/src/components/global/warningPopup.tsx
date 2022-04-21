@@ -9,7 +9,8 @@ interface WarningPopupProps {
   noText: string;
   children?: string;
   onCancel(...attr: any): void;
-  onSubmit(...attr: any): void;
+  onYes(...attr: any): void;
+  onNo?(...attr: any): void;
 }
 
 const WarningPopup = (props: WarningPopupProps): JSX.Element => {
@@ -33,12 +34,12 @@ const WarningPopup = (props: WarningPopupProps): JSX.Element => {
         </h3>
       </div>
       <div className="buttons">
-        <button className="no" onClick={props.onCancel}>
+        <button className="no" onClick={props.onNo ?? props.onCancel}>
           <p>
             <Translate name={props.noText} />
           </p>
         </button>
-        <button className="yes" onClick={props.onSubmit}>
+        <button className="yes" onClick={props.onYes}>
           <p>
             <Translate name={props.yesText} />
           </p>

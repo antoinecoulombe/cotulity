@@ -93,15 +93,23 @@ const AppTasks = (): JSX.Element => {
     handleTask(selected, undefined, false);
   }, [sidebarTabs, subHeaderTabs]);
 
+  // useEffect(() => {
+  //   if (!sidebarTabs.length) return;
+  //   setSidebarCount();
+  // }, [tasks]);
+
   useEffect(() => {
     // get home users for sidebar
     axios
       .get(`/tasks/${localStorage.getItem('currentHome')}/users`)
       .then(async (res: any) => {
+        setUsers(res.data.users);
+
         // get tasks
         await axios
           .get(`/tasks/${localStorage.getItem('currentHome')}`)
           .then((res: any) => {
+            // set tasks
             setTasks(res.data.tasks);
           })
           .catch((err) => {
@@ -202,12 +210,10 @@ const AppTasks = (): JSX.Element => {
         );
 
         setSidebarTabs(tabs);
-        setUsers(res.data.users);
       })
       .catch((err) => {
         setNotification(err.response.data);
       });
-    // handleOpenAppResize(250); // use with .fill-height on content
   }, []);
 
   const setSidebarCount = (newTasks?: Task[]) => {
@@ -216,22 +222,26 @@ const AppTasks = (): JSX.Element => {
     users.forEach((u) => {
       let sidebarTab = newSidebarTabs.find((st) => st.id === u.id);
       if (sidebarTab) {
-        let count: number = 0;
-        (newTasks ?? tasks).forEach((t) =>
-          t.Occurences.forEach(
-            (to) =>
-              (count +=
-                to.deletedAt == null &&
-                to.completedOn == null &&
-                (to.Users?.filter((tou: HomeMember) => tou.id === u.id)
-                  .length ?? -1) > 0
-                  ? 1
-                  : 0)
-          )
-        );
-        sidebarTab.count = count;
+        sidebarTab.count = (newTasks ?? tasks).filter(
+          (t) =>
+            t.Occurences.filter(
+              (to) =>
+                to.Users?.filter((tou) => tou.id === u.id).length ?? -1 > 0
+            ).length > 0
+          // t.Occurences.forEach(
+          //   (to) =>
+          //     (count +=
+          //       to.deletedAt == null &&
+          //       to.completedOn == null &&
+          //       (to.Users?.filter((tou: HomeMember) => tou.id === u.id)
+          //         .length ?? -1) > 0
+          //         ? 1
+          //         : 0)
+          // )
+        ).length;
       }
     });
+
     setSidebarTabs(newSidebarTabs);
   };
 
@@ -268,6 +278,7 @@ const AppTasks = (): JSX.Element => {
             tab.value === 'private' ? tab.action(to, t.shared) : tab.action(to);
       });
     });
+    if (newTasks === tasks) return;
     setTasks(newTasks);
     if (updateSidebar === true) setSidebarCount(newTasks);
   };

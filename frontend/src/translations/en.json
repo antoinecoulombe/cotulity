@@ -327,6 +327,16 @@
     "tooltip": {
       "shared": "A private event will only be visible to members included in it.",
       "add": "Create Event"
+    },
+    "showMyEvents": "My Events",
+    "showAll": "All Events",
+    "event": {
+      "update": {
+        "title": "Update all future events or only this one?",
+        "desc": "",
+        "onlyThisOne": "Only this one",
+        "allNext": "All future events"
+      }
     }
   },
   "accounts": {

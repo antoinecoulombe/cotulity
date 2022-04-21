@@ -26,7 +26,7 @@ const DeleteAccount = (props: DeleteAccountProps): JSX.Element => {
         yesText="settings.account.delete.buttons.yes"
         noText="settings.account.delete.buttons.no"
         onCancel={() => props.setPopup(nullJSX)}
-        onSubmit={deleteAccount}
+        onYes={deleteAccount}
       ></WarningPopup>
     );
   };

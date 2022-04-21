@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       CalendarEventOccurence.belongsTo(models.CalendarEvent, {
         foreignKey: 'calendarEventId',
         targetKey: 'id',
-        as: 'CalendarEvent',
+        as: 'Event',
         allowNull: false,
       });
       CalendarEventOccurence.hasMany(models.CalendarEventUser, {
