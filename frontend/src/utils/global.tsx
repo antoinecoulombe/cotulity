@@ -50,3 +50,18 @@ export const groupBy = function (xs, key) {
     return rv;
   }, {});
 };
+
+export const getClosestNumber = (number: number, matches: number[]) => {
+  if (!matches.length) return number;
+  let minDiff = Math.abs(number - matches[0]);
+  let closest = matches[0];
+
+  for (let i = 1; i < matches.length; ++i) {
+    let diff = Math.abs(number - matches[i]);
+    if (diff < minDiff) {
+      closest = matches[i];
+      minDiff = diff;
+    }
+  }
+  return closest;
+};

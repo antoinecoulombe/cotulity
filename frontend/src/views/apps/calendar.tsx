@@ -175,7 +175,6 @@ const AppCalendar = (): JSX.Element => {
     event: CalendarEventOccurence,
     updateAllOnUpdate?: boolean
   ) => {
-    console.log(updateAllOnUpdate);
     axios({
       method: event.id === -1 ? 'post' : 'put',
       url: `/calendar/${localStorage.getItem('currentHome')}/events/${
@@ -183,6 +182,7 @@ const AppCalendar = (): JSX.Element => {
       }`,
       data: {
         event,
+        updateAll: updateAllOnUpdate,
       },
     })
       .then((res: any) => {
@@ -202,7 +202,26 @@ const AppCalendar = (): JSX.Element => {
       });
   };
 
-  const deleteEvent = (id: number, closePopup?: boolean) => {};
+  const deleteEvent = (id: number, deleteAll: boolean) => {
+    axios({
+      method: 'delete',
+      url: `/calendar/${localStorage.getItem('currentHome')}/events/${id}`,
+      data: {
+        deleteAll: deleteAll,
+      },
+    })
+      .then((res: any) => {
+        let deleted = res.data.deletedIds;
+        setPopup(nullJSX);
+        setEvents([...events].filter((e) => !deleted.includes(e.id)));
+      })
+      .catch((err) => {
+        if (err?.response?.data) {
+          setPopup(nullJSX);
+          setNotification(err.response.data);
+        }
+      });
+  };
 
   const showEditPopup = (
     eventOccurence?: CalendarEventOccurence,
@@ -233,7 +252,9 @@ const AppCalendar = (): JSX.Element => {
           updateAllOnUpdate?: boolean
         ) => handleSubmit(eventOccurence, updateAllOnUpdate)}
         onDelete={
-          eventOccurence ? (id: number) => deleteEvent(id, true) : undefined
+          eventOccurence
+            ? (id: number, deleteAll: boolean) => deleteEvent(id, deleteAll)
+            : undefined
         }
       />
     );
@@ -270,9 +291,21 @@ const AppCalendar = (): JSX.Element => {
       data: {
         start: arg.event.start,
       },
-    }).catch((err) => {
-      if (err.response.data) setNotification(err.response.data);
-    });
+    })
+      .then((res: any) => {
+        let newEvents = [...events];
+        let movedEvent = newEvents.find(
+          (e) => e.id === arg.event._def.extendedProps.event.id
+        );
+        if (movedEvent) {
+          movedEvent.start = res.data.start;
+          movedEvent.end = res.data.end;
+          setEvents(newEvents);
+        }
+      })
+      .catch((err) => {
+        if (err.response.data) setNotification(err.response.data);
+      });
   };
 
   return (

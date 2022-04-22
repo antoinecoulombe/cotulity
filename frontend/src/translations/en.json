@@ -336,6 +336,9 @@
         "desc": "",
         "onlyThisOne": "Only this one",
         "allNext": "All future events"
+      },
+      "delete": {
+        "title": "Delete all future events or only this one?"
       }
     }
   },
@@ -506,7 +509,8 @@
           "notFound": "Event not found",
           "created": "Event Created",
           "modified": "Event Modified",
-          "invalidUntilDate": "Invalid Until Date"
+          "invalidUntilDate": "Invalid Until Date",
+          "moved": "Event Moved"
         }
       },
       "groceries": {
@@ -680,7 +684,9 @@
           "notFound": "We couldn't find the event.",
           "created": "You can find it in now in the calendar!",
           "modified": "The calendar has been updated.",
-          "untilBeforeEnd": "The repeat date can't be before the event's end date."
+          "untilBeforeEnd": "The repeat date can't be before the event's end date.",
+          "cannotDelete": "You must be the home owner or event creator to delete the event.",
+          "cannotUpdate": "You must be the home owner or event creator to update the event."
         }
       },
       "picture": {

@@ -328,6 +328,17 @@
       "shared": "Un événement privé sera visible seulement pour les membres participants.",
       "add": "Ajouter un événement"
     },
+    "event": {
+      "update": {
+        "title": "Mettre à jour uniquement cet événement ou tout ceux à venir?",
+        "desc": "",
+        "onlyThisOne": "Seulement celui-ci",
+        "allNext": "Tout ceux à venir"
+      },
+      "delete": {
+        "title": "Supprimer uniquement cet événement ou tout ceux à venir?"
+      }
+    },
     "showMyEvents": "Mes événements",
     "showAll": "Tout les événements"
   },
@@ -498,7 +509,8 @@
           "notFound": "Événement introuvable",
           "created": "Événement créé",
           "modified": "Événement modifié",
-          "invalidUntilDate": "Date de répétition invalide"
+          "invalidUntilDate": "Date de répétition invalide",
+          "moved": "Événement déplacé"
         }
       },
       "groceries": {
@@ -671,7 +683,9 @@
           "notFound": "Aucun événement n'est associé à cet identifiant.",
           "created": "Vous pouvez le retrouver dès maintenant dans le calendrier!",
           "modified": "Le calendrier à été mis-à-jour.",
-          "untilBeforeEnd": "La date de fin de répétition doit être après la date de l'événement."
+          "untilBeforeEnd": "La date de fin de répétition doit être après la date de l'événement.",
+          "cannotDelete": "Vous devez être le créateur de la maison ou de l'événement pour pouvoir supprimer l'événement.",
+          "cannotUpdate": "Vous devez être le créateur de la maison ou de l'événement pour pouvoir modifier l'événement."
         }
       },
       "picture": {

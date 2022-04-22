@@ -1,6 +1,6 @@
 import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
-import { InputsToDate } from '../../../shared/src/routes/Global';
+import { InputsToDate } from '../../../shared/src/routes/Date';
 import { getHomeUsers } from '../../../shared/src/routes/Homes';
 import { getRepeatingDatesUntil } from '../../../shared/src/routes/Date';
 

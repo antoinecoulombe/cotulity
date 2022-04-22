@@ -14,6 +14,7 @@ import SingleInputForm from '../forms/singleInputForm';
 import DoubleInputTitle from '../forms/doubleInputTitle';
 import Translate from '../utils/translate';
 import WarningPopup from '../global/warningPopup';
+import { getClosestNumber } from '../../utils/global';
 
 interface EditPopupProps {
   users: Array<DropdownMultiOption>;
@@ -52,6 +53,11 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
   const { t } = useTranslation('common');
   const { setErrorNotification } = useNotifications();
 
+  const getMinuteDiff = (start: Date, end: Date) => {
+    let diff = (end.getTime() - start.getTime()) / (1024 * 60);
+    return getClosestNumber(diff, [30, 60, 90, 120, 180, 240, 300]);
+  };
+
   const [eventOccurence, setEventOccurence] = useState<CalendarEventOccurence>(
     props.event
       ? {
@@ -65,6 +71,10 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
             ...props.event.Event,
             untilDate: handleDate(props.event.Event.untilDate),
           },
+          duration: getMinuteDiff(
+            new Date(props.event?.start),
+            new Date(props.event?.end)
+          ),
         }
       : initCalendarEventOccurence
   );
@@ -218,7 +228,24 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
       }}
       onDelete={
         props.event?.Event.name.length
-          ? () => props.onDelete?.(props.event?.id)
+          ? () =>
+              setPopup(
+                <WarningPopup
+                  title={t('calendar.event.delete.title')}
+                  desc={t('calendar.event.update.desc')}
+                  yesText={t('calendar.event.update.allNext')}
+                  noText={t('calendar.event.update.onlyThisOne')}
+                  onCancel={() => setPopup(nullJSX)}
+                  onYes={() => {
+                    setPopup(nullJSX);
+                    props.onDelete?.(props.event?.id, true);
+                  }}
+                  onNo={() => {
+                    setPopup(nullJSX);
+                    props.onDelete?.(props.event?.id, false);
+                  }}
+                ></WarningPopup>
+              )
           : undefined
       }
       type="edit"

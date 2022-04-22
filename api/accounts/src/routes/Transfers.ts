@@ -1,5 +1,5 @@
 import express from 'express';
-import { InputsToDate } from '../../../shared/src/routes/Global';
+import { InputsToDate } from '../../../shared/src/routes/Date';
 import { getHomeUsers } from '../../../shared/src/routes/Homes';
 import { settleHomeDebts } from './Accounts';
 
