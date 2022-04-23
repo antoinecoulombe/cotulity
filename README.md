@@ -6,7 +6,9 @@ Cotulity is a web application to help students manage their day-to-day life with
 
 ## Run with Docker
 
-First, create a database provision file named `01-databases.sql` at `/docker/provision/mysql/init` containing all database users and passwords.
+First, make sure Node.js, npm and Docker are installed and run `npm install npm@latest -g` to install the latest npm version.
+
+Meanwhile, create a database provision file named `01-databases.sql` at `/docker/provision/mysql/init` containing all database users and passwords.
 
 Then, to start Cotulity and all of its microservices containers, run the following command at the project's root:
 
