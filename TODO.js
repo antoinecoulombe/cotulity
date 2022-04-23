@@ -21,8 +21,6 @@
 //  -> Users
 //  -> Images
 //  -> Notifications
-// TODO: Implement Task tests
-// TODO: Implement
 
 // #endregion
 
@@ -35,7 +33,7 @@
 //  -> DONE: Restore tasks from trash
 //  -> DONE: Add field validation
 // DONE: Redesign + Develop Finances app
-// TODO: Develop Calendar app
+// DONE: Develop Calendar app
 // DONE: Send verification email
 // DONE: Password reset links
 
@@ -70,9 +68,3 @@
 // CANC: Implement code coverage with microservices                                   X
 
 // #endregion
-
-// TODO: Rapport
-// -> déjà fait premiere session
-// -> ajouts
-// -> README (comment executer le projet)
-// TODO: Mettre a jour .README
