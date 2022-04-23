@@ -43,25 +43,25 @@ You can now run and debug Cotulity Locally! Just go to <http://localhost:5101/>.
 
 ## Database Setup
 
-To migrate or update the database, run the following command in a new terminal window:
+To migrate or update the database, run the following command in a new terminal window at the location `/api/shared/`:
 
 ```bash
-$ docker-compose exec api npm run migrate
+$ npm run migrate
 ```
 
 To seed the database, run the following command in a new terminal window:
 
 ```bash
-$ docker-compose exec api npm run seed
+$ npm run seed
 ```
 
 To rebuild the database, clear all data and insert all seeds, run the following command in a new terminal window:
 
 ```bash
-$ docker-compose exec api npm run migrate:reset
+$ npm run migrate:reset
 ```
 
-If the migration script fails to execute completely, make sure to drop all tables previously created before running it again, using the following command: `docker-compose exec api npm run migrate:reset`.
+If the migration script fails to execute completely, make sure to drop all tables previously created before running it again, using the following command: `npm run migrate:reset`.
 
 If the seed script fails to execute completely, there might be a problem with the auto-incrementing primary keys. This problem can be solved by undoing the migration (dropping the tables) and running the migration and seed scripts again (first two commands of the "Database Setup" section after the initial Docker setup).
 
@@ -69,10 +69,10 @@ If you get an `Execution_Policy` error while running the migration or seed scrip
 
 ## Testing
 
-To run tests, run the following command in a new terminal window:
+To run tests, run the following command in a new terminal window at the project's root:
 
 ```bash
-$ docker-compose exec api npm run test
+$ npm run test
 ```
 
 \*This will create new test containers on different ports. Tests located in `/api/test/__tests__` will then be executed.
