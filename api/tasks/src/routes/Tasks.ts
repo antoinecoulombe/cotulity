@@ -15,7 +15,7 @@ const { Op } = require('sequelize');
 /**
  * Verifies that the app is online.
  */
-Tasks.use(async (req: any, res, next) => {
+Tasks.use(async (req: any, res: any, next: any) => {
   req.params.appname = 'tasks';
   validateApp(req, res, next);
 });

@@ -26,7 +26,7 @@ app.use(
 /**
  * Adds user to request.
  */
-app.use(async (req: any, res: any, next) => {
+app.use(async (req: any, res: any, next: any) => {
   await AddUserToRequest(req);
   next();
 });
@@ -59,7 +59,7 @@ app.use((err: any, req: any, res: any, next: any) => {
 /**
  * 404 Handler
  */
-app.use((req, res) => {
+app.use((req: any, res: any) => {
   /* istanbul ignore next */
   res.status(404).send({
     title: 'request.notFound',
