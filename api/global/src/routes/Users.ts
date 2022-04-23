@@ -466,44 +466,73 @@ Users.delete('/delete', async (req: any, res: any) => {
         .then(async () => {
           // Delete homes groceries
           await db.Grocery.destroy(
-            { where: { homeId: homeIds }, force: true },
+            {
+              where: {
+                [Op.or]: [{ homeId: homeIds }, { ownerId: req.user.id }],
+              },
+              force: true,
+            },
             { transaction: t }
           );
         })
         .then(async () => {
-          // Delete homes task occurences
-          let taskOccurences = db.TaskOccurence.findAll({
-            include: [
-              { model: db.Task, as: 'Task', where: { homeId: homeIds } },
-            ],
-          });
-
-          if (taskOccurences?.length)
-            await db.TaskOccurence.destroy(
-              {
-                where: { id: taskOccurences.map((to: any) => to.id) },
-                force: true,
+          let taskIds = (
+            await db.Task.findAll({
+              where: {
+                [Op.or]: [{ homeId: homeIds }, { ownerId: req.user.id }],
               },
-              { transaction: t }
-            );
-        })
-        .then(async () => {
+              paranoid: false,
+            })
+          ).map((t: any) => t.id);
+
+          let taskOccurenceIds = (
+            await db.TaskOccurence.findAll({
+              where: { taskId: taskIds },
+              paranoid: false,
+            })
+          ).map((to: any) => to.id);
+
+          // Delete tasks users
+          await db.TaskUser.destroy(
+            {
+              where: {
+                [Op.or]: [
+                  { taskOccurenceId: taskOccurenceIds },
+                  { userId: req.user.id },
+                ],
+              },
+              force: true,
+            },
+            { transaction: t }
+          );
+
+          // Delete tasks occurences
+          await db.TaskOccurence.destroy(
+            {
+              where: { id: taskOccurenceIds },
+              force: true,
+            },
+            { transaction: t }
+          );
+
           // Delete homes tasks
           await db.Task.destroy(
-            { where: { homeId: homeIds }, force: true },
+            { where: { id: taskIds }, force: true },
             { transaction: t }
           );
         })
         .then(async () => {
           // Delete homes expenses splits
-          let expenseSplits = db.ExpenseSplit.findAll({
-            include: [{ model: db.Expense, where: { homeId: homeIds } }],
-          });
+          let exSplitIds = (
+            await db.ExpenseSplit.findAll({
+              include: [{ model: db.Expense, where: { homeId: homeIds } }],
+            })
+          ).map((es: any) => es.id);
 
-          if (expenseSplits?.length)
+          if (exSplitIds.length)
             await db.ExpenseSplit.destroy(
               {
-                where: { id: expenseSplits.map((es: any) => es.id) },
+                where: { id: exSplitIds },
                 force: true,
               },
               { transaction: t }
@@ -519,6 +548,54 @@ Users.delete('/delete', async (req: any, res: any) => {
         .then(async () => {
           // Delete homes transfers
           await db.Transfer.destroy(
+            { where: { homeId: homeIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete homes debts
+          await db.HomeDebt.destroy(
+            { where: { homeId: homeIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete calendar users and occurences
+          let eventOccIds = (
+            await db.CalendarEventOccurence.findAll({
+              include: [
+                {
+                  model: db.CalendarEvent,
+                  as: 'Event',
+                  where: {
+                    [Op.or]: [{ homeId: homeIds }, { ownerId: req.user.id }],
+                  },
+                },
+              ],
+            })
+          ).map((eo: any) => eo.id);
+
+          await db.CalendarEventUser.destroy(
+            {
+              where: {
+                [Op.or]: [
+                  { calendarEventOccurenceId: eventOccIds },
+                  { userId: req.user.id },
+                ],
+              },
+              force: true,
+            },
+            { transaction: t }
+          );
+
+          await db.CalendarEventOccurence.destroy(
+            { where: { id: eventOccIds }, force: true },
+            { transaction: t }
+          );
+        })
+        .then(async () => {
+          // Delete calendar events
+          await db.CalendarEvent.destroy(
             { where: { homeId: homeIds }, force: true },
             { transaction: t }
           );

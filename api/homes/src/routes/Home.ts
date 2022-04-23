@@ -49,6 +49,73 @@ export const deleteHome = async (
     { transaction: transaction }
   );
 
+  let taskIds = (
+    await db.Task.findAll({
+      attributes: ['id'],
+      where: { homeId: home.id },
+      paranoid: false,
+    })
+  ).map((t: any) => t.id);
+
+  let taskOccurenceIds = (
+    await db.TaskOccurence.findAll({
+      attributes: ['id'],
+      where: { taskId: taskIds },
+      paranoid: false,
+    })
+  ).map((t: any) => t.id);
+
+  // Delete tasks users
+  await db.TaskUser.destroy({
+    where: { taskOccurenceId: taskOccurenceIds },
+    force: true,
+  });
+
+  // Delete tasks occurences
+  await db.TaskOccurence.destroy({
+    where: { id: taskOccurenceIds },
+    force: true,
+  });
+
+  // Delete tasks
+  await db.Task.destroy({ where: { id: taskIds }, force: true });
+
+  // Get events ids
+  let eventIds = (
+    await db.CalendarEvent.findAll({
+      attributes: ['id'],
+      where: { homeId: home.id },
+      paranoid: false,
+    })
+  ).map((t: any) => t.id);
+
+  // Get event occurences ids
+  let eventOccIds = (
+    await db.CalendarEventOccurence.findAll({
+      attributes: ['id'],
+      where: { calendarEventId: eventIds },
+      paranoid: false,
+    })
+  ).map((t: any) => t.id);
+
+  // Delete events users
+  await db.CalendarEventUser.destroy({
+    where: { calendarEventOccurenceId: eventOccIds },
+    force: true,
+  });
+
+  // Delete events occurences
+  await db.CalendarEventOccurence.destroy({
+    where: { id: eventOccIds },
+    force: true,
+  });
+
+  // Delete events
+  await db.CalendarEvent.destroy({ where: { id: eventIds }, force: true });
+
+  // Delete groceries
+  await db.Grocery.destroy({ where: { homeId: home.id } });
+
   // Delete home
   await home.destroy({ force: true }, { transaction: transaction });
   return {

@@ -24,7 +24,8 @@
     "t:groceries": "npm --prefix ./api/groceries run dev:test",
     "t:accounts": "npm --prefix ./api/accounts run dev:test",
     "t:calendar": "npm --prefix ./api/calendar run dev:test",
-    "t:start": "npm --prefix ./api/test start"
+    "t:start": "npm --prefix ./api/test start",
+    "install:all": "npm --prefix ./api/accounts install & npm --prefix ./api/auth install & npm --prefix ./api/calendar install & npm --prefix ./api/global install & npm --prefix ./api/groceries install & npm --prefix ./api/homes install & npm --prefix ./api/shared install & npm --prefix ./api/tasks install & npm --prefix ./api/test install & npm --prefix ./frontend install"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

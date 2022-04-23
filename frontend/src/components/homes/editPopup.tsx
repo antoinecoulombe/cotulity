@@ -270,7 +270,10 @@ const EditPopup = (props: EditPopupProps): JSX.Element => {
           yesText={getTranslateJSON(`homes.kickMember.buttons.yes`, [name])}
           noText={getTranslateJSON(`homes.kickMember.buttons.no`, [name])}
           onCancel={() => setPopup(nullJSX)}
-          onYes={() => requestDeleteMember(memberId)}
+          onYes={() => {
+            setPopup(nullJSX);
+            requestDeleteMember(memberId);
+          }}
         />
       );
     } else requestDeleteMember(memberId);

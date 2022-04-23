@@ -321,6 +321,35 @@ const AppAccounts = (): JSX.Element => {
     let selected = newTabs.find((x) => x.selected) ?? newTabs[0];
     setSidebarTabs(newTabs);
     setSubHeaderTabs([...subHeaderTabsObject[selected.value]]);
+
+    if (selected.value === 'debts') {
+      setLoaded(false);
+      axios
+        .get(`/accounts/${localStorage.getItem('currentHome')}/`)
+        .then(async (res: any) => {
+          let newData = res.data.expenses
+            .map((e) => {
+              return { ...e, visible: false };
+            })
+            .concat(
+              res.data.transfers
+                .map((t) => {
+                  return { ...t, visible: false };
+                })
+                .concat(
+                  res.data.debts.map((d) => {
+                    return { ...d, visible: true };
+                  })
+                )
+            );
+
+          setData(newData);
+          setLoaded(true);
+        })
+        .catch((err) => {
+          if (err?.response?.data) setNotification(err.response.data);
+        });
+    }
   };
 
   const handleTitle = (tab: SidebarTab): void => {
@@ -338,6 +367,7 @@ const AppAccounts = (): JSX.Element => {
     subHeaderTab: SubHeaderTab,
     newData?: (Expense | Transfer | Debt)[]
   ): void => {
+    setLoaded(false);
     if (!newData && !data?.length) return;
 
     if (!newData) newData = [...data];
@@ -368,7 +398,7 @@ const AppAccounts = (): JSX.Element => {
 
     if (!orderedDebts.length)
       return [
-        <h2>
+        <h2 key={'noDebts'}>
           <Translate name="noDebts" prefix="accounts." />
         </h2>,
       ];

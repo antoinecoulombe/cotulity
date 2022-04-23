@@ -29,6 +29,7 @@ const ListItemDebt = (props: DebtListItemProps): JSX.Element => {
   return (
     <ListItem
       uid={props.fromUser.id}
+      key={`debt-${props.fromUser.id}`}
       className="debt"
       onClick={props.debts.map((v) => (
         <div className="debt-row" key={`from-${v.fromUserId}-to-${v.toUserId}`}>

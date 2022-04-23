@@ -189,7 +189,7 @@ const createTaskOccurences = async (
   // Delete previous occurences
   if (deleteOld) {
     // Get ids of all previous occurences
-    let oldIds = (
+    oldIds = (
       await db.TaskOccurence.findAll(
         {
           where: {
@@ -305,6 +305,9 @@ Tasks.get('/users', async (req: any, res: any) => {
       users.map(async (u: any) => {
         let tasks = (
           await res.locals.home.getTasks({
+            where: {
+              [Op.or]: [{ shared: true }, { ownerId: req.user.id }],
+            },
             attributes: ['ownerId', 'name', 'repeat', 'untilDate', 'shared'],
             include: [
               {
@@ -392,14 +395,14 @@ Tasks.put('/:id', async (req: any, res: any) => {
       if (dueDate === null)
         return res
           .status(500)
-          .json({ title: 'task.invalidDate', msg: 'task.invalidDate' });
+          .json({ title: 'tasks.invalidDate', msg: 'tasks.invalidDate' });
 
       // Get task that has a certain task occurence id associated to it
       let taskDb = await getTasks(req, res, 'all', req.params.id);
       if (!taskDb?.length)
         return res
           .status(404)
-          .json({ title: 'task.notFound', msg: 'task.notFound' });
+          .json({ title: 'tasks.notFound', msg: 'tasks.notFound' });
 
       // Get first found task (should be only one), and modify it
       let task = taskDb[0];
@@ -476,7 +479,7 @@ const editCompletion = async (req: any, res: any, toComplete: boolean) => {
     if (!tasks.length)
       return res
         .status(404)
-        .json({ title: 'task.notFound', msg: 'task.notFound' });
+        .json({ title: 'tasks.notFound', msg: 'tasks.notFound' });
 
     // Get first occurence of first task (should be only one in both case)
     let taskOccurence = tasks[0].Occurences[0];
@@ -522,7 +525,7 @@ Tasks.put('/:id/restore', async (req: any, res: any) => {
     if (!tasks.length)
       return res
         .status(404)
-        .json({ title: 'task.notFound', msg: 'task.notFound' });
+        .json({ title: 'tasks.notFound', msg: 'tasks.notFound' });
 
     // Restore task occurence
     await tasks[0].Occurences[0].restore();
@@ -557,7 +560,7 @@ Tasks.post('/', async (req: any, res: any) => {
       if (dueDate === null)
         return res
           .status(500)
-          .json({ title: 'task.invalidDate', msg: 'task.invalidDate' });
+          .json({ title: 'tasks.invalidDate', msg: 'tasks.invalidDate' });
 
       // Get all task users
       let taskUsers: any[] = await getUsers(req, res);
@@ -624,7 +627,7 @@ Tasks.delete('/:id', async (req: any, res: any) => {
     if (!tasks.length)
       return res
         .status(404)
-        .json({ title: 'task.notFound', msg: 'task.notFound' });
+        .json({ title: 'tasks.notFound', msg: 'tasks.notFound' });
 
     // Get first found task (should be only one)
     let task = tasks[0];

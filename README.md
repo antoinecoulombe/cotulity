@@ -4,25 +4,42 @@
 
 Cotulity is a web application to help students manage their day-to-day life with roommates.
 
-## Installation
+## Run with Docker
 
-Before starting with the project, make sure to follow these steps to have the latest project on-hand:
+To start Cotulity, and all of its microservices dockers, run the following command at the project's root:
 
-1. Download and Install Node.js and npm
+```bash
+$ npm run dev
+```
+
+Once started, initialize (migrate and seed) the database by running the following command at the root of the project:
+
+```bash
+$ npm run db:init
+```
+
+You can now run Cotulity! Just go to <http://localhost:5101/>.
+
+## Run Locally
+
+To start Cotulity locally, follow these steps:
+
+1. Follow the steps below `Run with Docker`.
+1. Shut down all containers except `frontend, db, phpmyadmin and nginx`.
+1. Download and Install Node.js, npm and Docker.
 1. Make sure you have the latest version of npm downloaded:
    `npm install npm@latest -g`
 1. Install sequelize globally:
    `npm install -g sequelize-cli`
-1. Install all dependencies for the project:
-   `npm install`
+1. If you are not at the project's root, move to it.
+1. Install node packages for the frontend and all microservices:
+   `npm run install:all`
+1. Once all packages are installed, run Cotulity:
+   `npm run dev:local`
 
-## Run with Docker
+You can now run and debug Cotulity Locally! Just go to <http://localhost:5101/>.
 
-To start the service using docker, run the following command:
-
-```bash
-$ docker-compose up --build
-```
+## Database Setup
 
 To migrate or update the database, run the following command in a new terminal window:
 
@@ -36,7 +53,7 @@ To seed the database, run the following command in a new terminal window:
 $ docker-compose exec api npm run seed
 ```
 
-To rebuild the database and clear all data, run the following command in a new terminal window:
+To rebuild the database, clear all data and insert all seeds, run the following command in a new terminal window:
 
 ```bash
 $ docker-compose exec api npm run migrate:reset

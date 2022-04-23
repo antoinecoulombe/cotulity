@@ -526,7 +526,8 @@
         "created": "Tâche créée",
         "modified": "Tâche modifiée",
         "notFound": "Tâche introuvable",
-        "noUsers": "La tâche n'a pas d'utilisateurs"
+        "noUsers": "La tâche n'a pas d'utilisateurs",
+        "invalidDate": "Date invalide"
       },
       "transfers": {
         "invalidAmount": "Le montant du versement est invalide.",
@@ -702,7 +703,8 @@
         "created": "Vous la retrouverez dans la section 'À venir'.",
         "modified": "La tâche a été modifiée.",
         "notFound": "Aucune tâche n'est associée à cet identifiant.",
-        "noUsers": "Veuillez ajouter des utilisateurs à la tâche."
+        "noUsers": "Veuillez ajouter des utilisateurs à la tâche.",
+        "invalidDate": "Veuillez entrer une date valide."
       },
       "transfers": {
         "userNotFound": "Le destinataire du versement est introuvable.",

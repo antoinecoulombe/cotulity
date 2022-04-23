@@ -526,7 +526,8 @@
         "created": "Task Created",
         "modified": "Task Updated",
         "notFound": "Task not found",
-        "noUsers": "Task has no users"
+        "noUsers": "Task has no users",
+        "invalidDate": "Invalid date."
       },
       "transfers": {
         "created": "Transfer Created",
@@ -703,7 +704,8 @@
         "created": "You can find it under the 'Upcoming' tab.",
         "modified": "The task has been updated.",
         "notFound": "We couldn't find a task associated to that identifier.",
-        "noUsers": "Please add users to the task."
+        "noUsers": "Please add users to the task.",
+        "invalidDate": "Please enter a valid date."
       },
       "transfers": {
         "created": "You can find it in chronological order under the 'Transfers' tab.",

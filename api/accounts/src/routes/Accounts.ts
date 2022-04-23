@@ -5,6 +5,7 @@ import { getHomeUsers } from '../../../shared/src/routes/Homes';
 
 const Accounts = express.Router();
 const db = require('../../../shared/db/models');
+const { Op } = require('sequelize');
 
 // ########################################################
 // ##################### Middlewares ######################
@@ -190,8 +191,14 @@ export const settleHomeDebts = async (
       // If no debt is found between the two members, the row can be inserted as is
       if (!debtDb) return od;
 
+      let newAmount =
+        parseFloat(od.amount.toString()) + parseFloat(debtDb.amount);
+
       // Otherwise, sum the amounts
-      return { ...od, amount: od.amount + debtDb.amount };
+      return {
+        ...od,
+        amount: newAmount,
+      };
     })
   );
 
@@ -252,10 +259,12 @@ Accounts.get('/users', async (req: any, res: any) => {
             {
               model: db.HomeDebt,
               as: 'fromDebt',
+              where: { amount: { [Op.not]: 0 } },
             },
             {
               model: db.HomeDebt,
               as: 'toDebt',
+              where: { amount: { [Op.not]: 0 } },
             },
           ],
         },
@@ -289,8 +298,8 @@ Accounts.get('/debts', async (req: any, res: any) => {
       msg: 'request.success',
       debts: await res.locals.home.getHomeDebts({
         attributes: ['fromUserId', 'toUserId', 'amount'],
+        where: { amount: { [Op.not]: 0 } },
       }),
-      users: await getHomeUsers(db, res),
     });
   } catch (error) {
     /* istanbul ignore next */
@@ -324,6 +333,7 @@ Accounts.get('/', async (req: any, res: any) => {
       users: await getHomeUsers(db, res),
       debts: await res.locals.home.getHomeDebts({
         attributes: ['fromUserId', 'toUserId', 'amount'],
+        where: { amount: { [Op.not]: 0 } },
       }),
       expenses: await getExpenses(res),
       transfers: await getTransfers(res),

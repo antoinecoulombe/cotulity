@@ -33,6 +33,7 @@ const ListItemTransfer = (props: ListItemTransferProps): JSX.Element => {
   return (
     <ListItem
       uid={props.transfer.id}
+      key={`transfer-${props.transfer.id}`}
       className="transfer"
       onClick={[
         <h4 className="with-accent" key={props.transfer.id}>

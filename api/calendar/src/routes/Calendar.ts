@@ -2,10 +2,7 @@ import express from 'express';
 import { validateApp } from '../../../shared/src/routes/Apps';
 import { InputsToDate } from '../../../shared/src/routes/Date';
 import { getHomeUsers } from '../../../shared/src/routes/Homes';
-import {
-  dateDiffInDays,
-  getRepeatingDatesUntil,
-} from '../../../shared/src/routes/Date';
+import { getRepeatingDatesUntil } from '../../../shared/src/routes/Date';
 
 const Calendar = express.Router();
 const db = require('../../../shared/db/models');
@@ -498,6 +495,13 @@ Calendar.put('/events/:id/move', async (req: any, res: any) => {
       return res.status(404).json({
         title: 'calendar.event.notFound',
         msg: 'calendar.event.notFound',
+      });
+
+    // Deny access if requester is not home owner or event creator
+    if (res.locals.home.ownerId !== req.user.id && occ.ownerId !== req.user.id)
+      return res.status(403).json({
+        title: 'request.denied',
+        msg: 'calendar.event.cannotUpdate',
       });
 
     // Calculate new start and end date

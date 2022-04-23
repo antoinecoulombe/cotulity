@@ -31,6 +31,7 @@ const ListItemExpense = (props: ListItemExpenseProps): JSX.Element => {
   return (
     <ListItem
       uid={props.expense.id}
+      key={`expense-${props.expense.id}`}
       className="expense"
       onClick={[
         <h4 key={props.expense.id}>
@@ -41,7 +42,7 @@ const ListItemExpense = (props: ListItemExpenseProps): JSX.Element => {
           getUserWithRecord(props.users, es.userId)?.Image?.url ? (
             <img
               id="img-profile"
-              key={es.userId}
+              key={`es-${es.userId}`}
               src={`http://localhost:4000/images/public/${
                 getUserWithRecord(props.users, es.userId)?.Image?.url
               }`}
@@ -50,7 +51,7 @@ const ListItemExpense = (props: ListItemExpenseProps): JSX.Element => {
             />
           ) : (
             <FontAwesomeIcon
-              key={es.userId}
+              key={`es-${es.userId}`}
               icon="user-circle"
               title={getCompleteName(getUserWithRecord(props.users, es.userId))}
             ></FontAwesomeIcon>
